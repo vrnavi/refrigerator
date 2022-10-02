@@ -153,8 +153,8 @@ class Common(Cog):
         reply_list.append(f"{prefix}{text}{suffix}")
         return reply_list
 
-    async def haste(self, text, instance="https://mystb.in/"):
-        response = await self.bot.aiosession.post(f"{instance}documents", data=text)
+    async def haste(self, text, instance="https://api.mystb.in/"):
+        response = await self.bot.aiosession.put(f"{instance}documents", data=text)
         if response.status == 200:
             result_json = await response.json()
             return f"{instance}{result_json['key']}"
