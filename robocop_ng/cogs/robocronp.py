@@ -165,9 +165,7 @@ class Robocronp(Cog):
                 verif_channel = self.bot.get_channel(config.welcome_channel)
                 await self.bot.do_resetalgo(verif_channel, "daily robocronp")
             # Color of the Day
-            newcolor = random.choice(get_colors())
-            color_list.remove(newcolor)
-            current_color = newcolor
+            current_color = new_random_color()
             cotd_role = self.bot.get_role(config.cotd_role_id)
             await cotd_role.edit(name=f"Fluctuating Phosphor - {current_color.get('name')}", color=discord.Color.from_str(f"{current_color.get('hex')}"))
             
