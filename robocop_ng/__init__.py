@@ -11,7 +11,6 @@ from discord.ext import commands
 
 # TODO: check __name__ for __main__ nerd
 
-log_file_name = "dishwasher.log"
 stdout_handler = logging.StreamHandler(sys.stdout)
 log_format = logging.Formatter(
     "[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
@@ -45,7 +44,6 @@ bot.help_command = commands.DefaultHelpCommand(dm_help=True)
 
 bot.log = log
 bot.config = config
-bot.log_file_name = log_file_name
 bot.wanted_jsons = wanted_jsons
 
 
