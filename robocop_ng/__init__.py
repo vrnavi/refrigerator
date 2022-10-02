@@ -62,7 +62,7 @@ bot.wanted_jsons = wanted_jsons
 
 @bot.event
 async def on_ready():
-    aioh = {"User-Agent": f"{script_name}/1.0'"}
+    aioh = {"User-Agent": f"Dishwasher/1.0'"}
     bot.aiosession = aiohttp.ClientSession(headers=aioh)
     bot.app_info = await bot.application_info()
     bot.botlog_channel = bot.get_channel(config.botlog_channel)
