@@ -102,3 +102,12 @@ config.py
 
 # Prevent data files from being committed
 data/
+
+# macOS and Windows suck
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
