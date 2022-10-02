@@ -20,7 +20,7 @@ class Explains(Cog):
     @commands.command(hidden=True, aliases=["embeds", "howpostembeds"])
     async def journal(self, ctx):
         """Explains Strange Journal."""
-        await ctx.send("To post embeds, react to messages, or speak in voice channels, you need the Strange Journal role.\nTo learn how to get this role, read #controls. **Do __not__ \"spoonfeed\" any user the command for it.**")
+        await ctx.send("To post embeds, react to messages, or speak in voice channels, you need the Strange Journal role.\nTo learn how to get this role, read <#989959374900449380>. **Do __not__ \"spoonfeed\" any user the command for it.**")
 
 async def setup(bot):
     await bot.add_cog(Explains(bot))
