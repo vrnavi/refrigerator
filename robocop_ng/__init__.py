@@ -209,6 +209,9 @@ for wanted_json in wanted_jsons:
         with open(wanted_json, "w") as f:
             f.write("{}")
 
+if not os.path.exists(data/colors.json):
+        with open(data/colors.json, "w") as f:
+            f.write("{}")
 
 async def main():
     async with bot:

@@ -2,11 +2,13 @@ import config
 import time
 import discord
 import traceback
+import random
 from discord.ext import commands, tasks
 from discord.ext.commands import Cog
 from helpers.robocronp import get_crontab, delete_job
 from helpers.restrictions import remove_restriction
 from helpers.checks import check_if_staff
+from helpers.colors import get_colors, color_list, current_color
 
 
 class Robocronp(Cog):
@@ -162,6 +164,14 @@ class Robocronp(Cog):
             if "cogs.verification" in config.initial_cogs:
                 verif_channel = self.bot.get_channel(config.welcome_channel)
                 await self.bot.do_resetalgo(verif_channel, "daily robocronp")
+            # Color of the Day
+            newcolor = random.choice(get_colors())
+            color_list.remove(newcolor)
+            current_color = newcolor
+            cotd_role = self.bot.get_role(config.cotd_role_id)
+            await cotd_role.edit(name=f"Fluctuating Phosphor - {current_color.get('name')", color=discord.Color.from_str(f"{current_color.get('hex')}"))
+            
+            
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(
