@@ -13,6 +13,6 @@ def new_random_color():
     color_list.remove(current_color)
     return current_color
     
-    def get_current_color():
-        return current_color
+def get_current_color():
+    return current_color
     
