@@ -13,6 +13,11 @@ class Basic(Cog):
     async def hello(self, ctx):
         """[U] Says hello!"""
         await ctx.send(f"Hello {ctx.author.mention}! Have you drank your Soylent Green today?")
+        
+    @commands.command()
+    async def hug(self, ctx):
+        """[U] Gives you a hug."""
+        await ctx.send(f"I am incapable of hugs, but... \*hugs*")
 
     @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="hex")
