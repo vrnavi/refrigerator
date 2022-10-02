@@ -3,7 +3,7 @@ import random
 
 color_list = {}
 
-current_color = []
+current_color = {}
 
 def new_random_color():
     if not color_list:
