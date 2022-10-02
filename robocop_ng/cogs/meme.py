@@ -57,21 +57,6 @@ class Meme(Cog):
         await ctx.send(f"{user.mention} gets a :star:, yay!")
 
     @commands.check(check_if_staff_or_ot)
-    @commands.command(
-        hidden=True, aliases=["reswitchedsilver", "silv3r", "reswitchedsilv3r"]
-    )
-    async def silver(self, ctx, user: discord.Member):
-        """Gives a user ReSwitched Silver™"""
-        embed = discord.Embed(
-            title="ReSwitched Silver™!",
-            description=f"Here's your ReSwitched Silver™," f"{user.mention}!",
-        )
-        embed.set_image(
-            url="https://cdn.discordapp.com/emojis/548623626916724747.png?v=1"
-        )
-        await ctx.send(embed=embed)
-
-    @commands.check(check_if_staff_or_ot)
     @commands.command(hidden=True)
     async def btwiuse(self, ctx):
         """btw i use arch"""
@@ -87,12 +72,6 @@ class Meme(Cog):
     async def yahaha(self, ctx):
         """secret command"""
         await ctx.send(f"🍂 you found me 🍂")
-
-    @commands.check(check_if_staff_or_ot)
-    @commands.command(hidden=True)
-    async def blackalabi(self, ctx):
-        """secret command"""
-        await ctx.send("https://elixi.re/i/discord.png")
 
     @commands.check(check_if_staff_or_ot)
     @commands.command(hidden=True)
@@ -121,23 +100,10 @@ class Meme(Cog):
         await ctx.send("https://cdn.discordapp.com/emojis/465650811909701642.png?v=1")
 
     @commands.check(check_if_staff_or_ot)
-    @commands.command(
-        hidden=True, aliases=["when", "etawhen", "emunand", "emummc", "thermosphere"]
-    )
-    async def eta(self, ctx):
-        await ctx.send("June 15.")
-
-    @commands.check(check_if_staff_or_ot)
     @commands.command(hidden=True, name="bam")
     async def bam_member(self, ctx, target: discord.Member):
         """Bams a user owo"""
-        if target == ctx.author:
-            if target.id == 181627658520625152:
-                return await ctx.send(
-                    "https://cdn.discordapp.com/attachments/286612533757083648/403080855402315796/rehedge.PNG"
-                )
-            return await ctx.send("hedgeberg#7337 is ̶n͢ow b̕&̡.̷ 👍̡")
-        elif target == self.bot.user:
+        if target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
             )
@@ -150,13 +116,8 @@ class Meme(Cog):
     @commands.command(hidden=True)
     async def memebercount(self, ctx):
         """Checks memeber count, as requested by dvdfreitag"""
-        await ctx.send("There's like, uhhhhh a bunch")
-
-    @commands.command(hidden=True)
-    async def frolics(self, ctx):
-        """test"""
-        await ctx.send("https://www.youtube.com/watch?v=VmarNEsjpDI")
-
+        await ctx.send("Fuck, IDK, dude.")
+        
     @commands.command(
         hidden=True,
         aliases=[

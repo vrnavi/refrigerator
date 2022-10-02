@@ -11,9 +11,7 @@ from discord.ext import commands
 
 # TODO: check __name__ for __main__ nerd
 
-script_name = os.path.basename(__file__).split(".")[0]
-
-log_file_name = f"{script_name}.log"
+log_file_name = "dishwasher.log"
 
 # Limit of discord (non-nitro) is 8MB (not MiB)
 max_file_size = 1000 * 1000 * 8
@@ -58,7 +56,7 @@ bot.help_command = commands.DefaultHelpCommand(dm_help=True)
 
 bot.log = log
 bot.config = config
-bot.script_name = script_name
+bot.log_file_name = log_file_name
 bot.wanted_jsons = wanted_jsons
 
 

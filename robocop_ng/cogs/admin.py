@@ -29,7 +29,7 @@ class Admin(Cog):
         """Returns log"""
         await ctx.send(
             "Here's the current log file:",
-            file=discord.File(f"{self.bot.script_name}.log"),
+            file=discord.File(log_file_name),
         )
 
     @commands.guild_only()
