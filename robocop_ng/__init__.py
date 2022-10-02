@@ -12,24 +12,13 @@ from discord.ext import commands
 # TODO: check __name__ for __main__ nerd
 
 log_file_name = "dishwasher.log"
-
-# Limit of discord (non-nitro) is 8MB (not MiB)
-max_file_size = 1000 * 1000 * 8
-backup_count = 3
-file_handler = logging.handlers.RotatingFileHandler(
-    filename=log_file_name, maxBytes=max_file_size, backupCount=backup_count
-)
 stdout_handler = logging.StreamHandler(sys.stdout)
-
 log_format = logging.Formatter(
     "[%(asctime)s] {%(filename)s:%(lineno)d} %(levelname)s - %(message)s"
 )
-file_handler.setFormatter(log_format)
 stdout_handler.setFormatter(log_format)
-
 log = logging.getLogger("discord")
 log.setLevel(logging.INFO)
-log.addHandler(file_handler)
 log.addHandler(stdout_handler)
 
 
@@ -62,8 +51,7 @@ bot.wanted_jsons = wanted_jsons
 
 @bot.event
 async def on_ready():
-    aioh = {"User-Agent": f"Dishwasher/1.0'"}
-    bot.aiosession = aiohttp.ClientSession(headers=aioh)
+    bot.aiosession = aiohttp.ClientSession()
     bot.app_info = await bot.application_info()
     bot.botlog_channel = bot.get_channel(config.botlog_channel)
 

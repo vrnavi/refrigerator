@@ -28,7 +28,7 @@ class Admin(Cog):
     async def fetchlog(self, ctx):
         """Returns log"""
         await ctx.send(
-            "Here's the current log file:",
+            "Here's this session's log file:",
             file=discord.File(self.bot.log_file_name),
         )
 
