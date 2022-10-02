@@ -169,7 +169,7 @@ class Robocronp(Cog):
             color_list.remove(newcolor)
             current_color = newcolor
             cotd_role = self.bot.get_role(config.cotd_role_id)
-            await cotd_role.edit(name=f"Fluctuating Phosphor - {current_color.get('name')", color=discord.Color.from_str(f"{current_color.get('hex')}"))
+            await cotd_role.edit(name=f"Fluctuating Phosphor - {current_color.get('name')}", color=discord.Color.from_str(f"{current_color.get('hex')}"))
             
             
         except:
