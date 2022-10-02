@@ -164,12 +164,6 @@ class Robocronp(Cog):
             if "cogs.verification" in config.initial_cogs:
                 verif_channel = self.bot.get_channel(config.welcome_channel)
                 await self.bot.do_resetalgo(verif_channel, "daily robocronp")
-            # Color of the Day
-            current_color = new_random_color()
-            cotd_role = self.bot.get_role(config.cotd_role_id)
-            await cotd_role.edit(name=f"Fluctuating Phosphor - {current_color.get('name')}", color=discord.Color.from_str(f"{current_color.get('hex')}"))
-            
-            
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(
