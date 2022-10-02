@@ -10,7 +10,7 @@ def new_random_color():
     if not color_list:
         with open("data/colors.json", "r") as f:
             color_list = json.load(f)
-    current_color = random.choice(get_colors())
+    current_color = random.choice(color_list)
     color_list.remove(current_color)
     return current_color
     
