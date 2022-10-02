@@ -23,8 +23,7 @@ class ModTimed(Cog):
     async def timeban(
         self, ctx, target: discord.Member, duration: str, *, reason: str = ""
     ):
-        """Bans a user for a specified amount of time, staff only."""
-        # Hedge-proofing the code
+        """[S] Bans a user for a specified amount of time."""
         if target == ctx.author:
             return await ctx.send("You can't do mod actions on yourself.")
         elif self.check_if_target_is_staff(target):
@@ -89,8 +88,7 @@ class ModTimed(Cog):
     async def timemute(
         self, ctx, target: discord.Member, duration: str, *, reason: str = ""
     ):
-        """Mutes a user for a specified amount of time, staff only."""
-        # Hedge-proofing the code
+        """[S] Mutes a user for a specified amount of time."""
         if target == ctx.author:
             return await ctx.send("You can't do mod actions on yourself.")
         elif self.check_if_target_is_staff(target):

@@ -13,7 +13,7 @@ class ModNote(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["addnote"])
     async def note(self, ctx, target: discord.Member, *, note: str = ""):
-        """Adds a note to a user, staff only."""
+        """[S] Adds a note to a user."""
         userlog(target.id, ctx.author, note, "notes", target.name)
         await ctx.send(f"{ctx.author.mention}: noted!")
 
@@ -21,7 +21,7 @@ class ModNote(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["addnoteid"])
     async def noteid(self, ctx, target: int, *, note: str = ""):
-        """Adds a note to a user by userid, staff only."""
+        """[S] Adds a note to a user by ID."""
         userlog(target, ctx.author, note, "notes")
         await ctx.send(f"{ctx.author.mention}: noted!")
 

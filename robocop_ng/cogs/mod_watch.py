@@ -13,7 +13,7 @@ class ModWatch(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def watch(self, ctx, target: discord.Member, *, note: str = ""):
-        """Puts a user under watch, staff only."""
+        """[S] Puts a user under watch."""
         setwatch(target.id, ctx.author, True, target.name)
         await ctx.send(f"{ctx.author.mention}: user is now on watch.")
 
@@ -21,7 +21,7 @@ class ModWatch(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def watchid(self, ctx, target: int, *, note: str = ""):
-        """Puts a user under watch by userid, staff only."""
+        """[S] Puts a user under watch by ID."""
         setwatch(target, ctx.author, True, target.name)
         await ctx.send(f"{target.mention}: user is now on watch.")
 
@@ -29,7 +29,7 @@ class ModWatch(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def unwatch(self, ctx, target: discord.Member, *, note: str = ""):
-        """Removes a user from watch, staff only."""
+        """[S] Removes a user from watch."""
         setwatch(target.id, ctx.author, False, target.name)
         await ctx.send(f"{ctx.author.mention}: user is now not on watch.")
 
@@ -37,7 +37,7 @@ class ModWatch(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def unwatchid(self, ctx, target: int, *, note: str = ""):
-        """Removes a user from watch by userid, staff only."""
+        """[S] Removes a user from watch by ID."""
         setwatch(target, ctx.author, False, target.name)
         await ctx.send(f"{target.mention}: user is now not on watch.")
 

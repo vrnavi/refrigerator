@@ -13,7 +13,7 @@ class Remind(Cog):
 
     @commands.command()
     async def remindlist(self, ctx):
-        """Lists your reminders."""
+        """[U] Lists your reminders."""
         ctab = get_crontab()
         uid = str(ctx.author.id)
         embed = discord.Embed(title=f"Active robocronp jobs")
@@ -35,7 +35,7 @@ class Remind(Cog):
     @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(aliases=["remindme"])
     async def remind(self, ctx, when: str, *, text: str = "something"):
-        """Reminds you about something."""
+        """[U] Reminds you about something."""
         if ctx.guild:
             await ctx.message.delete()
         current_timestamp = time.time()

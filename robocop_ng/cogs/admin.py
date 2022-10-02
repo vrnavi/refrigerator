@@ -18,7 +18,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command(name="exit", aliases=["quit", "bye"])
     async def _exit(self, ctx):
-        """Shuts down the bot, bot manager only."""
+        """[O] Shuts down (or restarts) the bot."""
         await ctx.send("**AH FUCK NOT AGAIN**")
         await self.bot.close()
 
@@ -26,7 +26,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def fetchdata(self, ctx):
-        """Returns data files"""
+        """[O] Returns data files."""
         data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
         await ctx.send("Here's the current data files:", files=data_files)
 
@@ -34,7 +34,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
     async def _eval(self, ctx, *, code: str):
-        """Evaluates some code, bot manager only."""
+        """[O] Evaluates some code."""
         try:
             code = code.strip("` ")
 
@@ -89,7 +89,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def pull(self, ctx, auto=False):
-        """Does a git pull, bot manager only."""
+        """[O] Performs a git pull."""
         tmp = await ctx.send("Pulling...")
         git_output = await self.bot.async_call_shell("git pull")
         await tmp.edit(content=f"Pull complete. Output: ```{git_output}```")
@@ -117,7 +117,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def load(self, ctx, ext: str):
-        """Loads a cog, bot manager only."""
+        """[O] Loads a cog."""
         try:
             await self.bot.load_extension("cogs." + ext)
             await self.cog_load_actions(ext)
@@ -134,7 +134,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def unload(self, ctx, ext: str):
-        """Unloads a cog, bot manager only."""
+        """[O] Unloads a cog."""
         await self.bot.unload_extension("cogs." + ext)
         self.bot.log.info(f"Unloaded ext {ext}")
         await ctx.send(f":white_check_mark: `{ext}` successfully unloaded.")
@@ -142,7 +142,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def reload(self, ctx, ext="_"):
-        """Reloads a cog, bot manager only."""
+        """[O] Reloads a cog."""
         if ext == "_":
             ext = self.lastreload
         else:

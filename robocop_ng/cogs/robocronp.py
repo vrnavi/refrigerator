@@ -30,7 +30,7 @@ class Robocronp(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def listjobs(self, ctx):
-        """Lists timed robocronp jobs, staff only."""
+        """[S] Lists timed robocronp jobs."""
         ctab = get_crontab()
         embed = discord.Embed(title=f"Active robocronp jobs")
         for jobtype in ctab:
@@ -48,7 +48,7 @@ class Robocronp(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["removejob"])
     async def deletejob(self, ctx, timestamp: str, job_type: str, job_name: str):
-        """Removes a timed robocronp job, staff only.
+        """[S] Removes a timed robocronp job.
 
         You'll need to supply:
         - timestamp (like 1545981602)

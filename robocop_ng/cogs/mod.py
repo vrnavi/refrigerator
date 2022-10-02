@@ -19,7 +19,7 @@ class Mod(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def setguildicon(self, ctx, url):
-        """Changes guild icon, bot manager only."""
+        """[O] Changes the guild icon."""
         img_bytes = await self.bot.aiogetbytes(url)
         await ctx.guild.edit(icon=img_bytes, reason=str(ctx.author))
         await ctx.send(f"Done!")
@@ -37,10 +37,10 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def mute(self, ctx, target: discord.Member, *, reason: str = ""):
-        """Mutes a user, staff only."""
+        """[S] Mutes a user."""
         # Hedge-proofing the code
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send("You can't do that on yourself.")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
@@ -96,7 +96,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def unmute(self, ctx, target: discord.Member):
-        """Unmutes a user, staff only."""
+        """[S] Unmutes a user."""
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
         )
@@ -122,8 +122,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
-        """Kicks a user, staff only."""
-        # Hedge-proofing the code
+        """[S] Kicks a user."""
         if target == ctx.author:
             return await ctx.send("You can't do mod actions on yourself.")
         elif target == self.bot.user:
@@ -183,14 +182,9 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["yeet"])
     async def ban(self, ctx, target: discord.Member, *, reason: str = ""):
-        """Bans a user, staff only."""
-        # Hedge-proofing the code
+        """[S] Bans a user."""
         if target == ctx.author:
-            if target.id == 181627658520625152:
-                return await ctx.send(
-                    "https://cdn.discordapp.com/attachments/286612533757083648/403080855402315796/rehedge.PNG"
-                )
-            return await ctx.send("hedgeberg#7337 is now b&. 👍")
+            return await ctx.send("You can't do mod actions on yourself.")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
@@ -246,14 +240,10 @@ class Mod(Cog):
     async def bandel(
         self, ctx, day_count: int, target: discord.Member, *, reason: str = ""
     ):
-        """Bans a user for a given number of days, staff only."""
+        """[S] Bans a user for n days."""
         # Hedge-proofing the code
         if target == ctx.author:
-            if target.id == 181627658520625152:
-                return await ctx.send(
-                    "https://cdn.discordapp.com/attachments/286612533757083648/403080855402315796/rehedge.PNG"
-                )
-            return await ctx.send("hedgeberg#7337 is now b&. 👍")
+            return await ctx.send("You can't do mod actions on yourself.")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
@@ -315,7 +305,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["softban"])
     async def hackban(self, ctx, target: int, *, reason: str = ""):
-        """Bans a user with their ID, doesn't message them, staff only."""
+        """[S] Bans a user with their ID, doesn't message them."""
         target_user = await self.bot.fetch_user(target)
         target_member = ctx.guild.get_member(target)
         # Hedge-proofing the code
@@ -362,7 +352,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def massban(self, ctx, *, targets: str):
-        """Bans users with their IDs, doesn't message them, staff only."""
+        """[S] Bans users with their IDs, doesn't message them."""
         targets_int = [int(target) for target in targets.strip().split(" ")]
         for target in targets_int:
             target_user = await self.bot.fetch_user(target)
@@ -411,7 +401,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def unban(self, ctx, target: int, *, reason: str = ""):
-        """Unbans a user with their ID, doesn't message them, staff only."""
+        """[S] Unbans a user with their ID, doesn't message them."""
         target_user = await self.bot.fetch_user(target)
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -444,8 +434,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def silentban(self, ctx, target: discord.Member, *, reason: str = ""):
-        """Bans a user, staff only."""
-        # Hedge-proofing the code
+        """[S] Bans a user, does not message them."""
         if target == ctx.author:
             return await ctx.send("You can't do mod actions on yourself.")
         elif target == self.bot.user:
@@ -486,8 +475,8 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def approve(self, ctx, target: discord.Member, role: str = "community"):
-        """Add a role to a user (default: community), staff only."""
+    async def approve(self, ctx, target: discord.Member, role: str = "journal"):
+        """[S] Add a role to a user (default: journal)."""
         if role not in config.named_roles:
             return await ctx.send(
                 "No such role! Available roles: " + ",".join(config.named_roles)
@@ -513,7 +502,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["unapprove"])
     async def revoke(self, ctx, target: discord.Member, role: str = "community"):
-        """Remove a role from a user (default: community), staff only."""
+        """[S] Remove a role from a user (default: journal)."""
         if role not in config.named_roles:
             return await ctx.send(
                 "No such role! Available roles: " + ",".join(config.named_roles)
@@ -539,7 +528,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, limit: int, channel: discord.TextChannel = None):
-        """Clears a given number of messages, staff only."""
+        """[S] Clears a given number of messages."""
         log_channel = self.bot.get_channel(config.modlog_channel)
         if not channel:
             channel = ctx.channel
@@ -554,8 +543,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def warn(self, ctx, target: discord.Member, *, reason: str = ""):
-        """Warns a user, staff only."""
-        # Hedge-proofing the code
+        """[S] Warns a user."""
         if target == ctx.author:
             return await ctx.send("You can't do mod actions on yourself.")
         elif target == self.bot.user:
@@ -586,35 +574,22 @@ class Mod(Cog):
             f"\n\nPlease read the rules in {config.rules_url}. "
             f"This is warn #{warn_count}."
         )
-        if warn_count == 2:
-            msg += " __The next warn will automatically kick.__"
-        if warn_count == 3:
-            msg += (
-                "\n\nYou were kicked because of this warning. "
-                "You can join again right away. "
-                "Two more warnings will result in an automatic ban."
-            )
         if warn_count == 4:
             msg += (
-                "\n\nYou were kicked because of this warning. "
-                "This is your final warning. "
-                "You can join again, but "
-                "**one more warn will result in a ban**."
+                "\n\nThis is your final warning. "
+                "**One more warn will result in a ban**."
             )
-            chan_msg += "**This resulted in an auto-kick.**\n"
         if warn_count == 5:
-            msg += "\n\nYou were automatically banned due to five warnings."
-            chan_msg += "**This resulted in an auto-ban.**\n"
+            msg += "\n\nYou were automatically permanently banned due to five warnings."
+            chan_msg += "**This resulted in an auto-permaban.**\n"
         try:
             await target.send(msg)
         except discord.errors.Forbidden:
             # Prevents log issues in cases where user blocked bot
             # or has DMs disabled
             pass
-        if warn_count == 3 or warn_count == 4:
-            await target.kick()
         if warn_count >= 5:  # just in case
-            await target.ban(reason="exceeded warn limit", delete_message_days=0)
+            await target.ban(reason="Exceeded warn limit", delete_message_days=0)
         await ctx.send(
             f"{target.mention} warned. " f"User has {warn_count} warning(s)."
         )
@@ -636,7 +611,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["setnick", "nick"])
     async def nickname(self, ctx, target: discord.Member, *, nick: str = ""):
-        """Sets a user's nickname, staff only.
+        """[S] Sets a user's nickname.
 
         Just send .nickname <user> to wipe the nickname."""
 
@@ -657,21 +632,21 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["echo"])
     async def say(self, ctx, *, the_text: str):
-        """Repeats a given text, staff only."""
+        """[S] Repeats a given text."""
         await ctx.send(the_text)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def speak(self, ctx, channel: discord.TextChannel, *, the_text: str):
-        """Repeats a given text in a given channel, staff only."""
+        """[S] Repeats a given text in a given channel."""
         await channel.send(the_text)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["setplaying", "setgame"])
     async def playing(self, ctx, *, game: str = ""):
-        """Sets the bot's currently played game name, staff only.
+        """[S] Sets the bot's currently played game name.
 
         Just send .playing to wipe the playing state."""
         if game:
@@ -685,7 +660,7 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["setbotnick", "botnick", "robotnick"])
     async def botnickname(self, ctx, *, nick: str = ""):
-        """Sets the bot's nickname, staff only.
+        """[S] Sets the bot's nickname.
 
         Just send .botnickname to wipe the nickname."""
 

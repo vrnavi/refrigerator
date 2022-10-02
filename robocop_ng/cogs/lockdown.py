@@ -30,7 +30,7 @@ class Lockdown(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def lock(self, ctx, channel: discord.TextChannel = None, soft: bool = False):
-        """Prevents people from speaking in a channel, staff only.
+        """[S] Prevents people from speaking in a channel.
 
         Defaults to current channel."""
         if not channel:
@@ -53,9 +53,9 @@ class Lockdown(Cog):
         public_msg = "🔒 Channel locked down. "
         if not soft:
             public_msg += (
-                "Only staff members may speak. "
+                "Only Staff may speak. "
                 "Do not bring the topic to other channels or risk "
-                "disciplinary actions."
+                "action taken."
             )
 
         await ctx.send(public_msg)
@@ -72,7 +72,7 @@ class Lockdown(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def unlock(self, ctx, channel: discord.TextChannel = None):
-        """Unlocks speaking in current channel, staff only."""
+        """[S] Unlocks speaking in current channel."""
         if not channel:
             channel = ctx.channel
         log_channel = self.bot.get_channel(config.modlog_channel)

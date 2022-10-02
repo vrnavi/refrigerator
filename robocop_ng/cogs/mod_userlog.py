@@ -92,7 +92,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["events"])
     async def eventtypes(self, ctx):
-        """Lists the available event types, staff only."""
+        """[S] Lists available event types."""
         event_list = [f"{et} ({userlog_event_types[et]})" for et in userlog_event_types]
         event_text = "Available events:\n``` - " + "\n - ".join(event_list) + "```"
         await ctx.send(event_text)
@@ -103,7 +103,7 @@ class ModUserlog(Cog):
         name="userlog", aliases=["listwarns", "getuserlog", "listuserlog"]
     )
     async def userlog_cmd(self, ctx, target: discord.Member, event=""):
-        """Lists the userlog events for a user, staff only."""
+        """[S] Lists userlog events for a user."""
         embed = self.get_userlog_embed_for_id(str(target.id), str(target), event=event)
         await ctx.send(embed=embed)
 
@@ -111,7 +111,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["listnotes", "usernotes"])
     async def notes(self, ctx, target: discord.Member):
-        """Lists the notes for a user, staff only."""
+        """[S] Lists notes for a user."""
         embed = self.get_userlog_embed_for_id(
             str(target.id), str(target), event="notes"
         )
@@ -120,7 +120,7 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.command(aliases=["mywarns"])
     async def myuserlog(self, ctx):
-        """Lists your userlog events (warns etc)."""
+        """[U] Lists your userlog events (warns, etc)."""
         embed = self.get_userlog_embed_for_id(str(ctx.author.id), str(ctx.author), True)
         await ctx.send(embed=embed)
 
@@ -128,7 +128,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["listwarnsid"])
     async def userlogid(self, ctx, target: int):
-        """Lists the userlog events for a user by ID, staff only."""
+        """[S] Lists the userlog events for a user by ID."""
         embed = self.get_userlog_embed_for_id(str(target), str(target))
         await ctx.send(embed=embed)
 
@@ -136,7 +136,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["clearwarns"])
     async def clearevent(self, ctx, target: discord.Member, event="warns"):
-        """Clears all events of given type for a user, staff only."""
+        """[S] Clears all events of given type for a user."""
         log_channel = self.bot.get_channel(config.modlog_channel)
         msg = self.clear_event_from_id(str(target.id), event)
         safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -155,7 +155,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["clearwarnsid"])
     async def cleareventid(self, ctx, target: int, event="warns"):
-        """Clears all events of given type for a userid, staff only."""
+        """[S] Clears all events of given type for an ID."""
         log_channel = self.bot.get_channel(config.modlog_channel)
         msg = self.clear_event_from_id(str(target), event)
         await ctx.send(msg)
@@ -170,7 +170,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["delwarn"])
     async def delevent(self, ctx, target: discord.Member, idx: int, event="warns"):
-        """Removes a specific event from a user, staff only."""
+        """[S] Removes a specific event from a user."""
         log_channel = self.bot.get_channel(config.modlog_channel)
         del_event = self.delete_event_from_id(str(target.id), idx, event)
         event_name = userlog_event_types[event].lower()
@@ -194,7 +194,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["delwarnid"])
     async def deleventid(self, ctx, target: int, idx: int, event="warns"):
-        """Removes a specific event from a userid, staff only."""
+        """[S] Removes a specific event from an ID."""
         log_channel = self.bot.get_channel(config.modlog_channel)
         del_event = self.delete_event_from_id(str(target), idx, event)
         event_name = userlog_event_types[event].lower()
@@ -215,7 +215,7 @@ class ModUserlog(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def userinfo(self, ctx, *, user: discord.Member):
-        """Gets user info, staff only."""
+        """[S] Gets user info."""
         role = user.top_role.name
         if role == "@everyone":
             role = "@ everyone"
