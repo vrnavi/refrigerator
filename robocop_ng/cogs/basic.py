@@ -19,6 +19,13 @@ class Basic(Cog):
         """[U] Gives you a hug."""
         await ctx.send(f"I am incapable of hugs, but... \*hugs*")
 
+    @commands.command()
+    async def kill(self, ctx, user: discord.Member):
+        """[U] Kills someone."""
+        await ctx.send(
+            f"{user.mention} got stuck in the Dishwasher."
+        )
+
     @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="hex")
     async def _hex(self, ctx, num: int):
