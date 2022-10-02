@@ -6,6 +6,7 @@ color_list = {}
 current_color = {}
 
 def new_random_color():
+    global color_list
     if not color_list:
         with open("data/colors.json", "r") as f:
             color_list = json.load(f)
