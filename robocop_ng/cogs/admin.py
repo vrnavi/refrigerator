@@ -19,7 +19,7 @@ class Admin(Cog):
     @commands.command(name="exit", aliases=["quit", "bye"])
     async def _exit(self, ctx):
         """Shuts down the bot, bot manager only."""
-        await ctx.send(":wave: Goodbye!")
+        await ctx.send("**AH FUCK NOT AGAIN**")
         await self.bot.close()
 
     @commands.guild_only()

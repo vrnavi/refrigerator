@@ -375,8 +375,8 @@ class Logs(Cog):
             )
         if msg:
             msg = (
-                f"ℹ️ **Member update**: {member_after.mention} | "
-                f"{self.bot.escape_message(member_after)}{msg}"
+                f"ℹ️ **Member update**: {member_after} | "
+                f"{self.bot.escape_message(member_after.id)}{msg}"
             )
             await log_channel.send(msg)
 

@@ -33,7 +33,7 @@ class Basic(Cog):
         """Prints the member count of the server."""
         await ctx.send(f"{ctx.guild.name} has {ctx.guild.member_count} members!")
 
-    @commands.command(aliases=["robocopng", "robocop-ng"])
+    @commands.command(hidden=True, aliases=["robocopng", "robocop-ng"])
     async def robocop(self, ctx):
         """Shows a quick embed with bot info."""
         embed = discord.Embed(

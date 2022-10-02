@@ -11,7 +11,6 @@ class Remind(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.cooldown(1, 60, type=commands.BucketType.user)
     @commands.command()
     async def remindlist(self, ctx):
         """Lists your reminders."""
@@ -33,7 +32,7 @@ class Remind(Cog):
             )
         await ctx.send(embed=embed)
 
-    @commands.cooldown(1, 60, type=commands.BucketType.user)
+    @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(aliases=["remindme"])
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """Reminds you about something."""

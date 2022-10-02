@@ -3,6 +3,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 import config
 import json
+from datetime import datetime
 from helpers.checks import check_if_staff
 from helpers.userlogs import get_userlog, set_userlog, userlog_event_types
 
@@ -34,12 +35,12 @@ class ModUserlog(Cog):
                     issuer = (
                         ""
                         if own
-                        else f"Issuer: {event['issuer_name']} "
+                        else f"__Issuer:__ <@{event['issuer_id']}> "
                         f"({event['issuer_id']})\n"
                     )
                     embed.add_field(
-                        name=f"{event_name} {idx + 1}: " f"{event['timestamp']}",
-                        value=issuer + f"Reason: {event['reason']}",
+                        name=f"{event_name} {idx + 1}: " f'''<t:{datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")}:f> (<t:{datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")}:R>)''',
+                        value=issuer + f"__Reason:__ {event['reason']}",
                         inline=False,
                     )
 
