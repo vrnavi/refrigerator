@@ -34,10 +34,10 @@ class Basic(Cog):
         )
         
     @commands.command()
-        async def help(self, ctx, *args: str):
-            """Shows this message."""
-            await commands.bot._default_help_command(ctx, *args, dm_help=True)
-            await ctx.send("📬")
+    async def help(self, ctx, *args: str):
+        """Shows this message."""
+        await commands.bot._default_help_command(ctx, *args, dm_help=True)
+        await ctx.send("📬")
 
     @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="hex")
