@@ -37,7 +37,7 @@ class Basic(Cog):
     async def help(self, ctx):
         """[U] Shows this message."""
         await ctx.send("Done.")
-        await commands.MinimalHelpCommand(dm_help=True)
+        commands.MinimalHelpCommand(dm_help=True)
 
     @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="hex")
