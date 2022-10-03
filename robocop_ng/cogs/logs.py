@@ -123,7 +123,7 @@ class Logs(Cog):
         embed.set_thumbnail(url=f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
-            value=f"<t:{member.created_at.timestamp}:f> (<t:{member.created_at.timestamp}:R>)",
+            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f> (<t:{member.created_at.astimezone().strftime('%s')}:R>)",
             inline=True
         )
         embed.add_field(

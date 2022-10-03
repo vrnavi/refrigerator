@@ -641,6 +641,7 @@ class Mod(Cog):
     async def speak(self, ctx, channel: discord.TextChannel, *, the_text: str):
         """[S] Repeats a given text in a given channel."""
         await channel.send(the_text)
+        await ctx.send("👍")
 
     @commands.guild_only()
     @commands.check(check_if_staff)
