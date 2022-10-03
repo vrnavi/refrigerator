@@ -119,7 +119,7 @@ class Logs(Cog):
             color=discord.Color.green(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(f"{escaped_name}", url=f"{member.display_avatar.url}")
+        embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
         embed.set_thumbnail(f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
@@ -210,7 +210,7 @@ class Logs(Cog):
             # Show a message embed
             embed = discord.Embed(description=regd)
             embed.set_author(
-                name=message.author.display_name, icon_url=message.author.avatar_url
+                name=message.author.display_name, icon_url=message.author.display_avatar.url
             )
 
             await spy_channel.send(msg, embed=embed)
@@ -259,7 +259,7 @@ class Logs(Cog):
             f"from {self.bot.escape_message(after.author.name)} "
             f"({after.author.id}), in {after.channel.mention}:\n"
             f"```{before_content}``` → ```{after_content}```\n"
-            f"Jump: <{message.jump_url}>"
+            f"Jump: <{after.jump_url}>"
         )
 
         # If resulting message is too long, upload to hastebin

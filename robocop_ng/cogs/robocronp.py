@@ -148,6 +148,9 @@ class Robocronp(Cog):
             # Handle clean channels
             for clean_channel in config.hourly_clean_channels:
                 await self.clean_channel(clean_channel)
+            # Change playing status.
+            activity = discord.Activity(name=random.choice(config.game_names), type=config.game_type)
+            await self.bot.change_presence(activity=activity)
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(
