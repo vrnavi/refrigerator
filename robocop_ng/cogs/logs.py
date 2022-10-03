@@ -120,7 +120,7 @@ class Logs(Cog):
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
-        embed.set_thumbnail(f"{member.display_avatar.url}")
+        embed.set_thumbnail(url=f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
             value=f"<t:{member.created_at.timestamp}:f> (<t:{member.created_at.timestamp}:R>)",
