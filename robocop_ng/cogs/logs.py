@@ -132,14 +132,6 @@ class Logs(Cog):
             inline=True
         )
         embeds.append(embed)
-       
-        msg = (
-            f"✅ **Join**: {escaped_name} ("
-            f"{member.id})\n"
-            f"🗓 __Creation__: {member.created_at}\n"
-            f"🕓 Account age: {age}\n"
-            f"✉ Joined with: {invite_used}"
-        )
 
         # Handles user restrictions
         # Basically, gives back muted role to users that leave with it.
