@@ -5,6 +5,7 @@ import traceback
 import inspect
 import re
 import config
+import random
 from helpers.checks import check_if_bot_manager
 
 
@@ -19,7 +20,8 @@ class Admin(Cog):
     @commands.command(name="exit", aliases=["quit", "bye"])
     async def _exit(self, ctx):
         """[O] Shuts down (or restarts) the bot."""
-        await ctx.send("**AH FUCK NOT AGAIN**")
+        deathmessages = ["**AH FUCK NOT AGAIN**", "This job has worked 0 days without an accident.", "I'll miss you!", "Be right back!", "Hey, hey, not the belt!", "\*Lightbulb shattering noises.*"]
+        await ctx.send(random.choice(deathmessages))
         await self.bot.close()
 
     @commands.guild_only()
