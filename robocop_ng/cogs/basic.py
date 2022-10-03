@@ -27,7 +27,7 @@ class Basic(Cog):
         )
 
     @commands.command()
-    async def install(self, ctx, user: discord.Member):
+    async def install(self, ctx):
         """[U] Teaches you how to install a Dishwasher."""
         await ctx.send(
             f"Here's how to install a dishwasher:\nhttps://www.whirlpool.com/blog/kitchen/how-to-install-a-dishwasher.html\n\nWhile you're at it, consider protecting your dishwasher:\nhttps://www.2-10.com/homeowners-warranty/dishwasher/\n\nRemember, the more time you spend with your dishwasher instead of the kitchen sink, __the better__."
