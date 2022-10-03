@@ -130,8 +130,8 @@ class Logs(Cog):
             name="📨 Invite used:",
             value=f"{invite_used}",
             inline=True
-       )
-       embeds.append(embed)
+        )
+        embeds.append(embed)
        
         msg = (
             f"✅ **Join**: {escaped_name} ("
