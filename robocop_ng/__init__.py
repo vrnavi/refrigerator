@@ -99,9 +99,9 @@ async def on_command_error(ctx, error):
     error_text = str(error)
 
     err_msg = (
-        f'Error with "{ctx.message.content}" from '
-        f'"{ctx.message.author} ({ctx.message.author.id}) '
-        f"of type {type(error)}: {error_text}"
+        f'⚠️ **Error:**\nAn error occurred with `{ctx.message.content}` from '
+        f'{ctx.message.author} ({ctx.message.author.id}):\n'
+        f"```{type(error)}: {error_text}```"
     )
 
     log.error(err_msg)
@@ -115,27 +115,27 @@ async def on_command_error(ctx, error):
     elif isinstance(error, commands.MissingPermissions):
         roles_needed = "\n- ".join(error.missing_perms)
         return await ctx.send(
-            f"{ctx.author.mention}: You don't have the right"
+            f"You don't have the right"
             " permissions to run this command. You need: "
             f"```- {roles_needed}```"
         )
     elif isinstance(error, commands.BotMissingPermissions):
         roles_needed = "\n-".join(error.missing_perms)
         return await ctx.send(
-            f"{ctx.author.mention}: Bot doesn't have "
+            f"I don't have "
             "the right permissions to run this command. "
-            "Please add the following roles: "
+            "I need: "
             f"```- {roles_needed}```"
         )
     elif isinstance(error, commands.CommandOnCooldown):
         return await ctx.send(
-            f"{ctx.author.mention}: You're being "
+            f"You're being "
             "ratelimited. Try in "
             f"{error.retry_after:.1f} seconds."
         )
     elif isinstance(error, commands.CheckFailure):
         return await ctx.send(
-            f"{ctx.author.mention}: Check failed. "
+            f"Check failed. "
             "You might not have the right permissions "
             "to run this command, or you may not be able "
             "to run this command in the current channel."
@@ -144,11 +144,11 @@ async def on_command_error(ctx, error):
         "Cannot send messages to this user" in error_text
     ):
         return await ctx.send(
-            f"{ctx.author.mention}: I can't DM you.\n"
+            f"I can't DM you.\n"
             "You might have me blocked or have DMs "
-            f"blocked globally or for {ctx.guild.name}.\n"
+            f"blocked globally or for this server.\n"
             "Please resolve that, then "
-            "run the command again."
+            "try again."
         )
     elif isinstance(error, commands.CommandNotFound):
         # Nothing to do when command is not found.

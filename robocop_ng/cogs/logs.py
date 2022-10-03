@@ -90,7 +90,7 @@ class Logs(Cog):
             try:
                 await member.send(
                     f"Your account is too new to "
-                    f"join {member.guild.name}."
+                    f"join this server."
                     " Please try again later."
                 )
                 sent = True
@@ -114,12 +114,11 @@ class Logs(Cog):
             await log_channel.send(msg)
             return
         msg = (
-            f"✅ **Join**: {member.mention} | "
-            f"{escaped_name}\n"
+            f"✅ **Join**: {escaped_name} ("
+            f"{member.id})\n"
             f"🗓 __Creation__: {member.created_at}\n"
             f"🕓 Account age: {age}\n"
-            f"✉ Joined with: {invite_used}\n"
-            f"🏷 __User ID__: {member.id}"
+            f"✉ Joined with: {invite_used}"
         )
 
         # Handles user restrictions
@@ -136,7 +135,7 @@ class Logs(Cog):
                 await log_channel.send(msg)
             else:
                 embed = discord.Embed(
-                    color=discord.Color.dark_red(), title=f"Warns for {escaped_name}"
+                    color=discord.Color.dark_red(), title=f"{escaped_name} has warnings."
                 )
                 embed.set_thumbnail(url=member.avatar_url)
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
@@ -236,7 +235,8 @@ class Logs(Cog):
             "📝 **Message edit**: \n"
             f"from {self.bot.escape_message(after.author.name)} "
             f"({after.author.id}), in {after.channel.mention}:\n"
-            f"```{before_content}``` → ```{after_content}```"
+            f"```{before_content}``` → ```{after_content}```\n"
+            f"Jump: <{message.jump_url}>"
         )
 
         # If resulting message is too long, upload to hastebin
@@ -276,9 +276,8 @@ class Logs(Cog):
 
         log_channel = self.bot.get_channel(config.log_channel)
         msg = (
-            f"⬅️ **Leave**: {member.mention} | "
-            f"{self.bot.escape_message(member)}\n"
-            f"🏷 __User ID__: {member.id}"
+            f"⬅️ **Leave**: {escaped_name} ("
+            f"{member.id})"
         )
         await log_channel.send(msg)
 
@@ -291,9 +290,8 @@ class Logs(Cog):
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         msg = (
-            f"⛔ **Ban**: {member.mention} | "
-            f"{self.bot.escape_message(member)}\n"
-            f"🏷 __User ID__: {member.id}"
+            f"⛔ **Ban**: {escaped_name} ("
+            f"{member.id})"
         )
         await log_channel.send(msg)
 
@@ -306,9 +304,8 @@ class Logs(Cog):
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         msg = (
-            f"⚠️ **Unban**: {user.mention} | "
-            f"{self.bot.escape_message(user)}\n"
-            f"🏷 __User ID__: {user.id}"
+            f"⚠️ **Unban**: {escaped_name} ("
+            f"{member.id})"
         )
         # if user.id in self.bot.timebans:
         #     msg += "\nTimeban removed."
