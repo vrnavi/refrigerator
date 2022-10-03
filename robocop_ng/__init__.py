@@ -5,7 +5,7 @@ import logging.handlers
 import asyncio
 import aiohttp
 import config
-
+import random
 import discord
 from discord.ext import commands
 
