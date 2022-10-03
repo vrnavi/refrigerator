@@ -62,8 +62,8 @@ async def on_ready():
     # Send "Robocop has started! x has y members!"
     guild = bot.botlog_channel.guild
     msg = (
-        f"{bot.user.name} has started! "
-        f"{guild.name} has {guild.member_count} members!"
+        f"**{bot.user.name} is now ONLINE.**\n"
+        f"{guild.name} has {guild.member_count} members."
     )
 
     data_files = [discord.File(fpath) for fpath in wanted_jsons]

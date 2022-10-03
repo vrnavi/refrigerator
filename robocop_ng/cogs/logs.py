@@ -116,7 +116,7 @@ class Logs(Cog):
             return
         embeds = []
         embed = discord.Embed(
-            color=discord.Color.green(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.now()
+            color=discord.Color.green(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(f"{escaped_name}", url=f"{member.display_avatar.url}")
@@ -155,11 +155,11 @@ class Logs(Cog):
                 await log_channel.send(msg)
             else:
                 embed = discord.Embed(
-                    color=discord.Color.red(), title="⚠️ This user has warnings!", timestamp=datetime.now()
+                    color=discord.Color.red(), title="⚠️ This user has warnings!", timestamp=datetime.datetime.now()
                 )
                 embed.set_footer(text="Dishwasher")
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
-                    timestamp = datetime.strptime(warn['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
+                    timestamp = datetime.datetime.strptime(warn['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
                     embed.add_field(
                         name=f"Warn {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
                         value=f"__Issuer:__ <@{warn['issuer_id']}> ({warn['issuer_id']})\n"
