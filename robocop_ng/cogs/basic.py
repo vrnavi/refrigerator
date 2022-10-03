@@ -32,6 +32,12 @@ class Basic(Cog):
         await ctx.send(
             f"Here's how to install a dishwasher:\n<https://www.whirlpool.com/blog/kitchen/how-to-install-a-dishwasher.html>\n\nWhile you're at it, consider protecting your dishwasher:\n<https://www.2-10.com/homeowners-warranty/dishwasher/>\n\nRemember, the more time you spend with your dishwasher instead of the kitchen sink, __the better__."
         )
+        
+    @commands.command()
+        async def help(self, ctx, *args: str):
+            """Shows this message."""
+            await commands.bot._default_help_command(ctx, *args, dm_help=True)
+            await ctx.send("📬")
 
     @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="hex")
