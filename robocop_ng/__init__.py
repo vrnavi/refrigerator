@@ -40,7 +40,7 @@ intents.typing = False
 bot = commands.Bot(
     command_prefix=get_prefix, description=config.bot_description, intents=intents
 )
-bot.help_command = commands.DefaultHelpCommand(dm_help=True)
+bot.help_command = commands.MinimalHelpCommand(dm_help=True)
 
 bot.log = log
 bot.config = config
