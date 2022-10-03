@@ -574,22 +574,22 @@ class Mod(Cog):
             f"\n\nPlease read the rules in {config.rules_url}. "
             f"This is warn #{warn_count}."
         )
-        if warn_count == 4:
-            msg += (
-                "\n\nThis is your final warning. "
-                "**One more warn will result in a ban**."
-            )
-        if warn_count == 5:
-            msg += "\n\nYou were automatically permanently banned due to five warnings."
-            chan_msg += "**This resulted in an auto-permaban.**\n"
+#        if warn_count == 4:
+#            msg += (
+#                "\n\nThis is your final warning. "
+#                "**One more warn will result in a ban**."
+#            )
+#        if warn_count == 5:
+#            msg += "\n\nYou were automatically permanently banned due to five warnings."
+#            chan_msg += "**This resulted in an auto-permaban.**\n"
         try:
             await target.send(msg)
         except discord.errors.Forbidden:
             # Prevents log issues in cases where user blocked bot
             # or has DMs disabled
             pass
-        if warn_count >= 5:  # just in case
-            await target.ban(reason="Exceeded warn limit", delete_message_days=0)
+#        if warn_count >= 5:  # just in case
+#            await target.ban(reason="Exceeded warn limit", delete_message_days=0)
         await ctx.send(
             f"{target.mention} warned. " f"User has {warn_count} warning(s)."
         )

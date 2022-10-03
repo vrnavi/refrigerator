@@ -3,6 +3,7 @@ from discord.ext.commands import Cog
 import json
 import re
 import config
+import datetime
 from helpers.restrictions import get_user_restrictions
 from helpers.checks import check_if_staff
 
@@ -113,6 +114,25 @@ class Logs(Cog):
                 )
             await log_channel.send(msg)
             return
+        embeds = []
+        embed = discord.Embed(
+            color=discord.Color.green(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(f"{escaped_name}", url=f"{member.display_avatar.url}")
+        embed.set_thumbnail(f"{member.display_avatar.url}")
+        embed.add_field(
+            name="⏰ Account created:",
+            value=f"<t:{member.created_at.timestamp}:f> (<t:{member.created_at.timestamp}:R>)"
+            inline=True
+        )
+        embed.add_field(
+            name="📨 Invite used:",
+            value=f"{invite_used}",
+            inline=True
+       )
+       embeds.append(embed)
+       
         msg = (
             f"✅ **Join**: {escaped_name} ("
             f"{member.id})\n"
@@ -135,18 +155,21 @@ class Logs(Cog):
                 await log_channel.send(msg)
             else:
                 embed = discord.Embed(
-                    color=discord.Color.dark_red(), title=f"{escaped_name} has warnings."
+                    color=discord.Color.red(), title="⚠️ This user has warnings!", timestamp=datetime.now()
                 )
-                embed.set_thumbnail(url=member.avatar_url)
+                embed.set_footer(text="Dishwasher")
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
+                    timestamp = datetime.strptime(warn['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
                     embed.add_field(
-                        name=f"{idx + 1}: {warn['timestamp']}",
-                        value=f"Issuer: {warn['issuer_name']}"
-                        f"\nReason: {warn['reason']}",
+                        name=f"Warn {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
+                        value=f"__Issuer:__ <@{warn['issuer_id']}> ({warn['issuer_id']})\n"
+                        f"\n__Reason:__ {warn['reason']}",
+                        inline=False,
                     )
-                await log_channel.send(msg, embed=embed)
+                embeds.append(embed)
+                await log_channel.send(embeds=embeds)
         except KeyError:  # if the user is not in the file
-            await log_channel.send(msg)
+            await log_channel.send(embeds=embeds)
 
     async def do_spy(self, message):
         if message.author.bot:

@@ -40,7 +40,7 @@ class ModUserlog(Cog):
                     )
                     timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
                     embed.add_field(
-                        name=f"{event_name} {idx + 1}: " f"<t:{timestamp}:f> (<t:{timestamp}:R>)",
+                        name=f"{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
                         value=issuer + f"__Reason:__ {event['reason']}",
                         inline=False,
                     )
