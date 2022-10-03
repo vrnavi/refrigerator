@@ -57,7 +57,7 @@ async def on_ready():
         f"\nLogged in as: {bot.user.name} - "
         f"{bot.user.id}\ndpy version: {discord.__version__}\n"
     )
-    game_name = f"{config.prefixes[0]}help"
+
 
     # Send "Robocop has started! x has y members!"
     guild = bot.botlog_channel.guild
@@ -66,10 +66,9 @@ async def on_ready():
         f"{guild.name} has {guild.member_count} members."
     )
 
-    data_files = [discord.File(fpath) for fpath in wanted_jsons]
-    await bot.botlog_channel.send(msg, files=data_files)
+    await bot.botlog_channel.send(msg)
 
-    activity = discord.Activity(name=game_name, type=discord.ActivityType.listening)
+    activity = discord.Activity(name=random.choice(bot.config.game_names), type=bot.config.game_type)
 
     await bot.change_presence(activity=activity)
 
@@ -81,11 +80,11 @@ async def on_command(ctx):
     )
     if ctx.guild:  # was too long for tertiary if
         log_text += (
-            f'on "{ctx.channel.name}" ({ctx.channel.id}) '
-            f'at "{ctx.guild.name}" ({ctx.guild.id})'
+            f'in "{ctx.channel.name}" ({ctx.channel.id}) '
+            f'on "{ctx.guild.name}" ({ctx.guild.id})'
         )
     else:
-        log_text += f"on DMs ({ctx.channel.id})"
+        log_text += f"in DMs ({ctx.channel.id})"
     log.info(log_text)
 
 
