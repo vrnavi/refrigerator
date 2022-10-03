@@ -8,7 +8,6 @@ from discord.ext.commands import Cog
 from helpers.robocronp import get_crontab, delete_job
 from helpers.restrictions import remove_restriction
 from helpers.checks import check_if_staff
-from helpers.colors import new_random_color, get_current_color
 
 
 class Robocronp(Cog):
