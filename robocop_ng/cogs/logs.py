@@ -34,7 +34,6 @@ class Logs(Cog):
             return
 
         log_channel = self.bot.get_channel(config.log_channel)
-        # We use this a lot, might as well get it once
         escaped_name = self.bot.escape_message(member)
 
         # Attempt to correlate the user joining with an invite
@@ -85,35 +84,37 @@ class Logs(Cog):
             invite_used = "One of: "
             invite_used += ", ".join([x["code"] for x in probable_invites_used])
 
-        # Check if user account is older than 15 minutes
-        age = member.joined_at - member.created_at
-        if age < config.min_age:
-            try:
-                await member.send(
-                    f"Your account is too new to "
-                    f"join this server."
-                    " Please try again later."
-                )
-                sent = True
-            except discord.errors.Forbidden:
-                sent = False
-            await member.kick(reason="Too new")
-
-            msg = (
-                f"🚨 **Account too new**: {member.mention} | "
-                f"{escaped_name}\n"
-                f"🗓 __Creation__: {member.created_at}\n"
-                f"🕓 Account age: {age}\n"
-                f"✉ Joined with: {invite_used}\n"
-                f"🏷 __User ID__: {member.id}"
-            )
-            if not sent:
-                msg += (
-                    "\nThe user has disabled direct messages, "
-                    "so the reason was not sent."
-                )
-            await log_channel.send(msg)
-            return
+        # UNUSED: Check if user account is older than 15 minutes
+        # age = member.joined_at - member.created_at
+        # if age < config.min_age:
+        #    try:
+        #        await member.send(
+        #            f"Your account is too new to "
+        #            f"join this server."
+        #            " Please try again later."
+        #        )
+        #        sent = True
+        #    except discord.errors.Forbidden:
+        #        sent = False
+        #    await member.kick(reason="Too new")
+        #
+        #    msg = (
+        #        f"🚨 **Account too new**: {member.mention} | "
+        #        f"{escaped_name}\n"
+        #        f"🗓 __Creation__: {member.created_at}\n"
+        #        f"🕓 Account age: {age}\n"
+        #        f"✉ Joined with: {invite_used}\n"
+        #        f"🏷 __User ID__: {member.id}"
+        #    )
+        #    if not sent:
+        #        msg += (
+        #            "\nThe user has disabled direct messages, "
+        #            "so the reason was not sent."
+        #        )
+        #    await log_channel.send(msg)
+        #    return
+            
+        # Prepared embed msg
         embeds = []
         embed = discord.Embed(
             color=discord.Color.green(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
@@ -144,7 +145,7 @@ class Logs(Cog):
             warns = json.load(f)
         try:
             if len(warns[str(member.id)]["warns"]) == 0:
-                await log_channel.send(msg)
+                await log_channel.send(embeds=embeds)
             else:
                 embed = discord.Embed(
                     color=discord.Color.red(), title="⚠️ This user has warnings!", timestamp=datetime.datetime.now()
@@ -289,12 +290,11 @@ class Logs(Cog):
         if member.guild.id not in config.guild_whitelist:
             return
 
+        log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
 
-        log_channel = self.bot.get_channel(config.log_channel)
         msg = (
-            f"⬅️ **Leave**: {escaped_name} ("
-            f"{member.id})"
+            f"⬅️ **Leave**: {escaped_name} ({member.id})"
         )
         await log_channel.send(msg)
 
@@ -306,6 +306,8 @@ class Logs(Cog):
             return
 
         log_channel = self.bot.get_channel(config.modlog_channel)
+        escaped_name = self.bot.escape_message(member)
+
         msg = (
             f"⛔ **Ban**: {escaped_name} ("
             f"{member.id})"
@@ -320,6 +322,8 @@ class Logs(Cog):
             return
 
         log_channel = self.bot.get_channel(config.modlog_channel)
+        escaped_name = self.bot.escape_message(member)
+
         msg = (
             f"⚠️ **Unban**: {escaped_name} ("
             f"{member.id})"
