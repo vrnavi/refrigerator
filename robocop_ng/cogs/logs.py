@@ -289,6 +289,8 @@ class Logs(Cog):
         if member.guild.id not in config.guild_whitelist:
             return
 
+        escaped_name = self.bot.escape_message(member)
+
         log_channel = self.bot.get_channel(config.log_channel)
         msg = (
             f"⬅️ **Leave**: {escaped_name} ("
