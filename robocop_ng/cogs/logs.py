@@ -246,14 +246,13 @@ class Logs(Cog):
         after_content = after.clean_content.replace("`", "`\u200d")
 
         log_channel = self.bot.get_channel(config.log_channel)
-        escaped_name = self.bot.escape_message(after.author)
 
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.dark_gray(), title="📝 Message Edit", description=f"<@{after.author.id}>  ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
+            color=discord.Color.light_gray(), title="📝 Message Edit", description=f"<@{after.author.id}>  ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{escaped_name}", icon_url=f"{after.author.display_avatar.url}")
+        embed.set_author(name=f"{self.bot.escape_message(after.author.name)}", icon_url=f"{after.author.display_avatar.url}")
         embed.add_field(
             name=f"❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>:",
             value=f">>> {before_content}",
@@ -276,7 +275,7 @@ class Logs(Cog):
         # If resulting message is too long, upload to hastebin
         if len(msg) > 2000:
             haste_url = await self.bot.haste(msg)
-            msg = f"📝 **Message edit**: \nToo long: <{haste_url}>"
+            msg = f"📝 **Message Edit**\nToo long: <{haste_url}>"
             await log_channel.send(msg)
         else:
             await log_channel.send(embed=embed)
@@ -288,6 +287,18 @@ class Logs(Cog):
             return
 
         log_channel = self.bot.get_channel(config.log_channel)
+        
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Color.dark_gray(), title="🗑️ Message Delete", description=f"<@{message.author.id}>  ({message.author.id}) [{message.channel.mention}]", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(message.author.name)}", icon_url=f"{message.author.display_avatar.url}")
+        embed.add_field(
+            name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
+            value=f">>> {message.clean_content}",
+            inline=True
+        
         msg = (
             "🗑️ **Message delete**: \n"
             f"from {self.bot.escape_message(message.author.name)} "
@@ -298,9 +309,10 @@ class Logs(Cog):
         # If resulting message is too long, upload to hastebin
         if len(msg) > 2000:
             haste_url = await self.bot.haste(msg)
-            msg = f"🗑️ **Message delete**: \nToo long: <{haste_url}>"
-
-        await log_channel.send(msg)
+            msg = f"🗑️ **Message Delete**\nToo long: <{haste_url}>"
+            await log_channel.send(msg)
+        else:
+            await log_channel.send(embed=embed)
 
     @Cog.listener()
     async def on_member_remove(self, member):
