@@ -246,14 +246,14 @@ class Logs(Cog):
         after_content = after.clean_content.replace("`", "`\u200d")
 
         log_channel = self.bot.get_channel(config.log_channel)
-        escaped_name = self.bot.escape_message(member)
+        escaped_name = self.bot.escape_message(after.author)
 
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.dark_gray(), title="📝 Message Edit", description=f"<@{member.id}>  ({member.id}) [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
+            color=discord.Color.dark_gray(), title="📝 Message Edit", description=f"<@{after.author.id}>  ({after.author.id}) [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
+        embed.set_author(name=f"{escaped_name}", icon_url=f"{after.author.display_avatar.url}")
         embed.add_field(
             name="❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>}:",
             value=f">>> {before_content}```",
