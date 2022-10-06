@@ -41,7 +41,7 @@ class ModOneShot(Cog):
             await ctx.author.add_roles(
                 exstaff_role, reason="Staff self-unassigned Staff role"
             )
-            await ctx.send(f"{ctx.author.mention}: Removed your Staff role.")
+            await ctx.message.reply(content=f"Staff status: 🔴", mention_author=False)
         else:
             await ctx.author.add_roles(
                 staff_role, reason="Staff self-assigned Staff role"
@@ -49,7 +49,7 @@ class ModOneShot(Cog):
             await ctx.author.remove_roles(
                 exstaff_role, reason="Staff self-assigned Staff role"
             )
-            await ctx.send(f"{ctx.author.mention}: Gave your Staff role back.")
+            await ctx.message.reply(content=f"Staff status: 🟢", mention_author=False)
 
 
 async def setup(bot):
