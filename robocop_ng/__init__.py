@@ -68,10 +68,6 @@ async def on_ready():
 
     await bot.botlog_channel.send(msg)
 
-    activity = discord.Activity(name=random.choice(bot.config.game_names), type=bot.config.game_type)
-
-    await bot.change_presence(activity=activity)
-
 
 @bot.event
 async def on_command(ctx):
