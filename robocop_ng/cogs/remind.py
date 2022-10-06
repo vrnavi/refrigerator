@@ -36,8 +36,8 @@ class Remind(Cog):
     @commands.command(aliases=["remindme"])
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """[U] Reminds you about something."""
-        if ctx.guild:
-            await ctx.message.delete()
+#        if ctx.guild:
+#            await ctx.message.delete()
         current_timestamp = time.time()
         expiry_timestamp = self.bot.parse_time(when)
 
@@ -45,8 +45,6 @@ class Remind(Cog):
             msg = await ctx.message.reply(
                 f"Minimum remind interval is 5 seconds."
             )
-            await asyncio.sleep(5)
-            await msg.delete()
             return
 
         expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
@@ -65,11 +63,9 @@ class Remind(Cog):
         )
 
         msg = await ctx.message.reply(
-            f"I'll remind you in "
+            f"You'll be reminded in "
             f"DMs about `{safe_text}` in {duration_text}."
         )
-        await asyncio.sleep(5)
-        await msg.delete()
 
 
 async def setup(bot):
