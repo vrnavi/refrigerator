@@ -49,7 +49,7 @@ class Remind(Cog):
 
         expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
         duration_text = self.bot.get_relative_timestamp(
-            time_to=expiry_datetime, include_to=True, humanized=True
+            time_to=expiry_datetime, include_to=False, humanized=True
         )
 
         safe_text = await commands.clean_content().convert(ctx, str(text))
