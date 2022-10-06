@@ -89,7 +89,7 @@ class Robocronp(Cog):
                     orig_timestamp = datetime.strptime(added_on[:-6], "%Y-%m-%d %H:%M:%S").strftime("%s")
                     if target:
                         await target.send(
-                            f"You asked to be reminded about `{text}` on <t:{timestamp}:f>."
+                            f"You asked to be reminded about `{text}` on <t:{orig_timestamp}:f>."
                         )
                     delete_job(timestamp, jobtype, job_name)
             except:
