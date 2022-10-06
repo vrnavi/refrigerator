@@ -255,13 +255,13 @@ class Logs(Cog):
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{after.author.display_avatar.url}")
         embed.add_field(
-            name="❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>}:",
-            value=f">>> {before_content}```",
+            name=f"❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>}:",
+            value=f">>> {before_content}",
             inline=True
         )
         embed.add_field(
-            name="⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>}:",
-            value=f">>> {after_content}```",
+            name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>}:",
+            value=f">>> {after_content}",
             inline=True
         )
 
