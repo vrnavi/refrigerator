@@ -91,7 +91,7 @@ class Admin(Cog):
     @commands.command()
     async def pull(self, ctx, auto=False):
         """[O] Performs a git pull."""
-        tmp = await ctx.message.reply(content="Pulling...")
+        tmp = await ctx.message.reply(content="Pulling...", mention_author=False)
         git_output = await self.bot.async_call_shell("git pull")
         await tmp.edit(content=f"Pull complete. Output: ```{git_output}```")
         if auto:

@@ -250,7 +250,7 @@ class Logs(Cog):
 
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.dark_gray(), title=f"📝 Message Edit in {after.channel.mention}", description=f"<@{after.author.id}>  ({after.author.id}) [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
+            color=discord.Color.dark_gray(), title="📝 Message Edit", description=f"<@{after.author.id}>  ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{after.author.display_avatar.url}")
