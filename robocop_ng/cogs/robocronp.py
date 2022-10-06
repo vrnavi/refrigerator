@@ -85,9 +85,10 @@ class Robocronp(Cog):
                     text = job_details["text"]
                     added_on = job_details["added"]
                     target = await self.bot.fetch_user(int(job_name))
+                    timestamp = datetime.strptime(added_on[:-6], "%Y-%m-%d %H:%M:%S").strftime("%s")
                     if target:
                         await target.send(
-                            f"You asked to be reminded about `{text}` on {added_on}."
+                            f"You asked to be reminded about `{text}` on <t:{timestamp}:f>."
                         )
                     delete_job(timestamp, jobtype, job_name)
             except:

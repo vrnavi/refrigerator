@@ -42,8 +42,8 @@ class Remind(Cog):
         expiry_timestamp = self.bot.parse_time(when)
 
         if current_timestamp + 5 > expiry_timestamp:
-            msg = await ctx.send(
-                f"{ctx.author.mention}: Minimum remind interval is 5 seconds."
+            msg = await ctx.message.reply(
+                f"Minimum remind interval is 5 seconds."
             )
             await asyncio.sleep(5)
             await msg.delete()
@@ -64,8 +64,8 @@ class Remind(Cog):
             expiry_timestamp,
         )
 
-        msg = await ctx.send(
-            f"{ctx.author.mention}: I'll remind you in "
+        msg = await ctx.message.reply(
+            f"I'll remind you in "
             f"DMs about `{safe_text}` in {duration_text}."
         )
         await asyncio.sleep(5)

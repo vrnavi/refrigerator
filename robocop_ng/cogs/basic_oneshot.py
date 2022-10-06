@@ -15,6 +15,12 @@ class BasicOneShot(Cog):
         await ctx.send(
             f"{ctx.guild.name} has {len(community.members)} Strange Journal members!"
         )
+        
+    @commands.guild_only()
+    @commands.command(aliases=["wistlyr"])
+    async def wisty(self, ctx):
+        """[U] What does Dishwasher think about wisty?"""
+        await ctx.send("HELP! HELP! HELP!")
 
 async def setup(bot):
     await bot.add_cog(BasicOneShot(bot))
