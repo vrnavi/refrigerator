@@ -117,7 +117,7 @@ class Logs(Cog):
         # Prepared embed msg
         embeds = []
         embed = discord.Embed(
-            color=discord.Color.white(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.lighter_gray(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
@@ -246,6 +246,24 @@ class Logs(Cog):
         after_content = after.clean_content.replace("`", "`\u200d")
 
         log_channel = self.bot.get_channel(config.log_channel)
+        escaped_name = self.bot.escape_message(member)
+
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Color.dark_gray(), title="📝 Message Edit", description=f"<@{member.id}>  ({member.id}) [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
+        embed.add_field(
+            name="❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>}:",
+            value=f">>> {before_content}```",
+            inline=True
+        )
+        embed.add_field(
+            name="⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>}:",
+            value=f">>> {after_content}```",
+            inline=True
+        )
 
         msg = (
             "📝 **Message edit**: \n"
@@ -259,8 +277,9 @@ class Logs(Cog):
         if len(msg) > 2000:
             haste_url = await self.bot.haste(msg)
             msg = f"📝 **Message edit**: \nToo long: <{haste_url}>"
-
-        await log_channel.send(msg)
+            await log_channel.send(msg)
+        else:
+            await log_channel.send(embed=embed)
 
     @Cog.listener()
     async def on_message_delete(self, message):
@@ -295,7 +314,7 @@ class Logs(Cog):
         
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.black(), title="📥 User Left", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.darker_gray(), title="📥 User Left", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
