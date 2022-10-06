@@ -38,7 +38,7 @@ class ModUserlog(Cog):
                         else f"__Issuer:__ <@{event['issuer_id']}> "
                         f"({event['issuer_id']})\n"
                     )
-                    timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
+                    timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").astimezone().strftime("%s")
                     embed.add_field(
                         name=f"{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
                         value=issuer + f"__Reason:__ {event['reason']}",

@@ -64,7 +64,7 @@ class Remind(Cog):
 
         msg = await ctx.message.reply(
             f"You'll be reminded in "
-            f"DMs about `{safe_text}` in {duration_text} (<t:{datetime.strptime(added_on, '%Y-%m-%d %H:%M:%S').strftime('%s')}:f>).",
+            f"DMs about `{safe_text}` in {duration_text} (<t:{datetime.strptime(added_on, '%Y-%m-%d %H:%M:%S').astimezone().strftime('%s')}:f>).",
             mention_author=False
         )
 

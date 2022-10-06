@@ -86,7 +86,7 @@ class Robocronp(Cog):
                     text = job_details["text"]
                     added_on = job_details["added"]
                     target = await self.bot.fetch_user(int(job_name))
-                    original_timestamp = datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S").strftime("%s")
+                    original_timestamp = datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S").astimezone().strftime("%s")
                     if target:
                         await target.send(
                             f"You asked to be reminded about `{text}` on <t:{original_timestamp}:f>."
