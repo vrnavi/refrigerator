@@ -32,7 +32,7 @@ class Remind(Cog):
             )
         await ctx.send(embed=embed)
 
-    @commands.cooldown(1, 10, type=commands.BucketType.user)
+    @commands.cooldown(type=commands.BucketType.user)
     @commands.command(aliases=["remindme"])
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """[U] Reminds you about something."""
