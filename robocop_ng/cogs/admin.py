@@ -93,7 +93,8 @@ class Admin(Cog):
         """[O] Performs a git pull."""
         tmp = await ctx.message.reply(content="Pulling...", mention_author=False)
         git_output = await self.bot.async_call_shell("git pull")
-        await tmp.edit(content=f"Pull complete. Output: ```{git_output}```", mention_author=False)
+        allowed_mentions = discord.AllowedMentions(replied_user=False)
+        await tmp.edit(content=f"Pull complete. Output: ```{git_output}```", allowed_mentions=allowed_mentions)
         if auto:
             cogs_to_reload = re.findall(r"cogs/([a-z_]*).py[ ]*\|", git_output)
             for cog in cogs_to_reload:
