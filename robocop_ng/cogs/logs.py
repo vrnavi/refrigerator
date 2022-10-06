@@ -117,7 +117,7 @@ class Logs(Cog):
         # Prepared embed msg
         embeds = []
         embed = discord.Embed(
-            color=discord.Color.green(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.white(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
@@ -292,11 +292,26 @@ class Logs(Cog):
 
         log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
-
-        msg = (
-            f"⬅️ **Leave**: {escaped_name} ({member.id})"
+        
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Color.black(), title="📥 User Left", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
         )
-        await log_channel.send(msg)
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
+        embed.set_thumbnail(url=f"{member.display_avatar.url}")
+        embed.add_field(
+            name="⏰ Account created:",
+            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f> (<t:{member.created_at.astimezone().strftime('%s')}:R>)",
+            inline=True
+        )
+        embed.add_field(
+            name="⏱️ Account joined:",
+            value=f"<t:{member.joined_at.astimezone().strftime('%s')}:f> (<t:{member.joined_at.astimezone().strftime('%s')}:R>)",
+            inline=True
+        )
+
+        await log_channel.send(embed=embed)
 
     @Cog.listener()
     async def on_member_ban(self, guild, member):
