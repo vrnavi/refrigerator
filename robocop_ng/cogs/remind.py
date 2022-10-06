@@ -43,7 +43,8 @@ class Remind(Cog):
 
         if current_timestamp + 5 > expiry_timestamp:
             msg = await ctx.message.reply(
-                f"Minimum remind interval is 5 seconds."
+                f"Minimum remind interval is 5 seconds.",
+                mention_author=False
             )
             return
 
@@ -53,7 +54,7 @@ class Remind(Cog):
         )
 
         safe_text = await commands.clean_content().convert(ctx, str(text))
-        added_on = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S (UTC)")
+        added_on = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
 
         add_job(
             "remind",
@@ -64,7 +65,8 @@ class Remind(Cog):
 
         msg = await ctx.message.reply(
             f"You'll be reminded in "
-            f"DMs about `{safe_text}` in {duration_text}."
+            f"DMs about `{safe_text}` in {duration_text}.",
+            mention_author=False
         )
 
 
