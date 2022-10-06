@@ -3,7 +3,7 @@ import time
 import discord
 import traceback
 import random
-from datetime import datetime
+from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from discord.ext.commands import Cog
 from helpers.robocronp import get_crontab, delete_job
@@ -86,7 +86,7 @@ class Robocronp(Cog):
                     text = job_details["text"]
                     added_on = job_details["added"]
                     target = await self.bot.fetch_user(int(job_name))
-                    original_timestamp = datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S").astimezone().strftime("%s")
+                    original_timestamp = datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc).astimezone().strftime("%s")
                     if target:
                         await target.send(
                             f"You asked to be reminded about `{text}` on <t:{original_timestamp}:f>."

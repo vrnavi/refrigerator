@@ -1,7 +1,7 @@
 import discord
 import asyncio
 import time
-from datetime import datetime
+from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.robocronp import add_job, get_crontab
@@ -64,7 +64,7 @@ class Remind(Cog):
 
         msg = await ctx.message.reply(
             f"You'll be reminded in "
-            f"DMs about `{safe_text}` in {duration_text} (<t:{datetime.strptime(added_on, '%Y-%m-%d %H:%M:%S').astimezone().strftime('%s')}:f>).",
+            f"DMs about `{safe_text}` in {duration_text} (<t:{datetime.strptime(added_on, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc).astimezone().strftime('%s')}:f>).",
             mention_author=False
         )
 
