@@ -298,7 +298,8 @@ class Logs(Cog):
             name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
             value=f">>> {message.clean_content}",
             inline=True
-        
+        )
+
         msg = (
             "🗑️ **Message delete**: \n"
             f"from {self.bot.escape_message(message.author.name)} "
