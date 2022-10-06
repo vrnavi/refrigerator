@@ -20,7 +20,7 @@ class Admin(Cog):
     @commands.command(name="exit", aliases=["quit", "bye"])
     async def _exit(self, ctx):
         """[O] Shuts down (or restarts) the bot."""
-        await ctx.send(random.choice(bot.config.death_messages))
+        await ctx.send(random.choice(self.bot.config.death_messages))
         await self.bot.close()
 
     @commands.guild_only()
