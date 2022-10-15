@@ -42,7 +42,7 @@ class Remind(Cog):
 
         if current_timestamp + 5 > expiry_timestamp:
             msg = await ctx.message.reply(
-                f"Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.",
+                f"Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
                 mention_author=False
             )
             return
