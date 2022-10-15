@@ -22,7 +22,7 @@ class Remind(Cog):
                 continue
             job_details = ctab["remind"][jobtimestamp][uid]
             expiry_timestr = datetime.utcfromtimestamp(int(jobtimestamp)).strftime(
-                "%Y-%m-%d %H:%M:%S (UTC)"
+                "%Y-%m-%d %H:%M:%S"
             )
             embed.add_field(
                 name=f"Reminder for {expiry_timestr}",
@@ -42,7 +42,7 @@ class Remind(Cog):
 
         if current_timestamp + 5 > expiry_timestamp:
             msg = await ctx.message.reply(
-                f"Minimum remind interval is 5 seconds.",
+                f"Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.",
                 mention_author=False
             )
             return
@@ -64,7 +64,7 @@ class Remind(Cog):
 
         msg = await ctx.message.reply(
             f"You'll be reminded in "
-            f"DMs about `{safe_text}` in {duration_text} (<t:{datetime.strptime(added_on, '%Y-%m-%d %H:%M:%S').replace(tzinfo=timezone.utc).astimezone().strftime('%s')}:f>).",
+            f"DMs about `{safe_text}` in {duration_text} (<t:{expiry_timestamp}:f>).",
             mention_author=False
         )
 

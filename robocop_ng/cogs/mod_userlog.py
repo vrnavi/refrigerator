@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 import config
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from helpers.checks import check_if_staff
 from helpers.userlogs import get_userlog, set_userlog, userlog_event_types
 
@@ -38,7 +38,7 @@ class ModUserlog(Cog):
                         else f"__Issuer:__ <@{event['issuer_id']}> "
                         f"({event['issuer_id']})\n"
                     )
-                    timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").astimezone().strftime("%s")
+                    timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc).astimezone().strftime("%s")
                     embed.add_field(
                         name=f"{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
                         value=issuer + f"__Reason:__ {event['reason']}",

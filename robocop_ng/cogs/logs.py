@@ -124,7 +124,7 @@ class Logs(Cog):
         embed.set_thumbnail(url=f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
-            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f> (<t:{member.created_at.astimezone().strftime('%s')}:R>)",
+            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
             inline=True
         )
         embed.add_field(
@@ -334,12 +334,12 @@ class Logs(Cog):
         embed.set_thumbnail(url=f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
-            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f> (<t:{member.created_at.astimezone().strftime('%s')}:R>)",
+            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
             inline=True
         )
         embed.add_field(
             name="⏱️ Account joined:",
-            value=f"<t:{member.joined_at.astimezone().strftime('%s')}:f> (<t:{member.joined_at.astimezone().strftime('%s')}:R>)",
+            value=f"<t:{member.joined_at.astimezone().strftime('%s')}:f>\n<t:{member.joined_at.astimezone().strftime('%s')}:R>",
             inline=True
         )
 
