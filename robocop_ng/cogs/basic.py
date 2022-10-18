@@ -20,10 +20,10 @@ class Basic(Cog):
         await ctx.send(f"I am incapable of hugs, but... \*hugs*")
 
     @commands.command()
-    async def kill(self, ctx, user: discord.Member):
+    async def kill(self, ctx, the_text: str):
         """[U] Kills someone."""
         await ctx.send(
-            f"{user.mention} got stuck in the Dishwasher."
+            f"{the_text} got stuck in the Dishwasher."
         )
 
     @commands.command()

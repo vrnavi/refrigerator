@@ -41,7 +41,7 @@ class Robocronp(Cog):
                     job_details = repr(ctab[jobtype][jobtimestamp][job_name])
                     embed.add_field(
                         name=f"{jobtype} for {job_name}",
-                        value=f"Timestamp: {jobtimestamp}, Details: {job_details}",
+                        value=f"Executes on <t:{jobtimestamp}:F>.\nJSON data: {job_details}",
                         inline=False,
                     )
         await ctx.send(embed=embed)

@@ -639,8 +639,16 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def speak(self, ctx, channel: discord.TextChannel, *, the_text: str):
-        """[S] Repeats a given text in a given channel."""
+        """[S] Posts a given text in a given channel."""
         await channel.send(the_text)
+        await ctx.message.reply("👍", mention_author=False)
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def reply(self, ctx, channel: discord.TextChannel, message: int, *, the_text: str):
+        """[S] Replies to a message with a given text in a given channel."""
+        await self.bot.get_partial_messageable(f"{channel.id}").get_partial_message(f"{message}").reply(content=f"{the_text}", mention_author=False)
         await ctx.message.reply("👍", mention_author=False)
 
     @commands.guild_only()
