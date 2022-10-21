@@ -61,6 +61,11 @@ class Basic(Cog):
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.send(embed=embed)
 
+    @commands.command(aliases=["commands"])
+    async def help(self, ctx):
+        """Posts a help command."""
+        await ctx.send("[Press F1 For] HELP\nhttps://os.whistler.page/F1")
+
     @commands.command(aliases=["p"])
     async def ping(self, ctx):
         """[U] Shows ping values to discord.

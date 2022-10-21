@@ -308,7 +308,6 @@ class Mod(Cog):
         """[S] Bans a user with their ID, doesn't message them."""
         target_user = await self.bot.fetch_user(target)
         target_member = ctx.guild.get_member(target)
-        # Hedge-proofing the code
         if target == ctx.author.id:
             return await ctx.send("You can't do mod actions on yourself.")
         elif target == self.bot.user:
@@ -501,7 +500,7 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["unapprove"])
-    async def revoke(self, ctx, target: discord.Member, role: str = "community"):
+    async def revoke(self, ctx, target: discord.Member, role: str = "journal"):
         """[S] Remove a role from a user (default: journal)."""
         if role not in config.named_roles:
             return await ctx.send(

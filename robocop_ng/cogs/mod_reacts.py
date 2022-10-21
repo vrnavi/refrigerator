@@ -44,7 +44,7 @@ class ModReact(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def clearallreacts(
-        self, ctx, *, limit: int = 50, channel: discord.TextChannel = None
+        self, ctx, *, channel: discord.TextChannel = None, limit: int = 50
     ):
         """[S] Clears all reactions in a channel."""
         log_channel = self.bot.get_channel(config.modlog_channel)
