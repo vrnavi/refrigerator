@@ -12,10 +12,10 @@ class Explains(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(hidden=True, aliases=["memechannel", "wherememes"])
+    @commands.command(hidden=True, aliases=["memechannel", "wherememes", "memes"])
     async def dumpster(self, ctx):
         """Explains Dumpster."""
-        await ctx.send("**Where can I meme?/Why is there no meme channel?**\nA while ago, there was a channel for memes called Dumpster. It was removed due to misuse. Dumpster has not, is not, and will never be a core part of this server, and it is not coming back.\n\n**Please keep memes out of this server. <#256926147827335170> and <#256970699581685761> are NOT substitute meme channels.")
+        await ctx.send("**Where can I meme?/Why is there no meme channel?**\nA while ago, there was a channel for memes called Dumpster. It was removed due to misuse. Dumpster has not, is not, and will never be a core part of this server, and it is not coming back.\n\n**Please keep memes out of this server. <#256926147827335170> and <#256970699581685761> are NOT substitute meme channels.**")
         
     @commands.command(hidden=True, aliases=["embeds", "howpostembeds"])
     async def journal(self, ctx):
