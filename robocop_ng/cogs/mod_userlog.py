@@ -46,7 +46,11 @@ class ModUserlog(Cog):
                     )
 
         if not own and "watch" in userlog[uid]:
-            watch_state = "" if userlog[uid]["watch"] else "NOT "
+            if userlog[uid]["watch"]:
+                watch_state = "" 
+            else:
+                watch_state = "not "
+                embed_color = discord.Color.orange()
             embed.set_footer(text=f"User is {watch_state}under watch.")
 
         if not embed.fields:
