@@ -15,7 +15,7 @@ class ModUserlog(Cog):
     def get_userlog_embed_for_id(
         self, uid: str, name: str, own: bool = False, event=""
     ):
-        own_note = " Good for you!" if own else ""
+        own_note = " Congratulations." if own else ""
         wanted_events = ["warns", "bans", "kicks", "mutes"]
         if event and not isinstance(event, list):
             wanted_events = [event]
@@ -24,7 +24,7 @@ class ModUserlog(Cog):
         userlog = get_userlog()
 
         if uid not in userlog:
-            embed.description = f"There are none!{own_note} (no entry)"
+            embed.description = f"No records found.{own_note}"
             embed.color = discord.Color.green()
             return embed
 
