@@ -229,7 +229,7 @@ class Logs(Cog):
                 if message.reference.resolved.author in message.mentions:
                     for r in message.reference.resolved.author.roles:
                         if r.id == 1059460475588448416:
-                            await message.reply(content=f"Do not reply ping users who don't want to be pinged.", mention_author=True)
+                            await message.reply(content=f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**\nPlease check if a user has a `No Reply Pings` role on them before pinging them in replies.\nYou can turn off reply pings by using the blue `@ ON` button to the right of the message bar.", mention_author=True)
                             await message.delete()
                         
         if message.channel.id not in config.spy_channels:
