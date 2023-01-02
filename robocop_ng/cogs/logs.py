@@ -223,9 +223,17 @@ class Logs(Cog):
     @Cog.listener()
     async def on_message(self, message):
         await self.bot.wait_until_ready()
+        
+        if message.reference is not None:
+            if message.reference.resolved.author.id is not message.author.id:
+                if message.reference.resolved.author in message.mentions:
+                    for r in message.reference.resolved.author.roles:
+                        if r.id == 1059460475588448416:
+                            await message.reply(content=f"Do not reply ping users who don't want to be pinged.", mention_author=False)
+                            await message.delete()
+                        
         if message.channel.id not in config.spy_channels:
             return
-
         await self.do_spy(message)
 
     @Cog.listener()
