@@ -232,7 +232,7 @@ class Logs(Cog):
                             f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
                             "Please check if a user has a `No Reply Pings` role on them before pinging them in replies."
                             "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar."
-                        ], mention_author=True))
+                        ]), mention_author=True)
 
     @Cog.listener()
     async def on_message(self, message):
