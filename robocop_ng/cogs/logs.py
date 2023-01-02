@@ -239,7 +239,7 @@ class Logs(Cog):
         await self.bot.wait_until_ready()
         
         if message.reference is not None:
-            self.handle_message_with_reference(message)
+            await self.handle_message_with_reference(message)
 
         if message.channel.id not in config.spy_channels:
             return
