@@ -229,7 +229,7 @@ class Logs(Cog):
                 if message.reference.resolved.author in message.mentions:
                     for r in message.reference.resolved.author.roles:
                         if r.id == 1059460475588448416:
-                            await message.reply(content=f"Do not reply ping users who don't want to be pinged.", mention_author=False)
+                            await message.reply(content=f"Do not reply ping users who don't want to be pinged.", mention_author=True)
                             await message.delete()
                         
         if message.channel.id not in config.spy_channels:
