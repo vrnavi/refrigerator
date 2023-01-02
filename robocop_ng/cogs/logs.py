@@ -220,24 +220,30 @@ class Logs(Cog):
         spy_channel = self.bot.get_channel(config.spylog_channel)
         await spy_channel.send(msg)
 
+    async def handle_message_with_reference(self, message):
+        reference_author = message.reference.resolved.author
+        if reference_author.id is not message.author.id:
+            if reference_author in message.mentions:
+                reference_author_has_no_reply_pings_role = reference_author.get_role(1059460475588448416) is not None
+                if reference_author_has_no_reply_pings_role:
+                    author_is_staff = (message.author.get_role(259199371361517569) or message.author.get_role(256985367977263105)) is not None
+                    if author_is_staff == False:
+                        await message.reply(content="\n".join([
+                            f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
+                            "Please check if a user has a `No Reply Pings` role on them before pinging them in replies."
+                            "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar."
+                        ], mention_author=True))
+
     @Cog.listener()
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         
         if message.reference is not None:
-            if message.reference.resolved.author.id is not message.author.id:
-                if message.reference.resolved.author in message.mentions:
-                    staffuser = False
-                    for r in message.author.roles:
-                        if r.id == 259199371361517569 or r.id == 256985367977263105:
-                            staffuser = True
-                    if staffuser == False:
-                        for r in message.reference.resolved.author.roles:
-                            if r.id == 1059460475588448416:
-                                await message.reply(content=f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**\nPlease check if a user has a `No Reply Pings` role on them before pinging them in replies.\nYou can turn off reply pings by using the blue `@ ON` button to the right of the message bar.", mention_author=True)
-                        
+            self.handle_message_with_reference(message)
+
         if message.channel.id not in config.spy_channels:
             return
+
         await self.do_spy(message)
 
     @Cog.listener()
