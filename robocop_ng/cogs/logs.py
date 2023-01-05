@@ -231,7 +231,9 @@ class Logs(Cog):
                         await message.reply("\n".join([
                             f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
                             "Please check if a user has a `No Reply Pings` role on them before pinging them in replies.",
-                            "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar."
+                            "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar.",
+                            "",
+                            "__Ignoring this message repeatedly will lead to a server warning!__"
                         ]), mention_author=True)
 
     @Cog.listener()
