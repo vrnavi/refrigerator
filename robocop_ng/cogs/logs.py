@@ -234,7 +234,7 @@ class Logs(Cog):
                             "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar.",
                             "",
                             "__Ignoring this message repeatedly will lead to a server warning!__"
-                        ]), mention_author=True)
+                        ]), delete_after=10, mention_author=True)
 
     @Cog.listener()
     async def on_message(self, message):
