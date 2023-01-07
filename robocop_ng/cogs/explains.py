@@ -20,7 +20,7 @@ class Explains(Cog):
     @commands.command(hidden=True, aliases=["embeds", "howpostembeds"])
     async def journal(self, ctx):
         """Explains Strange Journal and Camera."""
-        await ctx.send("**How do I post embeds?/Why cant I use [emoji/stickers]?**\nTo post embeds, react to messages, post emoji or stickers, or speak in voice channels, you need the Strange Journal role. To do any of the prior in <#256926147827335170>, you'll need the Camera role.\nTo learn how to get these roles, read <#989959374900449380>.\n\n**Do __not__ \"spoonfeed\" any user the command for them (e.g. \"just use X command!\". Doing so may result in a warning.**")
+        await ctx.send("**How do I post embeds?/Why cant I use [emoji/stickers]?**\nTo post embeds, react to messages, post emoji or stickers, or speak in voice channels, you need the Strange Journal role. To do any of the prior in <#256926147827335170>, you'll need the Camera role.\nTo learn how to get these roles, read <#989959374900449380>.\n\n**Do __not__ \"spoonfeed\" any user the command for them (e.g. \"just use X command!\"). Doing so may result in a warning.**")
 
 async def setup(bot):
     await bot.add_cog(Explains(bot))
