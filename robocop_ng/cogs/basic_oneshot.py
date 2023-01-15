@@ -17,9 +17,9 @@ class BasicOneShot(Cog):
         )
         
     @commands.guild_only()
-    @commands.command(hidden=True, aliases=["wistlyr"])
-    async def wisty(self, ctx):
-        """[U] What does Dishwasher think about wisty?"""
+    @commands.command(hidden=True, aliases=["renavi"])
+    async def ren(self, ctx):
+        """[U] What does Dishwasher think about ren?"""
         await ctx.send("HELP! HELP! HELP!")
 
 async def setup(bot):
