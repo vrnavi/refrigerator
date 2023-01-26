@@ -228,6 +228,7 @@ class Logs(Cog):
                 if reference_author_has_no_reply_pings_role:
                     author_is_staff = (message.author.get_role(259199371361517569) or message.author.get_role(256985367977263105)) is not None
                     if author_is_staff == False:
+                        await message.add_reaction("🗞️")
                         await message.reply("\n".join([
                             f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
                             "Please check if a user has a `No Reply Pings` role on them before pinging them in replies.",
