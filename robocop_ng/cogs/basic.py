@@ -35,7 +35,8 @@ class Basic(Cog):
             avy = self.bot.get_user(target_id).display_avatar.url
         # In the case of mentions.
         except ValueError:
-            avy = self.bot.get_user(target[2:-1]).display_avatar.url
+            user = await self.bot.fetch_user(target[2:-1])
+            avy = user.display_avatar.url
         await ctx.send(content=avy)
 
     @commands.command()
