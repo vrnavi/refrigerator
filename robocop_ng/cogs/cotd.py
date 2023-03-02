@@ -17,7 +17,7 @@ class Cotd(Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        colors = json.load(open("colors.json", "r"))
+        colors = json.load(open("assets/colors.json", "r"))
         self.colortimer.start()
 
     def cog_unload(self):
