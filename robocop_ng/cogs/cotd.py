@@ -28,7 +28,7 @@ class Cotd(Cog):
         colors = json.load(open("assets/colors.json", "r"))
         cotd_role = self.bot.get_guild(config.guild_whitelist[0]).get_role(config.cotd_role_id)
         inlist = False
-        for l in colors:
+        for i in colors:
             if i["hex"] == '#%02x%02x%02x'.upper() % cotd_role.color.to_rgb():
                 inlist = True
                 embed = discord.Embed(title=f"Today's CoTD is:", description=f'**{i["name"]}** *{i["hex"]}*', color=discord.Colour.from_str(f'{i["hex"]}'))
