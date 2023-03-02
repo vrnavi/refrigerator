@@ -106,7 +106,7 @@ class ModUserlog(Cog):
     @commands.command(
         name="userlog", aliases=["logs"]
     )
-    async def userlog_cmd(self, ctx, target: discord.Member, event=""):
+    async def userlog_cmd(self, ctx, *, event=""):
         """[S] Lists userlog events for a user."""
         # In case an ID is provided.
         if target is int:
