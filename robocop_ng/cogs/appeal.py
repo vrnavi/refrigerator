@@ -22,9 +22,9 @@ class Appeal(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         
-        if message.channel.id == "402019542345449472":
+        if message.channel.id == 402019542345449472:
             await message.channel.send(content=f"Pass.\n{message.author.id}\n{message.author.display_name}\n{message.embeds[0].fields[1].value}")
-            if message.author.id == "402016472878284801":
+            if message.author.id == 402016472878284801:
                 await message.channel.send(content="Pass.")
                 if message.embeds[0].fields[1].value is not None:
                     await message.add_reaction("✅")
