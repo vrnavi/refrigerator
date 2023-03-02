@@ -114,7 +114,7 @@ class ModUserlog(Cog):
             embed = self.get_userlog_embed_for_id(target, str(user.display_name), event=event)
         except ValueError:
             user = await self.bot.fetch_user(target[2:-1])
-            embed = self.get_userlog_embed_for_id(user.id), str(user.display_name), event=event)
+            embed = self.get_userlog_embed_for_id(str(user.id), str(user.display_name), event=event)
         await ctx.send(embed=embed)
 
     @commands.guild_only()
