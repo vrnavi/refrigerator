@@ -108,16 +108,11 @@ class ModUserlog(Cog):
     )
     async def userlog_cmd(self, ctx, target, event=""):
         """[S] Lists userlog events for a user."""
-        # In case an ID is provided.
         try:
             target_id = int(target)
+            user = await self.bot.fetch_user(target_id)
+            embed = self.get_userlog_embed_for_id(target, str(user.display_name), event=event)
         except ValueError:
-            pass
-        if target_id is not None:
-            user = await self.bot.fetch_user(target)
-            embed = self.get_userlog_embed_for_id(str(target), str(user.display_name), event=event)
-        # In case a mention is provided.
-        else:
             embed = self.get_userlog_embed_for_id(str(target.id), str(target), event=event)
         await ctx.send(embed=embed)
 
