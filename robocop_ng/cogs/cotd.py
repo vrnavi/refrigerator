@@ -1,4 +1,5 @@
 import discord
+from discord.ext import commands, tasks
 from discord.ext.commands import Cog
 import json
 import re
