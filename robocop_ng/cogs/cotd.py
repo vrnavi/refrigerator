@@ -17,7 +17,6 @@ class Cotd(Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        colors = json.load(open("assets/colors.json", "r"))
         self.colortimer.start()
 
     def cog_unload(self):
@@ -26,6 +25,7 @@ class Cotd(Cog):
     @commands.guild_only()
     @commands.command()
     async def cotd(self, ctx):
+        colors = json.load(open("assets/colors.json", "r"))
         cotd_role = self.bot.get_guild(config.guild_whitelist[0]).get_role(config.cotd_role_id)
         inlist = False
         for l in colors:
@@ -41,6 +41,7 @@ class Cotd(Cog):
     @commands.guild_only()
     @commands.command()
     async def reroll(self, ctx):
+        colors = json.load(open("assets/colors.json", "r"))
         color = random.choice(colors)
         cotd_role = self.bot.get_guild(config.guild_whitelist[0]).get_role(config.cotd_role_id)
         await cotd_role.edit(name=f'Fluctuating Phosphor - {color["name"]}', color=discord.Colour.from_str(f'{color["hex"]}'), reason=f'Color of The Day: {color["name"]}')
@@ -49,6 +50,7 @@ class Cotd(Cog):
     @tasks.loop(time=datetime.time(hour=5, tzinfo=datetime.timezone.utc))
     async def colortimer(self):
         await self.bot.wait_until_ready()
+        colors = json.load(open("assets/colors.json", "r"))
         color = random.choice(colors)
         cotd_role = self.bot.get_guild(config.guild_whitelist[0]).get_role(config.cotd_role_id)
         await cotd_role.edit(name=f'Fluctuating Phosphor - {color["name"]}', color=discord.Colour.from_str(f'{color["hex"]}'), reason=f'Color of The Day: {color["name"]}')
