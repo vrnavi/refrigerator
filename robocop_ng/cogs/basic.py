@@ -27,6 +27,18 @@ class Basic(Cog):
         )
 
     @commands.command()
+    async def avy(self, ctx, target):
+        """[U] Gets an avy."""
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            avy = await self.bot.fetch_user(target_id).display_avatar.url
+        # In the case of mentions.
+        except ValueError:
+            avy = await self.bot.fetch_user(target[2:-1]).display_avatar.url
+        await ctx.send(content=avy)
+
+    @commands.command()
     async def install(self, ctx):
         """[U] Teaches you how to install a Dishwasher."""
         await ctx.send(
