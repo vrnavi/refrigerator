@@ -39,6 +39,7 @@ class Cotd(Cog):
             await ctx.send(content="The CoTD role's color is not in the color list!")
             
     @commands.guild_only()
+    @commands.check(check_if_staff)
     @commands.command()
     async def reroll(self, ctx):
         colors = json.load(open("assets/colors.json", "r"))
