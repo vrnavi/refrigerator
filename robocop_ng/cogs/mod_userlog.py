@@ -104,11 +104,17 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(
-        name="userlog", aliases=["listwarns", "getuserlog", "listuserlog"]
+        name="userlog", aliases=["logs"]
     )
     async def userlog_cmd(self, ctx, target: discord.Member, event=""):
         """[S] Lists userlog events for a user."""
-        embed = self.get_userlog_embed_for_id(str(target.id), str(target), event=event)
+        # In case an ID is provided.
+        if target is int:
+            user = await self.bot.fetch_user(target)
+            embed = self.get_userlog_embed_for_id(str(target), str(user.display_name), event=event)
+        # In case a mention is provided.
+        else:
+            embed = self.get_userlog_embed_for_id(str(target.id), str(target), event=event)
         await ctx.send(embed=embed)
 
     @commands.guild_only()
@@ -122,19 +128,20 @@ class ModUserlog(Cog):
         await ctx.send(embed=embed)
 
     @commands.guild_only()
-    @commands.command(aliases=["mywarns"])
+    @commands.command(aliases=["mywarns", "mylogs",])
     async def myuserlog(self, ctx):
         """[U] Lists your userlog events (warns, etc)."""
         embed = self.get_userlog_embed_for_id(str(ctx.author.id), str(ctx.author), True)
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command(aliases=["listwarnsid"])
-    async def userlogid(self, ctx, target: int):
-        """[S] Lists the userlog events for a user by ID."""
-        embed = self.get_userlog_embed_for_id(str(target), str(target))
-        await ctx.send(embed=embed)
+#    LOL REDUNDANT.
+#    @commands.guild_only()
+#    @commands.check(check_if_staff)
+#    @commands.command(aliases=["listwarnsid"])
+#    async def userlogid(self, ctx, target: int):
+#        """[S] Lists the userlog events for a user by ID."""
+#        embed = self.get_userlog_embed_for_id(str(target), str(target))
+#        await ctx.send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
