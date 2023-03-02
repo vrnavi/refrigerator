@@ -33,7 +33,7 @@ class Cotd(Cog):
                 inlist = True
                 embed = discord.Embed(title=f"Today's CoTD is:", description=f'**{i["name"]}** *{i["hex"]}*', color=discord.Colour.from_str(f'{i["hex"]}'))
                 embed.set_footer(text="Dishwasher's Color of The Day", icon_url=self.bot.user.display_avatar.url)
-                embed.set_image(url=f'https://singlecolorimage.com/get/{i["hex"][1:]}/500x500')
+                embed.set_image(url=f'https://singlecolorimage.com/get/{i["hex"][1:]}/128x128')
                 await ctx.reply(embed=embed, mention_author=False)
         if inlist == False:
             await ctx.send(content="The CoTD role's color is not in the color list!")
