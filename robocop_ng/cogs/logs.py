@@ -397,7 +397,7 @@ class Logs(Cog):
         updated = False
         # initialize embed
         embed = discord.Embed(
-            color=discord.Colour.from_str("#0000FF"), title="ℹ️ Member Update", description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)}", timestamp=datetime.datetime.now()
+            color=discord.Colour.from_str("#0000FF"), title="ℹ️ Member Update", description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{self.bot.escape_message(member_after)}", icon_url=f"{member_after.display_avatar.url}")
