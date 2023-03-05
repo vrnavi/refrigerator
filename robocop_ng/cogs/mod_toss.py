@@ -14,7 +14,7 @@ class ModToss(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def get_user_list(ctx, user_ids):
+    def get_user_list(self, ctx, user_ids):
         user_id_list = []
         invalid_ids = []
 
@@ -44,7 +44,7 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def toss(self, ctx, *, user_ids):
-        user_id_list, invalid_ids = await get_user_list(ctx, user_ids)
+        user_id_list, invalid_ids = get_user_list(ctx, user_ids)
         name_list = ""
         for us in user_id_list:
             if us.id == ctx.author.id:
@@ -118,7 +118,7 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def untoss(self, ctx, *, user_ids):
-        user_id_list, invalid_ids = await get_user_list(ctx, user_ids)
+        user_id_list, invalid_ids = get_user_list(ctx, user_ids)
         name_list = ""
         
         for us in user_id_list:
