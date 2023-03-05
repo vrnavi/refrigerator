@@ -121,6 +121,7 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
+    @commands.command(aliases=["boot"])
     @commands.command()
     async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Kicks a user."""
@@ -195,8 +196,16 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["yeet"])
-    async def ban(self, ctx, target: discord.Member, *, reason: str = ""):
+    async def ban(self, ctx, target, *, reason: str = ""):
         """[S] Bans a user."""
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
+            
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
@@ -268,7 +277,7 @@ class Mod(Cog):
     async def bandel(
         self, ctx, day_count: int, target: discord.Member, *, reason: str = ""
     ):
-        """[S] Bans a user for n days."""
+        """[S] Bans a user with n days of messages deleted."""
         # Hedge-proofing the code
         if target == ctx.author:
             return await ctx.send("You can't do mod actions on yourself.")
@@ -331,7 +340,7 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
-    @commands.command(aliases=["softban"])
+    @commands.command(aliases=["softban", "xban"])
     async def hackban(self, ctx, target: int, *, reason: str = ""):
         """[S] Bans a user with their ID, doesn't message them."""
         target_user = await self.bot.fetch_user(target)
@@ -390,7 +399,7 @@ class Mod(Cog):
                 continue
             elif target == self.bot.user:
                 await ctx.send(
-                    f"(re: {target}) I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+                    f"(re: {target}) I'm sorry {ctx.author.name}, I'm afraid I can't do that."
                 )
                 continue
             elif target_member and self.check_if_target_is_staff(target_member):
@@ -499,57 +508,58 @@ class Mod(Cog):
         log_channel = self.bot.get_channel(config.modlog_channel)
         await log_channel.send(chan_message)
 
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command()
-    async def approve(self, ctx, target: discord.Member, role: str = "journal"):
-        """[S] Add a role to a user (default: journal)."""
-        if role not in config.named_roles:
-            return await ctx.send(
-                "No such role! Available roles: " + ",".join(config.named_roles)
-            )
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        target_role = ctx.guild.get_role(config.named_roles[role])
-
-        if target_role in target.roles:
-            return await ctx.send("Target already has this role.")
-
-        await target.add_roles(target_role, reason=str(ctx.author))
-
-        await ctx.send(f"Approved {target.mention} to `{role}` role.")
-
-        await log_channel.send(
-            f"✅ Approved: {str(ctx.author)} added"
-            f" {role} to {target.mention}"
-            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-        )
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command(aliases=["unapprove"])
-    async def revoke(self, ctx, target: discord.Member, role: str = "journal"):
-        """[S] Remove a role from a user (default: journal)."""
-        if role not in config.named_roles:
-            return await ctx.send(
-                "No such role! Available roles: " + ",".join(config.named_roles)
-            )
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        target_role = ctx.guild.get_role(config.named_roles[role])
-
-        if target_role not in target.roles:
-            return await ctx.send("Target doesn't have this role.")
-
-        await target.remove_roles(target_role, reason=str(ctx.author))
-
-        await ctx.send(f"Un-approved {target.mention} from `{role}` role.")
-
-        await log_channel.send(
-            f"❌ Un-approved: {str(ctx.author)} removed"
-            f" {role} from {target.mention}"
-            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-        )
+#    Unneeded.
+#    @commands.guild_only()
+#    @commands.check(check_if_staff)
+#    @commands.command()
+#    async def approve(self, ctx, target: discord.Member, role: str = "journal"):
+#        """[S] Add a role to a user (default: journal)."""
+#        if role not in config.named_roles:
+#            return await ctx.send(
+#                "No such role! Available roles: " + ",".join(config.named_roles)
+#            )
+#
+#        log_channel = self.bot.get_channel(config.modlog_channel)
+#        target_role = ctx.guild.get_role(config.named_roles[role])
+#
+#        if target_role in target.roles:
+#            return await ctx.send("Target already has this role.")
+#
+#        await target.add_roles(target_role, reason=str(ctx.author))
+#
+#        await ctx.send(f"Approved {target.mention} to `{role}` role.")
+#
+#        await log_channel.send(
+#            f"✅ Approved: {str(ctx.author)} added"
+#            f" {role} to {target.mention}"
+#            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+#        )
+#
+#    @commands.guild_only()
+#    @commands.check(check_if_staff)
+#    @commands.command(aliases=["unapprove"])
+#    async def revoke(self, ctx, target: discord.Member, role: str = "journal"):
+#        """[S] Remove a role from a user (default: journal)."""
+#        if role not in config.named_roles:
+#            return await ctx.send(
+#                "No such role! Available roles: " + ",".join(config.named_roles)
+#            )
+#
+#        log_channel = self.bot.get_channel(config.modlog_channel)
+#        target_role = ctx.guild.get_role(config.named_roles[role])
+#
+#        if target_role not in target.roles:
+#            return await ctx.send("Target doesn't have this role.")
+#
+#        await target.remove_roles(target_role, reason=str(ctx.author))
+#
+#        await ctx.send(f"Un-approved {target.mention} from `{role}` role.")
+#
+#        await log_channel.send(
+#            f"❌ Un-approved: {str(ctx.author)} removed"
+#            f" {role} from {target.mention}"
+#            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+#        )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -560,11 +570,14 @@ class Mod(Cog):
         if not channel:
             channel = ctx.channel
         await channel.purge(limit=limit)
-        msg = (
-            f"🗑 **Purged**: {str(ctx.author)} purged {limit} "
-            f"messages in {channel.mention}."
+        
+        embed = discord.Embed(
+            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {limit} messages in {channel.mention}.", timestamp=datetime.datetime.now()
         )
-        await log_channel.send(msg)
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}")
+        
+        await log_channel.send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -572,14 +585,14 @@ class Mod(Cog):
     async def warn(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Warns a user."""
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send("No.")
         elif target == self.bot.user:
             return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
             return await ctx.send(
-                "I can't warn this user as they're a member of staff."
+                "I cannot warn Staff members."
             )
 
         log_channel = self.bot.get_channel(config.modlog_channel)
@@ -594,11 +607,11 @@ class Mod(Cog):
             f"| {safe_name}\n"
         )
 
-        msg = f"You were warned on {ctx.guild.name}."
+        msg = f"**You were warned** on `{ctx.guild.name}`."
         if reason:
             msg += " The given reason is: " + reason
         msg += (
-            f"\n\nPlease read the rules in {config.rules_url}. "
+            f"\nPlease read the rules in {config.rules_url}. "
             f"This is warn #{warn_count}."
         )
 #        if warn_count == 4:
@@ -618,7 +631,7 @@ class Mod(Cog):
 #        if warn_count >= 5:  # just in case
 #            await target.ban(reason="Exceeded warn limit", delete_message_days=0)
         await ctx.send(
-            f"{target.mention} warned. " f"User has {warn_count} warning(s)."
+            f"{target.mention} has been warned. User has {warn_count} warning(s)."
         )
 
         if reason:
@@ -684,7 +697,7 @@ class Mod(Cog):
     async def playing(self, ctx, *, game: str = ""):
         """[S] Sets the bot's currently played game name.
 
-        Just send .playing to wipe the playing state."""
+        Just send pws playing to wipe the playing state."""
         if game:
             await self.bot.change_presence(activity=discord.Game(name=game))
         else:
@@ -698,7 +711,7 @@ class Mod(Cog):
     async def botnickname(self, ctx, *, nick: str = ""):
         """[S] Sets the bot's nickname.
 
-        Just send .botnickname to wipe the nickname."""
+        Just send pws botnickname to wipe the nickname."""
 
         if nick:
             await ctx.guild.me.edit(nick=nick, reason=str(ctx.author))

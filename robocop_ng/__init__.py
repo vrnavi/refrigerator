@@ -62,7 +62,7 @@ async def on_ready():
     guild = bot.botlog_channel.guild
     msg = (
         f"**{bot.user.name} is now ONLINE.**\n"
-        f"{guild.name} has {guild.member_count} members."
+        f"`{guild.name}` has `{guild.member_count}` members."
     )
 
     await bot.botlog_channel.send(msg)
@@ -92,44 +92,50 @@ async def on_error(event_method, *args, **kwargs):
 async def on_command_error(ctx, error):
     error_text = str(error)
 
-    err_msg = (
-        f'⚠️ **Error:**\nAn error occurred with `{ctx.message.content}` from '
-        f'{ctx.message.author} ({ctx.message.author.id}):\n'
-        f"```{type(error)}: {error_text}```"
-    )
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FFFF00"), title="⚠️ Error", description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id})", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(ctx.message.author)}", icon_url=f"{ctx.message.author.display_avatar.url}")
+        embed.add_field(
+            name=f"📜 Log",
+            value=f"```{type(error)}: {error_text}```",
+            inline=False
+        )
 
-    log.error(err_msg)
+    log.error(embed=embed)
 
     if not isinstance(error, commands.CommandNotFound):
         err_msg = bot.escape_message(err_msg)
         await bot.botlog_channel.send(err_msg)
 
     if isinstance(error, commands.NoPrivateMessage):
-        return await ctx.send("This command doesn't work on DMs.")
+        return await ctx.send("This command doesn't work in DMs.")
     elif isinstance(error, commands.MissingPermissions):
         roles_needed = "\n- ".join(error.missing_perms)
         return await ctx.send(
-            f"You don't have the right"
-            " permissions to run this command. You need: "
+            f"**Error: Missing Permissions**\n"
+            "You don't have the right permissions to run this command. You need: "
             f"```- {roles_needed}```"
         )
     elif isinstance(error, commands.BotMissingPermissions):
         roles_needed = "\n-".join(error.missing_perms)
         return await ctx.send(
-            f"I don't have "
-            "the right permissions to run this command. "
+            f"**Error: Missing Permissions**\n"
+            "I don't have the right permissions to run this command. "
             "I need: "
             f"```- {roles_needed}```"
         )
     elif isinstance(error, commands.CommandOnCooldown):
         return await ctx.send(
-            f"You're being "
-            "ratelimited. Try in "
+            f"**Error: Ratelimited**\n"
+            "You're being ratelimited. Try in "
             f"{error.retry_after:.1f} seconds."
         )
     elif isinstance(error, commands.CheckFailure):
         return await ctx.send(
-            f"Check failed. "
+            f"**Error: Check Failure**\n"
             "You might not have the right permissions "
             "to run this command, or you may not be able "
             "to run this command in the current channel."
@@ -138,9 +144,9 @@ async def on_command_error(ctx, error):
         "Cannot send messages to this user" in error_text
     ):
         return await ctx.send(
-            f"I can't DM you.\n"
-            "You might have me blocked or have DMs "
-            f"blocked globally or for this server.\n"
+            f"**Error: DM Failure**\n"
+            "I can't DM you. You either have me blocked, or have DMs "
+            f"blocked, either globally or for this server.\n"
             "Please resolve that, then "
             "try again."
         )
@@ -150,8 +156,8 @@ async def on_command_error(ctx, error):
 
     help_text = (
         f"Usage of this command is: ```{ctx.prefix}{ctx.command.name} "
-        f"{ctx.command.signature}```\nPlease see `{ctx.prefix}help "
-        f"{ctx.command.name}` for more info about this command."
+        f"{ctx.command.signature}```\nPlease see `{ctx.prefix}help"
+        f"` for more info."
     )
 
     # Keep a list of commands that involve mentioning users
@@ -167,11 +173,11 @@ async def on_command_error(ctx, error):
             )
 
         return await ctx.send(
-            f"{ctx.author.mention}: You gave incorrect arguments. {help_text}"
+            f"You gave incorrect arguments. {help_text}"
         )
     elif isinstance(error, commands.MissingRequiredArgument):
         return await ctx.send(
-            f"{ctx.author.mention}: You gave incomplete arguments. {help_text}"
+            f"You gave incomplete arguments. {help_text}"
         )
 
 
