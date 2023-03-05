@@ -197,40 +197,44 @@ class Mod(Cog):
     @commands.command(aliases=["yeet"])
     async def ban(self, ctx, target, *, reason: str = ""):
         """[S] Bans a user."""
+        # target handler
         # In the case of IDs.
         try:
             target_id = int(target)
             target = await self.bot.fetch_user(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+            target = await self.bot.get_user(target[2:-1])
             
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
             return await ctx.send("I cannot ban Staff members.")
 
-        userlog(target.id, ctx.author, reason, "bans", target.name)
+        if reason:
+            userlog(target.id, ctx.author, reason, "bans", target.name)
+        else:
+            userlog(target.id, ctx.author, f"No reason provided. ({ctx.message.jump_url})", "bans", target.name)
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
         )
 
-        dm_message = f"**You were banned** from `{ctx.guild.name}`."
-        if reason:
-            dm_message += f'\n*The given reason is:* "{reason}".'
-        dm_message += "\n\nThis ban does not expire, but you may appeal it here:\nhttps://os.whistler.page/appeal"
-
-        try:
-            await target.send(dm_message)
-        except discord.errors.Forbidden:
-            # Prevents ban issues in cases where user blocked bot
-            # or has DMs disabled
-            pass
+        if ctx.guild.get_member(target.id) is not None:
+            dm_message = f"**You were banned** from `{ctx.guild.name}`."
+            if reason:
+                dm_message += f'\n*The given reason is:* "{reason}".'
+            dm_message += "\n\nThis ban does not expire, but you may appeal it here:\nhttps://os.whistler.page/appeal"
+            try:
+                await target.send(dm_message)
+            except discord.errors.Forbidden:
+                # Prevents ban issues in cases where user blocked bot
+                # or has DMs disabled
+                pass
 
         await target.ban(
             reason=f"[ Ban by {ctx.author} ] {reason}", delete_message_days=0
@@ -261,7 +265,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason was set!**\nPlease use `pws ban <user> [reason]` in the future.\nBan reasons are sent to the user.",
+                value=f"**No reason provided!**\nPlease use `pws ban <user> [reason]` in the future.\nBan reasons are sent to the user.",
                 inline=False
             )
 
@@ -272,115 +276,94 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
+    @commands.command(aliases=["bandel"])
     @commands.command()
-    async def bandel(
-        self, ctx, day_count: int, target: discord.Member, *, reason: str = ""
+    async def dban(
+        self, ctx, day_count: int, target, *, reason: str = ""
     ):
-        """[S] Bans a user with n days of messages deleted."""
-        # Hedge-proofing the code
+        """[S] Bans a user, with n days of messages deleted."""
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.get_user(target[2:-1])
+
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
-            return await ctx.send("I can't ban this user as they're a member of staff.")
+            return await ctx.send("I cannot ban Staff members.")
 
         if day_count < 0 or day_count > 7:
             return await ctx.send(
-                "Message delete day count needs to be between 0 and 7 days."
+                "Message delete day count must be between 0 and 7 days."
             )
 
-        userlog(target.id, ctx.author, reason, "bans", target.name)
+        if reason:
+            userlog(target.id, ctx.author, reason, "bans", target.name)
+        else:
+            userlog(target.id, ctx.author, f"No reason provided. ({ctx.message.jump_url})", "bans", target.name)
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
         )
 
-        dm_message = f"You were banned from {ctx.guild.name}."
-        if reason:
-            dm_message += f' The given reason is: "{reason}".'
-        dm_message += "\n\nThis ban does not expire."
-
-        try:
-            await target.send(dm_message)
-        except discord.errors.Forbidden:
-            # Prevents ban issues in cases where user blocked bot
-            # or has DMs disabled
-            pass
+        if ctx.guild.get_member(target.id) is not None:
+            dm_message = f"**You were banned** from `{ctx.guild.name}`."
+            if reason:
+                dm_message += f'\n*The given reason is:* "{reason}".'
+            dm_message += "\n\nThis ban does not expire, but you may appeal it here:\nhttps://os.whistler.page/appeal"
+            try:
+                await target.send(dm_message)
+            except discord.errors.Forbidden:
+                # Prevents ban issues in cases where user blocked bot
+                # or has DMs disabled
+                pass
 
         await target.ban(
-            reason=f"{ctx.author}, days of message deletions: {day_count}, reason: {reason}",
+            reason=f"[ Ban by {ctx.author} ] {reason}",
             delete_message_days=day_count,
         )
-        chan_message = (
-            f"⛔ **Ban**: {str(ctx.author)} banned with {day_count} of messages deleted "
-            f"{target.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target.id}\n"
+
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FF0000"), title="⛔ Ban", description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{safe_name}**\n{target.mention} ({target.id})",
+            inline=True
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+            inline=True
         )
         if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"{reason}",
+                inline=False
+            )
         else:
-            chan_message += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use `.bandel <daycount> <user> [reason]`"
-                " as the reason is automatically sent to the user."
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"**No reason provided!**\nPlease use `pws dban <user> [reason]` in the future.\nBan reasons are sent to the user.",
+                inline=False
             )
 
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
         log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
+        await log_channel.send(embed=embed)
         await ctx.send(
-            f"{safe_name} is now b&, with {day_count} days of messages deleted. 👍"
+            f"**{target.mention}** is now BANNED.\n{day_count} days of messages were deleted."
         )
-
-    @commands.guild_only()
-    @commands.bot_has_permissions(ban_members=True)
-    @commands.check(check_if_staff)
-    @commands.command(aliases=["softban", "xban"])
-    async def hackban(self, ctx, target: int, *, reason: str = ""):
-        """[S] Bans a user with their ID, doesn't message them."""
-        target_user = await self.bot.fetch_user(target)
-        target_member = ctx.guild.get_member(target)
-        if target == ctx.author.id:
-            return await ctx.send("You can't do mod actions on yourself.")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
-            )
-        elif target_member and self.check_if_target_is_staff(target_member):
-            return await ctx.send("I can't ban this user as they're a member of staff.")
-
-        userlog(target, ctx.author, reason, "bans", target_user.name)
-
-        safe_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, str(target)
-        )
-
-        await ctx.guild.ban(
-            target_user, reason=f"{ctx.author}, reason: {reason}", delete_message_days=0
-        )
-        chan_message = (
-            f"⛔ **Hackban**: {str(ctx.author)} banned "
-            f"{target_user.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target}\n"
-        )
-        if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
-        else:
-            chan_message += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use "
-                "`.hackban <user> [reason]`."
-            )
-
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
-        await ctx.send(f"{safe_name} is now b&. 👍")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -388,11 +371,11 @@ class Mod(Cog):
     @commands.command()
     async def massban(self, ctx, *, targets: str):
         """[S] Bans users with their IDs, doesn't message them."""
+        msg = await ctx.send(f"🚨 **MASSBAN IN PROGRESS...** 🚨")
         targets_int = [int(target) for target in targets.strip().split(" ")]
         for target in targets_int:
             target_user = await self.bot.fetch_user(target)
             target_member = ctx.guild.get_member(target)
-            # Hedge-proofing the code
             if target == ctx.author.id:
                 await ctx.send(f"(re: {target}) You can't do mod actions on yourself.")
                 continue
@@ -403,11 +386,11 @@ class Mod(Cog):
                 continue
             elif target_member and self.check_if_target_is_staff(target_member):
                 await ctx.send(
-                    f"(re: {target}) I can't ban this user as they're a member of staff."
+                    f"(re: {target}) I cannot ban Staff members."
                 )
                 continue
 
-            userlog(target, ctx.author, f"massban", "bans", target_user.name)
+            userlog(target, ctx.author, f"Part of a massban. ({ctx.message.jump_url})", "bans", target_user.name)
 
             safe_name = await commands.clean_content(escape_markdown=True).convert(
                 ctx, str(target)
@@ -415,71 +398,113 @@ class Mod(Cog):
 
             await ctx.guild.ban(
                 target_user,
-                reason=f"{ctx.author}, reason: massban",
+                reason=f"[ Ban by {ctx.author} ] Massban.",
                 delete_message_days=0,
             )
-            chan_message = (
-                f"⛔ **Massban**: {str(ctx.author)} banned "
-                f"{target_user.mention} | {safe_name}\n"
-                f"🏷 __User ID__: {target}\n"
-                "Please add an explanation below."
+            
+            # Prepare embed msg
+            embed = discord.Embed(
+                color=discord.Colour.from_str("#FF0000"), title="🚨 Massban", description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
             )
-
-            chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+            embed.set_footer(text="Dishwasher")
+            embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+            embed.add_field(
+                name=f"👤 User",
+                value=f"**{safe_name}**\n{target.mention} ({target.id})",
+                inline=True
+            )
+            embed.add_field(
+                name=f"🛠️ Staff",
+                value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+                inline=True
+            )
 
             log_channel = self.bot.get_channel(config.modlog_channel)
             await log_channel.send(chan_message)
-        await ctx.send(f"All {len(targets_int)} users are now b&. 👍")
+        await msg.edit(f"All {len(targets_int)} users are now BANNED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command()
-    async def unban(self, ctx, target: int, *, reason: str = ""):
+    async def unban(self, ctx, target, *, reason: str = ""):
         """[S] Unbans a user with their ID, doesn't message them."""
-        target_user = await self.bot.fetch_user(target)
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target_user = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target_user = await self.bot.get_user(target[2:-1])
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
         )
 
-        await ctx.guild.unban(target_user, reason=f"{ctx.author}, reason: {reason}")
-        chan_message = (
-            f"⚠️ **Unban**: {str(ctx.author)} unbanned "
-            f"{target_user.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target}\n"
+        await ctx.guild.unban(target_user, reason=f"[ Unban by {ctx.author} ] {reason}")
+            
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#00FF00"), title="🎁 Unban", description=f"{target.mention} was unbanned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{safe_name}**\n{target.mention} ({target.id})",
+            inline=True
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+            inline=True
         )
         if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"{reason}",
+                inline=False
+            )
         else:
-            chan_message += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use "
-                "`.unban <user id> [reason]`."
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"**No reason provided!**\nPlease use `pws unban <user> [reason]` in the future.",
+                inline=False
             )
 
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
         log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
-        await ctx.send(f"{safe_name} is now unb&.")
+        await log_channel.send(embed=embed)
+        await ctx.send(f"{safe_name} is now UNBANNED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
+    @commands.command(aliases=["silentban"])
     @commands.command()
-    async def silentban(self, ctx, target: discord.Member, *, reason: str = ""):
-        """[S] Bans a user, does not message them."""
+    async def sban(self, ctx, target, *, reason: str = ""):
+        """[S] Bans a user silently. Does not message them."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.get_user(target[2:-1])
+
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
-            return await ctx.send("I can't ban this user as they're a member of staff.")
+            return await ctx.send("I cannot ban Staff members.")
 
-        userlog(target.id, ctx.author, reason, "bans", target.name)
+        if reason:
+            userlog(target.id, ctx.author, reason, "bans", target.name)
+        else:
+            userlog(target.id, ctx.author, f"No reason provided. ({ctx.message.jump_url})", "bans", target.name)
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
@@ -488,24 +513,38 @@ class Mod(Cog):
         await target.ban(
             reason=f"{ctx.author}, reason: {reason}", delete_message_days=0
         )
-        chan_message = (
-            f"⛔ **Silent ban**: {str(ctx.author)} banned "
-            f"{target.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target.id}\n"
+
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FF0000"), title="⛔ Silent Ban", description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{safe_name}**\n{target.mention} ({target.id})",
+            inline=True
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+            inline=True
         )
         if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"{reason}",
+                inline=False
+            )
         else:
-            chan_message += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use `.ban <user> [reason]`"
-                " as the reason is automatically sent to the user."
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"**No reason provided!**\nPlease use `pws sban <user> [reason]` in the future.",
+                inline=False
             )
 
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
         log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
+        await log_channel.send(embed=embed)
 
 #    Unneeded.
 #    @commands.guild_only()
@@ -581,8 +620,17 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def warn(self, ctx, target: discord.Member, *, reason: str = ""):
+    async def warn(self, ctx, target, *, reason: str = ""):
         """[S] Warns a user."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.get_user(target[2:-1])
+
         if target == ctx.author:
             return await ctx.send("No.")
         elif target == self.bot.user:
@@ -596,55 +644,64 @@ class Mod(Cog):
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
+        
+        if reason:
+            warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
+        else:
+            warn_count = userlog(target.id, ctx.author, f"No reason provided. ({ctx.message.jump_url})", "warns", target.name)
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
         )
-        chan_msg = (
-            f"⚠️ **Warned**: {str(ctx.author)} warned "
-            f"{target.mention} (warn #{warn_count}) "
-            f"| {safe_name}\n"
+        
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FFFF00"), title="🗞️ Warn #{warn_count}", description=f"{target.mention} was warned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
         )
-
-        msg = f"**You were warned** on `{ctx.guild.name}`."
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{safe_name}**\n{target.mention} ({target.id})",
+            inline=True
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+            inline=True
+        )
         if reason:
-            msg += " The given reason is: " + reason
-        msg += (
-            f"\nPlease read the rules in {config.rules_url}. "
-            f"This is warn #{warn_count}."
-        )
-#        if warn_count == 4:
-#            msg += (
-#                "\n\nThis is your final warning. "
-#                "**One more warn will result in a ban**."
-#            )
-#        if warn_count == 5:
-#            msg += "\n\nYou were automatically permanently banned due to five warnings."
-#            chan_msg += "**This resulted in an auto-permaban.**\n"
-        try:
-            await target.send(msg)
-        except discord.errors.Forbidden:
-            # Prevents log issues in cases where user blocked bot
-            # or has DMs disabled
-            pass
-#        if warn_count >= 5:  # just in case
-#            await target.ban(reason="Exceeded warn limit", delete_message_days=0)
-        await ctx.send(
-            f"{target.mention} has been warned. User has {warn_count} warning(s)."
-        )
-
-        if reason:
-            chan_msg += f'✏️ __Reason__: "{reason}"'
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"{reason}",
+                inline=False
+            )
         else:
-            chan_msg += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use `.warn <user> [reason]`"
-                " as the reason is automatically sent to the user."
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"**No reason was set!**\nPlease use `pws warn <user> [reason]` in the future.\Warn reasons are sent to the user.",
+                inline=False
             )
 
-        chan_msg += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+        if ctx.guild.get_member(target.id) is not None:
+            msg = f"**You were warned** on `{ctx.guild.name}`."
+            if reason:
+            msg += "\nThe given reason is: " + reason
+            msg += (
+                f"\n\nPlease read the rules in {config.rules_url}. "
+                f"This is warn #{warn_count}."
+            )
+            try:
+                await target.send(msg)
+            except discord.errors.Forbidden:
+                # Prevents log issues in cases where user blocked bot
+                # or has DMs disabled
+                pass
 
-        await log_channel.send(chan_msg)
+        await ctx.send(
+            f"{target.mention} has been warned. This user now has {warn_count} warning(s)."
+        )
+        await log_channel.send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
