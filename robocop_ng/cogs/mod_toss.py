@@ -19,7 +19,7 @@ class ModToss(Cog):
         invalid_ids = []
 
         if user_ids.isnumeric():
-            tmp_user = await ctx.guild.get_or_fetch_member(int(user_ids))
+            tmp_user = ctx.guild.get_member(int(user_ids))
             if tmp_user is not None:
                 user_id_list.append(tmp_user)
             else:
@@ -31,7 +31,7 @@ class ModToss(Cog):
             user_ids_split = user_ids.split()
             for n in user_ids_split:
                 if n.isnumeric():
-                    user = await ctx.guild.get_or_fetch_member(int(n))
+                    user = ctx.guild.get_member(int(n))
                     if user is not None:
                         user_id_list.append(user)
                     else:
