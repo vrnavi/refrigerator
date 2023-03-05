@@ -116,7 +116,7 @@ class ModToss(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
-    @bot.command()
+    @commands.command()
     async def untoss(ctx, *, user_ids):
         user_id_list, invalid_ids = await get_user_list(ctx, user_ids)
         name_list = ""
