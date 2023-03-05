@@ -29,7 +29,7 @@ class ModWatch(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def unwatch(self, ctx, target: discord.Member, *, note: str = ""):
+    async def unwatch(self, ctx, target, *, note: str = ""):
         """[S] Removes a user from watch."""
         # target handler
         # In the case of IDs.
