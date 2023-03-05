@@ -43,7 +43,7 @@ class ModToss(Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
     @commands.command()
-    async def toss(ctx, *, user_ids):
+    async def toss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = await get_user_list(ctx, user_ids)
         name_list = ""
         for us in user_id_list:
@@ -117,7 +117,7 @@ class ModToss(Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
     @commands.command()
-    async def untoss(ctx, *, user_ids):
+    async def untoss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = await get_user_list(ctx, user_ids)
         name_list = ""
         
