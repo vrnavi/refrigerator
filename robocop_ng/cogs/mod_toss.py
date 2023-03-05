@@ -51,7 +51,7 @@ class ModToss(Cog):
                 await ctx.reply("For your own safety and the safety of others, please refrain from tossing yourself.")
                 continue
 
-            if us.id == bot.application_id:
+            if us.id == self.bot.application_id:
                 await ctx.reply(f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that.", mention_author=False)
                 continue
                 
@@ -122,7 +122,7 @@ class ModToss(Cog):
         name_list = ""
         
         for us in user_id_list:
-            if us.id == bot.application_id:
+            if us.id == self.bot.application_id:
                 await ctx.reply("Leave me alone.")
                 continue
 
