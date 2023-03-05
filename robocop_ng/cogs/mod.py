@@ -479,7 +479,6 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["silentban"])
-    @commands.command()
     async def sban(self, ctx, target, *, reason: str = ""):
         """[S] Bans a user silently. Does not message them."""
         # target handler
