@@ -121,7 +121,7 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["boot"])
     async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Kicks a user."""
         if target == ctx.author:
@@ -277,7 +277,6 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["bandel"])
-    @commands.command()
     async def dban(
         self, ctx, day_count: int, target, *, reason: str = ""
     ):
