@@ -12,35 +12,36 @@ class ModWatch(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def watch(self, ctx, target: discord.Member, *, note: str = ""):
+    async def watch(self, ctx, target, *, note: str = ""):
         """[S] Puts a user under watch."""
-        setwatch(target.id, ctx.author, True, target.name)
-        await ctx.send(f"{ctx.author.mention}: user is now on watch.")
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
 
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command()
-    async def watchid(self, ctx, target: int, *, note: str = ""):
-        """[S] Puts a user under watch by ID."""
-        setwatch(target, ctx.author, True, target.name)
-        await ctx.send(f"{target.mention}: user is now on watch.")
+        setwatch(target.id, ctx.author, True, target.name)
+        await ctx.send(f"User is now on watch.")
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def unwatch(self, ctx, target: discord.Member, *, note: str = ""):
         """[S] Removes a user from watch."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
+
         setwatch(target.id, ctx.author, False, target.name)
-        await ctx.send(f"{ctx.author.mention}: user is now not on watch.")
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command()
-    async def unwatchid(self, ctx, target: int, *, note: str = ""):
-        """[S] Removes a user from watch by ID."""
-        setwatch(target, ctx.author, False, target.name)
-        await ctx.send(f"{target.mention}: user is now not on watch.")
-
+        await ctx.send(f"User is now not on watch.")
 
 async def setup(bot):
     await bot.add_cog(ModWatch(bot))
