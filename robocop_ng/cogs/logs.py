@@ -394,22 +394,29 @@ class Logs(Cog):
         if member_after.guild.id not in config.guild_whitelist:
             return
 
-        msg = ""
+        updated = False
+        # initialize embed
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#0000FF"), title="ℹ️ Member Update", description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)}", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(member_after)}", icon_url=f"{member_after.display_avatar.url}")
+        
         log_channel = self.bot.get_channel(config.log_channel)
         if member_before.roles != member_after.roles:
-            # role removal
+            # role removal code
             role_removal = []
             for index, role in enumerate(member_before.roles):
                 if role not in member_after.roles:
                     role_removal.append(role)
-            # role addition
+            # role addition code
             role_addition = []
             for index, role in enumerate(member_after.roles):
                 if role not in member_before.roles:
                     role_addition.append(role)
 
             if len(role_addition) != 0 or len(role_removal) != 0:
-                msg += "\n👑 __Role change__: "
+                updated = True
                 roles = []
                 for role in role_removal:
                     roles.append("_~~" + role.name + "~~_")
@@ -420,31 +427,34 @@ class Logs(Cog):
                         continue
                     if role not in role_removal and role not in role_addition:
                         roles.append(role.name)
-                msg += ", ".join(roles)
+                embed.add_field(
+                    name=f"🎨 Role Change",
+                    value=f'{"\n".join(roles)}',
+                    inline=False
+                )
 
         if member_before.name != member_after.name:
-            msg += (
-                "\n📝 __Username change__: "
-                f"{self.bot.escape_message(member_before)} → "
-                f"{self.bot.escape_message(member_after)}"
+            updated = True
+            embed.add_field(
+                name=f"📝  Username Change",
+                value=f'❌ {self.bot.escape_message(member_before)}\n⬇️\n⭕ {self.bot.escape_message(member_after)}',
+                inline=False
             )
         if member_before.nick != member_after.nick:
+            updated = True
             if not member_before.nick:
-                msg += "\n🏷 __Nickname addition__"
+                fname = "🏷 Nickname Added"
             elif not member_after.nick:
-                msg += "\n🏷 __Nickname removal__"
+                fname =  "🏷 Nickname Removed"
             else:
-                msg += "\n🏷 __Nickname change__"
-            msg += (
-                f": {self.bot.escape_message(member_before.nick)} → "
-                f"{self.bot.escape_message(member_after.nick)}"
+                fname = "🏷 Nickname Changed"
+            embed.add_field(
+                name=f"{fname}",
+                value=f'❌ {self.bot.escape_message(member_before.nick)}\n⬇️\n⭕ {self.bot.escape_message(member_after.nick)}',
+                inline=False
             )
-        if msg:
-            msg = (
-                f"ℹ️ **Member update**: {member_after} ("
-                f"{self.bot.escape_message(member_after.id)}){msg}"
-            )
-            await log_channel.send(msg)
+        if updated:
+            await log_channel.send(embed=embed)
 
 
 async def setup(bot):
