@@ -7,6 +7,7 @@ import aiohttp
 import config
 import random
 import discord
+import datetime
 from discord.ext import commands
 
 # TODO: check __name__ for __main__ nerd
