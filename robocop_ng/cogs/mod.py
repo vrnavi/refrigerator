@@ -34,89 +34,90 @@ class Mod(Cog):
         img_file = discord.File(io.BytesIO(img_bytes), filename=img_filename)
         await log_channel.send(log_msg, file=img_file)
 
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command()
-    async def mute(self, ctx, target: discord.Member, *, reason: str = ""):
-        """[S] Mutes a user."""
-        # Hedge-proofing the code
-        if target == ctx.author:
-            return await ctx.send("You can't do that on yourself.")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
-            )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send(
-                "I can't mute this user as they're a member of staff."
-            )
-
-        userlog(target.id, ctx.author, reason, "mutes", target.name)
-
-        safe_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, str(target)
-        )
-
-        dm_message = f"You were muted!"
-        if reason:
-            dm_message += f' The given reason is: "{reason}".'
-
-        try:
-            await target.send(dm_message)
-        except discord.errors.Forbidden:
-            # Prevents kick issues in cases where user blocked bot
-            # or has DMs disabled
-            pass
-
-        mute_role = ctx.guild.get_role(config.mute_role)
-
-        await target.add_roles(mute_role, reason=str(ctx.author))
-
-        chan_message = (
-            f"🔇 **Muted**: {str(ctx.author)} muted "
-            f"{target.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target.id}\n"
-        )
-        if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
-        else:
-            chan_message += (
-                "Please add an explanation below. In the future, "
-                "it is recommended to use `.mute <user> [reason]`"
-                " as the reason is automatically sent to the user."
-            )
-
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
-        await ctx.send(f"{target.mention} can no longer speak.")
-        add_restriction(target.id, config.mute_role)
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command()
-    async def unmute(self, ctx, target: discord.Member):
-        """[S] Unmutes a user."""
-        safe_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, str(target)
-        )
-
-        mute_role = ctx.guild.get_role(config.mute_role)
-        await target.remove_roles(mute_role, reason=str(ctx.author))
-
-        chan_message = (
-            f"🔈 **Unmuted**: {str(ctx.author)} unmuted "
-            f"{target.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target.id}\n"
-        )
-
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
-        await ctx.send(f"{target.mention} can now speak again.")
-        remove_restriction(target.id, config.mute_role)
+#    TODO: Maybe replace with Toss feature?
+#    @commands.guild_only()
+#    @commands.check(check_if_staff)
+#    @commands.command()
+#    async def mute(self, ctx, target: discord.Member, *, reason: str = ""):
+#        """[S] Mutes a user."""
+#        # Hedge-proofing the code
+#        if target == ctx.author:
+#            return await ctx.send("You can't do that on yourself.")
+#        elif target == self.bot.user:
+#            return await ctx.send(
+#                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+#            )
+#        elif self.check_if_target_is_staff(target):
+#            return await ctx.send(
+#                "I can't mute this user as they're a member of staff."
+#            )
+#
+#        userlog(target.id, ctx.author, reason, "mutes", target.name)
+#
+#        safe_name = await commands.clean_content(escape_markdown=True).convert(
+#            ctx, str(target)
+#        )
+#
+#        dm_message = f"You were muted!"
+#        if reason:
+#            dm_message += f' The given reason is: "{reason}".'
+#
+#        try:
+#            await target.send(dm_message)
+#        except discord.errors.Forbidden:
+#            # Prevents kick issues in cases where user blocked bot
+#            # or has DMs disabled
+#            pass
+#
+#        mute_role = ctx.guild.get_role(config.mute_role)
+#
+#        await target.add_roles(mute_role, reason=str(ctx.author))
+#
+#        chan_message = (
+#            f"🔇 **Muted**: {str(ctx.author)} muted "
+#            f"{target.mention} | {safe_name}\n"
+#            f"🏷 __User ID__: {target.id}\n"
+#        )
+#        if reason:
+#            chan_message += f'✏️ __Reason__: "{reason}"'
+#        else:
+#            chan_message += (
+#                "Please add an explanation below. In the future, "
+#                "it is recommended to use `.mute <user> [reason]`"
+#                " as the reason is automatically sent to the user."
+#            )
+#
+#        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+#
+#        log_channel = self.bot.get_channel(config.modlog_channel)
+#        await log_channel.send(chan_message)
+#        await ctx.send(f"{target.mention} can no longer speak.")
+#        add_restriction(target.id, config.mute_role)
+#
+#    @commands.guild_only()
+#    @commands.check(check_if_staff)
+#    @commands.command()
+#    async def unmute(self, ctx, target: discord.Member):
+#        """[S] Unmutes a user."""
+#        safe_name = await commands.clean_content(escape_markdown=True).convert(
+#            ctx, str(target)
+#        )
+#
+#        mute_role = ctx.guild.get_role(config.mute_role)
+#        await target.remove_roles(mute_role, reason=str(ctx.author))
+#
+#        chan_message = (
+#            f"🔈 **Unmuted**: {str(ctx.author)} unmuted "
+#            f"{target.mention} | {safe_name}\n"
+#            f"🏷 __User ID__: {target.id}\n"
+#        )
+#
+#        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+#
+#        log_channel = self.bot.get_channel(config.modlog_channel)
+#        await log_channel.send(chan_message)
+#        await ctx.send(f"{target.mention} can now speak again.")
+#        remove_restriction(target.id, config.mute_role)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
@@ -543,59 +544,6 @@ class Mod(Cog):
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         await log_channel.send(embed=embed)
-
-#    Unneeded.
-#    @commands.guild_only()
-#    @commands.check(check_if_staff)
-#    @commands.command()
-#    async def approve(self, ctx, target: discord.Member, role: str = "journal"):
-#        """[S] Add a role to a user (default: journal)."""
-#        if role not in config.named_roles:
-#            return await ctx.send(
-#                "No such role! Available roles: " + ",".join(config.named_roles)
-#            )
-#
-#        log_channel = self.bot.get_channel(config.modlog_channel)
-#        target_role = ctx.guild.get_role(config.named_roles[role])
-#
-#        if target_role in target.roles:
-#            return await ctx.send("Target already has this role.")
-#
-#        await target.add_roles(target_role, reason=str(ctx.author))
-#
-#        await ctx.send(f"Approved {target.mention} to `{role}` role.")
-#
-#        await log_channel.send(
-#            f"✅ Approved: {str(ctx.author)} added"
-#            f" {role} to {target.mention}"
-#            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-#        )
-#
-#    @commands.guild_only()
-#    @commands.check(check_if_staff)
-#    @commands.command(aliases=["unapprove"])
-#    async def revoke(self, ctx, target: discord.Member, role: str = "journal"):
-#        """[S] Remove a role from a user (default: journal)."""
-#        if role not in config.named_roles:
-#            return await ctx.send(
-#                "No such role! Available roles: " + ",".join(config.named_roles)
-#            )
-#
-#        log_channel = self.bot.get_channel(config.modlog_channel)
-#        target_role = ctx.guild.get_role(config.named_roles[role])
-#
-#        if target_role not in target.roles:
-#            return await ctx.send("Target doesn't have this role.")
-#
-#        await target.remove_roles(target_role, reason=str(ctx.author))
-#
-#        await ctx.send(f"Un-approved {target.mention} from `{role}` role.")
-#
-#        await log_channel.send(
-#            f"❌ Un-approved: {str(ctx.author)} removed"
-#            f" {role} from {target.mention}"
-#            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-#        )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
