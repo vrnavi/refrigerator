@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Cog
 import config
+import datetime
 from helpers.checks import check_if_staff, check_if_bot_manager
 from helpers.userlogs import userlog
 from helpers.restrictions import add_restriction, remove_restriction
@@ -124,14 +125,14 @@ class Mod(Cog):
     async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Kicks a user."""
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
             return await ctx.send(
-                "I can't kick this user as they're a member of staff."
+                "I cannot kick Staff members."
             )
 
         userlog(target.id, ctx.author, reason, "kicks", target.name)
@@ -140,9 +141,9 @@ class Mod(Cog):
             ctx, str(target)
         )
 
-        dm_message = f"You were kicked from {ctx.guild.name}."
+        dm_message = f"**You were kicked** from `{ctx.guild.name}`."
         if reason:
-            dm_message += f' The given reason is: "{reason}".'
+            dm_message += f'\n*The given reason is:* "{reason}".'
         dm_message += (
             "\n\nYou are able to rejoin the server,"
             " but please be sure to behave when participating again."
@@ -155,27 +156,40 @@ class Mod(Cog):
             # or has DMs disabled
             pass
 
-        await target.kick(reason=f"{ctx.author}, reason: {reason}")
-        chan_message = (
-            f"👢 **Kick**: {str(ctx.author)} kicked "
-            f"{target.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target.id}\n"
+        await target.kick(reason=f"[ Kick by {ctx.author} ] {reason}")
+            
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FFFF00"), title="👢 Kick", description=f"{target.mention} was kicked by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{safe_name}**\n{target.mention} ({target.id})",
+            inline=True
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+            inline=True
         )
         if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"{reason}",
+                inline=False
+            )
         else:
-            chan_message += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use "
-                "`.kick <user> [reason]`"
-                " as the reason is automatically sent to the user."
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"**No reason was set!**\nPlease use `pws kick <user> [reason]` in the future.\Kick reasons are sent to the user.",
+                inline=False
             )
 
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
         log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
-        await ctx.send(f"👢 {safe_name}, 👍.")
+        await log_channel.send(embed=embed)
+        await ctx.send(f"**{target.mention}** was KICKED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -184,13 +198,13 @@ class Mod(Cog):
     async def ban(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Bans a user."""
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
-            return await ctx.send("I can't ban this user as they're a member of staff.")
+            return await ctx.send("I cannot ban Staff members.")
 
         userlog(target.id, ctx.author, reason, "bans", target.name)
 
@@ -198,10 +212,10 @@ class Mod(Cog):
             ctx, str(target)
         )
 
-        dm_message = f"You were banned from {ctx.guild.name}."
+        dm_message = f"**You were banned** from `{ctx.guild.name}`."
         if reason:
-            dm_message += f' The given reason is: "{reason}".'
-        dm_message += "\n\nThis ban does not expire."
+            dm_message += f'\n*The given reason is:* "{reason}".'
+        dm_message += "\n\nThis ban does not expire, but you may appeal it here:\nhttps://os.whistler.page/appeal"
 
         try:
             await target.send(dm_message)
@@ -211,27 +225,41 @@ class Mod(Cog):
             pass
 
         await target.ban(
-            reason=f"{ctx.author}, reason: {reason}", delete_message_days=0
+            reason=f"[ Ban by {ctx.author} ] {reason}", delete_message_days=0
         )
-        chan_message = (
-            f"⛔ **Ban**: {str(ctx.author)} banned "
-            f"{target.mention} | {safe_name}\n"
-            f"🏷 __User ID__: {target.id}\n"
+
+        # Prepare embed msg
+        embed = discord.Embed(
+            color=color=discord.Colour.from_str("#FF0000"), title="⛔ Ban", description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])", timestamp=datetime.datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{self.bot.escape_message(target)}", icon_url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{safe_name}**\n{target.mention} ({target.id})",
+            inline=True
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+            inline=True
         )
         if reason:
-            chan_message += f'✏️ __Reason__: "{reason}"'
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"{reason}",
+                inline=False
+            )
         else:
-            chan_message += (
-                "Please add an explanation below. In the future"
-                ", it is recommended to use `.ban <user> [reason]`"
-                " as the reason is automatically sent to the user."
+            embed.add_field(
+                name=f"📝 Reason",
+                value=f"**No reason was set!**\nPlease use `pws ban <user> [reason]` in the future.\nBan reasons are sent to the user.",
+                inline=False
             )
 
-        chan_message += f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-
         log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(chan_message)
-        await ctx.send(f"{safe_name} is now b&. 👍")
+        await log_channel.send(embed=embed)
+        await ctx.send(f"**{target.mention}** is now BANNED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -636,7 +664,7 @@ class Mod(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["send"])
     async def speak(self, ctx, channel: discord.TextChannel, *, the_text: str):
         """[S] Posts a given text in a given channel."""
         await channel.send(the_text)

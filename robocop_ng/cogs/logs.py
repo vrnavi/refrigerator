@@ -114,10 +114,10 @@ class Logs(Cog):
         #    await log_channel.send(msg)
         #    return
             
-        # Prepared embed msg
+        # Prepare embed msg
         embeds = []
         embed = discord.Embed(
-            color=discord.Color.lighter_gray(), title="📥 User Joined", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.lighter_gray(), title="📥 User Joined", description=f"<@{member.id}> ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
@@ -250,17 +250,17 @@ class Logs(Cog):
 
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.light_gray(), title="📝 Message Edit", description=f"<@{after.author.id}>  ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
+            color=discord.Color.light_gray(), title="📝 Message Edit", description=f"<@{after.author.id}> ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{self.bot.escape_message(after.author.name)}", icon_url=f"{after.author.display_avatar.url}")
+        embed.set_author(name=f"{self.bot.escape_message(after.author)}", icon_url=f"{after.author.display_avatar.url}")
         embed.add_field(
-            name=f"❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>:",
+            name=f"❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>",
             value=f">>> {before_content}",
             inline=True
         )
         embed.add_field(
-            name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>:",
+            name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
             value=f">>> {after_content}",
             inline=True
         )
@@ -291,10 +291,10 @@ class Logs(Cog):
         
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.dark_gray(), title="🗑️ Message Delete", description=f"<@{message.author.id}>  ({message.author.id}) [{message.channel.mention}]", timestamp=datetime.datetime.now()
+            color=discord.Color.dark_gray(), title="🗑️ Message Delete", description=f"<@{message.author.id}> ({message.author.id}) [{message.channel.mention}]", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{self.bot.escape_message(message.author.name)}", icon_url=f"{message.author.display_avatar.url}")
+        embed.set_author(name=f"{self.bot.escape_message(message.author)}", icon_url=f"{message.author.display_avatar.url}")
         embed.add_field(
             name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
             value=f">>> {message.clean_content}",
@@ -328,7 +328,7 @@ class Logs(Cog):
         
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.darker_gray(), title="📥 User Left", description=f"<@{member.id}>  ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.darker_gray(), title="📥 User Left", description=f"<@{member.id}> ({member.id})", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
