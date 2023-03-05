@@ -93,19 +93,13 @@ async def on_error(event_method, *args, **kwargs):
 async def on_command_error(ctx, error):
     error_text = str(error)
 
-    # Prepare embed msg
-    embed = discord.Embed(
-        color=discord.Colour.from_str("#FFFF00"), title="⚠️ Error", description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id})", timestamp=datetime.datetime.now()
-    )
-    embed.set_footer(text="Dishwasher")
-    embed.set_author(name=f"{bot.escape_message(ctx.message.author)}", icon_url=f"{ctx.message.author.display_avatar.url}")
-    embed.add_field(
-        name=f"📜 Log",
-        value=f"```{type(error)}: {error_text}```",
-        inline=False
+    err_msg = (
+        f'⚠️ **Error:**\nAn error occurred with `{ctx.message.content}` from '
+        f'{ctx.message.author} ({ctx.message.author.id}):\n'
+        f"```{type(error)}: {error_text}```"
     )
 
-    log.error(embed=embed)
+    log.error(err_msg)
 
     if not isinstance(error, commands.CommandNotFound):
         err_msg = bot.escape_message(err_msg)
