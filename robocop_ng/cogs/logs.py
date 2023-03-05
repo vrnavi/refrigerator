@@ -427,9 +427,10 @@ class Logs(Cog):
                         continue
                     if role not in role_removal and role not in role_addition:
                         roles.append(role.name)
+                rolelist = "\n".join(roles)
                 embed.add_field(
                     name=f"🎨 Role Change",
-                    value=f'{"\n".join(roles)}',
+                    value=f'{rolelist}',
                     inline=False
                 )
 
