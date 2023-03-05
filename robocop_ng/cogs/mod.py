@@ -627,7 +627,7 @@ class Mod(Cog):
             target = await self.bot.fetch_user(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.get_user(target[2:-1])
+            target = await self.bot.fetch_user(target[2:-1])
 
         if target == ctx.author:
             return await ctx.send("No.")
