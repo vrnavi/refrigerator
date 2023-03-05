@@ -12,7 +12,7 @@ class ModNote(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["addnote"])
-    async def note(self, ctx, target: discord.Member, *, note: str = ""):
+    async def note(self, ctx, target, *, note: str = ""):
         """[S] Adds a note to a user."""
         # target handler
         # In the case of IDs.
