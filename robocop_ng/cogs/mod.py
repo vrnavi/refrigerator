@@ -686,7 +686,7 @@ class Mod(Cog):
         if ctx.guild.get_member(target.id) is not None:
             msg = f"**You were warned** on `{ctx.guild.name}`."
             if reason:
-            msg += "\nThe given reason is: " + reason
+                msg += "\nThe given reason is: " + reason
             msg += (
                 f"\n\nPlease read the rules in {config.rules_url}. "
                 f"This is warn #{warn_count}."
