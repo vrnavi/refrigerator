@@ -204,7 +204,7 @@ class Mod(Cog):
             target = await self.bot.fetch_user(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.get_user(target[2:-1])
+            target = await self.bot.fetch_user(target[2:-1])
             
         if target == ctx.author:
             return await ctx.send("**No.**")
@@ -287,7 +287,7 @@ class Mod(Cog):
             target = await self.bot.fetch_user(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.get_user(target[2:-1])
+            target = await self.bot.fetch_user(target[2:-1])
 
         if target == ctx.author:
             return await ctx.send("**No.**")
@@ -434,7 +434,7 @@ class Mod(Cog):
             target_user = await self.bot.fetch_user(target_id)
         # In the case of mentions.
         except ValueError:
-            target_user = await self.bot.get_user(target[2:-1])
+            target_user = await self.bot.fetch_user(target[2:-1])
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
@@ -488,7 +488,7 @@ class Mod(Cog):
             target = await self.bot.fetch_user(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.get_user(target[2:-1])
+            target = await self.bot.fetch_user(target[2:-1])
 
         if target == ctx.author:
             return await ctx.send("**No.**")
