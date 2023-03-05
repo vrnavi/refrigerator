@@ -44,7 +44,7 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def toss(self, ctx, *, user_ids):
-        user_id_list, invalid_ids = get_user_list(ctx, user_ids)
+        user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         name_list = ""
         for us in user_id_list:
             if us.id == ctx.author.id:
@@ -118,7 +118,7 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def untoss(self, ctx, *, user_ids):
-        user_id_list, invalid_ids = get_user_list(ctx, user_ids)
+        user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         name_list = ""
         
         for us in user_id_list:
