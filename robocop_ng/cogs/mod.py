@@ -121,7 +121,6 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
-    @commands.command(aliases=["boot"])
     @commands.command()
     async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Kicks a user."""
