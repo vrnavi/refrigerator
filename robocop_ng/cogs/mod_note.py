@@ -14,17 +14,17 @@ class ModNote(Cog):
     @commands.command(aliases=["addnote"])
     async def note(self, ctx, target: discord.Member, *, note: str = ""):
         """[S] Adds a note to a user."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
+
         userlog(target.id, ctx.author, note, "notes", target.name)
         await ctx.send(f"Noted.")
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command(aliases=["addnoteid"])
-    async def noteid(self, ctx, target: int, *, note: str = ""):
-        """[S] Adds a note to a user by ID."""
-        userlog(target, ctx.author, note, "notes")
-        await ctx.send(f"Noted.")
-
 
 async def setup(bot):
     await bot.add_cog(ModNote(bot))
