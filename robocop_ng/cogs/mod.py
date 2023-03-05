@@ -548,7 +548,7 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["clear"])
-    async def purge(self, ctx, limit: int, channel: discord.TextChannel = None):
+    async def purge(self, ctx, limit: int = 50, channel: discord.TextChannel = None):
         """[S] Clears a given number of messages."""
         log_channel = self.bot.get_channel(config.modlog_channel)
         if not channel:
