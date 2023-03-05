@@ -562,7 +562,7 @@ class Mod(Cog):
         embed.set_author(name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}")
         
         await log_channel.send(embed=embed)
-        await ctx.send(f"🚮 `{target}` messages purged.")
+        await ctx.send(f"🚮 `{limit}` messages purged.")
 
     @commands.guild_only()
     @commands.check(check_if_staff)
