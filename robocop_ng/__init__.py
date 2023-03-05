@@ -92,17 +92,17 @@ async def on_error(event_method, *args, **kwargs):
 async def on_command_error(ctx, error):
     error_text = str(error)
 
-        # Prepare embed msg
-        embed = discord.Embed(
-            color=discord.Colour.from_str("#FFFF00"), title="⚠️ Error", description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id})", timestamp=datetime.datetime.now()
-        )
-        embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{self.bot.escape_message(ctx.message.author)}", icon_url=f"{ctx.message.author.display_avatar.url}")
-        embed.add_field(
-            name=f"📜 Log",
-            value=f"```{type(error)}: {error_text}```",
-            inline=False
-        )
+    # Prepare embed msg
+    embed = discord.Embed(
+        color=discord.Colour.from_str("#FFFF00"), title="⚠️ Error", description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id})", timestamp=datetime.datetime.now()
+    )
+    embed.set_footer(text="Dishwasher")
+    embed.set_author(name=f"{self.bot.escape_message(ctx.message.author)}", icon_url=f"{ctx.message.author.display_avatar.url}")
+    embed.add_field(
+        name=f"📜 Log",
+        value=f"```{type(error)}: {error_text}```",
+        inline=False
+    )
 
     log.error(embed=embed)
 
