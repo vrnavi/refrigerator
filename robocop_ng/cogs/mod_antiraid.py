@@ -1,3 +1,5 @@
+# This Cog contains code from discord-mass-lockdown, which was made by Roadcrosser.
+# https://github.com/Roadcrosser/discord-mass-lockdown
 from discord.ext import commands
 from discord.ext.commands import Cog
 import config
@@ -31,7 +33,7 @@ class ModAntiRaid(Cog):
         bot.RECENT_MEMBER_CACHE = None
         if bot.RECENT_JOIN_THRESHOLD > 0:
             bot.RECENT_MEMBER_CACHE = bot.GUILD.members
-            cull_recent_member_cache()
+            self.cull_recent_member_cache()
 
     def cull_recent_member_cache(ts=None):
         if bot.RECENT_JOIN_THRESHOLD <= 0:
@@ -82,7 +84,7 @@ class ModAntiRaid(Cog):
         return [
             c
             for c in bot.GUILD.text_channels
-            if c.permissions_for(bot.GUILD.me).manage_channels and is_public_channel(c)
+            if c.permissions_for(bot.GUILD.me).manage_channels and self.is_public_channel(c)
         ]
         
     def parse_channel_list(self, args):
@@ -192,14 +194,14 @@ class ModAntiRaid(Cog):
             )
 
         if success_channels:
-            await announce_lockdown(success_channels, lockdown)
+            await self.announce_lockdown(success_channels, lockdown)
 
         return ret
         
     async def execute_auto_lockdown(message):
         bot.AUTOLOCKDOWN_IN_PROGRESS = True
 
-        channel_list = get_public_channels()
+        channel_list = self.get_public_channels()
 
         staff_channel_accessible = (
             bot.STAFF_CHANNEL
@@ -210,7 +212,7 @@ class ModAntiRaid(Cog):
             staff_announce_msg = f"{message.author.mention} ({message.author.id}) mentioned `{len(message.mentions)}` members in {message.channel.mention}."
 
             if bot.RECENT_JOIN_THRESHOLD > 0:
-                cull_recent_member_cache(message.created_at)
+                self.cull_recent_member_cache(message.created_at)
                 staff_announce_msg += (
                     f"\nMembers who joined in the last {bot.RECENT_JOIN_THRESHOLD} seconds: "
                     + " ".join([m.mention for m in bot.RECENT_MEMBER_CACHE])
@@ -223,7 +225,7 @@ class ModAntiRaid(Cog):
 
             await bot.STAFF_CHANNEL.send(staff_announce_msg)
 
-        ret = await perform_lockdown(channel_list, True)
+        ret = await self.perform_lockdown(channel_list, True)
 
         if staff_channel_accessible:
             await bot.STAFF_CHANNEL.send(ret)    
@@ -234,10 +236,10 @@ class ModAntiRaid(Cog):
     async def lockdown(self, message, *, args = ""):
         channel_list = parse_channel_list(args)
         if not channel_list:
-            channel_list = get_public_channels()
+            channel_list = self.get_public_channels()
 
         async with message.channel.typing():
-            ret = await perform_lockdown(channel_list, True)
+            ret = await self.perform_lockdown(channel_list, True)
         await message.channel.send(ret)
         
     @commands.guild_only()
@@ -259,7 +261,7 @@ class ModAntiRaid(Cog):
                 return
 
         async with message.channel.typing():
-            ret = await perform_lockdown(channel_list, False)
+            ret = await self.perform_lockdown(channel_list, False)
 
         bot.AUTOLOCKDOWN_IN_PROGRESS = False
         await message.channel.send(ret)
@@ -281,18 +283,18 @@ class ModAntiRaid(Cog):
             # Check auto-lockdown not already in progress
             and not bot.AUTOLOCKDOWN_IN_PROGRESS
             # Check channel is public
-            and is_public_channel(message.channel)
+            and self.is_public_channel(message.channel)
             # Check for no roles (@everyone counts as a role internally)
             and len(message.author.roles) == 1
             # Check that mention count exceeds threshold
             and len(message.mentions) >= bot.MENTION_THRESHOLD
         ):
-            await execute_auto_lockdown(message)
+            await self.execute_auto_lockdown(message)
         
     @Cog.listener()
     async def on_member_join(member):
         bot.RECENT_MEMBER_CACHE.append(member)
-        cull_recent_member_cache()
+        self.cull_recent_member_cache()
 
 
 async def setup(bot):
