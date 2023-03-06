@@ -35,12 +35,12 @@ class ModObserve(Cog):
                 inline=True
             )
             if self.bot.raidmode == True:
-                rmstr = " "
+                rmstr = ""
             else:
-                rmstr = "not"
+                rmstr = "not "
             embed.add_field(
                 name="🚨 Raid mode...",
-                value=f"is {rmstr} enabled.",
+                value=f"is {rmstr}enabled.",
                 inline=False
             )
             embeds.append(embed)
