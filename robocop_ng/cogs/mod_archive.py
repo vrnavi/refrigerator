@@ -265,7 +265,7 @@ class ModArchive(Cog):
 
     @Cog.listener()
     async def on_member_remove(self, member):
-        if member.guild.id == config.guild_usage and is_rolebanned(member):
+        if member.guild.id == config.guild_usage and self.is_rolebanned(member):
             LAST_UNROLEBAN.set(
                 member.id, datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
             )
@@ -274,8 +274,8 @@ class ModArchive(Cog):
     async def on_member_update(self, before, after):
         if (
             before.guild.id == config.guild_usage
-            and is_rolebanned(before)
-            and not is_rolebanned(after)
+            and self.is_rolebanned(before)
+            and not self.is_rolebanned(after)
         ):
             LAST_UNROLEBAN.set(
                 after.id, datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
