@@ -232,35 +232,6 @@ class ModArchive(Cog):
                 return
 
             search_term = args
-            if (
-                args.startswith("search ")
-                and message.channel.permissions_for(message.guild.me).add_reactions
-            ):
-                m = await message.channel.send(
-                    "**Warning:**\nAre you sure you want to search for `{}`?\n\n*Answering ❎ will search for `{}` instead.*".format(
-                        args, args[7:]
-                    ),
-                )
-                for i in DECISION_EMOTES:
-                    await m.add_reaction(i)
-
-                def check(reaction, user):
-                    return (
-                        reaction.message.id == m.id
-                        and user.id == message.author.id
-                        and type(reaction.emoji) == str
-                        and reaction.emoji.id in DECISION_EMOTES
-                    )
-
-                try:
-                    reaction, user = await self.bot.wait_for(
-                        "reaction_add", timeout=60, check=check
-                    )
-                except asyncio.TimeoutError:
-                    pass
-
-                if reaction and reaction.emoji.id == DECISION_EMOTES[1]:
-                    search_term = args[7:]
 
             query += " and title contains '{}'".format(search_term)
             title += " for " + search_term
@@ -292,14 +263,14 @@ class ModArchive(Cog):
         
 
     @Cog.listener()
-    async def on_member_remove(member):
+    async def on_member_remove(self, member):
         if member.guild.id == GUILD_ID and is_rolebanned(member):
             LAST_UNROLEBAN.set(
                 member.id, datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
             )
         
     @Cog.listener()
-    async def on_member_update(before, after):
+    async def on_member_update(self, before, after):
         if (
             before.guild.id == GUILD_ID
             and is_rolebanned(before)
