@@ -41,7 +41,7 @@ class ModAntiRaid(Cog):
             return
 
         if not ts:
-            ts = datetime.datetime.utcnow()
+            ts = datetime.datetime.now(timezone.utc)
 
         cutoff_ts = ts - datetime.timedelta(seconds=self.bot.RECENT_JOIN_THRESHOLD)
 
