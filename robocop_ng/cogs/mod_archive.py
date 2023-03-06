@@ -96,7 +96,7 @@ class ModArchive(Cog):
     def is_rolebanned(self, member, hard=True):
         roleban = [r for r in member.guild.roles if r.id == config.toss_role_id]
         if roleban:
-            if config.toss_role_idin [r.id for r in member.roles]:
+            if config.toss_role_id in [r.id for r in member.roles]:
                 if hard:
                     return (
                         len(
