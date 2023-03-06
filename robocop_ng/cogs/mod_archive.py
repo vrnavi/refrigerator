@@ -146,6 +146,7 @@ class ModArchive(Cog):
         gauth.credentials = credentials
         drive = GoogleDrive(gauth)
         folder = config.drive_folder
+        message= ctx.message
 
         try:
             await message.channel.trigger_typing()
