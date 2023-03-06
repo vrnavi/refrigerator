@@ -90,7 +90,7 @@ class ModToss(Cog):
                         if not rr.is_assignable():
                             bad_no_good_terrible_roles.append(rr.name)
                         else:
-                            roles_actual.append(rr.name)
+                            roles_actual.append(rr)
                     await us.remove_roles(roles_actual, reason=f'User tossed by {ctx.author} ({ctx.author.id})')
 
                 bad_roles_msg = ""
