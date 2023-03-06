@@ -43,7 +43,7 @@ class ModAntiRaid(Cog):
         if not ts:
             ts = datetime.datetime.utcnow()
 
-        cutoff_ts = ts - datetime.timedelta(seconds=bot.RECENT_JOIN_THRESHOLD)
+        cutoff_ts = ts - datetime.timedelta(seconds=self.bot.RECENT_JOIN_THRESHOLD)
 
         self.bot.RECENT_MEMBER_CACHE = [
             m
