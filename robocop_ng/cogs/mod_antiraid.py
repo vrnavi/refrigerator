@@ -47,7 +47,7 @@ class ModAntiRaid(Cog):
 
         self.bot.RECENT_MEMBER_CACHE = [
             m
-            for m in bot.RECENT_MEMBER_CACHE
+            for m in self.bot.RECENT_MEMBER_CACHE
             # It's easier to cull members who leave here than on leave
             if self.bot.GUILD.get_member(m.id)
             # Cutoff is inclusive
