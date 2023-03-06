@@ -36,7 +36,7 @@ class ModAntiRaid(Cog):
             self.cull_recent_member_cache()
 
     def cull_recent_member_cache(self, ts=None):
-        if bot.RECENT_JOIN_THRESHOLD <= 0:
+        if self.bot.RECENT_JOIN_THRESHOLD <= 0:
             return
 
         if not ts:
@@ -44,11 +44,11 @@ class ModAntiRaid(Cog):
 
         cutoff_ts = ts - datetime.timedelta(seconds=bot.RECENT_JOIN_THRESHOLD)
 
-        bot.RECENT_MEMBER_CACHE = [
+        self.bot.RECENT_MEMBER_CACHE = [
             m
             for m in bot.RECENT_MEMBER_CACHE
             # It's easier to cull members who leave here than on leave
-            if bot.GUILD.get_member(m.id)
+            if self.bot.GUILD.get_member(m.id)
             # Cutoff is inclusive
             and m.joined_at >= cutoff_ts
         ]
@@ -83,12 +83,11 @@ class ModAntiRaid(Cog):
     def get_public_channels(self):
         return [
             c
-            for c in bot.GUILD.text_channels
-            if c.permissions_for(bot.GUILD.me).manage_channels and self.is_public_channel(c)
+            for c in self.bot.GUILD.text_channels
+            if c.permissions_for(self.bot.GUILD.me).manage_channels and self.is_public_channel(c)
         ]
         
     def parse_channel_list(self, args):
-        self.bot = bot
         if not args:
             return []
 
@@ -106,37 +105,37 @@ class ModAntiRaid(Cog):
 
         return [
             c
-            for c in bot.GUILD.channels
+            for c in self.bot.GUILD.channels
             if (c.id in affected_channels)
             or (c.name in affected_channels)
             and not isinstance(c, discord.TextChannel)
         ]
         
     async def announce_lockdown(self, channel_list, lockdown):
-        if not bot.ANNOUNCE_CHANNEL:
+        if not self.bot.ANNOUNCE_CHANNEL:
             return
 
         to_announce = channel_list
-        if bot.ANNOUNCE_CHANNEL != "all":
-            to_announce = [bot.ANNOUNCE_CHANNEL]
+        if self.bot.ANNOUNCE_CHANNEL != "all":
+            to_announce = [self.bot.ANNOUNCE_CHANNEL]
 
         for c in to_announce:
             if not c.permissions_for(c.guild.me).send_messages:
                 continue
 
-            message = bot.LOCKDOWN_ANNOUNCEMENT if lockdown else bot.UNLOCKDOWN_ANNOUNCEMENT
+            message = self.bot.LOCKDOWN_ANNOUNCEMENT if lockdown else self.bot.UNLOCKDOWN_ANNOUNCEMENT
 
             if message:
                 msg = await c.send(message)
                 if c.permissions_for(c.guild.me).manage_messages and lockdown:
                     try:
                         await msg.pin(reason="[Mass Lockdown Announcement]")
-                        bot.ANNOUNCE_MESSAGES[c.id] = msg
+                        self.bot.ANNOUNCE_MESSAGES[c.id] = msg
                     except:
                         pass
 
             if c.permissions_for(c.guild.me).manage_messages and not lockdown:
-                pinned_msg = bot.ANNOUNCE_MESSAGES.pop(c.id, None)
+                pinned_msg = self.bot.ANNOUNCE_MESSAGES.pop(c.id, None)
                 if pinned_msg:
                     try:
                         await pinned_msg.unpin(reason="[Mass Unlockdown Announcement]")
@@ -164,7 +163,7 @@ class ModAntiRaid(Cog):
             try:
                 for i, u in [
                     (c.guild.default_role, default_role_override),
-                    (bot.AUTHORIZED_ROLE, authorized_role_override),
+                    (self.bot.AUTHORIZED_ROLE, authorized_role_override),
                     (c.guild.me, bot_override),
                 ]:
                     if u.is_empty():
@@ -179,9 +178,9 @@ class ModAntiRaid(Cog):
                 success_channels.append(c)
 
                 if lockdown:
-                    bot.LOCKED_DOWN_CHANNELS.add(c.id)
+                    self.bot.LOCKED_DOWN_CHANNELS.add(c.id)
                 elif c.id in bot.LOCKED_DOWN_CHANNELS:
-                    bot.LOCKED_DOWN_CHANNELS.remove(c.id)
+                    self.bot.LOCKED_DOWN_CHANNELS.remove(c.id)
             except:
                 fail_channels.append(c.mention)
 
@@ -199,24 +198,24 @@ class ModAntiRaid(Cog):
 
         return ret
         
-    async def execute_auto_lockdown(message):
-        bot.AUTOLOCKDOWN_IN_PROGRESS = True
+    async def execute_auto_lockdown(self, message):
+        self.bot.AUTOLOCKDOWN_IN_PROGRESS = True
 
         channel_list = self.get_public_channels()
 
         staff_channel_accessible = (
-            bot.STAFF_CHANNEL
-            and bot.STAFF_CHANNEL.permissions_for(bot.STAFF_CHANNEL.guild.me).send_messages
+            self.bot.STAFF_CHANNEL
+            and self.bot.STAFF_CHANNEL.permissions_for(self.bot.STAFF_CHANNEL.guild.me).send_messages
         )
 
         if staff_channel_accessible:
             staff_announce_msg = f"{message.author.mention} ({message.author.id}) mentioned `{len(message.mentions)}` members in {message.channel.mention}."
 
-            if bot.RECENT_JOIN_THRESHOLD > 0:
+            if self.bot.RECENT_JOIN_THRESHOLD > 0:
                 self.cull_recent_member_cache(message.created_at)
                 staff_announce_msg += (
                     f"\nMembers who joined in the last {bot.RECENT_JOIN_THRESHOLD} seconds: "
-                    + " ".join([m.mention for m in bot.RECENT_MEMBER_CACHE])
+                    + " ".join([m.mention for m in self.bot.RECENT_MEMBER_CACHE])
                 )
 
             staff_announce_msg += (
@@ -224,12 +223,12 @@ class ModAntiRaid(Cog):
                 + " ".join([c.mention for c in channel_list])
             )
 
-            await bot.STAFF_CHANNEL.send(staff_announce_msg)
+            await self.bot.STAFF_CHANNEL.send(staff_announce_msg)
 
         ret = await self.perform_lockdown(channel_list, True)
 
         if staff_channel_accessible:
-            await bot.STAFF_CHANNEL.send(ret)    
+            await self.bot.STAFF_CHANNEL.send(ret)    
         
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -251,9 +250,9 @@ class ModAntiRaid(Cog):
         if not channel_list:
             channel_list = [
                 c
-                for c in bot.GUILD.text_channels
+                for c in self.bot.GUILD.text_channels
                 if c.permissions_for(bot.GUILD.me).manage_channels
-                and c.id in bot.LOCKED_DOWN_CHANNELS
+                and c.id in self.bot.LOCKED_DOWN_CHANNELS
             ]
             if not channel_list:
                 await message.channel.send(
@@ -264,37 +263,37 @@ class ModAntiRaid(Cog):
         async with message.channel.typing():
             ret = await self.perform_lockdown(channel_list, False)
 
-        bot.AUTOLOCKDOWN_IN_PROGRESS = False
+        self.bot.AUTOLOCKDOWN_IN_PROGRESS = False
         await message.channel.send(ret)
         
     @Cog.listener()
     async def on_message(message):
         if (
-            not bot.ready
+            not self.bot.ready
             or message.author.bot
             or not message.content
             or not message.guild
-            or message.guild.id != bot.GUILD.id
+            or message.guild.id != self.bot.GUILD.id
         ):
             return
 
         if (
             # Check auto-lockdown is enabled
-            bot.MENTION_THRESHOLD > 0
+            self.bot.MENTION_THRESHOLD > 0
             # Check auto-lockdown not already in progress
-            and not bot.AUTOLOCKDOWN_IN_PROGRESS
+            and not self.bot.AUTOLOCKDOWN_IN_PROGRESS
             # Check channel is public
             and self.is_public_channel(message.channel)
             # Check for no roles (@everyone counts as a role internally)
             and len(message.author.roles) == 1
             # Check that mention count exceeds threshold
-            and len(message.mentions) >= bot.MENTION_THRESHOLD
+            and len(message.mentions) >= self.bot.MENTION_THRESHOLD
         ):
             await self.execute_auto_lockdown(message)
         
     @Cog.listener()
     async def on_member_join(member):
-        bot.RECENT_MEMBER_CACHE.append(member)
+        self.bot.RECENT_MEMBER_CACHE.append(member)
         self.cull_recent_member_cache()
 
 
