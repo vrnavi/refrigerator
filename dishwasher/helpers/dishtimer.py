@@ -3,12 +3,12 @@ import math
 
 
 def get_crontab():
-    with open("data/robocronptab.json", "r") as f:
+    with open("data/dishtimers.json", "r") as f:
         return json.load(f)
 
 
 def set_crontab(contents):
-    with open("data/robocronptab.json", "w") as f:
+    with open("data/dishtimers.json", "w") as f:
         f.write(contents)
 
 

@@ -6,12 +6,12 @@ import random
 from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from discord.ext.commands import Cog
-from helpers.robocronp import get_crontab, delete_job
+from helpers.dishtimer import get_crontab, delete_job
 from helpers.restrictions import remove_restriction
 from helpers.checks import check_if_staff
 
 
-class Robocronp(Cog):
+class Dishtimer(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.minutely.start()
@@ -32,9 +32,9 @@ class Robocronp(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def listjobs(self, ctx):
-        """[S] Lists timed robocronp jobs."""
+        """[S] Lists timed Dishtimer jobs."""
         ctab = get_crontab()
-        embed = discord.Embed(title=f"Active robocronp jobs")
+        embed = discord.Embed(title=f"Active Dishtimer jobs")
         for jobtype in ctab:
             for jobtimestamp in ctab[jobtype]:
                 for job_name in ctab[jobtype][jobtimestamp]:
@@ -50,7 +50,7 @@ class Robocronp(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["removejob"])
     async def deletejob(self, ctx, timestamp: str, job_type: str, job_name: str):
-        """[S] Removes a timed robocronp job.
+        """[S] Removes a timed Dishtimer job.
 
         You'll need to supply:
         - timestamp (like 1545981602)
@@ -71,17 +71,8 @@ class Robocronp(Cog):
                     target_guild = self.bot.get_guild(job_details["guild"])
                     delete_job(timestamp, jobtype, job_name)
                     await target_guild.unban(
-                        target_user, reason="Robocronp: Timed ban expired."
+                        target_user, reason="Dishtimer: Timed ban expired."
                     )
-                elif jobtype == "unmute":
-                    remove_restriction(job_name, config.mute_role)
-                    target_guild = self.bot.get_guild(job_details["guild"])
-                    target_member = target_guild.get_member(int(job_name))
-                    target_role = target_guild.get_role(config.mute_role)
-                    await target_member.remove_roles(
-                        target_role, reason="Robocronp: Timed mute expired."
-                    )
-                    delete_job(timestamp, jobtype, job_name)
                 elif jobtype == "remind":
                     text = job_details["text"]
                     added_on = job_details["added"]
@@ -164,10 +155,7 @@ class Robocronp(Cog):
         await self.bot.wait_until_ready()
         log_channel = self.bot.get_channel(config.botlog_channel)
         try:
-            # Reset verification and algorithm
-            if "cogs.verification" in config.initial_cogs:
-                verif_channel = self.bot.get_channel(config.welcome_channel)
-                await self.bot.do_resetalgo(verif_channel, "daily robocronp")
+            pass
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(
@@ -176,4 +164,4 @@ class Robocronp(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Robocronp(bot))
+    await bot.add_cog(Dishtimer(bot))

@@ -82,9 +82,8 @@ class Admin(Cog):
                 await ctx.send(msg)
 
     async def cog_load_actions(self, cog_name):
-        if cog_name == "verification":
-            verif_channel = self.bot.get_channel(config.welcome_channel)
-            await self.bot.do_resetalgo(verif_channel, "cog load")
+        # Used for specific cog actions, tore out the verification cog since don't need it.
+        pass
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)

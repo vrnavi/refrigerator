@@ -21,20 +21,23 @@ class Reply(Cog):
     # I don't know! I got this code from the GARBAGE.
     async def handle_message_with_reference(self, message):
         reference_author = message.reference.resolved.author
-        if reference_author.id is not message.author.id:
-            if reference_author in message.mentions:
-                reference_author_has_no_reply_pings_role = reference_author.get_role(1059460475588448416) is not None
-                if reference_author_has_no_reply_pings_role:
-                    author_is_staff = (message.author.get_role(259199371361517569) or message.author.get_role(256985367977263105)) is not None
-                    if author_is_staff == False:
-                        await message.add_reaction("🗞️")
-                        await message.reply("\n".join([
-                            f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
-                            "Please check if a user has a `No Reply Pings` role on them before pinging them in replies.",
-                            "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar.",
-                            "",
-                            "__Ignoring this message repeatedly will lead to a server warning!__"
-                        ]), delete_after=10, mention_author=True)
+        if (
+            message.author.bot
+            or reference_author.get_role(config.noreply_role) is None
+            or reference_author.id is message.author.id
+            or message.author.get_role(config.staff_role_ids[0] is not None
+        ):
+            return
+            
+        if reference_author in message.mentions:
+                await message.add_reaction("🗞️")
+                await message.reply("\n".join([
+                    f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
+                    "Please check if a user has a `No Reply Pings` role on them before pinging them in replies.",
+                    "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar.",
+                    "",
+                    "__Ignoring this message repeatedly will lead to a server warning!__"
+                ]), delete_after=10, mention_author=True)
 
     @Cog.listener()
     async def on_message(self, message):

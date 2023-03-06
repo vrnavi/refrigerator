@@ -23,7 +23,7 @@ class Appeal(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         
-        if message.channel.id == 402019542345449472 and message.author.id == 402016472878284801 and message.embeds[0].fields[1].value is not None:
+        if message.channel.id == config.ban_appeal_channel and message.author.id == config.ban_appeal_webhook_id and message.embeds[0].fields[1].value is not None:
             await message.add_reaction("✅")
             await message.add_reaction("❎")
             await message.add_reaction("✳️")

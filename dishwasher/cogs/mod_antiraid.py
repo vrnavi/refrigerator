@@ -11,7 +11,7 @@ from helpers.checks import check_if_staff
 class ModAntiRaid(Cog):
     def __init__(self, bot):
         self.bot = bot
-        bot.GUILD = bot.get_guild(config.guild_usage)
+        bot.GUILD = bot.get_guild(config.guild_whitelist[0])
         bot.AUTHORIZED_ROLE = (
             bot.GUILD.get_role(config.named_roles["journal"]) if bot.GUILD else None
         )
@@ -21,8 +21,8 @@ class ModAntiRaid(Cog):
             bot.ANNOUNCE_CHANNEL = (
                 bot.GUILD.get_channel(bot.ANNOUNCE_CHANNEL) if bot.GUILD else None
             )
-        bot.LOCKDOWN_ANNOUNCEMENT = "All public channels are temporarily restricted."
-        bot.UNLOCKDOWN_ANNOUNCEMENT = "All public channels are no longer restricted."
+        bot.LOCKDOWN_ANNOUNCEMENT = config.lockdown_announcement
+        bot.UNLOCKDOWN_ANNOUNCEMENT = config.unlockdown_announcement
         bot.MENTION_THRESHOLD = config.mention_threshold
         bot.STAFF_CHANNEL = (
             bot.GUILD.get_channel(config.staff_channel) if bot.GUILD else None
