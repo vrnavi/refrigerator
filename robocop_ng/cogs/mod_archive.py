@@ -33,7 +33,7 @@ class ModArchive(Cog):
             z = zipfile.ZipFile(b, "w", zipfile.ZIP_DEFLATED)
             zipped_count = 0
             
-        for m in channel.history(limit=None):
+        async for m in channel.history(limit=None):
             blank_content = True
             ts = "{:%Y-%m-%d %H:%M} ".format(m.created_at)
             padding = len(ts) + len(m.author.name) + 2
@@ -51,8 +51,8 @@ class ModArchive(Cog):
                 add += " " * (padding * (not blank_content)) + "Attachment: " + a.filename
                 if zip_files:
                     fn = "{}-{}-{}".format(m.id, a.id, a.filename)
-                    with self.bot.session.get(a.url) as r:
-                        f = r.read()
+                    async with self.bot.session.get(a.url) as r:
+                        f = await r.read()
 
                     z.writestr(fn, f)
                     add += " (Saved as {})".format(fn)
@@ -154,7 +154,7 @@ class ModArchive(Cog):
             pass
             
         if message.channel.id in config.toss_channels:
-            out = log_whole_channel(message.channel, zip_files=True)
+            out = await self.log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
             
@@ -168,7 +168,7 @@ class ModArchive(Cog):
                 LAST_UNROLEBAN.unset()
 
             if args:
-                user = await get_members(message, args)
+                user = await self.get_members(message, args)
                 if user[0]:
                     user = " ".join(["{} {}".format(u.name, u.id) for u in user[0]])
                 else:
