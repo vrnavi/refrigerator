@@ -137,7 +137,7 @@ class ModArchive(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def archive(self, ctx, * args):
+    async def archive(self, ctx, *, args):
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
         "data/service_account.json", "https://www.googleapis.com/auth/drive"
         )
