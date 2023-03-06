@@ -36,6 +36,7 @@ class ModAntiRaid(Cog):
             self.cull_recent_member_cache()
 
     def cull_recent_member_cache(ts=None):
+        self.bot = bot
         if bot.RECENT_JOIN_THRESHOLD <= 0:
             return
 
@@ -81,6 +82,7 @@ class ModAntiRaid(Cog):
         )
         
     def get_public_channels(self):
+        self.bot = bot
         return [
             c
             for c in bot.GUILD.text_channels
@@ -88,6 +90,7 @@ class ModAntiRaid(Cog):
         ]
         
     def parse_channel_list(self, args):
+        self.bot = bot
         if not args:
             return []
 
@@ -112,6 +115,7 @@ class ModAntiRaid(Cog):
         ]
         
     async def announce_lockdown(self, channel_list, lockdown):
+        self.bot = bot
         if not bot.ANNOUNCE_CHANNEL:
             return
 
@@ -143,6 +147,7 @@ class ModAntiRaid(Cog):
                         pass
 
     async def perform_lockdown(self, channel_list, lockdown):
+        self.bot = bot
         success_channels = []
         fail_channels = []
 
@@ -199,6 +204,7 @@ class ModAntiRaid(Cog):
         return ret
         
     async def execute_auto_lockdown(message):
+        self.bot = bot
         bot.AUTOLOCKDOWN_IN_PROGRESS = True
 
         channel_list = self.get_public_channels()
@@ -246,6 +252,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ul"])
     async def unlockdown(self, message, *, args = ""):
+        self.bot = bot
         channel_list = parse_channel_list(args)
         if not channel_list:
             channel_list = [
@@ -268,6 +275,7 @@ class ModAntiRaid(Cog):
         
     @Cog.listener()
     async def on_message(message):
+        self.bot = bot
         if (
             not bot.ready
             or message.author.bot
@@ -293,6 +301,7 @@ class ModAntiRaid(Cog):
         
     @Cog.listener()
     async def on_member_join(member):
+        self.bot = bot
         bot.RECENT_MEMBER_CACHE.append(member)
         self.cull_recent_member_cache()
 
