@@ -134,7 +134,7 @@ class ModAntiRaid(Cog):
 
             if c.permissions_for(c.guild.me).manage_messages and not lockdown:
                 pinned_msg = bot.ANNOUNCE_MESSAGES.pop(c.id, None)
-                    if pinned_msg:
+                if pinned_msg:
                     try:
                         await pinned_msg.unpin(reason="[Mass Unlockdown Announcement]")
                     except:
