@@ -13,6 +13,7 @@ import zipfile
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from oauth2client.service_account import ServiceAccountCredentials
+from io import BytesIO
 
 from discord.ext import commands
 from discord.ext.commands import Cog
