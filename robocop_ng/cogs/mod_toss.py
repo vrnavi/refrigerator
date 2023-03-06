@@ -106,7 +106,7 @@ class ModToss(Cog):
                                 f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
                                 f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
                                 f"**Previous Roles:** {prev_roles}\n\n"
-                                f"{ctx.guild.get_channel(config.toss_channels[0]}.mention")
+                                f"{ctx.guild.get_channel(config.toss_channels[0]).mention}")
             except commands.MissingPermissions:
                 invalid_ids.append(us.name)
             name_list = f"{us.name}, {name_list}"
