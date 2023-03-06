@@ -235,7 +235,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ml"])
     async def lockdown(self, message, *, args = ""):
-        channel_list = parse_channel_list(args)
+        channel_list = self.parse_channel_list(args)
         if not channel_list:
             channel_list = self.get_public_channels()
 
@@ -247,7 +247,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ul"])
     async def unlockdown(self, message, *, args = ""):
-        channel_list = parse_channel_list(args)
+        channel_list = self.parse_channel_list(args)
         if not channel_list:
             channel_list = [
                 c
