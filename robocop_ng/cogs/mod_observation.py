@@ -46,6 +46,31 @@ class ModObserve(Cog):
             embeds.append(embed)
             await member.guild.get_channel(staff_channel).send(embed=embeds)
         
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def raidmode(self, message, args = ""):
+        if not args:
+            if self.bot.raidmode:
+                message.reply("Raid mode is currently `🟢 ON`.", mention_author=False)
+            else:
+                message.reply("Raid mode is currently `🔴 OFF`.", mention_author=False)
+        if args == "on":
+            if self.bot.raidmode == False:
+                self.bot.raidmode = True
+                message.reply("Raid mode is now `🟢 ON`.", mention_author=False)
+            else:
+                message.reply("Raid mode is already `🟢 ON`!", mention_author=False)
+        if args == "off":
+            if self.bot.raidmode:
+                self.bot.raidmode = False
+                message.reply("Raid mode is now `🔴 OFF`.", mention_author=False)
+            else:
+                message.reply("Raid mode is already  `🔴 OFF`!", mention_author=False)
+        else:
+            message.reply("Incorrect arguments. Use `on` or `off`.", mention_author=False)
+            
+
 
 async def setup(bot):
     await bot.add_cog(ModObserve(bot))
