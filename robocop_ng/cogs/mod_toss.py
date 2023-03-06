@@ -2,13 +2,14 @@
 import discord
 import json
 import os
+import config
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 
-toss_role = 257050851611377666
+toss_role = config.toss_role_id
 
 class ModToss(Cog):
     def __init__(self, bot):
