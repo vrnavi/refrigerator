@@ -268,7 +268,7 @@ class ModAntiRaid(Cog):
         await message.channel.send(ret)
         
     @Cog.listener()
-    async def on_message(message):
+    async def on_message(self, message):
         if (
             not self.bot.ready
             or message.author.bot
@@ -293,7 +293,7 @@ class ModAntiRaid(Cog):
             await self.execute_auto_lockdown(message)
         
     @Cog.listener()
-    async def on_member_join(member):
+    async def on_member_join(self, member):
         self.bot.RECENT_MEMBER_CACHE.append(member)
         self.cull_recent_member_cache()
 
