@@ -30,7 +30,7 @@ def get_prefix(bot, message):
 
 wanted_jsons = [
     "data/restrictions.json",
-    "data/robocronptab.json",
+    "data/dishtimers.json",
     "data/userlog.json",
     "data/invites.json",
 ]
