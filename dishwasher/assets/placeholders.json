@@ -11,28 +11,116 @@
         "Off I go again.",
         "This job has worked 0 days without an accident."
     ],
-    "tarot": {
-        "dw_221": "The Scientist",
-        "dw_222": "The Land Defender",
-        "dw_223": "Capital",
-        "dw_224": "The Glacier",
-        "dw_225": "Deep Time",
-        "dw_226": "The Polar Bear",
-        "dw_227": "The Child",
-        "dw_228": "Lithium",
-        "dw_229": "The Policymaker",
-        "dw_2210": "The Farmer",
-        "dw_2211": "Depression",
-        "dw_2212": "The Amazon",
-        "dw_2213": "Extinction",
-        "dw_2214": "Riot",
-        "dw_2215": "The CEO",
-        "dw_2216": "The Bunker",
-        "dw_2217": "Oil",
-        "dw_2218": "China",
-        "dw_2219": "Space Colony",
-        "dw_2220": "Circularity",
-        "dw_2221": "Drought",
-        "dw_2222": "The Cow"
-    }
+    "tarot": [
+        {
+            "filename": "dw_221",
+            "title": "The Scientist",
+            "quotes": []
+        },
+        {
+            "filename": "dw_222",
+            "title": "The Land Defender",
+            "quotes": []
+        },
+        {
+            "filename": "dw_223",
+            "title": "Capital",
+            "quotes": []
+        },
+        {
+            "filename": "dw_224",
+            "title": "The Glacier",
+            "quotes": []
+        },
+        {
+            "filename": "dw_225",
+            "title": "Deep Time",
+            "quotes": []
+        },
+        {
+            "filename": "dw_226",
+            "title": "The Polar Bear",
+            "quotes": []
+        },
+        {
+            "filename": "dw_227",
+            "title": "The Child",
+            "quotes": []
+        },
+        {
+            "filename": "dw_228",
+            "title": "Lithium",
+            "quotes": []
+        },
+        {
+            "filename": "dw_229",
+            "title": "The Policymaker",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2210",
+            "title": "The Farmer",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2211",
+            "title": "Depression",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2212",
+            "title": "The Amazon",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2213",
+            "title": "Extinction",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2214",
+            "title": "Riot",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2215",
+            "title": "The CEO",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2216",
+            "title": "The Bunker",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2217",
+            "title": "Oil",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2218",
+            "title": "China",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2219",
+            "title": "Space Colony",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2220",
+            "title": "Circularity",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2221",
+            "title": "Drought",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2222",
+            "title": "The Cow",
+            "quotes": []
+        }
+    ]
 }
