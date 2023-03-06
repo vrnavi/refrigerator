@@ -51,7 +51,7 @@ class ModArchive(Cog):
                 add += " " * (padding * (not blank_content)) + "Attachment: " + a.filename
                 if zip_files:
                     fn = "{}-{}-{}".format(m.id, a.id, a.filename)
-                    async with bot.session.get(a.url) as r:
+                    async with self.bot.session.get(a.url) as r:
                         f = await r.read()
 
                     z.writestr(fn, f)
@@ -124,7 +124,7 @@ class ModArchive(Cog):
                     u = message.guild.get_member(a)
                     if not u:
                         try:
-                            u = await bot.fetch_user(a)
+                            u = await self.bot.fetch_user(a)
                         except:
                             pass
                     if u:
@@ -182,7 +182,7 @@ class ModArchive(Cog):
                 message.created_at, self.bot.user.name, reply
             )
             
-            modch = bot.get_channel(config.drive_folder)
+            modch = self.bot.get_channel(config.drive_folder)
 
             f = drive.CreateFile(
                 {
@@ -253,7 +253,7 @@ class ModArchive(Cog):
                     )
 
                 try:
-                    reaction, user = await bot.wait_for(
+                    reaction, user = await self.bot.wait_for(
                         "reaction_add", timeout=60, check=check
                     )
                 except asyncio.TimeoutError:
