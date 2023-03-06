@@ -40,7 +40,7 @@ initial_cogs = [
     "cogs.lockdown",
     "cogs.remind",
     "cogs.reply",
-    "cogs.robocronp",
+    "cogs.dishtimer",
     "cogs.meme",
     "cogs.invites",
 ]
