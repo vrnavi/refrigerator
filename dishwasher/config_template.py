@@ -1,5 +1,7 @@
 import hashlib
 import datetime
+import discord
+import json
 
 # Basic bot config, insert your token here, update description if you want
 prefixes = ["pws ", "dish "]
@@ -172,20 +174,15 @@ recent_join_threshold = 20
 lockdown_annoncement = "All public channels are temporarily restricted."
 unlockdown_annoncement = "All public channels are no longer restricted."
 
+# No touch!
+placeholders = json.load(open("assets/placeholders.json", "r"))
+
 # Used for the bot's random options.
 # Change this to set the playing type.
-game_type = "listening"
+game_type = discord.ActivityType.listening
 # This is a list of all the "games" to play.
-game_names = [
-    "to a clean Dishwasher.",
-    "to witchery happening.",
-    "to the mystical sounds of dead bodies.",
-    "to impending sentience.",
-]
+game_names = placeholders["games"]
 # These appear when doing pws quit.
-death_messages = [
-    "WHY MUST YOU DO THIS AGAIN",
-    "\*lightbulb shattering noises\*",
-    "Off I go again.",
-    "This job has worked 0 days without an accident.",
-]
+death_messages = placeholders["deaths"]
+# Currently unused.
+tarot_cards = placeholders["tarot"]

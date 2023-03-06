@@ -1,0 +1,38 @@
+{
+    "games": [
+        "to a clean Dishwasher.",
+        "to witchery happening.",
+        "to the mystical sounds of dead bodies.",
+        "to impending sentience."
+    ],
+    "deaths": [
+        "WHY MUST YOU DO THIS AGAIN",
+        "*lightbulb shattering noises*",
+        "Off I go again.",
+        "This job has worked 0 days without an accident."
+    ],
+    "tarot": {
+        "dw_221": "The Scientist",
+        "dw_222": "The Land Defender",
+        "dw_223": "Capital",
+        "dw_224": "The Glacier",
+        "dw_225": "Deep Time",
+        "dw_226": "The Polar Bear",
+        "dw_227": "The Child",
+        "dw_228": "Lithium",
+        "dw_229": "The Policymaker",
+        "dw_2210": "The Farmer",
+        "dw_2211": "Depression",
+        "dw_2212": "The Amazon",
+        "dw_2213": "Extinction",
+        "dw_2214": "Riot",
+        "dw_2215": "The CEO",
+        "dw_2216": "The Bunker",
+        "dw_2217": "Oil",
+        "dw_2218": "China",
+        "dw_2219": "Space Colony",
+        "dw_2220": "Circularity",
+        "dw_2221": "Drought",
+        "dw_2222": "The Cow"
+    }
+}
