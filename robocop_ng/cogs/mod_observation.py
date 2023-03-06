@@ -67,7 +67,7 @@ class ModObserve(Cog):
                 await message.reply("Raid mode is now `🔴 OFF`.", mention_author=False)
             else:
                 await message.reply("Raid mode is already  `🔴 OFF`!", mention_author=False)
-        elif args != ""::
+        elif args != "":
             await message.reply("Incorrect arguments. Use `on` or `off`.", mention_author=False)
             
 
