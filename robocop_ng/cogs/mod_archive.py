@@ -25,7 +25,7 @@ class ModArchive(Cog):
         self.bot = bot
         roleban_channels = config.toss_channels
         
-    async def log_whole_channel(self, channel, zip_files=False):
+    def log_whole_channel(self, channel, zip_files=False):
         st = ""
 
         if zip_files:
@@ -33,7 +33,7 @@ class ModArchive(Cog):
             z = zipfile.ZipFile(b, "w", zipfile.ZIP_DEFLATED)
             zipped_count = 0
             
-        async for m in channel.history(limit=None):
+        for m in channel.history(limit=None):
             blank_content = True
             ts = "{:%Y-%m-%d %H:%M} ".format(m.created_at)
             padding = len(ts) + len(m.author.name) + 2
@@ -51,8 +51,8 @@ class ModArchive(Cog):
                 add += " " * (padding * (not blank_content)) + "Attachment: " + a.filename
                 if zip_files:
                     fn = "{}-{}-{}".format(m.id, a.id, a.filename)
-                    async with self.bot.session.get(a.url) as r:
-                        f = await r.read()
+                    with self.bot.session.get(a.url) as r:
+                        f = r.read()
 
                     z.writestr(fn, f)
                     add += " (Saved as {})".format(fn)
