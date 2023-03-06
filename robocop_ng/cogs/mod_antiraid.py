@@ -270,7 +270,7 @@ class ModAntiRaid(Cog):
     @Cog.listener()
     async def on_message(self, message):
         if (
-            not self.bot.ready
+            not self.bot.is_ready
             or message.author.bot
             or not message.content
             or not message.guild
