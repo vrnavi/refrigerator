@@ -309,4 +309,4 @@ class ModArchive(Cog):
             )
             
 async def setup(bot):
-    await bot.add_cog(ModToss(bot))
+    await bot.add_cog(ModArchive(bot))
