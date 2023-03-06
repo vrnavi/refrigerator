@@ -91,7 +91,7 @@ class ModToss(Cog):
                             bad_no_good_terrible_roles.append(rr.name)
                         else:
                             roles_actual.append(rr)
-                    await us.remove_roles(roles_actual, reason=f'User tossed by {ctx.author} ({ctx.author.id})')
+                    await us.remove_roles(*roles_actual, reason=f'User tossed by {ctx.author} ({ctx.author.id})')
 
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles)>0:
@@ -147,7 +147,7 @@ class ModToss(Cog):
                 temp_role = ctx.guild.get_role(r)
                 if temp_role is not None and temp_role.is_assignable():
                     roles_actual.append(temp_role)
-            await us.add_roles(roles_actual, reason=f"Untossed by {ctx.author} ({ctx.author.id})")
+            await us.add_roles(*roles_actual, reason=f"Untossed by {ctx.author} ({ctx.author.id})")
 
             for rx in roles_actual:
                 restored = f"{restored} `{rx.name}`"
