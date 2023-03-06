@@ -15,7 +15,7 @@ class ModObserve(Cog):
     async def on_member_join(self, member):
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
-        if member.created_at >= cutoff_ts or self.bot.raidmode = True:
+        if member.created_at >= cutoff_ts or self.bot.raidmode == True:
             staff_channel = config.staff_channel
             embeds = []
             embed = discord.Embed(
