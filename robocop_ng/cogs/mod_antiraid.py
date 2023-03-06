@@ -67,7 +67,7 @@ class ModAntiRaid(Cog):
         #    - Send messages: None/True
 
         default_role_override = channel.overwrites_for(channel.guild.default_role)
-        authorized_role_override = channel.overwrites_for(bot.AUTHORIZED_ROLE)
+        authorized_role_override = channel.overwrites_for(self.bot.AUTHORIZED_ROLE)
 
         return all(
             [
@@ -149,7 +149,7 @@ class ModAntiRaid(Cog):
 
         for c in channel_list:
             default_role_override = c.overwrites_for(c.guild.default_role)
-            authorized_role_override = c.overwrites_for(bot.AUTHORIZED_ROLE)
+            authorized_role_override = c.overwrites_for(self.bot.AUTHORIZED_ROLE)
             bot_override = c.overwrites_for(c.guild.me)
 
             if lockdown:
@@ -180,7 +180,7 @@ class ModAntiRaid(Cog):
 
                 if lockdown:
                     self.bot.LOCKED_DOWN_CHANNELS.add(c.id)
-                elif c.id in bot.LOCKED_DOWN_CHANNELS:
+                elif c.id in self.bot.LOCKED_DOWN_CHANNELS:
                     self.bot.LOCKED_DOWN_CHANNELS.remove(c.id)
             except:
                 fail_channels.append(c.mention)
@@ -252,7 +252,7 @@ class ModAntiRaid(Cog):
             channel_list = [
                 c
                 for c in self.bot.GUILD.text_channels
-                if c.permissions_for(bot.GUILD.me).manage_channels
+                if c.permissions_for(self.bot.GUILD.me).manage_channels
                 and c.id in self.bot.LOCKED_DOWN_CHANNELS
             ]
             if not channel_list:
