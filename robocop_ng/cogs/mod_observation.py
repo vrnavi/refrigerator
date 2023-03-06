@@ -34,7 +34,7 @@ class ModObserve(Cog):
                 value=f"{invite_used}",
                 inline=True
             )
-            if self.bot.raidmode = True:
+            if self.bot.raidmode == True:
                 rmstr = " "
             else:
                 rmstr = "not"
