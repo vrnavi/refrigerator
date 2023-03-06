@@ -154,7 +154,7 @@ class ModArchive(Cog):
             pass
             
         if message.channel.id in config.toss_channels:
-            out = await log_whole_channel(message.channel, zip_files=True)
+            out = log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
             
