@@ -25,7 +25,7 @@ class ModArchive(Cog):
         self.bot = bot
         roleban_channels = config.toss_channels
         
-    def log_whole_channel(self, channel, zip_files=False):
+    async def log_whole_channel(self, channel, zip_files=False):
         st = ""
 
         if zip_files:
