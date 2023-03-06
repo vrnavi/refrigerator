@@ -9,12 +9,13 @@ from helpers.checks import check_if_staff
 class ModObserve(Cog):
     def __init__(self, bot):
         self.bot = bot
+        bot.raidmode = False
 
     @Cog.listener()
     async def on_member_join(self, member):
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
-        if member.created_at >= cutoff_ts:
+        if member.created_at >= cutoff_ts or self.bot.raidmode = True:
             staff_channel = config.staff_channel
             embeds = []
             embed = discord.Embed(
@@ -33,9 +34,13 @@ class ModObserve(Cog):
                 value=f"{invite_used}",
                 inline=True
             )
+            if self.bot.raidmode = True:
+                rmstr = " "
+            else:
+                rmstr = "not"
             embed.add_field(
                 name="🚨 Raid mode...",
-                value=f"is not enabled.",
+                value=f"is {rmstr} enabled.",
                 inline=False
             )
             embeds.append(embed)
