@@ -101,7 +101,7 @@ class ModToss(Cog):
                                 f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
                                 f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
                                 f"**Previous Roles:** {prev_roles}{bad_roles_msg}")
-                await ctx.guild.get_channel(config.staff_channel).send(f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention}.\n"
+                await ctx.guild.get_channel(config.staff_channel).send(f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
                                 f"**ID:** {us.id}\n"
                                 f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
                                 f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
@@ -160,6 +160,7 @@ class ModToss(Cog):
 
             await us.remove_roles(ctx.guild.get_role(toss_role), reason=f"Untossed by {ctx.author} ({ctx.author.id})")
             await ctx.reply(f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:** {restored}")
+            await ctx.guild.get_channel(config.staff_channel).send(f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}")
             name_list = f"{us.name}, {name_list}"
 
         invalid_string = ""

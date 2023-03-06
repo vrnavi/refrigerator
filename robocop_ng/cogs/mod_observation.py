@@ -44,7 +44,7 @@ class ModObserve(Cog):
                 inline=False
             )
             embeds.append(embed)
-            await member.guild.get_channel(staff_channel).send(embed=embeds)
+            await member.guild.get_channel(staff_channel).send(embeds=embeds)
         
     @commands.guild_only()
     @commands.check(check_if_staff)
