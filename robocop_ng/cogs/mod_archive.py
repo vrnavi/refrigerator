@@ -183,7 +183,7 @@ class ModArchive(Cog):
                 message.created_at, self.bot.user.name, reply
             )
             
-            modch = self.bot.get_channel(config.drive_folder)
+            modch = self.bot.get_channel(config.staff_channel)
 
             f = drive.CreateFile(
                 {
