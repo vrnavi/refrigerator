@@ -55,20 +55,24 @@ class ModObserve(Cog):
                 await message.reply("Raid mode is currently `🟢 ON`.", mention_author=False)
             else:
                 await message.reply("Raid mode is currently `🔴 OFF`.", mention_author=False)
+            return
         if args == "on":
             if self.bot.raidmode == False:
                 self.bot.raidmode = True
                 await message.reply("Raid mode is now `🟢 ON`.", mention_author=False)
             else:
                 await message.reply("Raid mode is already `🟢 ON`!", mention_author=False)
+            return
         if args == "off":
             if self.bot.raidmode:
                 self.bot.raidmode = False
                 await message.reply("Raid mode is now `🔴 OFF`.", mention_author=False)
             else:
                 await message.reply("Raid mode is already  `🔴 OFF`!", mention_author=False)
-        elif args != "":
+            return
+        else:
             await message.reply("Incorrect arguments. Use `on` or `off`.", mention_author=False)
+            return
             
 
 async def setup(bot):
