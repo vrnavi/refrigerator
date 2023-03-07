@@ -25,7 +25,7 @@ class Reply(Cog):
             message.author.bot
             or reference_author.get_role(config.noreply_role) is None
             or reference_author.id is message.author.id
-            or message.author.get_role(config.staff_role_ids[0] is not None
+            or message.author.get_role(config.staff_role_ids[0]) is not None
         ):
             return
             
