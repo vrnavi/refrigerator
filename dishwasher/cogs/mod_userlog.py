@@ -20,7 +20,7 @@ class ModUserlog(Cog):
         if event and not isinstance(event, list):
             wanted_events = [event]
         embed = discord.Embed(color=discord.Color.dark_red())
-        embed.set_author(name=f"Userlog for {name}")
+        embed.set_author(name=f"Logs for {name}")
         userlog = get_userlog()
 
         if uid not in userlog:
@@ -54,7 +54,7 @@ class ModUserlog(Cog):
             embed.set_footer(text=f"User is {watch_state}under watch.")
 
         if not embed.fields:
-            embed.description = f"There are none!{own_note}"
+            embed.description = f"No logs recorded.{own_note}"
             embed.color = discord.Color.green()
         return embed
 
@@ -137,15 +137,6 @@ class ModUserlog(Cog):
         await ctx.author.send(embed=embed)
         await ctx.message.add_reaction("📨")
         await ctx.reply(content="For privacy, your logs have been DMed.", mention_author=False)
-
-#    LOL REDUNDANT.
-#    @commands.guild_only()
-#    @commands.check(check_if_staff)
-#    @commands.command(aliases=["listwarnsid"])
-#    async def userlogid(self, ctx, target: int):
-#        """[S] Lists the userlog events for a user by ID."""
-#        embed = self.get_userlog_embed_for_id(str(target), str(target))
-#        await ctx.send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -250,7 +241,7 @@ class ModUserlog(Cog):
         await ctx.send(
             f"user = {user_name}\n"
             f"id = {user.id}\n"
-            f"avatar = {user.avatar_url}\n"
+            f"avatar = {user.display_avatar.url}\n"
             f"bot = {user.bot}\n"
             f"created_at = {user.created_at}\n"
             f"display_name = {display_name}\n"
