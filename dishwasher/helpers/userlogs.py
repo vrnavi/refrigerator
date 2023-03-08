@@ -5,7 +5,7 @@ userlog_event_types = {
     "warns": "Warn",
     "bans": "Ban",
     "kicks": "Kick",
-    "mutes": "Mute",
+    "tosses": "Toss",
     "notes": "Note",
 }
 
@@ -26,7 +26,7 @@ def fill_userlog(userid, uname):
     if uid not in userlogs:
         userlogs[uid] = {
             "warns": [],
-            "mutes": [],
+            "tosses": [],
             "kicks": [],
             "bans": [],
             "notes": [],

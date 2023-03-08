@@ -43,7 +43,7 @@ class ModToss(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["roleban"])
     async def toss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         name_list = ""
@@ -125,7 +125,7 @@ class ModToss(Cog):
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["unroleban"])
     async def untoss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         name_list = ""

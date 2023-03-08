@@ -16,7 +16,7 @@ class ModUserlog(Cog):
         self, uid: str, name: str, own: bool = False, event=""
     ):
         own_note = " Congratulations." if own else ""
-        wanted_events = ["warns", "bans", "kicks", "mutes"]
+        wanted_events = ["warns", "bans", "kicks", "tosses"]
         if event and not isinstance(event, list):
             wanted_events = [event]
         embed = discord.Embed(color=discord.Color.dark_red())
@@ -226,7 +226,7 @@ class ModUserlog(Cog):
         if role == "@everyone":
             role = "@ everyone"
 
-        event_types = ["warns", "bans", "kicks", "mutes", "notes"]
+        event_types = ["warns", "bans", "kicks", "tosses", "notes"]
         embed = self.get_userlog_embed_for_id(
             str(user.id), str(user), event=event_types
         )
