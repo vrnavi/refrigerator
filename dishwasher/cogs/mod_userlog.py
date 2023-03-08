@@ -136,11 +136,11 @@ class ModUserlog(Cog):
         embed = self.get_userlog_embed_for_id(str(ctx.author.id), str(ctx.author), True)
         try:
             await ctx.author.send(embed=embed)
+            await ctx.message.add_reaction("📨")
+            await ctx.reply(content="For privacy, your logs have been DMed.", mention_author=False)
         except:
             await ctx.reply(content="Unable to send. Your DMs may be closed.", mention_author=False)
             return
-        await ctx.add_reaction("📨")
-        await ctx.reply(content="For privacy, your logs have been DMed.", mention_author=False)
 
 #    LOL REDUNDANT.
 #    @commands.guild_only()
