@@ -12,7 +12,7 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["uclearreacts"])
     async def clearreactsbyuser(
         self,
         ctx,
@@ -33,16 +33,16 @@ class ModReact(Cog):
                     async for u in react.users():
                         await msg.remove_reaction(react, u)
         msg = (
-            f"✏️ **Cleared reacts**: {ctx.author.mention} cleared "
-            f"{user.mention}'s reacts from the last {limit} messages "
+            f"✏️ **Cleared reacts**: {ctx.author.name} cleared "
+            f"{user}'s reacts from the last {limit} messages "
             f"in {channel.mention}."
         )
-        await ctx.channel.send(f"Cleared {count} unique reactions")
+        await ctx.channel.send(f"🚮 `{limit}` reactions cleared.", delete_after=5)
         await log_channel.send(msg)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["purgereacts", "clearreacts"])
     async def clearallreacts(
         self, ctx, *, channel: discord.TextChannel = None, limit: int = 50
     ):
@@ -56,20 +56,20 @@ class ModReact(Cog):
                 count += 1
                 await msg.clear_reactions()
         msg = (
-            f"✏️ **Cleared reacts**: {ctx.author.mention} cleared all "
+            f"✏️ **Cleared reacts**: {ctx.author.name} cleared all "
             f"reacts from the last {limit} messages in {channel.mention}."
         )
-        await ctx.channel.send(f"Cleared reacts from {count} messages!")
+        await ctx.channel.send(f"🚮 `{count}` reactions purged.", delete_after=5)
         await log_channel.send(msg)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["iclearreacts"])
     async def clearreactsinteractive(self, ctx):
         """[S] Clears reacts interactively."""
         msg_text = (
-            f"{ctx.author.mention}, react to the reactions you want "
-            f"to remove. React to this message when you're done."
+            f"React to the reactions you want "
+            f"to remove. React to this message when done."
         )
         msg = await ctx.channel.send(msg_text)
 
@@ -112,10 +112,10 @@ class ModReact(Cog):
         try:
             await self.bot.wait_for("raw_reaction_add", timeout=120.0, check=check)
         except asyncio.TimeoutError:
-            await msg.edit(content=f"{msg_text} Timed out.")
+            await msg.edit(content=f"Operation timed out.")
         else:
             await asyncio.gather(*tasks)
-            await msg.edit(content=f"{msg_text} Done!")
+            await msg.edit(content=f"Operation complete.")
 
 
 async def setup(bot):

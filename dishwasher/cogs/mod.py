@@ -44,7 +44,7 @@ class Mod(Cog):
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
         elif self.check_if_target_is_staff(target):
             return await ctx.send(
@@ -305,7 +305,7 @@ class Mod(Cog):
                 )
                 continue
 
-            userlog(target, ctx.author, f"Part of a massban. ({ctx.message.jump_url})", "bans", target_user.name)
+            userlog(target, ctx.author, f"Part of a massban. [[Jump]({ctx.message.jump_url})", "bans", target_user.name)
 
             safe_name = await commands.clean_content(escape_markdown=True).convert(
                 ctx, str(target)
