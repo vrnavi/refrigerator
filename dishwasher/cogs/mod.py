@@ -474,10 +474,14 @@ class Mod(Cog):
         purgetype = "messages"
         if not arg1:
             deleted = len(await ctx.channel.purge(limit=50))
-        elif type(arg1) == int:
-            deleted = len(await ctx.channel.purge(limit=arg1))
-        if type(arg2) == int:
-            limit = arg2
+        try:
+            deleted = len(await ctx.channel.purge(limit=int(arg1)))
+        except:
+            pass
+        try:
+            limit = int(arg2)
+        except:
+            pass
         if type(arg3) == discord.TextChannel:
             channel = arg3
         
@@ -496,8 +500,10 @@ class Mod(Cog):
         elif arg1 == "reacts":
             purgetype = "reactions"
             if type(arg2) == discord.Member:
-                if type(arg3) == int:
-                    limit = arg3
+                try:
+                    limit = int(arg3)
+                except:
+                    pass
                 if type(arg4) == discord.TextChannel:
                     channel = arg4
                 async for msg in channel.history(limit=limit):
