@@ -236,7 +236,7 @@ class ModUserlog(Cog):
             usertype = "member"
             nickname = f"\n**Nickname:** `{target.nick}`"
         embed = discord.Embed(
-            color=color, title=f"Statistics for {membertype} @{target}{isbot}", description=f"**ID:** `{target.id}`{nickname}", timestamp=datetime.now()
+            color=color, title=f"Statistics for {usertype} @{target}{isbot}", description=f"**ID:** `{target.id}`{nickname}", timestamp=datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
