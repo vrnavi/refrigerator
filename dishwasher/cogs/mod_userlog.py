@@ -261,18 +261,18 @@ class ModUserlog(Cog):
             embed.add_field(
                 name="💭 Status:",
                 value=f"{emoji}{target.activity.name}{details}",
-                inline=True
+                inline=False
             )
             roles = []
             for index, role in enumerate(target.roles):
                 if role.name == "@everyone":
                     continue
                 roles.append("<@&" + str(role.id) + ">")
-                rolelist = "\n".join(reversed(roles))
+                rolelist = ",".join(reversed(roles))
             embed.add_field(
                 name=f"🎨 Roles:",
                 value=f'{rolelist}',
-                inline=True
+                inline=False
             )
             embeds.append(embed)
             
