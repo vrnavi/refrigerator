@@ -562,13 +562,13 @@ class Mod(Cog):
                         await msg.clear_reactions()
         
         embed = discord.Embed(
-            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {len(deleted)} {purgetype} in {channel.mention}.", timestamp=datetime.datetime.now()
+            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {deleted} {purgetype} in {channel.mention}.", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}")
         
         await log_channel.send(embed=embed)
-        await ctx.send(f"🚮 `{len(deleted)}` {purgetype} purged.", delete_after=5)
+        await ctx.send(f"🚮 `{deleted}` {purgetype} purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
