@@ -226,6 +226,7 @@ class ModUserlog(Cog):
             # Memberless code.
             return
         else:
+            target = ctx.guild.get_member(target.id)
             embed = discord.Embed(
                 color=target.color, title="Statistics for member @{target}{isbot}", description=f"**ID:** `{target.id}`\n**Nickname:** `{target.nick}`", timestamp=datetime.datetime.now()
             )
