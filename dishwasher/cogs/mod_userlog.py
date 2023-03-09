@@ -226,20 +226,27 @@ class ModUserlog(Cog):
 
         if ctx.guild.get_member(target.id) is None:
             # Memberless code.
-            return
+            color = discord.Color.lighter_gray
+            usertype = "user"
+            nickname = ""
         else:
+            # Member code.
             target = ctx.guild.get_member(target.id)
-            embed = discord.Embed(
-                color=target.color, title=f"Statistics for member @{target}{isbot}", description=f"**ID:** `{target.id}`\n**Nickname:** `{target.nick}`", timestamp=datetime.now()
-            )
-            embed.set_footer(text="Dishwasher")
-            embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
-            embed.set_thumbnail(url=f"{target.display_avatar.url}")
-            embed.add_field(
-                name="⏰ Account created:",
-                value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
-                inline=True
-            )
+            color = target.color
+            usertype = "member"
+            nickname = f"\n**Nickname:** `{target.nick}`"
+        embed = discord.Embed(
+            color=color, title=f"Statistics for {membertype} @{target}{isbot}", description=f"**ID:** `{target.id}`{nickname}", timestamp=datetime.now()
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
+        embed.set_thumbnail(url=f"{target.display_avatar.url}")
+        embed.add_field(
+            name="⏰ Account created:",
+            value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
+            inline=True
+        )
+        if ctx.guild.get_member(target.id) is not None:
             embed.add_field(
                 name="⏱️ Account joined:",
                 value=f"<t:{target.joined_at.astimezone().strftime('%s')}:f>\n<t:{target.joined_at.astimezone().strftime('%s')}:R>",
@@ -278,7 +285,7 @@ class ModUserlog(Cog):
                 value=f'{rolelist}',
                 inline=False
             )
-            embeds.append(embed)
+        embeds.append(embed)
             
         user_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, target.name
