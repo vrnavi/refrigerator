@@ -12,7 +12,7 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["uclearreacts"])
+    @commands.command(aliases=["uclearreacts", "uclrr"])
     async def clearreactsbyuser(
         self,
         ctx,
@@ -42,7 +42,7 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["purgereacts", "clearreacts"])
+    @commands.command(aliases=["purgereacts", "clearreacts", "clrr"])
     async def clearallreacts(
         self, ctx, *, channel: discord.TextChannel = None, limit: int = 50
     ):
@@ -64,7 +64,7 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["iclearreacts"])
+    @commands.command(aliases=["iclearreacts", "iclrr"])
     async def clearreactsinteractive(self, ctx):
         """[S] Clears reacts interactively."""
         msg_text = (
