@@ -12,8 +12,8 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["uclearreacts", "uclrr"])
-    async def clearreactsbyuser(
+    @commands.command(aliases=["ureactclear", "uclrr"])
+    async def ureactpurge(
         self,
         ctx,
         user: discord.Member,
@@ -42,9 +42,9 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["purgereacts", "clearreacts", "clrr"])
-    async def clearallreacts(
-        self, ctx, *, channel: discord.TextChannel = None, limit: int = 50
+    @commands.command(aliases=["reactclear", "clrr"])
+    async def reactpurge(
+        self, ctx, *, limit: int = 50, channel: discord.TextChannel = None
     ):
         """[S] Clears all reactions in a channel."""
         log_channel = self.bot.get_channel(config.modlog_channel)
@@ -64,8 +64,8 @@ class ModReact(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["iclearreacts", "iclrr"])
-    async def clearreactsinteractive(self, ctx):
+    @commands.command(aliases=["ireactclear", "iclrr"])
+    async def ireactpurge(self, ctx):
         """[S] Clears reacts interactively."""
         msg_text = (
             f"React to the reactions you want "
