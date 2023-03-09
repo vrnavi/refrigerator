@@ -232,7 +232,7 @@ class ModUserlog(Cog):
             )
             embed.set_footer(text="Dishwasher")
             embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
-            embed.set_thumbnail(url=f"{member.display_avatar.url}")
+            embed.set_thumbnail(url=f"{target.display_avatar.url}")
             embed.add_field(
                 name="⏰ Account created:",
                 value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
