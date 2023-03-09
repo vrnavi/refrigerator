@@ -228,7 +228,7 @@ class ModUserlog(Cog):
         else:
             target = ctx.guild.get_member(target.id)
             embed = discord.Embed(
-                color=target.color, title="Statistics for member @{target}{isbot}", description=f"**ID:** `{target.id}`\n**Nickname:** `{target.nick}`", timestamp=datetime.datetime.now()
+                color=target.color, title="Statistics for member @{target}{isbot}", description=f"**ID:** `{target.id}`\n**Nickname:** `{target.nick}`", timestamp=datetime.now()
             )
             embed.set_footer(text="Dishwasher")
             embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
