@@ -512,10 +512,10 @@ class Mod(Cog):
             channel = ctx.channel
 
         def has_embed(m):
-            if not m.embeds:
-                return False
-            else:
+            if m.embeds or m.attachments:
                 return True
+            else:
+                return False
 
         deleted = await channel.purge(limit=limit, check=has_embed)
         
