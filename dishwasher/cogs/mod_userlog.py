@@ -213,10 +213,6 @@ class ModUserlog(Cog):
         except ValueError:
             target = await self.bot.fetch_user(target[2:-1])
 
-        # role = user.top_role.name
-        # if role == "@everyone":
-        #    role = "@ everyone"
-
         if target.bot:
             isbot = " [BOT]"
         else:
@@ -300,8 +296,9 @@ class ModUserlog(Cog):
         )
         embeds.append(embed)
 
-        await ctx.send(
+        await ctx.reply(
             embeds=embeds,
+            mention_author=False
         )
 
 async def setup(bot):
