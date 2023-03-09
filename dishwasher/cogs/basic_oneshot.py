@@ -73,7 +73,7 @@ class BasicOneShot(Cog):
             value=f"{offlinelist}",
             inline=False
         )
-        ctx.reply(embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
         
 
 async def setup(bot):
