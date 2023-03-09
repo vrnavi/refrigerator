@@ -226,7 +226,7 @@ class ModUserlog(Cog):
 
         if ctx.guild.get_member(target.id) is None:
             # Memberless code.
-            color = discord.Color.lighter_gray
+            color = discord.Color.lighter_gray()
             usertype = "user"
             nickname = ""
         else:
