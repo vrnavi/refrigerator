@@ -4,7 +4,7 @@ import time
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
-from helpers.robocronp import add_job, get_crontab
+from helpers.dishtimer import add_job, get_crontab
 
 
 class Remind(Cog):
