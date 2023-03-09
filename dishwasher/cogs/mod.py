@@ -500,11 +500,11 @@ class Mod(Cog):
                 if type(arg4) == discord.TextChannel:
                     channel = arg4
                 async for msg in channel.history(limit=limit):
-                for react in msg.reactions:
-                   if await react.users().find(lambda u: u == user):
-                       deleted += 1
-                       async for u in react.users():
-                           await msg.remove_reaction(react, u)
+                   for react in msg.reactions:
+                       if await react.users().find(lambda u: u == user):
+                           deleted += 1
+                           async for u in react.users():
+                               await msg.remove_reaction(react, u)
             elif arg2 == "pick":
                 msg_text = (
                     f"React to the reactions you want "
