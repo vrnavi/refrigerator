@@ -529,23 +529,23 @@ class Mod(Cog):
                                 .get_message(event.message_id)
                             )
         
-                        def check_emoji(r):
-                            if event.emoji.is_custom_emoji() == r.custom_emoji:
-                                if event.emoji.is_custom_emoji():
-                                    return event.emoji.id == r.emoji.id
+                            def check_emoji(r):
+                                if event.emoji.is_custom_emoji() == r.custom_emoji:
+                                    if event.emoji.is_custom_emoji():
+                                        return event.emoji.id == r.emoji.id
+                                    else:
+                                        # gotta love consistent APIs
+                                        return event.emoji.name == r.emoji
                                 else:
-                                    # gotta love consistent APIs
-                                    return event.emoji.name == r.emoji
-                            else:
-                                return False
+                                    return False
         
-                        for reaction in filter(check_emoji, msg.reactions):
-                            async for u in reaction.users():
-                                await reaction.message.remove_reaction(reaction, u)
+                            for reaction in filter(check_emoji, msg.reactions):
+                                async for u in reaction.users():
+                                    await reaction.message.remove_reaction(reaction, u)
         
-                    # schedule immediately
-                    tasks.append(asyncio.create_task(impl()))
-                    return False
+                        # schedule immediately
+                        tasks.append(asyncio.create_task(impl()))
+                        return False
 
                 try:
                     await self.bot.wait_for("raw_reaction_add", timeout=120.0, check=check)
