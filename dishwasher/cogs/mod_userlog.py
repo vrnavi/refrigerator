@@ -251,7 +251,7 @@ class ModUserlog(Cog):
                 emoji=""
             else:
                 emoji=f"{target.activity.emoji} "
-            if target.activity.details == None
+            if target.activity.details == None:
                 details=""
             else:
                 details="\n{target.activity.details}"
