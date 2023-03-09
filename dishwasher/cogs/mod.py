@@ -463,7 +463,7 @@ class Mod(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["clear", "clr"])
+    @commands.command(aliases=["clear"])
     async def purge(self, ctx, arg1 = None, arg2 = None, arg3 = None, arg4 = None):
         """[S] Clears a given number of messages."""
         log_channel = self.bot.get_channel(config.modlog_channel)
@@ -473,7 +473,7 @@ class Mod(Cog):
         deleted = 0
         purgetype = "messages"
         if not arg1:
-            deleted = len(await ctx.channel.purge(limit=50))
+            deleted = len(await ctx.channel.purge(limit=limit))
         try:
             deleted = len(await ctx.channel.purge(limit=int(arg1)))
         except:
@@ -575,55 +575,6 @@ class Mod(Cog):
         
         await log_channel.send(embed=embed)
         await ctx.send(f"🚮 `{deleted}` {purgetype} purged.", delete_after=5)
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command(aliases=["botclear", "clrb"])
-    async def botpurge(self, ctx, limit: int = 50, channel: discord.TextChannel = None):
-        """[S] Clears a given number of messages from bots."""
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        if not channel:
-            channel = ctx.channel
-
-        def is_bot(m):
-            return m.author.bot
-
-        deleted = await channel.purge(limit=limit, check=is_bot)
-        
-        embed = discord.Embed(
-            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {len(deleted)} messages in {channel.mention}.", timestamp=datetime.datetime.now()
-        )
-        embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}")
-        
-        await log_channel.send(embed=embed)
-        await ctx.send(f"🚮 `{len(deleted)}` messages purged.", delete_after=5)
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
-    @commands.command(aliases=["embedclear", "clre"])
-    async def embedpurge(self, ctx, limit: int = 50, channel: discord.TextChannel = None):
-        """[S] Clears a given number of messages with embeds."""
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        if not channel:
-            channel = ctx.channel
-
-        def has_embed(m):
-            if m.embeds or m.attachments or m.stickers:
-                return True
-            else:
-                return False
-
-        deleted = await channel.purge(limit=limit, check=has_embed)
-        
-        embed = discord.Embed(
-            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {len(deleted)} messages in {channel.mention}.", timestamp=datetime.datetime.now()
-        )
-        embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}")
-        
-        await log_channel.send(embed=embed)
-        await ctx.send(f"🚮 `{len(deleted)}` messages purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)

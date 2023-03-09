@@ -32,7 +32,6 @@ initial_cogs = [
     "cogs.mod_oneshot",
     "cogs.mod_observation",
     "cogs.mod_note",
-    "cogs.mod_reacts",
     "cogs.mod_userlog",
     "cogs.mod_timed",
     "cogs.mod_watch",
