@@ -53,31 +53,31 @@ class BasicOneShot(Cog):
                 dnd.append(u)
             elif m.raw_status == "idle":
                 away.append(u)
-        if onlinelist:
+        if online:
             onlinelist = ",".join(online)
-        if offlinelist:
+        if offline:
             offlinelist = ",".join(offline)
-        if awaylist:
+        if away:
             awaylist = ",".join(away)
-        if dndlist:
+        if dnd:
             dndlist = ",".join(dnd)
         embed.add_field(
-            name=f"🟢 Online [`{len(onlinelist)}`/`{len(staff_role.members)}`]",
+            name=f"🟢 Online [`{len(online)}`/`{len(staff_role.members)}`]",
             value=f"{onlinelist}",
             inline=False
         )
         embed.add_field(
-            name=f"🟡 Idle [`{len(awaylist)}`/`{len(staff_role.members)}`]",
+            name=f"🟡 Idle [`{len(away)}`/`{len(staff_role.members)}`]",
             value=f"{awaylist}",
             inline=False
         )
         embed.add_field(
-            name=f"🔴 Do Not Disturb [`{len(dndlist)}`/`{len(staff_role.members)}`]",
+            name=f"🔴 Do Not Disturb [`{len(dnd)}`/`{len(staff_role.members)}`]",
             value=f"{dndlist}",
             inline=False
         )
         embed.add_field(
-            name=f"⚫ Offline [`{len(offlinelist)}`/`{len(staff_role.members)}`]",
+            name=f"⚫ Offline [`{len(offline)}`/`{len(staff_role.members)}`]",
             value=f"{offlinelist}",
             inline=False
         )
