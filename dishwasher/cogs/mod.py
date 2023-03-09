@@ -532,7 +532,7 @@ class Mod(Cog):
                             msg = (
                                 await self.bot.get_guild(event.guild_id)
                                 .get_channel(event.channel_id)
-                                .get_message(event.message_id)
+                                .fetch_message(event.message_id)
                             )
         
                             def check_emoji(r):
