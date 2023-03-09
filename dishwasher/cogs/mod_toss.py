@@ -98,13 +98,13 @@ class ModToss(Cog):
                     bad_roles_msg = f"\nI was unable to remove the following role(s): **{', '.join(bad_no_good_terrible_roles)}**"
                 await ctx.reply(f"**{us.name}**#{us.discriminator} has been tossed.\n"
                                 f"**ID:** {us.id}\n"
-                                f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
-                                f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
+                                f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}:f>)\n"
+                                f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}:f>)\n"
                                 f"**Previous Roles:** {prev_roles}{bad_roles_msg}", mention_author=False)
                 await ctx.guild.get_channel(config.staff_channel).send(f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
                                 f"**ID:** {us.id}\n"
-                                f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
-                                f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
+                                f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}:f>)\n"
+                                f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}:f>)\n"
                                 f"**Previous Roles:** {prev_roles}\n\n"
                                 f"{ctx.guild.get_channel(config.toss_channels[0]).mention}")
                 userlog(us.id, ctx.author, f"[Jump]({ctx.message.jump_url}) to toss event.", "tosses", us.name)

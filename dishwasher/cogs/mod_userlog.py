@@ -141,8 +141,17 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["clearwarns"])
-    async def clearevent(self, ctx, target: discord.Member, event="warns"):
+    async def clearevent(self, ctx, target, event="warns"):
         """[S] Clears all events of given type for a user."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
+
         log_channel = self.bot.get_channel(config.modlog_channel)
         msg = self.clear_event_from_id(str(target.id), event)
         safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -159,24 +168,18 @@ class ModUserlog(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["clearwarnsid"])
-    async def cleareventid(self, ctx, target: int, event="warns"):
-        """[S] Clears all events of given type for an ID."""
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        msg = self.clear_event_from_id(str(target), event)
-        await ctx.send(msg)
-        msg = (
-            f"🗑 **Cleared {event}**: {ctx.author.mention} cleared"
-            f" all {event} events of <@{target}> "
-            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-        )
-        await log_channel.send(msg)
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
     @commands.command(aliases=["delwarn"])
-    async def delevent(self, ctx, target: discord.Member, idx: int, event="warns"):
+    async def delevent(self, ctx, target, idx: int, event="warns"):
         """[S] Removes a specific event from a user."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
+
         log_channel = self.bot.get_channel(config.modlog_channel)
         del_event = self.delete_event_from_id(str(target.id), idx, event)
         event_name = userlog_event_types[event].lower()
@@ -198,59 +201,94 @@ class ModUserlog(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(aliases=["delwarnid"])
-    async def deleventid(self, ctx, target: int, idx: int, event="warns"):
-        """[S] Removes a specific event from an ID."""
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        del_event = self.delete_event_from_id(str(target), idx, event)
-        event_name = userlog_event_types[event].lower()
-        # This is hell.
-        if isinstance(del_event, discord.Embed):
-            await ctx.send(f"<@{target}> has a {event_name} removed!")
-            msg = (
-                f"🗑 **Deleted {event_name}**: "
-                f"{ctx.author.mention} removed "
-                f"{event_name} {idx} from <@{target}> "
-                f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-            )
-            await log_channel.send(msg, embed=del_event)
-        else:
-            await ctx.send(del_event)
-
-    @commands.guild_only()
-    @commands.check(check_if_staff)
     @commands.command()
-    async def userinfo(self, ctx, *, user: discord.Member):
-        """[S] Gets user info."""
-        role = user.top_role.name
-        if role == "@everyone":
-            role = "@ everyone"
+    async def fullinfo(self, ctx, target):
+        """[S] Gets full user info."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await self.bot.fetch_user(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await self.bot.fetch_user(target[2:-1])
 
-        event_types = ["warns", "bans", "kicks", "tosses", "notes"]
-        embed = self.get_userlog_embed_for_id(
-            str(user.id), str(user), event=event_types
-        )
+        # role = user.top_role.name
+        # if role == "@everyone":
+        #    role = "@ everyone"
 
+        if target.bot:
+            isbot = " [BOT]"
+        else:
+            isbot = ""
+        
+        if ctx.guild.get_member(target.id) is None:
+            # Memberless code.
+            return
+        else:
+            embed = discord.Embed(
+                color=target.color, title="Statistics for member @{target}{isbot}", description=f"**ID:** `{target.id}`\n**Nickname:** `{target.nick}`", timestamp=datetime.datetime.now()
+            )
+            embed.set_footer(text="Dishwasher")
+            embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
+            embed.set_thumbnail(url=f"{member.display_avatar.url}")
+            embed.add_field(
+                name="⏰ Account created:",
+                value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
+                inline=True
+            )
+            embed.add_field(
+                name="⏱️ Account joined:",
+                value=f"<t:{target.joined_at.astimezone().strftime('%s')}:f>\n<t:{target.joined_at.astimezone().strftime('%s')}:R>",
+                inline=True
+            )
+            embed.add_field(
+                name="🗃️ Joinscore:",
+                value=f"`{sorted(ctx.guild.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.guild.members)}`",
+                inline=True
+            )
+            if target.activity.emoji == None:
+                emoji=""
+            else:
+                emoji=f"{target.activity.emoji} "
+            if target.activity.details == None
+                details=""
+            else:
+                details="\n{target.activity.details}"
+            embed.add_field(
+                name="💭 Status:",
+                value=f"{emoji}{target.activity.name}{details}",
+                inline=True
+            )
+            roles = []
+            for index, role in enumerate(target.roles):
+                if role.name == "@everyone":
+                    continue
+                roles.append("<@&" + role.id + ">")
+                rolelist = ", ".join(roles)
+            embed.add_field(
+                name=f"🎨 Roles:",
+                value=f'{rolelist}',
+                inline=True
+            )
+            
         user_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, user.name
+            ctx, target.name
         )
         display_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, user.display_name
+            ctx, target.display_name
         )
+
+        embeds = []
+        event_types = ["warns", "bans", "kicks", "tosses", "notes"]
+        embed = self.get_userlog_embed_for_id(
+            str(target.id), str(target), event=event_types
+        )
+        embeds.append(embed)
 
         await ctx.send(
-            f"user = {user_name}\n"
-            f"id = {user.id}\n"
-            f"avatar = {user.display_avatar.url}\n"
-            f"bot = {user.bot}\n"
-            f"created_at = {user.created_at}\n"
-            f"display_name = {display_name}\n"
-            f"joined_at = {user.joined_at}\n"
-            f"color = {user.colour}\n"
-            f"top_role = {role}\n",
-            embed=embed,
+            embeds=embeds,
         )
-
 
 async def setup(bot):
     await bot.add_cog(ModUserlog(bot))
