@@ -265,7 +265,7 @@ class ModUserlog(Cog):
             for index, role in enumerate(target.roles):
                 if role.name == "@everyone":
                     continue
-                roles.append("<@&" + role.id + ">")
+                roles.append("<@&" + str(role.id) + ">")
                 rolelist = ", ".join(roles)
             embed.add_field(
                 name=f"🎨 Roles:",
