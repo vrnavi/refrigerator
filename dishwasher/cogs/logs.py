@@ -6,6 +6,7 @@ import config
 import datetime
 from helpers.restrictions import get_user_restrictions
 from helpers.checks import check_if_staff
+from helpers.userlogs import userlog
 
 
 class Logs(Cog):
@@ -83,36 +84,6 @@ class Logs(Cog):
         else:
             invite_used = "One of: "
             invite_used += ", ".join([x["code"] for x in probable_invites_used])
-
-        # UNUSED: Check if user account is older than 15 minutes
-        # age = member.joined_at - member.created_at
-        # if age < config.min_age:
-        #    try:
-        #        await member.send(
-        #            f"Your account is too new to "
-        #            f"join this server."
-        #            " Please try again later."
-        #        )
-        #        sent = True
-        #    except discord.errors.Forbidden:
-        #        sent = False
-        #    await member.kick(reason="Too new")
-        #
-        #    msg = (
-        #        f"🚨 **Account too new**: {member.mention} | "
-        #        f"{escaped_name}\n"
-        #        f"🗓 __Creation__: {member.created_at}\n"
-        #        f"🕓 Account age: {age}\n"
-        #        f"✉ Joined with: {invite_used}\n"
-        #        f"🏷 __User ID__: {member.id}"
-        #    )
-        #    if not sent:
-        #        msg += (
-        #            "\nThe user has disabled direct messages, "
-        #            "so the reason was not sent."
-        #        )
-        #    await log_channel.send(msg)
-        #    return
             
         # Prepare embed msg
         embeds = []
@@ -325,6 +296,21 @@ class Logs(Cog):
 
         log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
+            
+        alog = [entry async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.ban)]
+        if alog[0].target.id == member.id:
+            return
+            
+        alog = [entry async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.kick)]
+        if alog[0].target.id == member.id:
+            if alog[0].user.id != self.bot.user.id:
+                msg = (
+                    f"👢 **Kick**: {escaped_name} ("
+                    f"{member.id})"
+                )
+                userlog(member.id, alog[0].user, f"Kicked by external method.", "kicks", member.name)
+                await log_channel.send(msg)
+            return
         
         # Prepare embed msg
         embed = discord.Embed(
@@ -352,6 +338,12 @@ class Logs(Cog):
 
         if guild.id not in config.guild_whitelist:
             return
+            
+        alog = [entry async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban)]
+        if alog[0].user.id == self.bot.user.id or alog[0].target.id != member.id:
+            return
+            
+        userlog(member.id, alog[0].user, f"Banned by external method.", "bans", member.name)
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         escaped_name = self.bot.escape_message(member)
@@ -367,6 +359,10 @@ class Logs(Cog):
         await self.bot.wait_until_ready()
 
         if guild.id not in config.guild_whitelist:
+            return
+            
+        alog = [entry async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.unban)]
+        if alog[0].user.id == self.bot.user.id:
             return
 
         log_channel = self.bot.get_channel(config.modlog_channel)

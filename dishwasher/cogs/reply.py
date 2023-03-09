@@ -10,7 +10,7 @@ from helpers.checks import check_if_staff
 
 class Reply(Cog):
     """
-    Niche functions the OneShot Discord uses.
+    A cog that stops people from ping replying people who don't want to be.
     """
 
     def __init__(self, bot):

@@ -49,7 +49,7 @@ class ModToss(Cog):
         name_list = ""
         for us in user_id_list:
             if us.id == ctx.author.id:
-                await ctx.reply("For your own safety and the safety of others, please refrain from tossing yourself.")
+                await ctx.reply("For your own safety and the safety of others, please refrain from tossing yourself.", mention_author=False)
                 continue
 
             if us.id == self.bot.application_id:
@@ -69,7 +69,7 @@ class ModToss(Cog):
                     file.write(json.dumps(role_ids))
             except FileExistsError:
                 if ctx.guild.get_role(toss_role) in us.roles:
-                    await ctx.reply(f"{us.name} is already tossed.")
+                    await ctx.reply(f"{us.name} is already tossed.", mention_author=False)
                     continue
                 else:
                     with open(rf"data/toss/{us.id}.json", 'w') as file:
@@ -100,13 +100,19 @@ class ModToss(Cog):
                                 f"**ID:** {us.id}\n"
                                 f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
                                 f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
-                                f"**Previous Roles:** {prev_roles}{bad_roles_msg}")
+                                f"**Previous Roles:** {prev_roles}{bad_roles_msg}", mention_author=False)
                 await ctx.guild.get_channel(config.staff_channel).send(f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
                                 f"**ID:** {us.id}\n"
                                 f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}>)\n"
                                 f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}>)\n"
                                 f"**Previous Roles:** {prev_roles}\n\n"
                                 f"{ctx.guild.get_channel(config.toss_channels[0]).mention}")
+                userlog(us.id, ctx.author, f"[Jump]({ctx.message.jump_url}) to toss event.", "tosses", us.name)
+                
+                # Filler Spot for embed.
+                log_channel = self.bot.get_channel(config.modlog_channel)
+                # await log_channel.send(embed=embed)
+                
             except commands.MissingPermissions:
                 invalid_ids.append(us.name)
             name_list = f"{us.name}, {name_list}"
@@ -120,7 +126,7 @@ class ModToss(Cog):
         #if len(name_list[0:-2]) > 0:
         #    await ctx.reply(f"{name_list[0:-2]} has been tossed.{invalid_string}")
         if len(invalid_string) > 0:
-            await ctx.reply(invalid_string)
+            await ctx.reply(invalid_string, mention_author=False)
             
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
@@ -132,11 +138,11 @@ class ModToss(Cog):
         
         for us in user_id_list:
             if us.id == self.bot.application_id:
-                await ctx.reply("Leave me alone.")
+                await ctx.reply("Leave me alone.", mention_author=False)
                 continue
 
             if us.id == ctx.author.id:
-                await ctx.reply("This is not an option.")
+                await ctx.reply("This is not an option.", mention_author=False)
                 continue
 
             try:
@@ -146,7 +152,7 @@ class ModToss(Cog):
                     print(roles)
                 os.remove(rf"data/toss/{us.id}.json")
             except FileNotFoundError:
-                await ctx.reply(f"{us.name} is not currently tossed.")
+                await ctx.reply(f"{us.name} is not currently tossed.", mention_author=False)
             roles_actual = []
             restored = ""
             for r in roles:
@@ -159,7 +165,7 @@ class ModToss(Cog):
                 restored = f"{restored} `{rx.name}`"
 
             await us.remove_roles(ctx.guild.get_role(toss_role), reason=f"Untossed by {ctx.author} ({ctx.author.id})")
-            await ctx.reply(f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:** {restored}")
+            await ctx.reply(f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:** {restored}", mention_author=False)
             await ctx.guild.get_channel(config.staff_channel).send(f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}")
             name_list = f"{us.name}, {name_list}"
 
@@ -173,7 +179,7 @@ class ModToss(Cog):
         #if len(name_list[0:-2]) > 0:
         #    await ctx.reply(f"{name_list[0:-2]} has been untossed.{invalid_string}")
         if len(invalid_string) > 0:
-            await ctx.reply(invalid_string)
+            await ctx.reply(invalid_string, mention_author=False)
             
 async def setup(bot):
     await bot.add_cog(ModToss(bot))
