@@ -37,6 +37,10 @@ class BasicOneShot(Cog):
         away = []
         dnd = []
         offline = []
+        onlinelist = "None."
+        awaylist = "None."
+        dndlist = "None."
+        offlinelist = "None."
         for m in staff_role.members:
             u = f"{m.mention}"
             if m.is_on_mobile():
@@ -49,10 +53,14 @@ class BasicOneShot(Cog):
                 dnd.append(u)
             elif m.raw_status == "idle":
                 away.append(u)
-        onlinelist = ",".join(online)
-        offlinelist = ",".join(offline)
-        awaylist = ",".join(away)
-        dndlist = ",".join(dnd)
+        if onlinelist:
+            onlinelist = ",".join(online)
+        if offlinelist:
+            offlinelist = ",".join(offline)
+        if awaylist:
+            awaylist = ",".join(away)
+        if dndlist:
+            dndlist = ",".join(dnd)
         embed.add_field(
             name=f"🟢 Online [`{len(onlinelist)}`/`{len(staff_role.members)}`]",
             value=f"{onlinelist}",

@@ -202,16 +202,19 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def fullinfo(self, ctx, target):
+    async def fullinfo(self, ctx, target = None):
         """[S] Gets full user info."""
-        # target handler
-        # In the case of IDs.
-        try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
-        # In the case of mentions.
-        except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+        if target == None:
+            target = ctx.author
+        else:
+            # target handler
+            # In the case of IDs.
+            try:
+                target_id = int(target)
+                target = await self.bot.fetch_user(target_id)
+            # In the case of mentions.
+            except ValueError:
+                target = await self.bot.fetch_user(target[2:-1])
 
         if target.bot:
             isbot = " [BOT]"
