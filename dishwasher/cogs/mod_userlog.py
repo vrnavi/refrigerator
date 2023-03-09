@@ -253,12 +253,12 @@ class ModUserlog(Cog):
             emoji=""
             details=""
             try:
-                if {target.activity.emoji} is not None:
+                if target.activity.emoji is not None:
                     emoji=f"{target.activity.emoji} "
             except:
                 pass
             try:
-                if {target.activity.details} is not None:
+                if target.activity.details is not None:
                     details=f"\n{target.activity.details}"
             except:
                 pass
