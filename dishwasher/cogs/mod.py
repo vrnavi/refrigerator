@@ -463,21 +463,111 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["clear", "clr"])
-    async def purge(self, ctx, limit: int = 50, channel: discord.TextChannel = None):
+    async def purge(self, ctx, arg1 = None, arg2 = None, arg3 = None, arg4 = None):
         """[S] Clears a given number of messages."""
         log_channel = self.bot.get_channel(config.modlog_channel)
-        if not channel:
-            channel = ctx.channel
-        deleted = await channel.purge(limit=limit)
+
+        limit = 50
+        channel = ctx.channel
+        deleted = 0
+        purgetype = "messages"
+        if not arg1:
+            deleted = len(await ctx.channel.purge(limit=50))
+        elif type(arg1) == int:
+            deleted = len(await ctx.channel.purge(limit=arg1))
+        if type(arg2) == int:
+            limit = arg2
+        if type(arg3) == discord.TextChannel:
+            channel = arg3
+        
+        if arg1 == "bots":
+            purgetype = "bot messages"
+            def is_bot(m):
+                return m.author.bot
+            deleted = len(await channel.purge(limit=limit, check=is_bot))
+        elif arg1 == "embeds":
+            def has_embed(m):
+                if m.embeds or m.attachments or m.stickers:
+                    return True
+                else:
+                    return False
+            deleted = len(await channel.purge(limit=limit, check=has_embed))
+        elif arg1 == "reacts":
+            purgetype = "reactions"
+            if type(arg2) == discord.Member:
+                if type(arg3) == int:
+                    limit = arg3
+                if type(arg4) == discord.TextChannel:
+                    channel = arg4
+                async for msg in channel.history(limit=limit):
+                for react in msg.reactions:
+                   if await react.users().find(lambda u: u == user):
+                       deleted += 1
+                       async for u in react.users():
+                           await msg.remove_reaction(react, u)
+            elif arg2 == "pick":
+                msg_text = (
+                    f"React to the reactions you want "
+                    f"to remove. React to this message when done."
+                )
+                msg = await ctx.channel.send(msg_text)
+                tasks = []
+                def check(event):
+                    # we only care about the user who is clearing reactions
+                    if event.user_id != ctx.author.id:
+                        return False
+                    # this is how the user finishes
+                    if event.message_id == msg.id:
+                        return True
+                    else:
+                        # remove a reaction
+                        async def impl():
+                            msg = (
+                                await self.bot.get_guild(event.guild_id)
+                                .get_channel(event.channel_id)
+                                .get_message(event.message_id)
+                            )
+        
+                        def check_emoji(r):
+                            if event.emoji.is_custom_emoji() == r.custom_emoji:
+                                if event.emoji.is_custom_emoji():
+                                    return event.emoji.id == r.emoji.id
+                                else:
+                                    # gotta love consistent APIs
+                                    return event.emoji.name == r.emoji
+                            else:
+                                return False
+        
+                        for reaction in filter(check_emoji, msg.reactions):
+                            async for u in reaction.users():
+                                await reaction.message.remove_reaction(reaction, u)
+        
+                    # schedule immediately
+                    tasks.append(asyncio.create_task(impl()))
+                    return False
+
+                try:
+                    await self.bot.wait_for("raw_reaction_add", timeout=120.0, check=check)
+                except asyncio.TimeoutError:
+                    await msg.edit(content=f"Operation timed out.")
+                else:
+                    await asyncio.gather(*tasks)
+                    await msg.edit(content=f"Operation complete.")
+                return
+            else:
+                async for msg in channel.history(limit=limit):
+                    if msg.reactions:
+                        deleted += 1
+                        await msg.clear_reactions()
         
         embed = discord.Embed(
-            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {len(deleted)} messages in {channel.mention}.", timestamp=datetime.datetime.now()
+            color=discord.Color.lighter_gray(), title="🗑 Purged", description=f"{str(ctx.author)} purged {len(deleted)} {purgetype} in {channel.mention}.", timestamp=datetime.datetime.now()
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}")
         
         await log_channel.send(embed=embed)
-        await ctx.send(f"🚮 `{len(deleted)}` messages purged.", delete_after=5)
+        await ctx.send(f"🚮 `{len(deleted)}` {purgetype} purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
