@@ -250,14 +250,18 @@ class ModUserlog(Cog):
                 value=f"`{sorted(ctx.guild.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.guild.members)}`",
                 inline=True
             )
+            emoji=""
+            details=""
             try:
-                emoji=f"{target.activity.emoji} "
+                if {target.activity.emoji} is not None:
+                    emoji=f"{target.activity.emoji} "
             except:
-                emoji=""
+                pass
             try:
-                details=f"\n{target.activity.details}"
+                if {target.activity.details} is not None:
+                    details=f"\n{target.activity.details}"
             except:
-                details=""
+                pass
             embed.add_field(
                 name="💭 Status:",
                 value=f"{emoji}{target.activity.name}{details}",
