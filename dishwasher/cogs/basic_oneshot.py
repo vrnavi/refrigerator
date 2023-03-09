@@ -26,7 +26,7 @@ class BasicOneShot(Cog):
     @commands.command()
     async def staff(self, ctx):
         """[U] Shows currently active staff."""
-        staff_role = ctx.guild.get_role(config.staff_role_id)
+        staff_role = ctx.guild.get_role(config.staff_role_ids[0])
         embed = discord.Embed(
             color=staff_role.color, title="🛠️ Staff List", description=f"Voting requirement is `{int(len(staff_role.members)/2//1+1)}`.", timestamp=datetime.datetime.now()
         )
