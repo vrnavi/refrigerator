@@ -490,6 +490,11 @@ class Mod(Cog):
             def is_bot(m):
                 return m.author.bot
             deleted = len(await channel.purge(limit=limit, check=is_bot))
+        elif arg1 == discord.Member:
+            purgetype = f"messages from {arg1}"
+            def is_mentioned(m):
+                return arg1 == m.author
+            deleted = len(await channel.purge(limit=limit, check=is_mentioned))
         elif arg1 == "embeds":
             def has_embed(m):
                 if m.embeds or m.attachments or m.stickers:
