@@ -221,7 +221,9 @@ class ModUserlog(Cog):
             isbot = " [BOT]"
         else:
             isbot = ""
-        
+
+        embeds = []
+
         if ctx.guild.get_member(target.id) is None:
             # Memberless code.
             return
@@ -272,6 +274,7 @@ class ModUserlog(Cog):
                 value=f'{rolelist}',
                 inline=True
             )
+            embeds.append(embed)
             
         user_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, target.name
@@ -280,7 +283,6 @@ class ModUserlog(Cog):
             ctx, target.display_name
         )
 
-        embeds = []
         event_types = ["warns", "bans", "kicks", "tosses", "notes"]
         embed = self.get_userlog_embed_for_id(
             str(target.id), str(target), event=event_types
