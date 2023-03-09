@@ -37,7 +37,6 @@ class BasicOneShot(Cog):
         away = []
         dnd = []
         offline = []
-        mobile = []
         for m in staff_role.members:
             u = f"{m.mention}"
             if m.is_on_mobile():
@@ -55,22 +54,22 @@ class BasicOneShot(Cog):
         awaylist = ",".join(away)
         dndlist = ",".join(dnd)
         embed.add_field(
-            name="🟢 Online [`{len(onlinelist}}`/`{len(staff_role.members}`]",
+            name="🟢 Online [`{len(onlinelist)}`/`{len(staff_role.members)}`]",
             value=f"{onlinelist}",
             inline=False
         )
         embed.add_field(
-            name="🟡 Idle [`{len(awaylist}}`/`{len(staff_role.members}`]",
+            name="🟡 Idle [`{len(awaylist)}`/`{len(staff_role.members)}`]",
             value=f"{awaylist}",
             inline=False
         )
         embed.add_field(
-            name="🔴 Do Not Disturb [`{len(dndlist}}`/`{len(staff_role.members}`]",
+            name="🔴 Do Not Disturb [`{len(dndlist)}`/`{len(staff_role.members)}`]",
             value=f"{dndlist}",
             inline=False
         )
         embed.add_field(
-            name="⚫ Offline [`{len(offlinelist}}`/`{len(staff_role.members}`]",
+            name="⚫ Offline [`{len(offlinelist)}`/`{len(staff_role.members)}`]",
             value=f"{offlinelist}",
             inline=False
         )
