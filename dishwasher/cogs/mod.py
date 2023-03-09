@@ -512,7 +512,7 @@ class Mod(Cog):
             channel = ctx.channel
 
         def has_embed(m):
-            if m.embeds or m.attachments:
+            if m.embeds or m.attachments or m.stickers:
                 return True
             else:
                 return False
