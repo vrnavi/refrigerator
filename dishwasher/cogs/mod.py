@@ -42,13 +42,16 @@ class Mod(Cog):
     async def kick(self, ctx, target, *, reason: str = ""):
         """[S] Kicks a user."""
         # target handler
+        inguild = True
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await ctx.guild.fetch_member(target_id)
+            target = await ctx.guild.fetch_member(int(target))
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
+        except NotFound:
+            inguild = False
+            target = await self.bot.fetch_user(target_id)
             
         if target == ctx.author:
             return await ctx.send("**No.**")
@@ -56,10 +59,9 @@ class Mod(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send(
-                "I cannot kick Staff members."
-            )
+        if inguild:
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
 
         userlog(target.id, ctx.author, reason, "kicks", target.name)
 
@@ -124,13 +126,16 @@ class Mod(Cog):
     async def ban(self, ctx, target, *, reason: str = ""):
         """[S] Bans a user."""
         # target handler
+        inguild = True
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await ctx.guild.fetch_member(target_id)
+            target = await ctx.guild.fetch_member(int(target))
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
+        except NotFound:
+            inguild = False
+            target = await self.bot.fetch_user(target_id)
             
         if target == ctx.author:
             return await ctx.send("**No.**")
@@ -138,8 +143,9 @@ class Mod(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
+        if inguild:
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -208,22 +214,26 @@ class Mod(Cog):
     ):
         """[S] Bans a user, with n days of messages deleted."""
         # target handler
+        inguild = True
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await ctx.guild.fetch_member(target_id)
+            target = await ctx.guild.fetch_member(int(target))
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
-
+        except NotFound:
+            inguild = False
+            target = await self.bot.fetch_user(target_id)
+            
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
+        if inguild:
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
 
         if day_count < 0 or day_count > 7:
             return await ctx.send(
@@ -409,13 +419,16 @@ class Mod(Cog):
     async def sban(self, ctx, target, *, reason: str = ""):
         """[S] Bans a user silently. Does not message them."""
         # target handler
+        inguild = True
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
+            target = await ctx.guild.fetch_member(int(target))
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+            target = await ctx.guild.fetch_member(target[2:-1])
+        except NotFound:
+            inguild = False
+            target = await self.bot.fetch_user(target_id)
 
         if target == ctx.author:
             return await ctx.send("**No.**")
@@ -423,8 +436,9 @@ class Mod(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
+        if inguild:
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -500,7 +514,7 @@ class Mod(Cog):
             def is_bot(m):
                 return m.author.bot
             deleted = len(await channel.purge(limit=limit, check=is_bot))
-        elif arg1[1:2] == "@":
+        elif type(arg1) == str and arg1[1:2] == "@":
             member = await self.bot.fetch_user(arg1[2:-1])
             purgetype = f"messages from {member}"
             def is_mentioned(m):
@@ -598,13 +612,16 @@ class Mod(Cog):
     async def warn(self, ctx, target, *, reason: str = ""):
         """[S] Warns a user."""
         # target handler
+        inguild = True
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
+            target = await ctx.guild.fetch_member(int(target))
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+            target = await ctx.guild.fetch_member(target[2:-1])
+        except NotFound:
+            inguild = False
+            target = await self.bot.fetch_user(target_id)
 
         if target == ctx.author:
             return await ctx.send("No.")
@@ -612,10 +629,9 @@ class Mod(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send(
-                "I cannot warn Staff members."
-            )
+        if inguild:
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)

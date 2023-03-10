@@ -146,8 +146,7 @@ class ModUserlog(Cog):
         # target handler
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
+            target = await self.bot.fetch_user(int(target))
         # In the case of mentions.
         except ValueError:
             target = await self.bot.fetch_user(target[2:-1])
@@ -174,8 +173,7 @@ class ModUserlog(Cog):
         # target handler
         # In the case of IDs.
         try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
+            target = await self.bot.fetch_user(int(target))
         # In the case of mentions.
         except ValueError:
             target = await self.bot.fetch_user(target[2:-1])
