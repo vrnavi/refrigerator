@@ -53,7 +53,7 @@ class ModToss(Cog):
                 continue
 
             if us.id == self.bot.application_id:
-                await ctx.reply(f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that.", mention_author=False)
+                await ctx.reply(f"I'm sorry {ctx.author.name}, I'm afraid I can't do that.", mention_author=False)
                 continue
                 
             temp_role_list = []
