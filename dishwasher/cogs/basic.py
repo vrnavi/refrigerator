@@ -38,7 +38,7 @@ class Basic(Cog):
             except ValueError:
                 avy = await ctx.guild.fetch_member(target[2:-1]).display_avatar.url
             # In the case of no user.
-            except NotFound:
+            except discord.NotFound:
                 avy = await self.bot.fetch_user(int(target)).display_avatar.url
         else:
                 avy = ctx.author.display_avatar.url

@@ -49,7 +49,7 @@ class Mod(Cog):
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
-        except NotFound:
+        except discord.NotFound:
             inguild = False
             target = await self.bot.fetch_user(target_id)
             
@@ -133,7 +133,7 @@ class Mod(Cog):
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
-        except NotFound:
+        except discord.NotFound:
             inguild = False
             target = await self.bot.fetch_user(target_id)
             
@@ -221,7 +221,7 @@ class Mod(Cog):
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
-        except NotFound:
+        except discord.NotFound:
             inguild = False
             target = await self.bot.fetch_user(target_id)
             
@@ -426,7 +426,7 @@ class Mod(Cog):
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
-        except NotFound:
+        except discord.NotFound:
             inguild = False
             target = await self.bot.fetch_user(target_id)
 
@@ -619,7 +619,7 @@ class Mod(Cog):
         # In the case of mentions.
         except ValueError:
             target = await ctx.guild.fetch_member(target[2:-1])
-        except NotFound:
+        except discord.NotFound:
             inguild = False
             target = await self.bot.fetch_user(target_id)
 
