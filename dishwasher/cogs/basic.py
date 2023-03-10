@@ -39,9 +39,10 @@ class Basic(Cog):
                 avy = await ctx.guild.fetch_member(target[2:-1]).display_avatar.url
             # In the case of no user.
             except NotFound:
-                avy = ctx.author.display_avatar.url
+                avy = await self.bot.fetch_user(int(target)).display_avatar.url
         else:
-            await ctx.send(content=avy)
+                avy = ctx.author.display_avatar.url
+        await ctx.send(content=avy)
 
     @commands.command()
     async def install(self, ctx):
