@@ -28,16 +28,19 @@ class Basic(Cog):
         )
 
     @commands.command()
-    async def avy(self, ctx, target):
+    async def avy(self, ctx, target = None):
         """[U] Gets an avy."""
-        # In the case of IDs.
-        try:
-            target_id = int(target)
-            avy = self.bot.get_user(target_id).display_avatar.url
-        # In the case of mentions.
-        except ValueError:
-            user = await self.bot.fetch_user(target[2:-1])
-            avy = user.display_avatar.url
+        if target is not None:
+            # In the case of IDs.
+            try:
+                avy = await ctx.guild.fetch_member(int(target)).display_avatar.url
+            # In the case of mentions.
+            except ValueError:
+                avy = await ctx.guild.fetch_member(target[2:-1]).display_avatar.url
+            # In the case of no user.
+            except NotFound:
+                avy = ctx.author.display_avatar.url
+        else:
         await ctx.send(content=avy)
 
     @commands.command()
