@@ -39,8 +39,17 @@ class Mod(Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["boot"])
-    async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
+    async def kick(self, ctx, target, *, reason: str = ""):
         """[S] Kicks a user."""
+        # target handler
+        # In the case of IDs.
+        try:
+            target_id = int(target)
+            target = await ctx.guild.fetch_member(target_id)
+        # In the case of mentions.
+        except ValueError:
+            target = await ctx.guild.fetch_member(target[2:-1])
+            
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
@@ -118,10 +127,10 @@ class Mod(Cog):
         # In the case of IDs.
         try:
             target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
+            target = await ctx.guild.fetch_member(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+            target = await ctx.guild.fetch_member(target[2:-1])
             
         if target == ctx.author:
             return await ctx.send("**No.**")
@@ -198,13 +207,14 @@ class Mod(Cog):
         self, ctx, day_count: int, target, *, reason: str = ""
     ):
         """[S] Bans a user, with n days of messages deleted."""
+        # target handler
         # In the case of IDs.
         try:
             target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
+            target = await ctx.guild.fetch_member(target_id)
         # In the case of mentions.
         except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+            target = await ctx.guild.fetch_member(target[2:-1])
 
         if target == ctx.author:
             return await ctx.send("**No.**")
