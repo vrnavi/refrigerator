@@ -41,7 +41,7 @@ class Basic(Cog):
             except NotFound:
                 avy = ctx.author.display_avatar.url
         else:
-        await ctx.send(content=avy)
+            await ctx.send(content=avy)
 
     @commands.command()
     async def install(self, ctx):
