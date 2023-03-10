@@ -33,16 +33,16 @@ class Basic(Cog):
         if target is not None:
             # In the case of IDs.
             try:
-                avy = await ctx.guild.fetch_member(int(target)).display_avatar.url
+                user = await ctx.guild.fetch_member(int(target))
             # In the case of mentions.
             except ValueError:
-                avy = await ctx.guild.fetch_member(target[2:-1]).display_avatar.url
+                user = await ctx.guild.fetch_member(target[2:-1])
             # In the case of no user.
             except discord.NotFound:
-                avy = await self.bot.fetch_user(int(target)).display_avatar.url
+                user = await self.bot.fetch_user(int(target))
         else:
-                avy = ctx.author.display_avatar.url
-        await ctx.send(content=avy)
+                user = ctx.author
+        await ctx.send(content=avy.display_avatar.url)
 
     @commands.command()
     async def install(self, ctx):
