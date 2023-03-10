@@ -42,7 +42,7 @@ class Basic(Cog):
                 user = await self.bot.fetch_user(int(target))
         else:
                 user = ctx.author
-        await ctx.send(content=avy.display_avatar.url)
+        await ctx.send(content=user.display_avatar.url)
 
     @commands.command()
     async def install(self, ctx):
