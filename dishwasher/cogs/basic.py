@@ -153,6 +153,7 @@ class Basic(Cog):
             )
             emoji=""
             details=""
+            name=""
             try:
                 if target.activity.emoji is not None:
                     emoji=f"{target.activity.emoji} "
@@ -163,9 +164,14 @@ class Basic(Cog):
                     details=f"\n{target.activity.details}"
             except:
                 pass
+            try:
+                if target.activity.name is not None:
+                    name=f"{target.activity.name}"
+            except:
+                pass
             embed.add_field(
                 name="💭 Status:",
-                value=f"{emoji}{target.activity.name}{details}",
+                value=f"{emoji}{name}{details}",
                 inline=False
             )
             roles = []
