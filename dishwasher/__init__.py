@@ -58,11 +58,10 @@ async def on_ready():
         f"{bot.user.id}\ndpy version: {discord.__version__}\n"
     )
 
-    if not bot.start_timestamp:
-        bot.session = aiohttp.ClientSession()
-        bot.start_timestamp = datetime.datetime.utcnow().replace(
-            tzinfo=datetime.timezone.utc
-        )
+    bot.session = aiohttp.ClientSession()
+    bot.start_timestamp = datetime.datetime.utcnow().replace(
+        tzinfo=datetime.timezone.utc
+    )
 
 
     # Send "Robocop has started! x has y members!"
