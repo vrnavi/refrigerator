@@ -1,6 +1,7 @@
 import json
 import time
 
+
 userlog_event_types = {
     "warns": "Warn",
     "bans": "Ban",
@@ -23,15 +24,12 @@ def get_userprefix(uid):
     
 
 def set_userdata(contents):
-    try:
-        with open("data/userdata.json", "w") as f:
-            f.write(contents) #is using json the best for this? if f.write fails userdata.json will be wiped
-    except:
-        print("Unable to write contents") 
-        print(contents) 
+    with open("data/userdata.json", "w") as f:
+        f.write(contents) 
+    
 
 
-def fill_userdata(userid, uname = None):
+def fill_userdata(userid):
     userdata = get_userdata()
     uid = str(userid)
     if uid not in userdata:

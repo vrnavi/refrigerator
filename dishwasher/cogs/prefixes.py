@@ -7,7 +7,7 @@ from helpers.userdata import get_userprefix, fill_userdata, set_userdata
 
 class prefixes(Cog):
     """
-    Commands for letting users manage their custom prefixes, run command by itself to check prefixes
+    Commands for letting users manage their custom prefixes, run command by itself to check prefixes.
     """
 
     def __init__(self, bot):
@@ -16,8 +16,8 @@ class prefixes(Cog):
 
     @commands.group(aliases=["prefix"], invoke_without_command=True)
     async def prefixes(self, ctx):
-        """Lists off prefixes"""
-        embed = discord.Embed(title="Active Prefixes", description="mentioning the bot will always be a prefix !", colour=10724259)
+        """[U] Lists all prefixes."""
+        embed = discord.Embed(title="Active Prefixes", description="mentioning the bot will always be a prefix!", colour=10724259)
         embed.set_author(icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name)
         uid = str(ctx.author.id)
         userprefixes = get_userprefix(uid)
@@ -29,19 +29,19 @@ class prefixes(Cog):
                 value = "---"
             finally:
                 embed.add_field(name=i, value=f"- {value}")
-        embed.set_footer(text="use ``prefix add/remove`` to change your prefixes.")
+        embed.set_footer(text=f"Use {config.prefixes[0]}add/remove to change your prefixes.")
         await ctx.send(embed=embed)
 
     @prefixes.command()
     async def add(self, ctx, arg:str):
-        """adds a new prefix"""
+        """[U] Adds a new prefix."""
         userdata, uid = fill_userdata(ctx.author.id)
         print(userdata)
         if not len(userdata[uid]["prefixes"]) > config.maxprefixes:
             userdata[uid]["prefixes"].append(f"{arg} ")
             set_userdata(json.dumps(userdata))
-            await ctx.send("new prefix set")
-        else: ctx.send(f"you have reached the max of [{config.maxprefixes}]")
+            await ctx.send("Prefix added.")
+        else: ctx.send(f"You have reached your limit of {config.maxprefixes} prefixes.")
 
 
         
@@ -53,9 +53,9 @@ class prefixes(Cog):
         try:
             userdata[uid]["prefixes"].pop(arg)
             set_userdata(json.dumps(userdata))
-            await ctx.send("prefix removed")
+            await ctx.send("Prefix removed.")
         except IndexError: 
-            await ctx.send("what do you want me to remove?") 
+            await ctx.send("What do you want to be removed?") 
     
 async def setup(bot):
     await bot.add_cog(prefixes(bot))
