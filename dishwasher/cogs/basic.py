@@ -95,7 +95,7 @@ class Basic(Cog):
             title="Dishwasher", url=config.source_url, description=config.embed_desc
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
-        embed.set_image(url=f"https://contrib.rocks/image?repo={config.source_url.split('/')[4]}/{config.source_url.split('/')[5]}&columns=6")
+        embed.set_image(url=f"https://contrib.rocks/image?repo={config.source_url.split('/')[3]}/{config.source_url.split('/')[4]}&columns=6")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["commands"])
