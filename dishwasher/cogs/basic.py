@@ -20,13 +20,12 @@ class Basic(Cog):
     async def youtube(self, ctx, *, arg:str):
         """[U] returns the first video in youtubes search."""
         try:
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession() as session: #common.aioget spams info with entire reponse body, so am doing this instead
                 async with session.get(f'https://www.youtube.com/results?search_query={arg}') as response: #seems to be santized by aiohttp
                     
                     if response.status is not 200:
                         raise ConnectionError
                     
-
                     html = await response.text()
                     id = ren.findall(r"watch\?v=(\S{11})", html)[0] #finds the first instance of watch\?=[youtube video id]
                     await ctx.send(f"https://www.youtube.com/watch?v={id}")
