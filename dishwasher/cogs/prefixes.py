@@ -37,7 +37,7 @@ class prefixes(Cog):
         """[U] Adds a new prefix."""
         userdata, uid = fill_userdata(ctx.author.id)
         print(userdata)
-        if not len(userdata[uid]["prefixes"]) > config.maxprefixes:
+        if not len(userdata[uid]["prefixes"]) >= config.maxprefixes:
             userdata[uid]["prefixes"].append(f"{arg} ")
             set_userdata(json.dumps(userdata))
             await ctx.send("Prefix added.")
