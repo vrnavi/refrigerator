@@ -20,7 +20,6 @@ embed_desc = (
 )
 
 # The cogs the bot will load on startup.
- The cogs the bot will load on startup.
 initial_cogs = [
     "cogs.common",
     "cogs.admin",

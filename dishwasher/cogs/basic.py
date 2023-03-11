@@ -4,7 +4,8 @@ import discord
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
-
+import aiohttp
+import re as ren
 
 class Basic(Cog):
     def __init__(self, bot):
@@ -14,6 +15,24 @@ class Basic(Cog):
     async def hello(self, ctx):
         """[U] Says hello!"""
         await ctx.send(f"Hello {ctx.author.mention}! Have you drank your Soylent Green today?")
+
+    @commands.command(aliases=["yt"])
+    async def youtube(self, ctx, *, arg:str):
+        """[U] returns the first video in youtubes search."""
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(f'https://www.youtube.com/results?search_query={arg}') as response: #seems to be santized by aiohttp
+                    
+                    if response.status is not 200:
+                        raise ConnectionError
+                    
+
+                    html = await response.text()
+                    id = ren.findall(r"watch\?v=(\S{11})", html)[0] #finds the first instance of watch\?=[youtube video id]
+                    await ctx.send(f"https://www.youtube.com/watch?v={id}")
+        except ConnectionError:
+            await ctx.send("wh? something broke?")
+            
         
     @commands.command()
     async def hug(self, ctx):
