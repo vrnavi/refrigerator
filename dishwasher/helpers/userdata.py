@@ -25,9 +25,9 @@ def get_userprefix(uid):
 def set_userdata(contents):
     try:
         with open("data/userdata.json", "w") as f:
-            f.write(contents)
+            f.write(contents) #is using json the best for this? if f.write fails userdata.json will be wiped
     except:
-        print("Unable to write contents")
+        print("Unable to write contents") 
         print(contents) 
 
 

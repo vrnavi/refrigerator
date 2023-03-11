@@ -7,7 +7,7 @@ from helpers.userdata import get_userprefix, fill_userdata, set_userdata
 
 class prefixes(Cog):
     """
-    Commands for letting users manage their custom prefixes.
+    Commands for letting users manage their custom prefixes, run command by itself to check prefixes
     """
 
     def __init__(self, bot):
@@ -22,7 +22,7 @@ class prefixes(Cog):
         uid = str(ctx.author.id)
         userprefixes = get_userprefix(uid)
         
-        for i in range(config.maxprefixes): #max of 24 prefixes as discord does not allow more than 25 fields
+        for i in range(config.maxprefixes): #max of 24 prefixes as discord does not allow more than 25 fields in embeds
             try:
                 value = userprefixes[i]
             except (IndexError, TypeError):
@@ -47,6 +47,7 @@ class prefixes(Cog):
         
     @prefixes.command()
     async def remove(self, ctx, arg:int):
+        """removes a prefix"""
         userdata, uid = fill_userdata(ctx.author.id)
         userdata[uid]["prefixes"]
         try:
