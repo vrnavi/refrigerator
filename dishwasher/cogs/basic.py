@@ -96,6 +96,7 @@ class Basic(Cog):
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         embed.set_image(url=f"https://contrib.rocks/image?repo={config.source_url.split('/')[3]}/{config.source_url.split('/')[4]}&columns=6")
+        await ctx.send(content=f"https://contrib.rocks/image?repo={config.source_url.split('/')[3]}/{config.source_url.split('/')[4]}&columns=6")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["commands"])
