@@ -139,6 +139,9 @@ list_channels = []
 self_assignable_roles = {
 }
 
+#== Prefix related settings ==
+maxprefixes = 6 # !max of 24!
+
 # == Only if you want to use cogs.reply ==
 noreply_role = 1059460475588448416
 

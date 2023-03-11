@@ -9,6 +9,7 @@ import random
 import discord
 import datetime
 from discord.ext import commands
+from helpers.userdata import get_userprefix
 
 # TODO: check __name__ for __main__ nerd
 
@@ -23,14 +24,17 @@ log.addHandler(stdout_handler)
 
 
 def get_prefix(bot, message):
-    prefixes = config.prefixes
-
+    prefixes = config.prefixes 
+    userprefixes = get_userprefix(message.author.id)
+    if userprefixes is not None:
+        return commands.when_mentioned_or(*prefixes + userprefixes)(bot, message)
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
 wanted_jsons = [
     "data/restrictions.json",
     "data/dishtimers.json",
+    "data/userdata.json",
     "data/userlog.json",
     "data/invites.json",
 ]
