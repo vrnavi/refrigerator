@@ -17,7 +17,7 @@ class prefixes(Cog):
     @commands.group(aliases=["prefix"], invoke_without_command=True)
     async def prefixes(self, ctx):
         """[U] Lists all prefixes."""
-        embed = discord.Embed(title="Active Prefixes", description="mentioning the bot will always be a prefix!", colour=10724259)
+        embed = discord.Embed(title="Active Prefixes", description="Mentioning the bot will always be a prefix.", colour=10724259)
         embed.set_author(icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name)
         uid = str(ctx.author.id)
         userprefixes = get_userprefix(uid)
@@ -28,8 +28,8 @@ class prefixes(Cog):
             except (IndexError, TypeError):
                 value = "---"
             finally:
-                embed.add_field(name=i, value=f"- {value}")
-        embed.set_footer(text=f"Use {config.prefixes[0]}add/remove to change your prefixes.")
+                embed.add_field(name=i, value=f"{value}")
+        embed.set_footer(text=f"Use {config.prefixes[0]}prefix add/remove to change your prefixes.")
         await ctx.send(embed=embed)
 
     @prefixes.command()
@@ -43,19 +43,17 @@ class prefixes(Cog):
             await ctx.send("Prefix added.")
         else: ctx.send(f"You have reached your limit of {config.maxprefixes} prefixes.")
 
-
-        
     @prefixes.command()
-    async def remove(self, ctx, arg:int):
+    async def remove(self, ctx, number:int):
         """removes a prefix"""
         userdata, uid = fill_userdata(ctx.author.id)
         userdata[uid]["prefixes"]
         try:
-            userdata[uid]["prefixes"].pop(arg)
+            userdata[uid]["prefixes"].pop(number)
             set_userdata(json.dumps(userdata))
             await ctx.send("Prefix removed.")
         except IndexError: 
-            await ctx.send("What do you want to be removed?") 
+            await ctx.send("This prefix does not exist.") 
     
 async def setup(bot):
     await bot.add_cog(prefixes(bot))
