@@ -41,7 +41,8 @@ class prefixes(Cog):
             userdata[uid]["prefixes"].append(f"{arg} ")
             set_userdata(json.dumps(userdata))
             await ctx.send("Prefix added.")
-        else: ctx.send(f"You have reached your limit of {config.maxprefixes} prefixes.")
+        else: 
+            await ctx.send(f"You have reached your limit of {config.maxprefixes} prefixes.")
 
     @prefixes.command()
     async def remove(self, ctx, number:int):
