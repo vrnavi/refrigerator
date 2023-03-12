@@ -631,10 +631,9 @@ class Mod(Cog):
             )
         if inguild:
             if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot ban Staff members.")
+                return await ctx.send("I cannot warn Staff members.")
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
+        log_channel = self.bot.get_channel(config.modlog_channel)   
         
         if reason:
             warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
