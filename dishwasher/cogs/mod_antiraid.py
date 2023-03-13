@@ -11,7 +11,7 @@ from helpers.checks import check_if_staff
 class ModAntiRaid(Cog):
     def __init__(self, bot):
         self.bot = bot
-        bot.GUILD = bot.get_guild(config.guild_whitelist[0])
+        bot.GUILD = await bot.fetch_guild(config.guild_whitelist[0])
         bot.AUTHORIZED_ROLE = (
             bot.GUILD.get_role(config.named_roles["journal"]) if bot.GUILD else None
         )
@@ -33,9 +33,6 @@ class ModAntiRaid(Cog):
         bot.AUTOLOCKDOWN_IN_PROGRESS = False
         bot.RECENT_MEMBER_CACHE = None
         if bot.RECENT_JOIN_THRESHOLD > 0:
-            while bot.GUILD.members == None:
-                # Startup fix
-                pass
             bot.RECENT_MEMBER_CACHE = bot.GUILD.members
             self.cull_recent_member_cache()
 
