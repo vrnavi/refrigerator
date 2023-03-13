@@ -53,7 +53,7 @@ class ModAntiRaid(Cog):
             # Cutoff is inclusive
             and m.joined_at >= cutoff_ts
         ]
-        
+
     def is_public_channel(self, channel):
         # Definition of a public channel:
         # (Will revert to None)
@@ -80,14 +80,15 @@ class ModAntiRaid(Cog):
                 ]
             ]
         )
-        
+
     def get_public_channels(self):
         return [
             c
             for c in self.bot.GUILD.text_channels
-            if c.permissions_for(self.bot.GUILD.me).manage_channels and self.is_public_channel(c)
+            if c.permissions_for(self.bot.GUILD.me).manage_channels
+            and self.is_public_channel(c)
         ]
-        
+
     def parse_channel_list(self, args):
         if not args:
             return []
@@ -96,7 +97,6 @@ class ModAntiRaid(Cog):
         affected_channels = set()
 
         for c in arg_channels:
-
             c = c.lower()
             try:
                 c = int(c.strip("<#>"))
@@ -111,7 +111,7 @@ class ModAntiRaid(Cog):
             or (c.name in affected_channels)
             and not isinstance(c, discord.TextChannel)
         ]
-        
+
     async def announce_lockdown(self, channel_list, lockdown):
         if not self.bot.ANNOUNCE_CHANNEL:
             return
@@ -124,7 +124,11 @@ class ModAntiRaid(Cog):
             if not c.permissions_for(c.guild.me).send_messages:
                 continue
 
-            message = self.bot.LOCKDOWN_ANNOUNCEMENT if lockdown else self.bot.UNLOCKDOWN_ANNOUNCEMENT
+            message = (
+                self.bot.LOCKDOWN_ANNOUNCEMENT
+                if lockdown
+                else self.bot.UNLOCKDOWN_ANNOUNCEMENT
+            )
 
             if message:
                 msg = await c.send(message)
@@ -198,7 +202,7 @@ class ModAntiRaid(Cog):
             await self.announce_lockdown(success_channels, lockdown)
 
         return ret
-        
+
     async def execute_auto_lockdown(self, message):
         self.bot.AUTOLOCKDOWN_IN_PROGRESS = True
 
@@ -206,7 +210,9 @@ class ModAntiRaid(Cog):
 
         staff_channel_accessible = (
             self.bot.STAFF_CHANNEL
-            and self.bot.STAFF_CHANNEL.permissions_for(self.bot.STAFF_CHANNEL.guild.me).send_messages
+            and self.bot.STAFF_CHANNEL.permissions_for(
+                self.bot.STAFF_CHANNEL.guild.me
+            ).send_messages
         )
 
         if staff_channel_accessible:
@@ -229,12 +235,12 @@ class ModAntiRaid(Cog):
         ret = await self.perform_lockdown(channel_list, True)
 
         if staff_channel_accessible:
-            await self.bot.STAFF_CHANNEL.send(ret)    
-        
+            await self.bot.STAFF_CHANNEL.send(ret)
+
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["ml"])
-    async def lockdown(self, message, *, args = ""):
+    async def lockdown(self, message, *, args=""):
         channel_list = self.parse_channel_list(args)
         if not channel_list:
             channel_list = self.get_public_channels()
@@ -242,11 +248,11 @@ class ModAntiRaid(Cog):
         async with message.channel.typing():
             ret = await self.perform_lockdown(channel_list, True)
         await message.channel.send(ret)
-        
+
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["ul"])
-    async def unlockdown(self, message, *, args = ""):
+    async def unlockdown(self, message, *, args=""):
         channel_list = self.parse_channel_list(args)
         if not channel_list:
             channel_list = [
@@ -266,7 +272,7 @@ class ModAntiRaid(Cog):
 
         self.bot.AUTOLOCKDOWN_IN_PROGRESS = False
         await message.channel.send(ret)
-        
+
     @Cog.listener()
     async def on_message(self, message):
         if (
@@ -291,7 +297,7 @@ class ModAntiRaid(Cog):
             and len(message.mentions) >= self.bot.MENTION_THRESHOLD
         ):
             await self.execute_auto_lockdown(message)
-        
+
     @Cog.listener()
     async def on_member_join(self, member):
         self.bot.RECENT_MEMBER_CACHE.append(member)

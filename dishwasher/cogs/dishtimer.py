@@ -77,7 +77,12 @@ class Dishtimer(Cog):
                     text = job_details["text"]
                     added_on = job_details["added"]
                     target = await self.bot.fetch_user(int(job_name))
-                    original_timestamp = datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc).astimezone().strftime("%s")
+                    original_timestamp = (
+                        datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S")
+                        .replace(tzinfo=timezone.utc)
+                        .astimezone()
+                        .strftime("%s")
+                    )
                     if target:
                         await target.send(
                             f"You asked to be reminded about `{text}` on <t:{original_timestamp}:f>."
@@ -142,7 +147,9 @@ class Dishtimer(Cog):
             for clean_channel in config.hourly_clean_channels:
                 await self.clean_channel(clean_channel)
             # Change playing status.
-            activity = discord.Activity(name=random.choice(config.game_names), type=config.game_type)
+            activity = discord.Activity(
+                name=random.choice(config.game_names), type=config.game_type
+            )
             await self.bot.change_presence(activity=activity)
         except:
             # Don't kill cronjobs if something goes wrong.

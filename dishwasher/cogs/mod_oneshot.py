@@ -12,7 +12,7 @@ class ModOneShot(Cog):
     @commands.command(aliases=["pingmods", "summonmods"])
     async def pingmod(self, ctx):
         """[U] Pings mods, only use when there's an emergency.
-        
+
         Abuse of this command can lead to warnings!"""
         can_ping = any(r.id in config.pingmods_allow for r in ctx.author.roles)
         if can_ping:
@@ -28,7 +28,7 @@ class ModOneShot(Cog):
     @commands.command(aliases=["togglemod"])
     async def modtoggle(self, ctx):
         """[S] Toggles your Staff role.
-        
+
         If you have Staff, it will replace it with Ex-Staff, and vice versa."""
         staff_role = ctx.guild.get_role(config.staff_role_ids[0])
         exstaff_role = ctx.guild.get_role(config.exstaff_role_ids[0])
@@ -50,9 +50,7 @@ class ModOneShot(Cog):
             )
             await ctx.message.reply(content=f"Staff status: 🟢", mention_author=False)
         else:
-            await ctx.send(
-                f"You are unable to use this command."
-            )
+            await ctx.send(f"You are unable to use this command.")
 
 
 async def setup(bot):

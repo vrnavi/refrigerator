@@ -117,7 +117,7 @@ class Meme(Cog):
     async def memebercount(self, ctx):
         """Checks memeber count, as requested by dvdfreitag"""
         await ctx.send("Fuck, IDK, dude.")
-        
+
     @commands.command(
         hidden=True,
         aliases=[

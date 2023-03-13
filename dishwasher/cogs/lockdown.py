@@ -54,16 +54,14 @@ class Lockdown(Cog):
         if not soft:
             public_msg += (
                 "Only Staff may speak. "
-                "**Do not** bring the topic to other channels or risk action taken. This includes \"What happened?\" messages."
+                '**Do not** bring the topic to other channels or risk action taken. This includes "What happened?" messages.'
             )
 
         await ctx.send(public_msg)
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(ctx.author)
         )
-        msg = (
-            f"🔒 **Lockdown**: {ctx.channel.mention} by {safe_name}"
-        )
+        msg = f"🔒 **Lockdown**: {ctx.channel.mention} by {safe_name}"
         await log_channel.send(msg)
 
     @commands.guild_only()
@@ -92,9 +90,7 @@ class Lockdown(Cog):
             ctx, str(ctx.author)
         )
         await ctx.send("🔓 Channel unlocked.")
-        msg = (
-            f"🔓 **Unlock**: {ctx.channel.mention} by {safe_name}"
-        )
+        msg = f"🔓 **Unlock**: {ctx.channel.mention} by {safe_name}"
         await log_channel.send(msg)
 
 

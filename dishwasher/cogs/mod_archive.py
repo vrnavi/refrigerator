@@ -21,11 +21,12 @@ from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.store import DECISION_EMOTES, LAST_UNROLEBAN
 
+
 class ModArchive(Cog):
     def __init__(self, bot):
         self.bot = bot
         roleban_channels = config.toss_channels
-        
+
     async def log_whole_channel(self, channel, zip_files=False):
         st = ""
 
@@ -33,7 +34,7 @@ class ModArchive(Cog):
             b = BytesIO()
             z = zipfile.ZipFile(b, "w", zipfile.ZIP_DEFLATED)
             zipped_count = 0
-            
+
         async for m in channel.history(limit=None):
             blank_content = True
             ts = "{:%Y-%m-%d %H:%M} ".format(m.created_at)
@@ -45,11 +46,13 @@ class ModArchive(Cog):
                     blank_content = False
             else:
                 add += m.system_content
-                
+
             for a in m.attachments:
                 if not blank_content:
                     add += "\n"
-                add += " " * (padding * (not blank_content)) + "Attachment: " + a.filename
+                add += (
+                    " " * (padding * (not blank_content)) + "Attachment: " + a.filename
+                )
                 if zip_files:
                     fn = "{}-{}-{}".format(m.id, a.id, a.filename)
                     async with self.bot.session.get(a.url) as r:
@@ -60,7 +63,7 @@ class ModArchive(Cog):
                     zipped_count += 1
 
                 blank_content = False
-                
+
             for e in m.embeds:
                 if e.type == "rich":
                     if not blank_content:
@@ -69,7 +72,7 @@ class ModArchive(Cog):
                         e, limit=40, padding=padding, pad_first_line=not blank_content
                     )
                     blank_content = False
-                    
+
             if m.reactions:
                 if not blank_content:
                     add += "\n"
@@ -92,24 +95,15 @@ class ModArchive(Cog):
                 ret = (ret, None)
 
         return ret
-    
+
     def is_rolebanned(self, member, hard=True):
         roleban = [r for r in member.guild.roles if r.id == config.toss_role_id]
         if roleban:
             if config.toss_role_id in [r.id for r in member.roles]:
                 if hard:
-                    return (
-                        len(
-                            [
-                                r
-                                for r in member.roles
-                                if not (r.managed)
-                            ]
-                        )
-                        == 2
-                    )
+                    return len([r for r in member.roles if not (r.managed)]) == 2
                 return True
-        
+
     async def get_members(self, message, args):
         user = []
         if args:
@@ -138,9 +132,9 @@ class ModArchive(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["archives"])
-    async def archive(self, ctx, *, args = ""):
+    async def archive(self, ctx, *, args=""):
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
-        "data/service_account.json", "https://www.googleapis.com/auth/drive"
+            "data/service_account.json", "https://www.googleapis.com/auth/drive"
         )
         credentials.authorize(httplib2.Http())
         gauth = GoogleAuth()
@@ -153,12 +147,12 @@ class ModArchive(Cog):
             await message.channel.typing()
         except:
             pass
-            
+
         if message.channel.id in config.toss_channels:
             out = await self.log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
-            
+
             user = "unspecified (logged by {})".format(message.author.name)
             if (
                 (not args)
@@ -174,7 +168,7 @@ class ModArchive(Cog):
                     user = " ".join(["{} {}".format(u.name, u.id) for u in user[0]])
                 else:
                     user = args
-                    
+
             fn = "{:%Y-%m-%d} {}".format(message.created_at, user)
 
             reply = "📕 Archived as: `{}.txt`".format(fn)
@@ -182,7 +176,7 @@ class ModArchive(Cog):
             out += "{:%Y-%m-%d %H:%M} {}: {}".format(
                 message.created_at, self.bot.user.name, reply
             )
-            
+
             modch = self.bot.get_channel(config.staff_channel)
 
             f = drive.CreateFile(
@@ -194,10 +188,8 @@ class ModArchive(Cog):
             f.SetContentString(out)
             f.Upload()
 
-            ret_string = (
-                "{} archive saved as [`{}.txt`](https://drive.google.com/file/d/{})".format(
-                    message.channel.mention, fn, f["id"]
-                )
+            ret_string = "{} archive saved as [`{}.txt`](https://drive.google.com/file/d/{})".format(
+                message.channel.mention, fn, f["id"]
             )
 
             if zipped_files:
@@ -217,7 +209,9 @@ class ModArchive(Cog):
 
             await message.channel.send(reply)
             await modch.send(
-                embed=discord.Embed(description=ret_string, color=message.guild.me.color)
+                embed=discord.Embed(
+                    description=ret_string, color=message.guild.me.color
+                )
             )
 
             return True
@@ -259,17 +253,17 @@ class ModArchive(Cog):
                     color=message.guild.me.color,
                 )
             )
-    
+
         return True
-        
 
     @Cog.listener()
     async def on_member_remove(self, member):
         if member.guild.id == config.guild_whitelist[0] and self.is_rolebanned(member):
             LAST_UNROLEBAN.set(
-                member.id, datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+                member.id,
+                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
             )
-        
+
     @Cog.listener()
     async def on_member_update(self, before, after):
         if (
@@ -278,8 +272,10 @@ class ModArchive(Cog):
             and not self.is_rolebanned(after)
         ):
             LAST_UNROLEBAN.set(
-                after.id, datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+                after.id,
+                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
             )
-            
+
+
 async def setup(bot):
     await bot.add_cog(ModArchive(bot))

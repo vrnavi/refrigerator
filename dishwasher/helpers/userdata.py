@@ -15,18 +15,18 @@ def get_userdata():
     with open("data/userdata.json", "r") as f:
         return json.load(f)
 
+
 def get_userprefix(uid):
     userdata = get_userdata()
     uid = str(uid)
     if uid not in userdata:
         return None
     return userdata[uid]["prefixes"]
-    
+
 
 def set_userdata(contents):
     with open("data/userdata.json", "w") as f:
-        f.write(contents) 
-    
+        f.write(contents)
 
 
 def fill_userdata(userid):
@@ -38,4 +38,3 @@ def fill_userdata(userid):
             "timezone": False,
         }
     return userdata, uid
-

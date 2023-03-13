@@ -38,7 +38,9 @@ class ModUserlog(Cog):
                         else f"__Issuer:__ <@{event['issuer_id']}> "
                         f"({event['issuer_id']})\n"
                     )
-                    timestamp = datetime.strptime(event['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
+                    timestamp = datetime.strptime(
+                        event["timestamp"], "%Y-%m-%d %H:%M:%S"
+                    ).strftime("%s")
                     embed.add_field(
                         name=f"{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
                         value=issuer + f"__Reason:__ {event['reason']}",
@@ -47,7 +49,7 @@ class ModUserlog(Cog):
 
         if not own and "watch" in userlog[uid]:
             if userlog[uid]["watch"]:
-                watch_state = "" 
+                watch_state = ""
             else:
                 watch_state = "not "
                 embed.color = discord.Color.orange()
@@ -103,20 +105,22 @@ class ModUserlog(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(
-        name="userlog", aliases=["logs"]
-    )
+    @commands.command(name="userlog", aliases=["logs"])
     async def userlog_cmd(self, ctx, target, event=""):
         """[S] Lists userlog events for a user."""
         # In the case of IDs.
         try:
             target_id = int(target)
             user = await self.bot.fetch_user(target_id)
-            embed = self.get_userlog_embed_for_id(target, str(user.display_name), event=event)
+            embed = self.get_userlog_embed_for_id(
+                target, str(user.display_name), event=event
+            )
         # In the case of mentions.
         except ValueError:
             user = await self.bot.fetch_user(target[2:-1])
-            embed = self.get_userlog_embed_for_id(str(user.id), str(user.display_name), event=event)
+            embed = self.get_userlog_embed_for_id(
+                str(user.id), str(user.display_name), event=event
+            )
         await ctx.send(embed=embed)
 
     @commands.guild_only()
@@ -130,13 +134,20 @@ class ModUserlog(Cog):
         await ctx.send(embed=embed)
 
     @commands.guild_only()
-    @commands.command(aliases=["mywarns", "mylogs",])
+    @commands.command(
+        aliases=[
+            "mywarns",
+            "mylogs",
+        ]
+    )
     async def myuserlog(self, ctx):
         """[U] Lists your userlog events (warns, etc)."""
         embed = self.get_userlog_embed_for_id(str(ctx.author.id), str(ctx.author), True)
         await ctx.author.send(embed=embed)
         await ctx.message.add_reaction("📨")
-        await ctx.reply(content="For privacy, your logs have been DMed.", mention_author=False)
+        await ctx.reply(
+            content="For privacy, your logs have been DMed.", mention_author=False
+        )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -200,7 +211,7 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def fullinfo(self, ctx, target = None):
+    async def fullinfo(self, ctx, target=None):
         """[S] Gets full user info."""
         if target == None:
             target = ctx.author
@@ -233,7 +244,10 @@ class ModUserlog(Cog):
             usertype = "member"
             nickname = f"\n**Nickname:** `{target.nick}`"
         embed = discord.Embed(
-            color=color, title=f"Statistics for {usertype} @{target}{isbot}", description=f"**ID:** `{target.id}`{nickname}", timestamp=datetime.now()
+            color=color,
+            title=f"Statistics for {usertype} @{target}{isbot}",
+            description=f"**ID:** `{target.id}`{nickname}",
+            timestamp=datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
@@ -241,35 +255,35 @@ class ModUserlog(Cog):
         embed.add_field(
             name="⏰ Account created:",
             value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
-            inline=True
+            inline=True,
         )
         if ctx.guild.get_member(target.id) is not None:
             embed.add_field(
                 name="⏱️ Account joined:",
                 value=f"<t:{target.joined_at.astimezone().strftime('%s')}:f>\n<t:{target.joined_at.astimezone().strftime('%s')}:R>",
-                inline=True
+                inline=True,
             )
             embed.add_field(
                 name="🗃️ Joinscore:",
                 value=f"`{sorted(ctx.guild.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.guild.members)}`",
-                inline=True
+                inline=True,
             )
-            emoji=""
-            details=""
+            emoji = ""
+            details = ""
             try:
                 if target.activity.emoji is not None:
-                    emoji=f"{target.activity.emoji} "
+                    emoji = f"{target.activity.emoji} "
             except:
                 pass
             try:
                 if target.activity.details is not None:
-                    details=f"\n{target.activity.details}"
+                    details = f"\n{target.activity.details}"
             except:
                 pass
             embed.add_field(
                 name="💭 Status:",
                 value=f"{emoji}{target.activity.name}{details}",
-                inline=False
+                inline=False,
             )
             roles = []
             for index, role in enumerate(target.roles):
@@ -277,13 +291,9 @@ class ModUserlog(Cog):
                     continue
                 roles.append("<@&" + str(role.id) + ">")
                 rolelist = ",".join(reversed(roles))
-            embed.add_field(
-                name=f"🎨 Roles:",
-                value=f'{rolelist}',
-                inline=False
-            )
+            embed.add_field(name=f"🎨 Roles:", value=f"{rolelist}", inline=False)
         embeds.append(embed)
-            
+
         user_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, target.name
         )
@@ -297,10 +307,8 @@ class ModUserlog(Cog):
         )
         embeds.append(embed)
 
-        await ctx.reply(
-            embeds=embeds,
-            mention_author=False
-        )
+        await ctx.reply(embeds=embeds, mention_author=False)
+
 
 async def setup(bot):
     await bot.add_cog(ModUserlog(bot))

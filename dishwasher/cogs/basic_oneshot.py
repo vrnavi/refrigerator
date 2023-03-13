@@ -17,20 +17,23 @@ class BasicOneShot(Cog):
         await ctx.send(
             f"{ctx.guild.name} has {len(community.members)} Strange Journal members!"
         )
-        
+
     @commands.guild_only()
     @commands.command(hidden=True, aliases=["renavi"])
     async def ren(self, ctx):
         """[U] What does Dishwasher think about ren?"""
         await ctx.send("HELP! HELP! HELP!")
-        
+
     @commands.guild_only()
     @commands.command()
     async def staff(self, ctx):
         """[U] Shows currently active staff."""
         staff_role = ctx.guild.get_role(config.staff_role_ids[0])
         embed = discord.Embed(
-            color=staff_role.color, title="🛠️ Staff List", description=f"Voting requirement is `{int(len(staff_role.members)/2//1+1)}`.", timestamp=datetime.datetime.now()
+            color=staff_role.color,
+            title="🛠️ Staff List",
+            description=f"Voting requirement is `{int(len(staff_role.members)/2//1+1)}`.",
+            timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
         online = []
@@ -64,25 +67,25 @@ class BasicOneShot(Cog):
         embed.add_field(
             name=f"🟢 Online [`{len(online)}`/`{len(staff_role.members)}`]",
             value=f"{onlinelist}",
-            inline=False
+            inline=False,
         )
         embed.add_field(
             name=f"🟡 Idle [`{len(away)}`/`{len(staff_role.members)}`]",
             value=f"{awaylist}",
-            inline=False
+            inline=False,
         )
         embed.add_field(
             name=f"🔴 Do Not Disturb [`{len(dnd)}`/`{len(staff_role.members)}`]",
             value=f"{dndlist}",
-            inline=False
+            inline=False,
         )
         embed.add_field(
             name=f"⚫ Offline [`{len(offline)}`/`{len(staff_role.members)}`]",
             value=f"{offlinelist}",
-            inline=False
+            inline=False,
         )
         await ctx.reply(embed=embed, mention_author=False)
-        
+
 
 async def setup(bot):
     await bot.add_cog(BasicOneShot(bot))

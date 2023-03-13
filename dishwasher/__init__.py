@@ -24,7 +24,7 @@ log.addHandler(stdout_handler)
 
 
 def get_prefix(bot, message):
-    prefixes = config.prefixes 
+    prefixes = config.prefixes
     userprefixes = get_userprefix(message.author.id)
     if userprefixes is not None:
         return commands.when_mentioned_or(*prefixes + userprefixes)(bot, message)
@@ -67,7 +67,6 @@ async def on_ready():
         tzinfo=datetime.timezone.utc
     )
 
-
     # Send "Robocop has started! x has y members!"
     guild = bot.botlog_channel.guild
     msg = (
@@ -103,8 +102,8 @@ async def on_command_error(ctx, error):
     error_text = str(error)
 
     err_msg = (
-        f'⚠️ **Error:**\nAn error occurred with `{ctx.message.content}` from '
-        f'{ctx.message.author} ({ctx.message.author.id}):\n'
+        f"⚠️ **Error:**\nAn error occurred with `{ctx.message.content}` from "
+        f"{ctx.message.author} ({ctx.message.author.id}):\n"
         f"```{type(error)}: {error_text}```"
     )
 
@@ -176,13 +175,9 @@ async def on_command_error(ctx, error):
                 + help_text
             )
 
-        return await ctx.send(
-            f"You gave incorrect arguments. {help_text}"
-        )
+        return await ctx.send(f"You gave incorrect arguments. {help_text}")
     elif isinstance(error, commands.MissingRequiredArgument):
-        return await ctx.send(
-            f"You gave incomplete arguments. {help_text}"
-        )
+        return await ctx.send(f"You gave incomplete arguments. {help_text}")
 
 
 @bot.event
@@ -212,7 +207,8 @@ for wanted_json in wanted_jsons:
     if not os.path.exists(wanted_json):
         with open(wanted_json, "w") as f:
             f.write("{}")
-            
+
+
 async def main():
     async with bot:
         for cog in config.initial_cogs:

@@ -26,5 +26,6 @@ class ModNote(Cog):
         userlog(target.id, ctx.author, note, "notes", target.name)
         await ctx.send(f"Noted.")
 
+
 async def setup(bot):
     await bot.add_cog(ModNote(bot))

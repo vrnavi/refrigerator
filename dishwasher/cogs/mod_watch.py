@@ -43,5 +43,6 @@ class ModWatch(Cog):
         setwatch(target.id, ctx.author, False, target.name)
         await ctx.send(f"User is now not on watch.")
 
+
 async def setup(bot):
     await bot.add_cog(ModWatch(bot))

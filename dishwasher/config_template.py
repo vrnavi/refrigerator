@@ -113,13 +113,11 @@ hourly_clean_channels = []
 spy_channels = general_channels
 
 # All lower case, no spaces, nothing non-alphanumeric
-suspect_words = [
-]
+suspect_words = []
 
 # List of words that will be ignored if they match one of the
 # suspect_words (This is used to remove false positives)
-suspect_ignored_words = [
-]
+suspect_ignored_words = []
 # == Only if you want to use cogs.pin ==
 # Used for the pinboard. Leave empty if you don't wish for a gist pinboard.
 github_oauth_token = ""
@@ -136,11 +134,10 @@ list_files_channel = 0
 list_channels = []
 
 # == Only if you want to use cogs.sar ==
-self_assignable_roles = {
-}
+self_assignable_roles = {}
 
-#== Prefix related settings ==
-maxprefixes = 6 # !max of 24!
+# == Prefix related settings ==
+maxprefixes = 6  # !max of 24!
 
 # == Only if you want to use cogs.reply ==
 noreply_role = 1059460475588448416

@@ -84,25 +84,26 @@ class Logs(Cog):
         else:
             invite_used = "One of: "
             invite_used += ", ".join([x["code"] for x in probable_invites_used])
-            
+
         # Prepare embed msg
         embeds = []
         embed = discord.Embed(
-            color=discord.Color.lighter_gray(), title="📥 User Joined", description=f"<@{member.id}> ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.lighter_gray(),
+            title="📥 User Joined",
+            description=f"<@{member.id}> ({member.id})",
+            timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
+        embed.set_author(
+            name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
+        )
         embed.set_thumbnail(url=f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
             value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
-            inline=True
+            inline=True,
         )
-        embed.add_field(
-            name="📨 Invite used:",
-            value=f"{invite_used}",
-            inline=True
-        )
+        embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
         embeds.append(embed)
 
         # Handles user restrictions
@@ -119,11 +120,15 @@ class Logs(Cog):
                 await log_channel.send(embeds=embeds)
             else:
                 embed = discord.Embed(
-                    color=discord.Color.red(), title="⚠️ This user has warnings!", timestamp=datetime.datetime.now()
+                    color=discord.Color.red(),
+                    title="⚠️ This user has warnings!",
+                    timestamp=datetime.datetime.now(),
                 )
                 embed.set_footer(text="Dishwasher")
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
-                    timestamp = datetime.datetime.strptime(warn['timestamp'], "%Y-%m-%d %H:%M:%S").strftime("%s")
+                    timestamp = datetime.datetime.strptime(
+                        warn["timestamp"], "%Y-%m-%d %H:%M:%S"
+                    ).strftime("%s")
                     embed.add_field(
                         name=f"Warn {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
                         value=f"__Issuer:__ <@{warn['issuer_id']}> ({warn['issuer_id']})\n"
@@ -174,7 +179,8 @@ class Logs(Cog):
             # Show a message embed
             embed = discord.Embed(description=regd)
             embed.set_author(
-                name=message.author.display_name, icon_url=message.author.display_avatar.url
+                name=message.author.display_name,
+                icon_url=message.author.display_avatar.url,
             )
 
             await spy_channel.send(msg, embed=embed)
@@ -221,19 +227,25 @@ class Logs(Cog):
 
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.light_gray(), title="📝 Message Edit", description=f"<@{after.author.id}> ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]", timestamp=datetime.datetime.now()
+            color=discord.Color.light_gray(),
+            title="📝 Message Edit",
+            description=f"<@{after.author.id}> ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]",
+            timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{self.bot.escape_message(after.author)}", icon_url=f"{after.author.display_avatar.url}")
+        embed.set_author(
+            name=f"{self.bot.escape_message(after.author)}",
+            icon_url=f"{after.author.display_avatar.url}",
+        )
         embed.add_field(
             name=f"❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>",
             value=f">>> {before_content}",
-            inline=True
+            inline=True,
         )
         embed.add_field(
             name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
             value=f">>> {after_content}",
-            inline=True
+            inline=True,
         )
 
         msg = (
@@ -259,17 +271,23 @@ class Logs(Cog):
             return
 
         log_channel = self.bot.get_channel(config.log_channel)
-        
+
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.dark_gray(), title="🗑️ Message Delete", description=f"<@{message.author.id}> ({message.author.id}) [{message.channel.mention}]", timestamp=datetime.datetime.now()
+            color=discord.Color.dark_gray(),
+            title="🗑️ Message Delete",
+            description=f"<@{message.author.id}> ({message.author.id}) [{message.channel.mention}]",
+            timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{self.bot.escape_message(message.author)}", icon_url=f"{message.author.display_avatar.url}")
+        embed.set_author(
+            name=f"{self.bot.escape_message(message.author)}",
+            icon_url=f"{message.author.display_avatar.url}",
+        )
         embed.add_field(
             name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
             value=f">>> {message.clean_content}",
-            inline=True
+            inline=True,
         )
 
         msg = (
@@ -296,38 +314,56 @@ class Logs(Cog):
 
         log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
-            
-        alog = [entry async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.ban)]
+
+        alog = [
+            entry
+            async for entry in member.guild.audit_logs(
+                limit=1, action=discord.AuditLogAction.ban
+            )
+        ]
         if alog[0].target.id == member.id:
             return
-            
-        alog = [entry async for entry in member.guild.audit_logs(limit=1, action=discord.AuditLogAction.kick)]
+
+        alog = [
+            entry
+            async for entry in member.guild.audit_logs(
+                limit=1, action=discord.AuditLogAction.kick
+            )
+        ]
         if alog[0].target.id == member.id:
             if alog[0].user.id != self.bot.user.id:
-                msg = (
-                    f"👢 **Kick**: {escaped_name} ("
-                    f"{member.id})"
+                msg = f"👢 **Kick**: {escaped_name} (" f"{member.id})"
+                userlog(
+                    member.id,
+                    alog[0].user,
+                    f"Kicked by external method.",
+                    "kicks",
+                    member.name,
                 )
-                userlog(member.id, alog[0].user, f"Kicked by external method.", "kicks", member.name)
                 await log_channel.send(msg)
             return
-        
+
         # Prepare embed msg
         embed = discord.Embed(
-            color=discord.Color.darker_gray(), title="📥 User Left", description=f"<@{member.id}> ({member.id})", timestamp=datetime.datetime.now()
+            color=discord.Color.darker_gray(),
+            title="📥 User Left",
+            description=f"<@{member.id}> ({member.id})",
+            timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}")
+        embed.set_author(
+            name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
+        )
         embed.set_thumbnail(url=f"{member.display_avatar.url}")
         embed.add_field(
             name="⏰ Account created:",
             value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
-            inline=True
+            inline=True,
         )
         embed.add_field(
             name="⏱️ Account joined:",
             value=f"<t:{member.joined_at.astimezone().strftime('%s')}:f>\n<t:{member.joined_at.astimezone().strftime('%s')}:R>",
-            inline=True
+            inline=True,
         )
 
         await log_channel.send(embed=embed)
@@ -338,20 +374,24 @@ class Logs(Cog):
 
         if guild.id not in config.guild_whitelist:
             return
-            
-        alog = [entry async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.ban)]
+
+        alog = [
+            entry
+            async for entry in guild.audit_logs(
+                limit=1, action=discord.AuditLogAction.ban
+            )
+        ]
         if alog[0].user.id == self.bot.user.id or alog[0].target.id != member.id:
             return
-            
-        userlog(member.id, alog[0].user, f"Banned by external method.", "bans", member.name)
+
+        userlog(
+            member.id, alog[0].user, f"Banned by external method.", "bans", member.name
+        )
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         escaped_name = self.bot.escape_message(member)
 
-        msg = (
-            f"⛔ **Ban**: {escaped_name} ("
-            f"{member.id})"
-        )
+        msg = f"⛔ **Ban**: {escaped_name} (" f"{member.id})"
         await log_channel.send(msg)
 
     @Cog.listener()
@@ -360,18 +400,20 @@ class Logs(Cog):
 
         if guild.id not in config.guild_whitelist:
             return
-            
-        alog = [entry async for entry in guild.audit_logs(limit=1, action=discord.AuditLogAction.unban)]
+
+        alog = [
+            entry
+            async for entry in guild.audit_logs(
+                limit=1, action=discord.AuditLogAction.unban
+            )
+        ]
         if alog[0].user.id == self.bot.user.id:
             return
 
         log_channel = self.bot.get_channel(config.modlog_channel)
         escaped_name = self.bot.escape_message(member)
 
-        msg = (
-            f"⚠️ **Unban**: {escaped_name} ("
-            f"{member.id})"
-        )
+        msg = f"⚠️ **Unban**: {escaped_name} (" f"{member.id})"
         # if user.id in self.bot.timebans:
         #     msg += "\nTimeban removed."
         #     self.bot.timebans.pop(user.id)
@@ -393,11 +435,17 @@ class Logs(Cog):
         updated = False
         # initialize embed
         embed = discord.Embed(
-            color=discord.Colour.from_str("#0000FF"), title="ℹ️ Member Update", description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})", timestamp=datetime.datetime.now()
+            color=discord.Colour.from_str("#0000FF"),
+            title="ℹ️ Member Update",
+            description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})",
+            timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
-        embed.set_author(name=f"{self.bot.escape_message(member_after)}", icon_url=f"{member_after.display_avatar.url}")
-        
+        embed.set_author(
+            name=f"{self.bot.escape_message(member_after)}",
+            icon_url=f"{member_after.display_avatar.url}",
+        )
+
         log_channel = self.bot.get_channel(config.log_channel)
         if member_before.roles != member_after.roles:
             # role removal code
@@ -425,30 +473,28 @@ class Logs(Cog):
                         roles.append(role.name)
                 rolelist = "\n".join(reversed(roles))
                 embed.add_field(
-                    name=f"🎨 Role Change",
-                    value=f'{rolelist}',
-                    inline=False
+                    name=f"🎨 Role Change", value=f"{rolelist}", inline=False
                 )
 
         if member_before.name != member_after.name:
             updated = True
             embed.add_field(
                 name=f"📝  Username Change",
-                value=f'❌ {self.bot.escape_message(member_before)}\n⬇️\n⭕ {self.bot.escape_message(member_after)}',
-                inline=False
+                value=f"❌ {self.bot.escape_message(member_before)}\n⬇️\n⭕ {self.bot.escape_message(member_after)}",
+                inline=False,
             )
         if member_before.nick != member_after.nick:
             updated = True
             if not member_before.nick:
                 fname = "🏷 Nickname Added"
             elif not member_after.nick:
-                fname =  "🏷 Nickname Removed"
+                fname = "🏷 Nickname Removed"
             else:
                 fname = "🏷 Nickname Changed"
             embed.add_field(
                 name=f"{fname}",
-                value=f'❌ {self.bot.escape_message(member_before.nick)}\n⬇️\n⭕ {self.bot.escape_message(member_after.nick)}',
-                inline=False
+                value=f"❌ {self.bot.escape_message(member_before.nick)}\n⬇️\n⭕ {self.bot.escape_message(member_after.nick)}",
+                inline=False,
             )
         if updated:
             await log_channel.send(embed=embed)

@@ -35,15 +35,15 @@ class Remind(Cog):
     @commands.command(aliases=["remindme"])
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """[U] Reminds you about something."""
-#        if ctx.guild:
-#            await ctx.message.delete()
+        #        if ctx.guild:
+        #            await ctx.message.delete()
         current_timestamp = time.time()
         expiry_timestamp = self.bot.parse_time(when)
 
         if current_timestamp + 5 > expiry_timestamp:
             msg = await ctx.message.reply(
                 f"Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
-                mention_author=False
+                mention_author=False,
             )
             return
 
@@ -65,7 +65,7 @@ class Remind(Cog):
         msg = await ctx.message.reply(
             f"You'll be reminded in "
             f"DMs about `{safe_text}` in {duration_text} (<t:{expiry_timestamp}:f>).",
-            mention_author=False
+            mention_author=False,
         )
 
 

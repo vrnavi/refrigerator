@@ -7,6 +7,7 @@ from discord.ext.commands import Cog
 import aiohttp
 import re as ren
 
+
 class Basic(Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -14,25 +15,29 @@ class Basic(Cog):
     @commands.command()
     async def hello(self, ctx):
         """[U] Says hello!"""
-        await ctx.send(f"Hello {ctx.author.mention}! Have you drank your Soylent Green today?")
+        await ctx.send(
+            f"Hello {ctx.author.mention}! Have you drank your Soylent Green today?"
+        )
 
     @commands.command(aliases=["yt"])
-    async def youtube(self, ctx, *, arg:str):
+    async def youtube(self, ctx, *, arg: str):
         """[U] returns the first video in youtubes search."""
         try:
-            async with aiohttp.ClientSession() as session: #common.aioget spams info with entire reponse body, so am doing this instead
-                async with session.get(f'https://www.youtube.com/results?search_query={arg}') as response: #seems to be santized by aiohttp
-                    
+            async with aiohttp.ClientSession() as session:  # common.aioget spams info with entire reponse body, so am doing this instead
+                async with session.get(
+                    f"https://www.youtube.com/results?search_query={arg}"
+                ) as response:  # seems to be santized by aiohttp
                     if response.status is not 200:
                         raise ConnectionError
-                    
+
                     html = await response.text()
-                    id = ren.findall(r"watch\?v=(\S{11})", html)[0] #finds the first instance of watch\?=[youtube video id]
+                    id = ren.findall(r"watch\?v=(\S{11})", html)[
+                        0
+                    ]  # finds the first instance of watch\?=[youtube video id]
                     await ctx.send(f"https://www.youtube.com/watch?v={id}")
         except ConnectionError:
             await ctx.send("wh? something broke?")
-            
-        
+
     @commands.command()
     async def hug(self, ctx):
         """[U] Gives you a hug."""
@@ -41,12 +46,10 @@ class Basic(Cog):
     @commands.command()
     async def kill(self, ctx, the_text: str):
         """[U] Kills someone."""
-        await ctx.send(
-            f"{the_text} got stuck in the Dishwasher."
-        )
+        await ctx.send(f"{the_text} got stuck in the Dishwasher.")
 
     @commands.command()
-    async def avy(self, ctx, target = None):
+    async def avy(self, ctx, target=None):
         """[U] Gets an avy."""
         if target is not None:
             # In the case of IDs.
@@ -59,7 +62,7 @@ class Basic(Cog):
             except discord.NotFound:
                 user = await self.bot.fetch_user(int(target))
         else:
-                user = ctx.author
+            user = ctx.author
         await ctx.send(content=user.display_avatar.url)
 
     @commands.command()
@@ -120,7 +123,7 @@ class Basic(Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def info(self, ctx, target = None):
+    async def info(self, ctx, target=None):
         """[S] Gets full user info."""
         if target == None:
             target = ctx.author
@@ -150,9 +153,12 @@ class Basic(Cog):
             color = target.color
             usertype = "member"
             nickname = f"\n**Nickname:** `{target.nick}`"
-            
+
         embed = discord.Embed(
-            color=color, title=f"Statistics for {usertype} @{target}{isbot}", description=f"**ID:** `{target.id}`{nickname}", timestamp=datetime.now()
+            color=color,
+            title=f"Statistics for {usertype} @{target}{isbot}",
+            description=f"**ID:** `{target.id}`{nickname}",
+            timestamp=datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
@@ -160,41 +166,39 @@ class Basic(Cog):
         embed.add_field(
             name="⏰ Account created:",
             value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
-            inline=True
+            inline=True,
         )
         if ctx.guild.get_member(target.id) is not None:
             embed.add_field(
                 name="⏱️ Account joined:",
                 value=f"<t:{target.joined_at.astimezone().strftime('%s')}:f>\n<t:{target.joined_at.astimezone().strftime('%s')}:R>",
-                inline=True
+                inline=True,
             )
             embed.add_field(
                 name="🗃️ Joinscore:",
                 value=f"`{sorted(ctx.guild.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.guild.members)}`",
-                inline=True
+                inline=True,
             )
-            emoji=""
-            details=""
-            name=""
+            emoji = ""
+            details = ""
+            name = ""
             try:
                 if target.activity.emoji is not None:
-                    emoji=f"{target.activity.emoji} "
+                    emoji = f"{target.activity.emoji} "
             except:
                 pass
             try:
                 if target.activity.details is not None:
-                    details=f"\n{target.activity.details}"
+                    details = f"\n{target.activity.details}"
             except:
                 pass
             try:
                 if target.activity.name is not None:
-                    name=f"{target.activity.name}"
+                    name = f"{target.activity.name}"
             except:
                 pass
             embed.add_field(
-                name="💭 Status:",
-                value=f"{emoji}{name}{details}",
-                inline=False
+                name="💭 Status:", value=f"{emoji}{name}{details}", inline=False
             )
             roles = []
             for index, role in enumerate(target.roles):
@@ -202,16 +206,9 @@ class Basic(Cog):
                     continue
                 roles.append("<@&" + str(role.id) + ">")
                 rolelist = ",".join(reversed(roles))
-            embed.add_field(
-                name=f"🎨 Roles:",
-                value=f'{rolelist}',
-                inline=False
-            )
+            embed.add_field(name=f"🎨 Roles:", value=f"{rolelist}", inline=False)
 
-        await ctx.reply(
-            embed=embed,
-            mention_author=False
-        )
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 async def setup(bot):
