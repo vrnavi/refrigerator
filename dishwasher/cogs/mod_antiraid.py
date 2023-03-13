@@ -33,6 +33,9 @@ class ModAntiRaid(Cog):
         bot.AUTOLOCKDOWN_IN_PROGRESS = False
         bot.RECENT_MEMBER_CACHE = None
         if bot.RECENT_JOIN_THRESHOLD > 0:
+            while bot.GUILD.members = None:
+                # Startup fix
+                pass
             bot.RECENT_MEMBER_CACHE = bot.GUILD.members
             self.cull_recent_member_cache()
 
