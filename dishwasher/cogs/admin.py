@@ -4,8 +4,11 @@ from discord.ext.commands import Cog
 import traceback
 import inspect
 import re
+import datetime
+import json
 import config
 import random
+import asyncio
 from helpers.checks import check_if_bot_manager
 
 
@@ -50,6 +53,10 @@ class Admin(Cog):
                 # modules
                 "discord": discord,
                 "commands": commands,
+                "datetime": datetime,
+                "json": json,
+                "asyncio": asyncio,
+                "random": random,
                 # utilities
                 "_get": discord.utils.get,
                 "_find": discord.utils.find,
