@@ -41,7 +41,7 @@ class Pin(Cog):
                 "files": {
                     "pinboard.md": {"content": "Old pins are available here:\n\n"}
                 },
-                "description": f"Pinboard for SwitchRoot #{channel.name}",
+                "description": f"Pinboard for OneShot #{channel.name}",
                 "public": True,
             },
         )
@@ -65,7 +65,7 @@ class Pin(Cog):
 
         async with aiohttp.ClientSession() as session:
             gh = gidgethub.aiohttp.GitHubAPI(
-                session, "RoboCop-NG", oauth_token=config.github_oauth_token
+                session, "TalegoDishwasher", oauth_token=config.github_oauth_token
             )
             (id, content) = await self.get_pinboard(gh, channel)
             content += "- " + data + "\n"
@@ -85,7 +85,7 @@ class Pin(Cog):
             target_msg = (await ctx.message.channel.pins())[idx]
         else:
             # Get message by ID
-            target_msg = await ctx.message.channel.get_message(idx)
+            target_msg = await ctx.message.channel.fetch_message(idx)
         if self.is_pinboard(target_msg):
             await ctx.send("Cannot unpin pinboard!")
         else:
@@ -114,7 +114,7 @@ class Pin(Cog):
         for role in config.staff_role_ids + config.allowed_pin_roles:
             if role in [role.id for role in target_user.roles]:
                 target_chan = self.bot.get_channel(payload.channel_id)
-                target_msg = await target_chan.get_message(payload.message_id)
+                target_msg = await target_chan.fetch_message(payload.message_id)
 
                 # Check that the message hasn't already been pinned
                 for reaction in target_msg.reactions:

@@ -4,7 +4,7 @@ from datetime import datetime
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
-from helpers.robocronp import add_job
+from helpers.dishtimer import add_job
 from helpers.userlogs import userlog
 from helpers.restrictions import add_restriction
 
