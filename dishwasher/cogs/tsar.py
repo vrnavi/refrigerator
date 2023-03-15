@@ -30,7 +30,7 @@ class colorSel(discord.ui.View):
             options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
         return options
 
-    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1, options=options())
+    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1, options=self.options())
     async def select_callback(self, interaction, select):
         await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
 
