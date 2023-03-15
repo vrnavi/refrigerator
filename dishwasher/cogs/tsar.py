@@ -26,7 +26,7 @@ class SAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=journalBtn)
+        await ctx.send(content="Test.", view=journalBtn())
 
 
 async def setup(bot):
