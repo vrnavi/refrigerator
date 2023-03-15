@@ -10,10 +10,10 @@ class journalBtn(discord.ui.View):
     async def button_callback(self, interaction, button):
         role = interaction.guild.get_role(config.named_roles["journal"])
         if interaction.user.get_role(config.named_roles["journal"]) is not None:
-            await interaction.user.remove_role(role)
+            await interaction.user.remove_roles(role)
             await interaction.response.send_message(content="Removed your Journal role.", ephemeral=True, delete_after=5)
         else:
-            await interaction.user.add_role(config.named_roles["journal"])
+            await interaction.user.add_roles(config.named_roles["journal"])
             await interaction.response.send_message(content="Given your Journal role.", ephemeral=True, delete_after=5)
             
 
