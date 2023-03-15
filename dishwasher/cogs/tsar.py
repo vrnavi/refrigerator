@@ -6,15 +6,29 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff_or_ot
 
 class journalBtn(discord.ui.View):
-    @discord.ui.button(label="Get", style=discord.ButtonStyle.primary)
+    @discord.ui.button(label="Get", custom_id="journalBtn", style=discord.ButtonStyle.primary)
     async def button_callback(self, interaction, button):
         role = interaction.guild.get_role(config.named_roles["journal"])
         if interaction.user.get_role(config.named_roles["journal"]) is not None:
             await interaction.user.remove_roles(role)
             await interaction.response.send_message(content="Removed your Journal role.", ephemeral=True)
         else:
+            if 
             await interaction.user.add_roles(role)
             await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)
+            
+class colorSel(discord.ui.View):
+    def __init__(self):
+        super().__init__(timeout=None) # timeout of the view must be set to None
+        seloptions= []
+        for r in config.color_roles:
+            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
+            rc = '#%02x%02x%02x' % rr.color
+            seloptions.append(discord.SelectOption(label=rr.name, description=rc)
+
+    @discord.ui.select(placeholder="Get a color!", min_values=1, max_values=1, options=seloptions)
+    async def select_callback(self, interaction, select):
+        await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
             
 
 class SAR(Cog):
@@ -26,7 +40,7 @@ class SAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=journalBtn())
+        await ctx.send(content="Test.", view=colorSel())
 
 
 async def setup(bot):
