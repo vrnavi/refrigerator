@@ -33,10 +33,15 @@ class SAR(Cog):
         options = []
         for r in config.color_roles:
             rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
-            rc = '#%02x%02x%02x' % rr.color.to_rgb()
+            if rr.id == config.color_roles[0]:
+                rn = "Fluctuating Phosphor"
+                rc = "Changes each day!"
+            else:
+                rn = rr.name
+                rc = '#%02x%02x%02x' % rr.color.to_rgb()
             options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
         select = discord.ui.Select(placeholder="Get a color!", options=options, min_values=1, max_values=1)
-        async def select_callback(interaction, select):
+        async def select_callback(self, interaction, select):
             await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
         select.callback = select_callback
         view = colorSel()
