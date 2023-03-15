@@ -11,10 +11,10 @@ class journalBtn(discord.ui.View):
         role = interaction.guild.get_role(config.named_roles["journal"])
         if interaction.user.get_role(config.named_roles["journal"]) is not None:
             await interaction.user.remove_roles(role)
-            await interaction.response.send_message(content="Removed your Journal role.", ephemeral=True, delete_after=5)
+            await interaction.response.send_message(content="Removed your Journal role.", ephemeral=True)
         else:
-            await interaction.user.add_roles(config.named_roles["journal"])
-            await interaction.response.send_message(content="Given your Journal role.", ephemeral=True, delete_after=5)
+            await interaction.user.add_roles(role)
+            await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)
             
 
 class SAR(Cog):
