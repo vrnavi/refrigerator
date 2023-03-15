@@ -37,7 +37,7 @@ class SAR(Cog):
         view = colorSel()
         options = []
         for r in config.color_roles:
-            rr = bot.get_guild(config.guild_whitelist[0]).get_role(r)
+            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
             rc = '#%02x%02x%02x' % rr.color.to_rgb()
             options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
         view.add_item(discord.ui.Select(options=options))
