@@ -19,6 +19,7 @@ class journalBtn(discord.ui.View):
 
 class colorSel(discord.ui.View):  
     def __init__(self, bot):
+        super().__init__()
         self.bot = bot
         options = []
         for r in config.color_roles:
