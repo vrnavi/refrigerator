@@ -31,8 +31,9 @@ class colorSel(discord.ui.Select):
         await interaction.response.send_message(f"Test. Picked {select.values[0]}.", ephemeral=True)
 
 class colorView(discord.ui.View):
-    def __init__(self, *, timeout = 180):
-        super().__init__(timeout=timeout)
+    def __init__(self, bot):
+        self.bot = bot
+        super().__init__(timeout=180)
         self.add_item(colorSel())
 
 class TSAR(Cog):            
@@ -44,7 +45,7 @@ class TSAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=colorView())
+        await ctx.send(content="Test.", view=colorView(self))
 
 
 async def setup(bot):
