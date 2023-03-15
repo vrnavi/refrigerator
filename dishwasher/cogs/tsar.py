@@ -19,11 +19,6 @@ class journalBtn(discord.ui.View):
 class colorSel(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None) # timeout of the view must be set to None
-        seloptions= []
-        for r in config.color_roles:
-            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
-            rc = '#%02x%02x%02x' % rr.color
-            seloptions.append(discord.SelectOption(label=rr.name, description=rc))
 
     @discord.ui.select(placeholder="Get a color!", min_values=1, max_values=1, options=seloptions)
     async def select_callback(self, interaction, select):
@@ -39,7 +34,13 @@ class SAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=colorSel())
+        colorSel = colorSel()
+        seloptions = []
+        for r in config.color_roles:
+            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
+            rc = '#%02x%02x%02x' % rr.color
+            colorSel.add_option(label=rr.name, description=rc)
+        await ctx.send(content="Test.", view=colorSel)
 
 
 async def setup(bot):
