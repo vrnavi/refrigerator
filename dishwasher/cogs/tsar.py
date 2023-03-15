@@ -36,7 +36,7 @@ class SAR(Cog):
         colorSel = self.colorSel()
         for r in config.color_roles:
             rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
-            rc = '#%02x%02x%02x' % rr.color.value
+            rc = '#%02x%02x%02x' % rr.color.to_rgb()
             colorSel.add_option(label=rr.name, description=rc)
         await ctx.send(content="Test.", view=colorSel)
 
