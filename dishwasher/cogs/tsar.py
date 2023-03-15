@@ -22,7 +22,7 @@ class colorSel(discord.ui.Select):
     def __init__(self):
         options = []
         for r in config.color_roles:
-            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
+            rr = bot.get_guild(config.guild_whitelist[0]).get_role(r)
             rc = '#%02x%02x%02x' % rr.color.to_rgb()
             options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc, default=False))
         super().__init__(placeholder="Get a color!", min_values=1, max_values=1, options=options) 
@@ -35,7 +35,7 @@ class colorView(discord.ui.View):
         super().__init__(timeout=timeout)
         self.add_item(colorSel())
 
-class SAR(Cog):            
+class TSAR(Cog):            
     def __init__(self, bot):
         self.bot = bot
 
@@ -48,4 +48,4 @@ class SAR(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(SAR(bot))
+    await bot.add_cog(TSAR(bot))
