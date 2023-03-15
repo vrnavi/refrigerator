@@ -18,12 +18,8 @@ class journalBtn(discord.ui.View):
 
 
 class colorSel(discord.ui.View):  
-    def __init__(self, bot):
+    def __init__(self):
         super().__init__()
-        self.bot = bot
-        
-    def options(self):
-        return options
 
     @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1)
     async def select_callback(self, interaction, select):
