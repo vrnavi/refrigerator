@@ -45,7 +45,7 @@ class TSAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=colorView(self))
+        await ctx.send(content="Test.", view=colorView(bot))
 
 
 async def setup(bot):
