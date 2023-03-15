@@ -13,7 +13,6 @@ class journalBtn(discord.ui.View):
             await interaction.user.remove_roles(role)
             await interaction.response.send_message(content="Removed your Journal role.", ephemeral=True)
         else:
-            if 
             await interaction.user.add_roles(role)
             await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)
             
