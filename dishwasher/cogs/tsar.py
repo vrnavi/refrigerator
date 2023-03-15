@@ -19,10 +19,11 @@ class journalBtn(discord.ui.View):
 
     
 class colorSel(discord.ui.Select):
-    def __init__(self):
+    def __init__(self, bot):
+        self.bot = bot
         options = []
         for r in config.color_roles:
-            rr = bot.get_guild(config.guild_whitelist[0]).get_role(r)
+            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
             rc = '#%02x%02x%02x' % rr.color.to_rgb()
             options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc, default=False))
         super().__init__(placeholder="Get a color!", min_values=1, max_values=1, options=options) 
@@ -32,9 +33,8 @@ class colorSel(discord.ui.Select):
 
 class colorView(discord.ui.View):
     def __init__(self, bot):
-        self.bot = bot
         super().__init__(timeout=180)
-        self.add_item(colorSel())
+        self.add_item(colorSel(bot))
 
 class TSAR(Cog):            
     def __init__(self, bot):
