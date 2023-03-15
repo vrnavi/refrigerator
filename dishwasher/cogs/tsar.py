@@ -14,18 +14,17 @@ class journalBtn(discord.ui.View):
             await interaction.response.send_message(content="Removed your Journal role.", ephemeral=True)
         else:
             await interaction.user.add_roles(role)
-            await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)
-            
-class colorSel(discord.ui.View):
-    def __init__(self):
-        super().__init__(timeout=None) # timeout of the view must be set to None
-
-    @discord.ui.select(placeholder="Get a color!", min_values=1, max_values=1)
-    async def select_callback(self, interaction, select):
-        await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
-            
+            await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)            
 
 class SAR(Cog):
+    class colorSel(discord.ui.View):
+        def __init__(self):
+            super().__init__(timeout=None) # timeout of the view must be set to None
+
+        @discord.ui.select(placeholder="Get a color!", min_values=1, max_values=1)
+        async def select_callback(self, interaction, select):
+            await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
+            
     def __init__(self, bot):
         self.bot = bot
 
@@ -34,8 +33,7 @@ class SAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        colorSel = colorSel()
-        seloptions = []
+        colorSel = self.colorSel()
         for r in config.color_roles:
             rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
             rc = '#%02x%02x%02x' % rr.color
