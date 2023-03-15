@@ -7,7 +7,7 @@ from helpers.checks import check_if_staff_or_ot
 
 class journalBtn(discord.ui.View):
     @discord.ui.button(label="Get", style=discord.ButtonStyle.primary)
-    async def button_callback(self, button, interaction):
+    async def button_callback(self, interaction, button):
         role = interaction.guild.get_role(config.named_roles["journal"])
         if interaction.user.get_role(config.named_roles["journal"]) is not None:
             await interaction.user.remove_role(role)
