@@ -11,7 +11,7 @@ from helpers.checks import check_if_staff
 class ModAntiRaid(Cog):
     def __init__(self, bot):
         self.bot = bot
-        bot.GUILD = await bot.fetch_guild(config.guild_whitelist[0])
+        bot.GUILD = bot.get_guild(config.guild_whitelist[0])
         bot.AUTHORIZED_ROLE = (
             bot.GUILD.get_role(config.named_roles["journal"]) if bot.GUILD else None
         )

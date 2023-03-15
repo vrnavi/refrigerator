@@ -36,7 +36,7 @@ class prefixes(Cog):
             except (IndexError, TypeError):
                 value = "---"
             finally:
-                embed.add_field(name=i, value=f"{value}")
+                embed.add_field(name=i+1, value=f"{value}")
         embed.set_footer(
             text=f"Use {config.prefixes[0]}prefix add/remove to change your prefixes."
         )
@@ -58,11 +58,11 @@ class prefixes(Cog):
 
     @prefixes.command()
     async def remove(self, ctx, number: int):
-        """removes a prefix"""
+        """[U] Removes a prefix."""
         userdata, uid = fill_userdata(ctx.author.id)
         userdata[uid]["prefixes"]
         try:
-            userdata[uid]["prefixes"].pop(number)
+            userdata[uid]["prefixes"].pop(number+1)
             set_userdata(json.dumps(userdata))
             await ctx.send("Prefix removed.")
         except IndexError:
