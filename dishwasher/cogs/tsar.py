@@ -21,13 +21,16 @@ class colorSel(discord.ui.View):
     def __init__(self, bot):
         super().__init__()
         self.bot = bot
+        
+    def options(self):
         options = []
         for r in config.color_roles:
             rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
             rc = '#%02x%02x%02x' % rr.color.to_rgb()
             options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
+        return options
 
-    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1, options=options)
+    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1, options=options())
     async def select_callback(self, interaction, select):
         await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
 
