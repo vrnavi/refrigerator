@@ -23,14 +23,9 @@ class colorSel(discord.ui.View):
         self.bot = bot
         
     def options(self):
-        options = []
-        for r in config.color_roles:
-            rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
-            rc = '#%02x%02x%02x' % rr.color.to_rgb()
-            options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
         return options
 
-    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1, options=self.options())
+    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1)
     async def select_callback(self, interaction, select):
         await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
 
@@ -43,7 +38,14 @@ class SAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=colorSel(self.bot))
+        view = colorSel()
+        options = []
+        for r in config.color_roles:
+            rr = bot.get_guild(config.guild_whitelist[0]).get_role(r)
+            rc = '#%02x%02x%02x' % rr.color.to_rgb()
+            options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
+        view.add_item(discord.ui.Select(options=options))
+        await ctx.send(content="Test.", view=view)
 
 
 async def setup(bot):
