@@ -17,26 +17,19 @@ class journalBtn(discord.ui.View):
             await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)            
 
 
-    
-class colorSel(discord.ui.Select):
+class colorSel(discord.ui.View):  
     def __init__(self, bot):
         self.bot = bot
-        options = []
         for r in config.color_roles:
             rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
             rc = '#%02x%02x%02x' % rr.color.to_rgb()
-            options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc, default=False))
-        super().__init__(placeholder="Get a color!", min_values=1, max_values=1, options=options) 
-        
-    async def callback(self, interaction, select):
-        await interaction.response.send_message(f"Test. Picked {select.values[0]}.", ephemeral=True)
+            colorview.add_option(label=rr.name, value=rr.id, description=rc, default=False)
 
-class colorView(discord.ui.View):
-    def __init__(self, bot):
-        super().__init__(timeout=180)
-        self.add_item(colorSel(bot))
+    @discord.ui.select(cls=discord.ui.Select, placeholder="Get a color!", min_values=1, max_values=1)
+    async def select_callback(self, interaction, select):
+        await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
 
-class TSAR(Cog):            
+class SAR(Cog):            
     def __init__(self, bot):
         self.bot = bot
 
@@ -45,8 +38,8 @@ class TSAR(Cog):
     @commands.check(check_if_staff_or_ot)
     async def testcmd(self, ctx):
         """Temporarily creates a button."""
-        await ctx.send(content="Test.", view=colorView(bot))
+        await ctx.send(content="Test.", view=colorSel(self.bot))
 
 
 async def setup(bot):
-    await bot.add_cog(TSAR(bot))
+    await bot.add_cog(SAR(bot))
