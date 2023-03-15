@@ -39,9 +39,9 @@ class SAR(Cog):
             else:
                 rn = rr.name
                 rc = '#%02x%02x%02x' % rr.color.to_rgb()
-            options.append(discord.SelectOption(label=rr.name, value=rr.id, description=rc))
+            options.append(discord.SelectOption(label=rn, value=rr.id, description=rc))
         select = discord.ui.Select(placeholder="Get a color!", options=options, min_values=1, max_values=1)
-        async def select_callback(self, interaction, select):
+        async def select_callback(interaction):
             await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
         select.callback = select_callback
         view = colorSel()
