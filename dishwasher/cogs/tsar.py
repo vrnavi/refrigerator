@@ -20,7 +20,7 @@ class colorSel(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=None) # timeout of the view must be set to None
 
-    @discord.ui.select(placeholder="Get a color!", min_values=1, max_values=1, options=seloptions)
+    @discord.ui.select(placeholder="Get a color!", min_values=1, max_values=1)
     async def select_callback(self, interaction, select):
         await interaction.response.send_message(f"Test. Picked {select.values[0]}.")
             
