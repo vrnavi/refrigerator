@@ -59,11 +59,10 @@ class prefixes(Cog):
     @prefixes.command()
     async def remove(self, ctx, number: int):
         """[U] Removes a prefix."""
-        number = number + 1
         userdata, uid = fill_userdata(ctx.author.id)
         userdata[uid]["prefixes"]
         try:
-            userdata[uid]["prefixes"].pop(number)
+            userdata[uid]["prefixes"].pop(number - 1)
             set_userdata(json.dumps(userdata))
             await ctx.send("Prefix removed.")
         except IndexError:
