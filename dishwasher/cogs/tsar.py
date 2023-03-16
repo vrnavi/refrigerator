@@ -16,7 +16,6 @@ class journalBtn(discord.ui.View):
             await interaction.user.add_roles(role)
             await interaction.response.send_message(content="Given your Journal role.", ephemeral=True)            
 
-
 class colorSel(discord.ui.View):  
     def __init__(self):
         super().__init__()
