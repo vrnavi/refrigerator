@@ -42,7 +42,7 @@ class Messagescan(Cog):
                 icon_url=f"{rcvmessage.author.display_avatar.url}",
             )
             embeds.append(embed)        
-        await message.channel.reply(embeds=embeds, mention_author=False)
+        await message.reply(embeds=embeds, mention_author=False)
 
 async def setup(bot: Bot):
     await bot.add_cog(Messagescan(bot))
