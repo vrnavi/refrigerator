@@ -23,6 +23,7 @@ embed_desc = (
 initial_cogs = [
     "cogs.common",
     "cogs.admin",
+    "cogs.appeal",
     "cogs.cotd",
     "cogs.explains",
     "cogs.mod",
@@ -35,6 +36,7 @@ initial_cogs = [
     "cogs.mod_timed",
     "cogs.mod_watch",
     "cogs.basic",
+    "cogs.basic_oneshot",
     "cogs.logs",
     "cogs.logs",
     "cogs.lockdown",
@@ -43,6 +45,8 @@ initial_cogs = [
     "cogs.dishtimer",
     "cogs.meme",
     "cogs.invites",
+    "cogs.usertime",
+    "cogs.prefixes",
 ]
 
 # The bot will only work in these guilds. The first in the list is considered the "main" guild.
