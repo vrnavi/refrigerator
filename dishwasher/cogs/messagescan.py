@@ -29,7 +29,7 @@ class Messagescan(Cog):
             
             rcvguild = self.bot.get_guild(guildid)
             rcvchannel = rcvguild.get_channel_or_thread(channelid)
-            rcvmessage = await rcvchannel.fetch_message(messageid)
+            rcvmessage = await rcvchannel.fetch_message(msgid)
             
             # Prepare embed msg
             embed = discord.Embed(
