@@ -33,8 +33,8 @@ class Messagescan(Cog):
             
             # Prepare embed msg
             embed = discord.Embed(
-            color = rcvmessage.author.color
-            description=f"{rcvmessage.content}"
+            color = rcvmessage.author.color,
+            description=f"{rcvmessage.content}",
             )
             embed.set_footer(text=f"Quoted by {message.author.name}#{message.author.discriminator}")
             embed.set_author(
