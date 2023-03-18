@@ -35,10 +35,11 @@ class Messagescan(Cog):
             embed = discord.Embed(
             color = rcvmessage.author.color,
             description=f"{rcvmessage.content}",
+            timestamp=rcvmessage.created_at,
             )
             embed.set_footer(text=f"Quoted by {message.author.name}#{message.author.discriminator}")
             embed.set_author(
-                name=f"💬 {rcvmessage.author.display_name} said in #{rcvmessage.channel.name}...",
+                name=f"💬 {rcvmessage.author.name}#{rcvmessage.author.discriminator} said in #{rcvmessage.channel.name}...",
                 icon_url=f"{rcvmessage.author.display_avatar.url}",
             )
             embeds.append(embed)        
