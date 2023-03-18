@@ -36,7 +36,7 @@ class prefixes(Cog):
             except (IndexError, TypeError):
                 value = "---"
             finally:
-                embed.add_field(name=i+1, value=f"{value}")
+                embed.add_field(name=i + 1, value=f"{value}")
         embed.set_footer(
             text=f"Use {config.prefixes[0]}prefix add/remove to change your prefixes."
         )
