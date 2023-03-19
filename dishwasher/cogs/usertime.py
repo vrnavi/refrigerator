@@ -20,6 +20,7 @@ class usertime(Cog):
         
         if timezone == None:
             await ctx.reply(content="You need to enter a timezone. Don't know what yours is? Check this list.\nhttps://en.wikipedia.org/wiki/List_of_tz_database_time_zones\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`.", mention_author=False)
+            return
 
         if timezone not in available_timezones():
             await ctx.send(
@@ -31,7 +32,7 @@ class usertime(Cog):
         userdata[uid]["timezone"] = timezone
 
         set_userdata(json.dumps(userdata))
-        await ctx.send(f"Your timezone has been set to `{timezone}`.")
+        await ctx.reply(f"Your timezone has been set to `{timezone}`.", mention_author=False)
 
     @commands.command(aliases=["tf"])
     async def timefor(self, ctx: Context, target: Member = None):
