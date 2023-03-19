@@ -12,11 +12,15 @@ class usertime(Cog):
         self.bot = bot
 
     @commands.command()
-    async def timezone(self, ctx: Context, *, timezone: str):
+    async def timezone(self, ctx: Context, *, timezone: str = None):
         """
         Sets your timezone for use with the 'tf' command.
         Timezones must be supplied the IANA tzdb (i.e. America/Chicago) format.
         """
+        
+        if timezone == None:
+            await ctx.reply(content="You need to enter a timezone. Don't know what yours is? Check this list.\nhttps://en.wikipedia.org/wiki/List_of_tz_database_time_zones\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`.", mention_author=False)
+
         if timezone not in available_timezones():
             await ctx.send(
                 "Invalid timezone provided. Please provide a timezone in the `America/Chicago` format."
