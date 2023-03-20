@@ -27,7 +27,7 @@ class snipe(Cog):
             timestamp=lastmsg.created_at,
         )
         embed.set_footer(
-            text=f"Sniped by {message.author.name}#{message.author.discriminator}"
+            text=f"Sniped by {ctx.author.name}#{ctx.author.discriminator}"
         )
         embed.set_author(
             name=f"💬 {lastmsg.author.name}#{lastmsg.author.discriminator} said in #{lastmsg.channel.name}...",
