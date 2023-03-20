@@ -16,7 +16,7 @@ class Remind(Cog):
         """[U] Lists your reminders."""
         ctab = get_crontab()
         uid = str(ctx.author.id)
-        embed = discord.Embed(title=f"Your current reminders...", color=ctx.author.color)
+        embed = discord.Embed(title=f"Your current reminders...", color=ctx.author.color, timestamp=datetime.datetime.now())
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
