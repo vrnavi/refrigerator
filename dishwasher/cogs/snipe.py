@@ -19,7 +19,7 @@ class snipe(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def snipe(self, ctx):
-        if self.prevmessages[ctx.channel.id]:
+        if ctx.channel.id in self.prevmessages:
             lastmsg = self.prevmessages[ctx.channel.id]
             # Prepare embed msg
             embed = discord.Embed(
