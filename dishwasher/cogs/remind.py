@@ -42,17 +42,14 @@ class Remind(Cog):
         current_timestamp = time.time()
         expiry_timestamp = self.bot.parse_time(when)
 
-        if current_timestamp + 5 > expiry_timestamp:
+        if current_timestamp + 59 > expiry_timestamp:
             msg = await ctx.message.reply(
-                "Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
+                "Either timespan too short (minimum 1 minute) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
                 mention_author=False,
             )
             return
 
         expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
-        duration_text = self.bot.get_relative_timestamp(
-            time_to=expiry_datetime, include_to=False, humanized=True
-        )
 
         safe_text = await commands.clean_content().convert(ctx, str(text))
         added_on = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
