@@ -16,7 +16,7 @@ class Remind(Cog):
         """[U] Lists your reminders."""
         ctab = get_crontab()
         uid = str(ctx.author.id)
-        embed = discord.Embed(title=f"Your current reminders...", color=ctx.author.color, timestamp=datetime.now())
+        embed = discord.Embed(title="Your current reminders...", color=ctx.author.color, timestamp=datetime.now())
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
@@ -44,7 +44,7 @@ class Remind(Cog):
 
         if current_timestamp + 5 > expiry_timestamp:
             msg = await ctx.message.reply(
-                f"Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
+                "Either timespan too short (minimum 5 seconds) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
                 mention_author=False,
             )
             return
@@ -63,10 +63,19 @@ class Remind(Cog):
             {"text": safe_text, "added": added_on},
             expiry_timestamp,
         )
+        
+        embed = discord.Embed(title="⏰ Reminder added.", description="*You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.*", color=ctx.author.color, timestamp=datetime.now())
+        embed.set_author(
+            icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
+        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar.url)
+        embed.add_field(
+            name="📝 Contents",
+            value=f"{safe_text}",
+            inline=False,
+        )
 
-        msg = await ctx.message.reply(
-            f"You'll be reminded in "
-            f"DMs about `{safe_text}` in {duration_text} (<t:{expiry_timestamp}:f>).",
+        msg = await ctx.message.reply(embed=embed,
             mention_author=False,
         )
 
