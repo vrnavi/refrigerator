@@ -36,7 +36,7 @@ class snipe(Cog):
             )
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            await ctx.reply(content="There is no message in the snipe cache for this channel..", mention_author=False)
+            await ctx.reply(content="There is no message in the snipe cache for this channel.", mention_author=False)
 
     @Cog.listener()
     async def on_message_delete(self, message):
