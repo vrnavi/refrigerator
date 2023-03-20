@@ -19,21 +19,24 @@ class snipe(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def snipe(self, ctx):
-        lastmsg = self.prevmessages[ctx.channel.id]
-        # Prepare embed msg
-        embed = discord.Embed(
-            color=ctx.author.color,
-            description=f"{lastmsg.content}",
-            timestamp=lastmsg.created_at,
-        )
-        embed.set_footer(
-            text=f"Sniped by {ctx.author.name}#{ctx.author.discriminator}"
-        )
-        embed.set_author(
-            name=f"💬 {lastmsg.author.name}#{lastmsg.author.discriminator} said in #{lastmsg.channel.name}...",
-            icon_url=f"{lastmsg.author.display_avatar.url}",
-        )
-        await ctx.reply(embed=embed, mention_author=False)
+        if self.prevmessages[ctx.channel.id]:
+            lastmsg = self.prevmessages[ctx.channel.id]
+            # Prepare embed msg
+            embed = discord.Embed(
+                color=ctx.author.color,
+                description=f"{lastmsg.content}",
+                timestamp=lastmsg.created_at,
+            )
+            embed.set_footer(
+                text=f"Sniped by {ctx.author.name}#{ctx.author.discriminator}"
+            )
+            embed.set_author(
+                name=f"💬 {lastmsg.author.name}#{lastmsg.author.discriminator} said in #{lastmsg.channel.name}...",
+                icon_url=f"{lastmsg.author.display_avatar.url}",
+            )
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            await ctx.reply(content="There is no message in the snipe cache for this channel..", mention_author=False)
 
     @Cog.listener()
     async def on_message_delete(self, message):
