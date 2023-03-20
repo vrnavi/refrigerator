@@ -33,7 +33,7 @@ class snipe(Cog):
             name=f"💬 {lastmsg.author.name}#{lastmsg.author.discriminator} said in #{lastmsg.channel.name}...",
             icon_url=f"{lastmsg.author.display_avatar.url}",
         )
-        await ctx.reply(embeds=embeds, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @Cog.listener()
     async def on_message_delete(self, message):
