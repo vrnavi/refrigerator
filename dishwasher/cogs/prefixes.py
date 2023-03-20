@@ -18,9 +18,9 @@ class prefixes(Cog):
     async def prefixes(self, ctx):
         """[U] Lists all prefixes."""
         embed = discord.Embed(
-            title="Active Prefixes",
+            title="Your current prefixes...",
             description="Mentioning the bot will always be a prefix.",
-            colour=10724259,
+            color=10724259,
         )
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
@@ -43,7 +43,7 @@ class prefixes(Cog):
         await ctx.send(embed=embed)
 
     @prefixes.command()
-    async def add(self, ctx, arg: str):
+    async def add(self, ctx, *, arg: str):
         """[U] Adds a new prefix."""
         userdata, uid = fill_userdata(ctx.author.id)
         print(userdata)

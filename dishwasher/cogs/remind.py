@@ -12,22 +12,23 @@ class Remind(Cog):
         self.bot = bot
 
     @commands.command()
-    async def remindlist(self, ctx):
+    async def reminders(self, ctx):
         """[U] Lists your reminders."""
         ctab = get_crontab()
         uid = str(ctx.author.id)
-        embed = discord.Embed(title=f"Active robocronp jobs")
+        embed = discord.Embed(title=f"Your current reminders...", color=ctx.author.color)
+        embed.set_author(
+            icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
+        )
         for jobtimestamp in ctab["remind"]:
             if uid not in ctab["remind"][jobtimestamp]:
                 continue
             job_details = ctab["remind"][jobtimestamp][uid]
-            expiry_timestr = datetime.utcfromtimestamp(int(jobtimestamp)).strftime(
-                "%Y-%m-%d %H:%M:%S"
-            )
+            addedtime = datetime.strptime(job_details['added'], "%Y-%m-%d %H:%M:%S").strftime("%s")
             embed.add_field(
-                name=f"Reminder for {expiry_timestr}",
-                value=f"Added on: {job_details['added']}, "
-                f"Text: {job_details['text']}",
+                name=f"Reminder on <t:{jobtimestamp}:F>",
+                value=f"*Added <t:{addedtime}:R>*\n"
+                f"{job_details['text']}",
                 inline=False,
             )
         await ctx.send(embed=embed)
