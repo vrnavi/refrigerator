@@ -64,7 +64,7 @@ class Remind(Cog):
             expiry_timestamp,
         )
         
-        embed = discord.Embed(title="⏰ Reminder added.", description=f"*You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.*", color=ctx.author.color, timestamp=datetime.now())
+        embed = discord.Embed(title="⏰ Reminder added.", description=f"You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.", color=ctx.author.color, timestamp=datetime.now())
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )

@@ -84,9 +84,14 @@ class Dishtimer(Cog):
                         .strftime("%s")
                     )
                     if target:
-                        await target.send(
-                            f"You asked to be reminded about `{text}` on <t:{original_timestamp}:f>."
+                        embed = discord.Embed(title="⏰ Reminder", description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.", timestamp=datetime.now())
+                        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar.url)
+                        embed.add_field(
+                            name="📝 Contents",
+                            value=f"{text}",
+                            inline=False,
                         )
+                        await target.send(embed=embed)
                     delete_job(timestamp, jobtype, job_name)
             except:
                 # Don't kill cronjobs if something goes wrong.
