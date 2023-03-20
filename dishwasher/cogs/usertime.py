@@ -17,9 +17,12 @@ class usertime(Cog):
         Sets your timezone for use with the 'tf' command.
         Timezones must be supplied the IANA tzdb (i.e. America/Chicago) format.
         """
-        
+
         if timezone == None:
-            await ctx.reply(content="You need to enter a timezone. Don't know what yours is? Check this list.\nhttps://en.wikipedia.org/wiki/List_of_tz_database_time_zones\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`.", mention_author=False)
+            await ctx.reply(
+                content="You need to enter a timezone. Don't know what yours is? Check this list.\nhttps://en.wikipedia.org/wiki/List_of_tz_database_time_zones\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`.",
+                mention_author=False,
+            )
             return
 
         if timezone not in available_timezones():
@@ -32,7 +35,9 @@ class usertime(Cog):
         userdata[uid]["timezone"] = timezone
 
         set_userdata(json.dumps(userdata))
-        await ctx.reply(f"Your timezone has been set to `{timezone}`.", mention_author=False)
+        await ctx.reply(
+            f"Your timezone has been set to `{timezone}`.", mention_author=False
+        )
 
     @commands.command(aliases=["tf"])
     async def timefor(self, ctx: Context, target: Member = None):

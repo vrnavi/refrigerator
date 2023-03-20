@@ -14,7 +14,7 @@ class Messagescan(Cog):
             r"https://discord\.com/channels/[0-9]+/[0-9]+/[0-9]+", re.IGNORECASE
         )
         self.prevmessages = {}
-        
+
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
@@ -36,7 +36,10 @@ class Messagescan(Cog):
             )
             await ctx.reply(embed=embed, mention_author=False)
         else:
-            await ctx.reply(content="There is no message in the snipe cache for this channel.", mention_author=False)
+            await ctx.reply(
+                content="There is no message in the snipe cache for this channel.",
+                mention_author=False,
+            )
 
     @Cog.listener()
     async def on_message(self, message):
@@ -73,7 +76,7 @@ class Messagescan(Cog):
             )
             embeds.append(embed)
         await message.reply(embeds=embeds, mention_author=False)
-        
+
     @Cog.listener()
     async def on_message_delete(self, message):
         await self.bot.wait_until_ready()

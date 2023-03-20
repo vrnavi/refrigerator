@@ -16,7 +16,11 @@ class Remind(Cog):
         """[U] Lists your reminders."""
         ctab = get_crontab()
         uid = str(ctx.author.id)
-        embed = discord.Embed(title="Your current reminders...", color=ctx.author.color, timestamp=datetime.now())
+        embed = discord.Embed(
+            title="Your current reminders...",
+            color=ctx.author.color,
+            timestamp=datetime.now(),
+        )
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
@@ -25,11 +29,12 @@ class Remind(Cog):
             if uid not in ctab["remind"][jobtimestamp]:
                 continue
             job_details = ctab["remind"][jobtimestamp][uid]
-            addedtime = datetime.strptime(job_details['added'], "%Y-%m-%d %H:%M:%S").strftime("%s")
+            addedtime = datetime.strptime(
+                job_details["added"], "%Y-%m-%d %H:%M:%S"
+            ).strftime("%s")
             embed.add_field(
                 name=f"Reminder on <t:{jobtimestamp}:F>",
-                value=f"*Added <t:{addedtime}:R>.*\n"
-                f"{job_details['text']}",
+                value=f"*Added <t:{addedtime}:R>.*\n" f"{job_details['text']}",
                 inline=False,
             )
         await ctx.send(embed=embed)
@@ -60,8 +65,13 @@ class Remind(Cog):
             {"text": safe_text, "added": added_on},
             expiry_timestamp,
         )
-        
-        embed = discord.Embed(title="⏰ Reminder added.", description=f"You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.", color=ctx.author.color, timestamp=datetime.now())
+
+        embed = discord.Embed(
+            title="⏰ Reminder added.",
+            description=f"You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.",
+            color=ctx.author.color,
+            timestamp=datetime.now(),
+        )
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
@@ -72,7 +82,8 @@ class Remind(Cog):
             inline=False,
         )
 
-        msg = await ctx.message.reply(embed=embed,
+        msg = await ctx.message.reply(
+            embed=embed,
             mention_author=False,
         )
 

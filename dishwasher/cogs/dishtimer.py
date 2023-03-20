@@ -84,8 +84,14 @@ class Dishtimer(Cog):
                         .strftime("%s")
                     )
                     if target:
-                        embed = discord.Embed(title="⏰ Reminder", description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.", timestamp=datetime.now())
-                        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar.url)
+                        embed = discord.Embed(
+                            title="⏰ Reminder",
+                            description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.",
+                            timestamp=datetime.now(),
+                        )
+                        embed.set_footer(
+                            text=self.bot.user.name, icon_url=self.bot.user.avatar.url
+                        )
                         embed.add_field(
                             name="📝 Contents",
                             value=f"{text}",
