@@ -35,9 +35,9 @@ class SAR(Cog):
 
     @commands.guild_only()
     @commands.command()
-    @commands.check(check_if_staff_or_ot)
-    async def testcmd(self, ctx):
-        """Temporarily creates a button."""
+    @commands.check(check_if_bot_manager)
+    async def colorget(self, ctx):
+        """Creates a droptown to get color roles.."""
         options = []
         for r in config.color_roles:
             rr = self.bot.get_guild(config.guild_whitelist[0]).get_role(r)
