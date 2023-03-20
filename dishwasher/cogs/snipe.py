@@ -45,4 +45,4 @@ class snipe(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(prefixes(bot))
+    await bot.add_cog(snipe(bot))
