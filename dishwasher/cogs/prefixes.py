@@ -20,7 +20,7 @@ class prefixes(Cog):
         embed = discord.Embed(
             title="Your current prefixes...",
             description="Mentioning the bot will always be a prefix.",
-            color=10724259,
+            color=ctx.author.color,
         )
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name

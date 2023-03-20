@@ -20,6 +20,7 @@ class Remind(Cog):
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar.url)
         for jobtimestamp in ctab["remind"]:
             if uid not in ctab["remind"][jobtimestamp]:
                 continue
