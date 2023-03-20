@@ -4,6 +4,7 @@ import discord
 import datetime
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
+from helpers.checks import check_if_staff, check_if_bot_manager
 
 
 class Messagescan(Cog):
@@ -12,6 +13,30 @@ class Messagescan(Cog):
         self.link_re = re.compile(
             r"https://discord\.com/channels/[0-9]+/[0-9]+/[0-9]+", re.IGNORECASE
         )
+        self.prevmessages = {}
+        
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def snipe(self, ctx):
+        if ctx.channel.id in self.prevmessages:
+            lastmsg = self.prevmessages[ctx.channel.id]
+            # Prepare embed msg
+            embed = discord.Embed(
+                color=ctx.author.color,
+                description=f"{lastmsg.content}",
+                timestamp=lastmsg.created_at,
+            )
+            embed.set_footer(
+                text=f"Sniped by {ctx.author.name}#{ctx.author.discriminator}"
+            )
+            embed.set_author(
+                name=f"💬 {lastmsg.author.name}#{lastmsg.author.discriminator} said in #{lastmsg.channel.name}...",
+                icon_url=f"{lastmsg.author.display_avatar.url}",
+            )
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            await ctx.reply(content="There is no message in the snipe cache for this channel.", mention_author=False)
 
     @Cog.listener()
     async def on_message(self, message):
@@ -48,6 +73,14 @@ class Messagescan(Cog):
             )
             embeds.append(embed)
         await message.reply(embeds=embeds, mention_author=False)
+        
+    @Cog.listener()
+    async def on_message_delete(self, message):
+        await self.bot.wait_until_ready()
+        if message.author.bot:
+            return
+
+        self.prevmessages[message.channel.id] = message
 
 
 async def setup(bot: Bot):
