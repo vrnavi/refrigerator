@@ -2,15 +2,6 @@ import json
 import time
 
 
-userlog_event_types = {
-    "warns": "Warn",
-    "bans": "Ban",
-    "kicks": "Kick",
-    "tosses": "Toss",
-    "notes": "Note",
-}
-
-
 def get_userdata():
     with open("data/userdata.json", "r") as f:
         return json.load(f)
