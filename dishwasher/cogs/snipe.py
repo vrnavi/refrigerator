@@ -3,7 +3,7 @@ import discord
 import config
 from discord.ext import commands
 from discord.ext.commands import Cog
-from helpers.userdata import get_userprefix, fill_userdata, set_userdata
+from helpers.checks import check_if_staff, check_if_bot_manager
 
 
 class snipe(Cog):
