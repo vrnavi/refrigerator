@@ -16,7 +16,7 @@ class Remind(Cog):
         """[U] Lists your reminders."""
         ctab = get_crontab()
         uid = str(ctx.author.id)
-        embed = discord.Embed(title=f"Your current reminders...", color=ctx.author.color, timestamp=datetime.datetime.now())
+        embed = discord.Embed(title=f"Your current reminders...", color=ctx.author.color, timestamp=datetime.now())
         embed.set_author(
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
@@ -28,7 +28,7 @@ class Remind(Cog):
             addedtime = datetime.strptime(job_details['added'], "%Y-%m-%d %H:%M:%S").strftime("%s")
             embed.add_field(
                 name=f"Reminder on <t:{jobtimestamp}:F>",
-                value=f"*Added <t:{addedtime}:R>*\n"
+                value=f"*Added <t:{addedtime}:R>.*\n"
                 f"{job_details['text']}",
                 inline=False,
             )
