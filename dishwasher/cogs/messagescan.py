@@ -11,7 +11,7 @@ class Messagescan(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.link_re = re.compile(
-            r"https://discord\.com/channels/[0-9]+/[0-9]+/[0-9]+", re.IGNORECASE
+            r"https://(?:canary\.|ptb\.)?discord\.com/channels/[0-9]+/[0-9]+/[0-9]+", re.IGNORECASE
         )
         self.prevmessages = {}
 
