@@ -105,7 +105,7 @@ class ModToss(Cog):
                     await us.remove_roles(
                         *roles_actual,
                         reason=f"User tossed by {ctx.author} ({ctx.author.id})",
-                        atomic=True,
+                        atomic=False,
                     )
 
                 toss_pings = f"{toss_pings} {us.mention}"
@@ -205,7 +205,7 @@ class ModToss(Cog):
             await us.add_roles(
                 *roles_actual,
                 reason=f"Untossed by {ctx.author} ({ctx.author.id})",
-                atomic=True,
+                atomic=False,
             )
 
             for rx in roles_actual:
