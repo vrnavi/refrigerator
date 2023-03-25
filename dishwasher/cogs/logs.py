@@ -446,19 +446,6 @@ class Logs(Cog):
 
         # Swiftly deal with unreadable names.
         if member_before.display_name != member_after.display_name:
-            readable = False
-            for b in member_after.display_name:
-                if b.isalnum():
-                    readable = True
-            if not readable:
-                await member_after.edit(
-                    nick="Unreadable Name", reason="Automatic Unreadable Name"
-                )
-        # Deal with "hoist" names. ᲼
-        # WIP
-
-        # Swiftly deal with unreadable names.
-        if member_before.display_name != member_after.display_name:
             readable = 0
             for b in member_after.display_name:
                 if b.isalnum():
