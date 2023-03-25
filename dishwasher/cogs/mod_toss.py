@@ -47,6 +47,9 @@ class ModToss(Cog):
     async def toss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
 
+        toss_pings = ""
+        toss_sends = ""
+
         for us in user_id_list:
             if us.id == ctx.author.id:
                 await ctx.reply(
@@ -105,9 +108,9 @@ class ModToss(Cog):
                         atomic=True,
                     )
 
-                await ctx.send(f"**{us.name}**#{us.discriminator} has been tossed.")
-                await toss_channel.send(
-                    f"{us.mention}, you were tossed by {ctx.message.author.name}."
+                toss_pings = f"{toss_pings} {us.mention}"
+                toss_sends = (
+                    f"{toss_sends}\n**{us.name}**#{us.discriminator} has been tossed."
                 )
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles) > 0:
@@ -136,7 +139,8 @@ class ModToss(Cog):
                 invalid_ids.append(us.name)
 
         await toss_channel.send(
-            f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.\n*'
+            f"{toss_pings}\nYou were tossed by {ctx.message.author.name}.\n"
+            f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
             f"**Do NOT leave the server, or you will be instantly banned.**\n\n"
             f"⏰ Please respond within `5 minutes`, or you will be kicked from the server."
         )
@@ -150,19 +154,20 @@ class ModToss(Cog):
         if len(invalid_string) > 0:
             await ctx.reply(invalid_string, mention_author=False)
 
+        hardmsg = ""
         if (
             ctx.channel.permissions_for(ctx.guild.default_role).read_messages
             or ctx.channel.permissions_for(
                 ctx.guild.get_role(config.named_roles["journal"])
             ).read_messages
         ):
-            await ctx.send(
-                "Please change the topic. **Discussion of tossed users will lead to warnings.**"
-            )
+            hardmsg = "Please change the topic. **Discussion of tossed users will lead to warnings.**"
+        await ctx.reply(f"{toss_sends}\n\n{hardmsg}", mention_author=False)
 
         await asyncio.sleep(5 * 60)
         pokemsg = await toss_channel.send(f"{ctx.author.mention}")
-        await pokemsg.edit("⏰", delete_after=5)
+        pokemsg = await pokemsg.edit("⏰")
+        await pokemsg.delete(delay=5)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
