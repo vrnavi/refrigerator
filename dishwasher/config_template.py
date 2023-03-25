@@ -186,6 +186,17 @@ unlockdown_annoncement = "All public channels are no longer restricted."
 toss_roles = [{"role": 257050851611377666, "channel": 257049714577506305}]
 # Overflow if needed?
 toss_overflow = False
+# Names for the bot to use when the overflow mechanism is enabled.
+toss_channels = [
+    "basement",
+    "abyss",
+    "recycle-bin",
+    "out-of-bounds",
+]
+# Where the bot should place overflow channels.
+# If it is a channel name, it will be placed under this channel.
+# If it is a category name, it will be placed at the last spot.
+toss_placement = "old-factory"
 
 # No touch!
 placeholders = json.load(open("assets/placeholders.json", "r"))

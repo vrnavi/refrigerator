@@ -34,6 +34,15 @@ class Logs(Cog):
         if member.guild.id not in config.guild_whitelist:
             return
 
+        # Swiftly deal with unreadable names.
+        if not member.display_name.isalnum():
+            await member.edit(
+                nick="Unreadable Name", reason="Automatic Unreadable Name"
+            )
+            return
+        # Deal with "hoist" names. ᲼
+        # WIP
+
         log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
 
@@ -431,6 +440,18 @@ class Logs(Cog):
 
         if member_after.guild.id not in config.guild_whitelist:
             return
+
+        # Swiftly deal with unreadable names.
+        if (
+            member_before.display_name != member_after.display_name
+            and not member_after.display_name.isalnum()
+        ):
+            await member_after.edit(
+                nick="Unreadable Name", reason="Automatic Unreadable Name"
+            )
+            return
+        # Deal with "hoist" names. ᲼
+        # WIP
 
         updated = False
         # initialize embed
