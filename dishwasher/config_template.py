@@ -71,17 +71,6 @@ exstaff_role_ids = [
 ]
 # Tossed/Rolebanned role.
 toss_role_id = 257050851611377666
-# Unused test.
-#    {
-#        "role": 0,
-#        "channel": 0
-#    }
-toss_roles = [
-    {
-        "role": 257050851611377666,
-        "channel": 257049714577506305
-    }
-]
 
 # Various log channels used to log bot and guild's activity
 # You can use same channel for multiple log types
@@ -186,6 +175,17 @@ recent_join_threshold = 20
 # Announcement messages for lockdown/unlockdown. Set to `null` if unused.
 lockdown_annoncement = "All public channels are temporarily restricted."
 unlockdown_annoncement = "All public channels are no longer restricted."
+
+
+# == Only if you want to use cogs.mod_toss ==
+# Example for Toss role.
+#    {
+#        "role": 0,
+#        "channel": 0
+#    }
+toss_roles = [{"role": 257050851611377666, "channel": 257049714577506305}]
+# Overflow if needed?
+toss_overflow = False
 
 # No touch!
 placeholders = json.load(open("assets/placeholders.json", "r"))

@@ -3,13 +3,12 @@ import discord
 import json
 import os
 import config
+import asyncio
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
-
-toss_role = config.toss_role_id
 
 
 class ModToss(Cog):
@@ -47,11 +46,11 @@ class ModToss(Cog):
     @commands.command(aliases=["roleban"])
     async def toss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
-        name_list = ""
+
         for us in user_id_list:
             if us.id == ctx.author.id:
                 await ctx.reply(
-                    "For your own safety and the safety of others, please refrain from tossing yourself.",
+                    "Nice try, tossing yourself. **No.**",
                     mention_author=False,
                 )
                 continue
@@ -63,11 +62,12 @@ class ModToss(Cog):
                 )
                 continue
 
-            temp_role_list = []
             roles = []
             role_ids = []
+            toss_role = ctx.guild.get_role(config.toss_roles[0]["role"])
+            toss_channel = ctx.guild.get_channel(config.toss_roles[0]["channel"])
             for rx in us.roles:
-                if rx.name != "@everyone" and rx.name != toss_role:
+                if rx.name != "@everyone" and rx != toss_role:
                     roles.append(rx)
                     role_ids.append(rx.id)
 
@@ -75,7 +75,7 @@ class ModToss(Cog):
                 with open(rf"data/toss/{us.id}.json", "x") as file:
                     file.write(json.dumps(role_ids))
             except FileExistsError:
-                if ctx.guild.get_role(toss_role) in us.roles:
+                if toss_role in us.roles:
                     await ctx.reply(
                         f"{us.name} is already tossed.", mention_author=False
                     )
@@ -87,11 +87,10 @@ class ModToss(Cog):
             prev_roles = ""
 
             for r in roles:
-                temp_role_list.append(r.id)
                 prev_roles = f"{prev_roles} `{r.name}`"
 
             try:
-                await us.add_roles(ctx.guild.get_role(toss_role), reason="User tossed.")
+                await us.add_roles(toss_role, reason="User tossed.")
                 if len(roles) > 0:
                     bad_no_good_terrible_roles = []
                     roles_actual = []
@@ -106,24 +105,20 @@ class ModToss(Cog):
                         atomic=True,
                     )
 
+                await ctx.send(f"**{us.name}**#{us.discriminator} has been tossed.")
+                await toss_channel.send(
+                    f"{us.mention}, you were tossed by {ctx.message.author.name}."
+                )
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles) > 0:
                     bad_roles_msg = f"\nI was unable to remove the following role(s): **{', '.join(bad_no_good_terrible_roles)}**"
-                await ctx.reply(
-                    f"**{us.name}**#{us.discriminator} has been tossed.\n"
-                    f"**ID:** {us.id}\n"
-                    f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}:f>)\n"
-                    f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}:f>)\n"
-                    f"**Previous Roles:** {prev_roles}{bad_roles_msg}",
-                    mention_author=False,
-                )
                 await ctx.guild.get_channel(config.staff_channel).send(
                     f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
                     f"**ID:** {us.id}\n"
-                    f"**Created:** <t:{int(us.created_at.timestamp())}:R> (<t:{int(us.created_at.timestamp())}:f>)\n"
-                    f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> (<t:{int(us.joined_at.timestamp())}:f>)\n"
-                    f"**Previous Roles:** {prev_roles}\n\n"
-                    f"{ctx.guild.get_channel(config.toss_channels[0]).mention}"
+                    f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
+                    f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
+                    f"**Previous Roles:**{prev_roles}{bad_roles_msg}\n\n"
+                    f"{toss_channel.mention}"
                 )
                 userlog(
                     us.id,
@@ -139,7 +134,12 @@ class ModToss(Cog):
 
             except commands.MissingPermissions:
                 invalid_ids.append(us.name)
-            name_list = f"{us.name}, {name_list}"
+
+        await toss_channel.send(
+            f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.\n*'
+            f"**Do NOT leave the server, or you will be instantly banned.**\n\n"
+            f"⏰ Please respond within `5 minutes`, or you will be kicked from the server."
+        )
 
         invalid_string = ""
         if len(invalid_ids) > 0:
@@ -147,10 +147,22 @@ class ModToss(Cog):
                 invalid_string = f"{invalid_string}, {iv}"
             invalid_string = f"\nI was unable to toss these users: {invalid_string[2:]}"
 
-        # if len(name_list[0:-2]) > 0:
-        #    await ctx.reply(f"{name_list[0:-2]} has been tossed.{invalid_string}")
         if len(invalid_string) > 0:
             await ctx.reply(invalid_string, mention_author=False)
+
+        if (
+            ctx.channel.permissions_for(ctx.guild.default_role).read_messages
+            or ctx.channel.permissions_for(
+                ctx.guild.get_role(config.named_roles["journal"])
+            ).read_messages
+        ):
+            await ctx.send(
+                "Please change the topic. **Discussion of tossed users will lead to warnings.**"
+            )
+
+        await asyncio.sleep(5 * 60)
+        pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+        await pokemsg.edit("⏰", delete_after=5)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
@@ -158,7 +170,6 @@ class ModToss(Cog):
     @commands.command(aliases=["unroleban"])
     async def untoss(self, ctx, *, user_ids):
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
-        name_list = ""
 
         for us in user_id_list:
             if us.id == self.bot.application_id:
@@ -179,6 +190,8 @@ class ModToss(Cog):
                 await ctx.reply(
                     f"{us.name} is not currently tossed.", mention_author=False
                 )
+
+            toss_role = ctx.guild.get_role(config.toss_roles[0]["role"])
             roles_actual = []
             restored = ""
             for r in roles:
@@ -195,17 +208,16 @@ class ModToss(Cog):
                 restored = f"{restored} `{rx.name}`"
 
             await us.remove_roles(
-                ctx.guild.get_role(toss_role),
+                toss_role,
                 reason=f"Untossed by {ctx.author} ({ctx.author.id})",
             )
             await ctx.reply(
-                f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:** {restored}",
+                f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:**{restored}",
                 mention_author=False,
             )
             await ctx.guild.get_channel(config.staff_channel).send(
                 f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}"
             )
-            name_list = f"{us.name}, {name_list}"
 
         invalid_string = ""
 
@@ -216,8 +228,6 @@ class ModToss(Cog):
                 f"\nI was unable to untoss these users: {invalid_string[2:]}"
             )
 
-        # if len(name_list[0:-2]) > 0:
-        #    await ctx.reply(f"{name_list[0:-2]} has been untossed.{invalid_string}")
         if len(invalid_string) > 0:
             await ctx.reply(invalid_string, mention_author=False)
 

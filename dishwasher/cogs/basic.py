@@ -52,6 +52,9 @@ class Basic(Cog):
     async def avy(self, ctx, target=None):
         """[U] Gets an avy."""
         if target is not None:
+            if target == "server":
+                await ctx.send(content=ctx.guild.icon.url)
+                return
             # In the case of IDs.
             try:
                 user = await ctx.guild.fetch_member(int(target))

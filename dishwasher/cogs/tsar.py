@@ -12,6 +12,12 @@ class journalBtn(discord.ui.View):
     )
     async def button_callback(self, interaction, button):
         role = interaction.guild.get_role(config.named_roles["journal"])
+        age = interaction.user.joined_at - interaction.user.created_at
+        if age < datetime.timedelta(hours=24):
+            await interaction.response.send_message(
+                content="Your account is too new to get this.", ephemeral=True
+            )
+            return
         if interaction.user.get_role(config.named_roles["journal"]) is not None:
             await interaction.user.remove_roles(role)
             await interaction.response.send_message(
@@ -24,12 +30,27 @@ class journalBtn(discord.ui.View):
             )
 
 
+class ctrlsBtn(discord.ui.View):
+    @discord.ui.button(
+        label="Open Index",
+        custom_id="ctrlsBtn",
+        style=discord.ButtonStyle.primary,
+        emoji="📖",
+    )
+    async def button_callback(self, interaction, button):
+        menu = interaction.response.send_message
+
+
 class colorSel(discord.ui.View):
     def __init__(self):
         super().__init__()
 
 
-class SAR(Cog):
+class TSAR(Cog):
+    """
+    True Self Assignable Roles. Or in other words, the OSD's Rules and Information channels.
+    """
+
     def __init__(self, bot):
         self.bot = bot
 
@@ -58,8 +79,22 @@ class SAR(Cog):
         select.callback = select_callback
         view = colorSel()
         view.add_item(select)
-        await ctx.send(content="Test.", view=view)
+
+    @commands.guild_only()
+    @commands.command()
+    @commands.check(check_if_bot_manager)
+    async def rulesetup(self, ctx):
+        embed = discord.Embed(
+            title="Server Information Index",
+            description="Please click the `Open Index` button below to open the Server Information Index.",
+            color=discord.Color.from_str("#9cd8df"),
+        )
+        await ctx.send(
+            content="If you are unable to see the embed below:\n🔹 `Settings`\n🔹 `Text & Images`\n🔹 `Show embeds and preview website links pasted into chat`.",
+            embed=embed,
+            view=view,
+        )
 
 
 async def setup(bot):
-    await bot.add_cog(SAR(bot))
+    await bot.add_cog(TSAR(bot))
