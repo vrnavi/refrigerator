@@ -166,8 +166,7 @@ class ModToss(Cog):
 
         await asyncio.sleep(5 * 60)
         pokemsg = await toss_channel.send(f"{ctx.author.mention}")
-        pokemsg = await pokemsg.edit("⏰")
-        await pokemsg.delete(delay=5)
+        pokemsg = await pokemsg.edit(content="⏰", delete_after=5)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
