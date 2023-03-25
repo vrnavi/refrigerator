@@ -35,11 +35,14 @@ class Logs(Cog):
             return
 
         # Swiftly deal with unreadable names.
-        if not member.display_name.isascii():
+        readable = 0
+        for b in member.display_name:
+            if b.isalnum():
+                readable = readable + 1
+        if readable < 3:
             await member.edit(
                 nick="Unreadable Name", reason="Automatic Unreadable Name"
             )
-            return
         # Deal with "hoist" names. ᲼
         # WIP
 
@@ -442,14 +445,28 @@ class Logs(Cog):
             return
 
         # Swiftly deal with unreadable names.
-        if (
-            member_before.display_name != member_after.display_name
-            and not member_after.display_name.isascii()
-        ):
-            await member_after.edit(
-                nick="Unreadable Name", reason="Automatic Unreadable Name"
-            )
-            return
+        if member_before.display_name != member_after.display_name:
+            readable = False
+            for b in member_after.display_name:
+                if b.isalnum():
+                    readable = True
+            if not readable:
+                await member_after.edit(
+                    nick="Unreadable Name", reason="Automatic Unreadable Name"
+                )
+        # Deal with "hoist" names. ᲼
+        # WIP
+
+        # Swiftly deal with unreadable names.
+        if member_before.display_name != member_after.display_name:
+            readable = 0
+            for b in member_after.display_name:
+                if b.isalnum():
+                    readable = readable + 1
+            if readable < 3:
+                await member_after.edit(
+                    nick="Unreadable Name", reason="Automatic Unreadable Name"
+                )
         # Deal with "hoist" names. ᲼
         # WIP
 
