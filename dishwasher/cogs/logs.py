@@ -35,7 +35,7 @@ class Logs(Cog):
             return
 
         # Swiftly deal with unreadable names.
-        if not member.display_name.isalnum():
+        if not member.display_name.isascii():
             await member.edit(
                 nick="Unreadable Name", reason="Automatic Unreadable Name"
             )
@@ -444,7 +444,7 @@ class Logs(Cog):
         # Swiftly deal with unreadable names.
         if (
             member_before.display_name != member_after.display_name
-            and not member_after.display_name.isalnum()
+            and not member_after.display_name.isascii()
         ):
             await member_after.edit(
                 nick="Unreadable Name", reason="Automatic Unreadable Name"
