@@ -71,6 +71,17 @@ exstaff_role_ids = [
 ]
 # Tossed/Rolebanned role.
 toss_role_id = 257050851611377666
+# Unused test.
+#    {
+#        "role": 0,
+#        "channel": 0
+#    }
+toss_roles = [
+    {
+        "role": 257050851611377666,
+        "channel": 257049714577506305
+    }
+]
 
 # Various log channels used to log bot and guild's activity
 # You can use same channel for multiple log types
