@@ -39,7 +39,7 @@ class Logs(Cog):
         for b in member.display_name:
             if b.isalnum():
                 readable = readable + 1
-        if readable < 3:
+        if readable < 1:
             await member.edit(
                 nick="Unreadable Name", reason="Automatic Unreadable Name"
             )
@@ -450,7 +450,7 @@ class Logs(Cog):
             for b in member_after.display_name:
                 if b.isalnum():
                     readable = readable + 1
-            if readable < 3:
+            if readable < 1:
                 await member_after.edit(
                     nick="Unreadable Name", reason="Automatic Unreadable Name"
                 )
