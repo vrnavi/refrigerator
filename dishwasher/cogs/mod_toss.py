@@ -164,7 +164,7 @@ class ModToss(Cog):
             hardmsg = "Please change the topic. **Discussion of tossed users will lead to warnings.**"
         await ctx.reply(f"{toss_sends}\n\n{hardmsg}", mention_author=False)
 
-        def check(m)
+        def check(m):
             return m.author in user_id_list and m.channel == toss_channel
         try:
             msg = await self.bot.wait_for('message', timeout=60 * 5, check=check)
