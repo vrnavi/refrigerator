@@ -454,6 +454,7 @@ class Logs(Cog):
                 await member_after.edit(
                     nick="Unreadable Name", reason="Automatic Unreadable Name"
                 )
+                return
         # Deal with "hoist" names. ᲼
         # WIP
 

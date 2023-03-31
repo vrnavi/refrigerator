@@ -39,29 +39,16 @@ class Mod(Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["boot"])
-    async def kick(self, ctx, target, *, reason: str = ""):
+    async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Kicks a user."""
-        # target handler
-        inguild = True
-        # In the case of IDs.
-        try:
-            target = await ctx.guild.fetch_member(int(target))
-        # In the case of mentions.
-        except ValueError:
-            target = await ctx.guild.fetch_member(target[2:-1])
-        except discord.NotFound:
-            inguild = False
-            target = await self.bot.fetch_user(target_id)
-
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        if inguild:
-            if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot ban Staff members.")
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot ban Staff members.")
 
         userlog(target.id, ctx.author, reason, "kicks", target.name)
 
@@ -125,29 +112,16 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["yeet"])
-    async def ban(self, ctx, target, *, reason: str = ""):
+    async def ban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user."""
-        # target handler
-        inguild = True
-        # In the case of IDs.
-        try:
-            target = await ctx.guild.fetch_member(int(target))
-        # In the case of mentions.
-        except ValueError:
-            target = await ctx.guild.fetch_member(target[2:-1])
-        except discord.NotFound:
-            inguild = False
-            target = await self.bot.fetch_user(target_id)
-
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        if inguild:
-            if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot ban Staff members.")
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -219,29 +193,18 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["bandel"])
-    async def dban(self, ctx, day_count: int, target, *, reason: str = ""):
+    async def dban(
+        self, ctx, day_count: int, target: discord.User, *, reason: str = ""
+    ):
         """[S] Bans a user, with n days of messages deleted."""
-        # target handler
-        inguild = True
-        # In the case of IDs.
-        try:
-            target = await ctx.guild.fetch_member(int(target))
-        # In the case of mentions.
-        except ValueError:
-            target = await ctx.guild.fetch_member(target[2:-1])
-        except discord.NotFound:
-            inguild = False
-            target = await self.bot.fetch_user(target_id)
-
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        if inguild:
-            if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot ban Staff members.")
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot ban Staff members.")
 
         if day_count < 0 or day_count > 7:
             return await ctx.send(
@@ -389,15 +352,8 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command()
-    async def unban(self, ctx, target, *, reason: str = ""):
+    async def unban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Unbans a user with their ID, doesn't message them."""
-        # In the case of IDs.
-        try:
-            target_id = int(target)
-            target_user = await self.bot.fetch_user(target_id)
-        # In the case of mentions.
-        except ValueError:
-            target_user = await self.bot.fetch_user(target[2:-1])
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
@@ -444,29 +400,16 @@ class Mod(Cog):
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["silentban"])
-    async def sban(self, ctx, target, *, reason: str = ""):
+    async def sban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user silently. Does not message them."""
-        # target handler
-        inguild = True
-        # In the case of IDs.
-        try:
-            target = await ctx.guild.fetch_member(int(target))
-        # In the case of mentions.
-        except ValueError:
-            target = await ctx.guild.fetch_member(target[2:-1])
-        except discord.NotFound:
-            inguild = False
-            target = await self.bot.fetch_user(target_id)
-
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        if inguild:
-            if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot ban Staff members.")
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -659,29 +602,16 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def warn(self, ctx, target, *, reason: str = ""):
+    async def warn(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Warns a user."""
-        # target handler
-        inguild = True
-        # In the case of IDs.
-        try:
-            target = await ctx.guild.fetch_member(int(target))
-        # In the case of mentions.
-        except ValueError:
-            target = await ctx.guild.fetch_member(target[2:-1])
-        except discord.NotFound:
-            inguild = False
-            target = await self.bot.fetch_user(target_id)
-
         if target == ctx.author:
             return await ctx.send("No.")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        if inguild:
-            if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot warn Staff members.")
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot warn Staff members.")
 
         log_channel = self.bot.get_channel(config.modlog_channel)
 

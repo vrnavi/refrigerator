@@ -71,6 +71,8 @@ exstaff_role_ids = [
 ]
 # Tossed/Rolebanned role.
 toss_role_id = 257050851611377666
+# Bot role.
+bot_role = 257036973187923968
 
 # Various log channels used to log bot and guild's activity
 # You can use same channel for multiple log types
@@ -149,17 +151,6 @@ noreply_role = 1059460475588448416
 # == Only if you want to use cogs.mod_oneshot ==
 pingmods_allow = [named_roles["journal"]] + staff_role_ids
 
-# == Only if you want to use cogs.mod_archive ==
-# == Make sure to supply service_account.json!
-# The Google Drive folder.
-drive_folder = "folder_goes_here"
-# The toss/roleban channels.
-toss_channels = [
-    257049714577506305,
-]
-# The toss/roleban expiry timeout.
-unroleban_expiry = 180
-
 # == Only if you want to use cogs.appeal ==
 ban_appeal_channel = 402019542345449472
 ban_appeal_webhook_id = 402016472878284801
@@ -177,16 +168,14 @@ lockdown_annoncement = "All public channels are temporarily restricted."
 unlockdown_annoncement = "All public channels are no longer restricted."
 
 
-# == Only if you want to use cogs.mod_toss ==
+# == Only if you want to use cogs.mod_toss and cogs.mod_archive ==
 # Example for Toss role.
 #    {
 #        "role": 0,
 #        "channel": 0
 #    }
-toss_roles = [{"role": 257050851611377666, "channel": 257049714577506305}]
-# Overflow if needed?
-toss_overflow = False
-# Names for the bot to use when the overflow mechanism is enabled.
+toss_role = 257050851611377666
+# Names for the bot to use.
 toss_channels = [
     "basement",
     "abyss",
@@ -194,9 +183,17 @@ toss_channels = [
     "out-of-bounds",
 ]
 # Where the bot should place overflow channels.
-# If it is a channel name, it will be placed under this channel.
-# If it is a category name, it will be placed at the last spot.
-toss_placement = "old-factory"
+# If it is a channel id, it will be placed under this channel.
+# If it is a category id, it will be placed at the last spot.
+toss_placement = 263715783782301696
+
+# == Only if you want to use cogs.mod_archive ==
+# == cogs.mod_toss must be configured for this to work!
+# == Make sure to supply service_account.json!
+# The Google Drive folder.
+drive_folder = "folder_goes_here"
+# The toss/roleban expiry timeout.
+unroleban_expiry = 180
 
 # No touch!
 placeholders = json.load(open("assets/placeholders.json", "r"))

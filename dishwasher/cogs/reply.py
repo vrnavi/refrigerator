@@ -49,7 +49,7 @@ class Reply(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
 
-        if message.reference is not None:
+        if message.reference:
             await self.handle_message_with_reference(message)
 
 

@@ -40,7 +40,7 @@ class ModOneShot(Cog):
             await ctx.author.add_roles(
                 exstaff_role, reason="Staff self-unassigned Staff role"
             )
-            await ctx.message.reply(content=f"Staff status: 🔴", mention_author=False)
+            await ctx.message.reply(content="`🔴 Staff`", mention_author=False)
         elif exstaff_role in ctx.author.roles:
             await ctx.author.add_roles(
                 staff_role, reason="Staff self-assigned Staff role"
@@ -48,9 +48,9 @@ class ModOneShot(Cog):
             await ctx.author.remove_roles(
                 exstaff_role, reason="Staff self-assigned Staff role"
             )
-            await ctx.message.reply(content=f"Staff status: 🟢", mention_author=False)
+            await ctx.message.reply(content="`🟢 Staff`", mention_author=False)
         else:
-            await ctx.send(f"You are unable to use this command.")
+            await ctx.send("You are unable to use this command.")
 
 
 async def setup(bot):

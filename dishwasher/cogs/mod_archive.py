@@ -25,7 +25,6 @@ from helpers.store import DECISION_EMOTES, LAST_UNROLEBAN
 class ModArchive(Cog):
     def __init__(self, bot):
         self.bot = bot
-        roleban_channels = config.toss_channels
 
     async def log_whole_channel(self, channel, zip_files=False):
         st = ""
@@ -148,7 +147,7 @@ class ModArchive(Cog):
         except:
             pass
 
-        if message.channel.id in config.toss_channels:
+        if message.channel.name in config.toss_channels:
             out = await self.log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
