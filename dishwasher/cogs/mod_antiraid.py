@@ -109,11 +109,7 @@ class ModAntiRaid(Cog):
             if not c.permissions_for(c.guild.me).send_messages:
                 continue
 
-            message = (
-                self.lockdown_msg
-                if lockdown
-                else self.unlockdown_msg
-            )
+            message = self.lockdown_msg if lockdown else self.unlockdown_msg
 
             if message:
                 msg = await c.send(message)
@@ -287,7 +283,7 @@ class ModAntiRaid(Cog):
     async def on_member_join(self, member):
         self.mem_cache.append(member)
         self.cull_recent_member_cache()
-        
+
     @Cog.listener()
     async def on_ready(self):
         self.guild = self.bot.get_guild(config.guild_whitelist[0])
@@ -298,10 +294,13 @@ class ModAntiRaid(Cog):
         self.staff_channel = (
             self.guild.get_channel(config.staff_channel) if self.guild else None
         )
-        self.allowed_role = (self.guild.get_role(config.named_roles["journal"]) if self.guild else None)
+        self.allowed_role = (
+            self.guild.get_role(config.named_roles["journal"]) if self.guild else None
+        )
         if self.join_threshold > 0:
             self.mem_cache = self.guild.members
             self.cull_recent_member_cache()
+
 
 async def setup(bot):
     await bot.add_cog(ModAntiRaid(bot))

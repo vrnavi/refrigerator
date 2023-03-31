@@ -24,6 +24,22 @@ class Common(Cog):
         self.bot.escape_message = self.escape_message
         self.bot.parse_time = self.parse_time
         self.bot.haste = self.haste
+        self.bot.c_to_f = self.c_to_f
+        self.bot.f_to_c = self.f_to_c
+        self.bot.c_to_k = self.c_to_k
+        self.bot.f_to_k = self.f_to_k
+
+    def c_to_f(self, c):
+        return 9.0 / 5.0 * c + 32
+
+    def f_to_c(self, f):
+        return 5.0 / 9.0 * (f - 32)
+
+    def c_to_k(self, c):
+        return c + 273.15
+
+    def f_to_k(self, f):
+        return 5.0 / 9.0 * (f + 459.67)
 
     def parse_time(self, delta_str):
         cal = parsedatetime.Calendar()

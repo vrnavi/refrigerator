@@ -16,21 +16,13 @@ class Meme(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def c_to_f(self, c):
-        """this is where we take memes too far"""
-        return math.floor(9.0 / 5.0 * c + 32)
-
-    def c_to_k(self, c):
-        """this is where we take memes REALLY far"""
-        return math.floor(c + 273.15)
-
     @commands.check(check_if_staff_or_ot)
     @commands.command(hidden=True, name="warm")
     async def warm_member(self, ctx, user: discord.Member):
         """Warms a user :3"""
         celsius = random.randint(15, 100)
-        fahrenheit = self.c_to_f(celsius)
-        kelvin = self.c_to_k(celsius)
+        fahrenheit = self.bot.c_to_f(celsius)
+        kelvin = self.bot.c_to_k(celsius)
         await ctx.send(
             f"{user.mention} warmed."
             f" User is now {celsius}°C "
@@ -42,8 +34,8 @@ class Meme(Cog):
     async def chill_member(self, ctx, user: discord.Member):
         """Chills a user >:3"""
         celsius = random.randint(-50, 15)
-        fahrenheit = self.c_to_f(celsius)
-        kelvin = self.c_to_k(celsius)
+        fahrenheit = self.bot.c_to_f(celsius)
+        kelvin = self.bot.c_to_k(celsius)
         await ctx.send(
             f"{user.mention} chilled."
             f" User is now {celsius}°C "

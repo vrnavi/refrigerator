@@ -92,7 +92,10 @@ class Basic(Cog):
     @commands.command()
     async def membercount(self, ctx):
         """[U] Prints the member count of the server."""
-        await ctx.send(f"{ctx.guild.name} has {ctx.guild.member_count} members!")
+        await ctx.reply(
+            f"{ctx.guild.name} has {ctx.guild.member_count} members!",
+            mention_author=False,
+        )
 
     @commands.command(hidden=True)
     async def about(self, ctx):
@@ -101,12 +104,30 @@ class Basic(Cog):
             title="Dishwasher", url=config.source_url, description=config.embed_desc
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command(aliases=["commands"])
     async def help(self, ctx):
         """Posts a help command."""
-        await ctx.send("[Press F1 For] HELP\nhttps://os.whistler.page/F1")
+        await ctx.reply(
+            "[Press F1 For] HELP\nhttps://os.whistler.page/F1", mention_author=False
+        )
+
+    @commands.command(aliases=["showcolor"])
+    async def color(self, ctx, color):
+        """Shows a color in chat."""
+        if color[0] == "#":
+            color = color[1:]
+        if color.hexdigits and len(color) == 6:
+            await ctx.reply(
+                f"https://singlecolorimage.com/get/{color}/128x128",
+                mention_author=False,
+            )
+        else:
+            await ctx.reply(
+                "Please provide a valid hexadecimal color.", mention_author=False
+            )
+            return
 
     @commands.command(aliases=["p"])
     async def ping(self, ctx):
@@ -115,7 +136,7 @@ class Basic(Cog):
         RTT = Round-trip time, time taken to send a message to discord
         GW = Gateway Ping"""
         before = time.monotonic()
-        tmp = await ctx.send("Calculating ping...")
+        tmp = await ctx.reply("⌛", mention_author=False)
         after = time.monotonic()
         rtt_ms = (after - before) * 1000
         gw_ms = self.bot.latency * 1000
@@ -126,19 +147,10 @@ class Basic(Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def info(self, ctx, target=None):
+    async def info(self, ctx, target: discord.User = None):
         """[S] Gets full user info."""
         if target == None:
             target = ctx.author
-        else:
-            # target handler
-            # In the case of IDs.
-            try:
-                target_id = int(target)
-                target = await self.bot.fetch_user(target_id)
-            # In the case of mentions.
-            except ValueError:
-                target = await self.bot.fetch_user(target[2:-1])
 
         if target.bot:
             isbot = " [BOT]"
