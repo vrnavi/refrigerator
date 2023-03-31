@@ -120,7 +120,7 @@ class Basic(Cog):
             color = color[1:]
         def hex_check(color):
             try:
-                int(s, 16)
+                int(color, 16)
                 return True
             except ValueError:
                 return False
