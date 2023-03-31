@@ -731,6 +731,15 @@ class Mod(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
+    @commands.command()
+    async def typing(self, ctx, channel: discord.TextChannel, duration: int):
+        """[S] Sends a typing indicator for a given duration of seconds.."""
+        await ctx.send("👍")
+        async with channel.typing():
+            await asyncio.sleep(duration)
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
     @commands.command(aliases=["setplaying", "setgame"])
     async def playing(self, ctx, *, game: str = ""):
         """[S] Sets the bot's currently played game name.

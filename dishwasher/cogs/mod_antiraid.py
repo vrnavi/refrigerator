@@ -289,13 +289,17 @@ class ModAntiRaid(Cog):
         self.bot_guild = await self.bot.fetch_guild(config.guild_whitelist[0])
         if self.announce_channels != "all":
             self.announce_channels = (
-                self.bot_guild.get_channel(self.announce_channels) if self.bot_guild else None
+                self.bot_guild.get_channel(self.announce_channels)
+                if self.bot_guild
+                else None
             )
         self.staff_channel = (
             self.bot_guild.get_channel(config.staff_channel) if self.bot_guild else None
         )
         self.allowed_role = (
-            self.bot_guild.get_role(config.named_roles["journal"]) if self.bot_guild else None
+            self.bot_guild.get_role(config.named_roles["journal"])
+            if self.bot_guild
+            else None
         )
         if self.join_threshold > 0:
             self.mem_cache = self.bot_guild.members

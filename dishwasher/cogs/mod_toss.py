@@ -166,14 +166,18 @@ class ModToss(Cog):
 
         def check(m):
             return m.author in user_id_list and m.channel == toss_channel
+
         try:
-            msg = await self.bot.wait_for('message', timeout=60 * 5, check=check)
+            msg = await self.bot.wait_for("message", timeout=60 * 5, check=check)
         except asyncio.TimeoutError:
             pokemsg = await toss_channel.send(f"{ctx.author.mention}")
             await pokemsg.edit(content="⏰", delete_after=5)
         else:
             pokemsg = await toss_channel.send(f"{ctx.author.mention}")
-            await pokemsg.edit(content="⏰🔨 Tossed user sent a message. Timer destroyed.", delete_after=5)
+            await pokemsg.edit(
+                content="⏰🔨 Tossed user sent a message. Timer destroyed.",
+                delete_after=5,
+            )
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
