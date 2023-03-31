@@ -16,6 +16,7 @@ class ModObserve(Cog):
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
         if member.created_at >= cutoff_ts or self.bot.raidmode == True:
+            escaped_name = self.bot.escape_message(member)
             staff_channel = config.staff_channel
             embeds = []
             embed = discord.Embed(
