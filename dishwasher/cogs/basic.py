@@ -118,7 +118,13 @@ class Basic(Cog):
         """Shows a color in chat."""
         if color[0] == "#":
             color = color[1:]
-        if color.hexdigits and len(color) == 6:
+        def hex_check(color):
+            try:
+                int(s, 16)
+                return True
+            except ValueError:
+                return False
+        if hexcheck(color) and len(color) == 6:
             await ctx.reply(
                 f"https://singlecolorimage.com/get/{color}/128x128",
                 mention_author=False,
