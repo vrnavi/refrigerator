@@ -164,9 +164,16 @@ class ModToss(Cog):
             hardmsg = "Please change the topic. **Discussion of tossed users will lead to warnings.**"
         await ctx.reply(f"{toss_sends}\n\n{hardmsg}", mention_author=False)
 
-        await asyncio.sleep(5 * 60)
-        pokemsg = await toss_channel.send(f"{ctx.author.mention}")
-        await pokemsg.edit(content="⏰", delete_after=5)
+        def check(m)
+            return m.author in user_id_list and m.channel == toss_channel
+        try:
+            msg = await self.bot.wait_for('message', timeout=60 * 5, check=check)
+        except asyncio.TimeoutError:
+            pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+            await pokemsg.edit(content="⏰", delete_after=5)
+        else:
+            pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+            await pokemsg.edit(content="⏰🔨 Tossed user sent a message. Timer destroyed.", delete_after=5)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)

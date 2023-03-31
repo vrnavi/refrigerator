@@ -34,7 +34,7 @@ class ModAntiRaid(Cog):
             m
             for m in self.mem_cache
             # It's easier to cull members who leave here than on leave
-            if self.guild.get_member(m.id)
+            if self.bot_guild.get_member(m.id)
             # Cutoff is inclusive
             and m.joined_at >= cutoff_ts
         ]
@@ -69,8 +69,8 @@ class ModAntiRaid(Cog):
     def get_public_channels(self):
         return [
             c
-            for c in self.guild.text_channels
-            if c.permissions_for(self.guild.me).manage_channels
+            for c in self.bot_guild.text_channels
+            if c.permissions_for(self.bot_guild.me).manage_channels
             and self.is_public_channel(c)
         ]
 
@@ -91,7 +91,7 @@ class ModAntiRaid(Cog):
 
         return [
             c
-            for c in self.guild.channels
+            for c in self.bot_guild.channels
             if (c.id in affected_channels)
             or (c.name in affected_channels)
             and not isinstance(c, discord.TextChannel)
@@ -238,8 +238,8 @@ class ModAntiRaid(Cog):
         if not channel_list:
             channel_list = [
                 c
-                for c in self.guild.text_channels
-                if c.permissions_for(self.guild.me).manage_channels
+                for c in self.bot_guild.text_channels
+                if c.permissions_for(self.bot_guild.me).manage_channels
                 and c.id in self.locked_channels
             ]
             if not channel_list:
@@ -261,7 +261,7 @@ class ModAntiRaid(Cog):
             or message.author.bot
             or not message.content
             or not message.guild
-            or message.guild.id != self.guild.id
+            or message.guild.id != self.bot_guild.id
         ):
             return
 
@@ -286,19 +286,19 @@ class ModAntiRaid(Cog):
 
     @Cog.listener()
     async def on_ready(self):
-        self.guild = self.bot.get_guild(config.guild_whitelist[0])
+        self.bot_guild = self.bot.get_guild(config.guild_whitelist[0])
         if self.announce_channels != "all":
             self.announce_channels = (
-                self.guild.get_channel(self.announce_channels) if self.guild else None
+                self.bot_guild.get_channel(self.announce_channels) if self.bot_guild else None
             )
         self.staff_channel = (
-            self.guild.get_channel(config.staff_channel) if self.guild else None
+            self.bot_guild.get_channel(config.staff_channel) if self.bot_guild else None
         )
         self.allowed_role = (
-            self.guild.get_role(config.named_roles["journal"]) if self.guild else None
+            self.bot_guild.get_role(config.named_roles["journal"]) if self.bot_guild else None
         )
         if self.join_threshold > 0:
-            self.mem_cache = self.guild.members
+            self.mem_cache = self.bot_guild.members
             self.cull_recent_member_cache()
 
 
