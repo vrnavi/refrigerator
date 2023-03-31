@@ -124,7 +124,7 @@ class Basic(Cog):
                 return True
             except ValueError:
                 return False
-        if hexcheck(color) and len(color) == 6:
+        if hex_check(color) and len(color) == 6:
             await ctx.reply(
                 f"https://singlecolorimage.com/get/{color}/128x128",
                 mention_author=False,
