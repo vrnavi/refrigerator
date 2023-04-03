@@ -610,8 +610,8 @@ class Mod(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot warn Staff members.")
+        # elif self.check_if_target_is_staff(target):
+        #     return await ctx.send("I cannot warn Staff members.")
 
         log_channel = self.bot.get_channel(config.modlog_channel)
 
