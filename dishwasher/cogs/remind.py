@@ -29,9 +29,12 @@ class Remind(Cog):
             if uid not in ctab["remind"][jobtimestamp]:
                 continue
             job_details = ctab["remind"][jobtimestamp][uid]
-            addedtime = datetime.strptime(
-                job_details["added"], "%Y-%m-%d %H:%M:%S"
-            ).strftime("%s")
+            """ strftime operates off of the system timezone, which can cause problems
+            when time strings are stored as UTC-0. This can be fixed by appending -0000
+            to force strptime to interpret it as a UTC-0 time. """
+            addedtime = int(datetime.strptime(
+                f"{job_details['added']} -0000", "%Y-%m-%d %H:%M:%S %z"
+            ).timestamp())
             embed.add_field(
                 name=f"Reminder on <t:{jobtimestamp}:F>",
                 value=f"*Added <t:{addedtime}:R>.*\n" f"{job_details['text']}",
