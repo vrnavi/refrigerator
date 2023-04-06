@@ -29,9 +29,6 @@ class Remind(Cog):
             if uid not in ctab["remind"][jobtimestamp]:
                 continue
             job_details = ctab["remind"][jobtimestamp][uid]
-            """ strptime operates off of the system timezone, which can cause problems
-            when time strings are stored as UTC-0. This can be fixed by appending -0000
-            to force strptime to interpret it as a UTC-0 time. """
             addedtime = int(datetime.strptime(
                 f"{job_details['added']} -0000", "%Y-%m-%d %H:%M:%S %z"
             ).timestamp())
