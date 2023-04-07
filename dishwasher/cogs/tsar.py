@@ -16,7 +16,7 @@ class tsarList:
             timestamp=datetime.datetime.now(),
         )
         self.tocembed.set_image(
-            "https://cdn.discordapp.com/attachments/263715783782301696/1093726711553724546/sol_journal_glow2.png"
+            url="https://cdn.discordapp.com/attachments/263715783782301696/1093726711553724546/sol_journal_glow2.png"
         )
         self.tocembed.set_author(
             name="The OneShot Discord and You",
