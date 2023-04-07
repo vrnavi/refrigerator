@@ -166,7 +166,7 @@ class ctrlsBtn(discord.ui.View):
     async def button_callback(self, interaction, button):
         embed = tsarList.toc()
         view = tocBtns()
-        msg = await interaction.response.send_message(embed=embed, view=view)
+        msg = await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
         tsarList.set(interaction.user, msg)
 
 
