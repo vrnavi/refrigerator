@@ -61,7 +61,10 @@ class tsarList:
         self.bot = bot
 
     def get(self, user):
-        return self.openmessages[user]
+        try:
+            return self.openmessages[user]
+        except KeyError:
+            return None
 
     def toc(self):
         self.tocembed.set_footer(
@@ -152,6 +155,8 @@ class ctrlsBtn(discord.ui.View):
         emoji="📖",
     )
     async def button_callback(self, interaction, button):
+        if tsarList.get(interaction.user) is not None:
+            await tsarList.get(interaction.user).delete()
         embed = tsarList.toc()
         view = tocBtns()
         msg = await interaction.response.send_message(
