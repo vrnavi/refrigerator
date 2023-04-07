@@ -94,9 +94,9 @@ class ModToss(Cog):
 
             try:
                 await us.add_roles(toss_role, reason="User tossed.")
+                bad_no_good_terrible_roles = []
+                roles_actual = []
                 if len(roles) > 0:
-                    bad_no_good_terrible_roles = []
-                    roles_actual = []
                     for rr in roles:
                         if not rr.is_assignable():
                             bad_no_good_terrible_roles.append(rr.name)
