@@ -217,7 +217,7 @@ class TSAR(Cog):
             url="https://oneshot.whistler.page",
         )
         embed.set_image(
-            "https://cdn.discordapp.com/attachments/263715783782301696/1093726711323049994/sol_journal_glow1.png"
+            url="https://cdn.discordapp.com/attachments/263715783782301696/1093726711323049994/sol_journal_glow1.png"
         )
         embed.set_author(
             name="renavi's", url="https://0ccu.lt", icon_url="https://0ccu.lt/sigil.png"
