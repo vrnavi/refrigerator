@@ -65,7 +65,7 @@ class tsarList:
 
     def toc(self):
         self.tocembed.set_footer(
-            text=self.bot.userdisplay_name, icon_url=self.bot.user.display_avatar
+            text=self.bot.user.display_name, icon_url=self.bot.user.display_avatar
         )
         return self.tocembed
 
