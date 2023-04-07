@@ -6,6 +6,66 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff_or_ot
 
 
+class tsarList:
+    def __init__(self):
+        self.openmessages = {}
+        self.tocembed = discord.Embed(
+            title="Table of Contents",
+            description="*Use the buttons below to turn the page.*",
+            color=discord.Color.from_str("#9cd8df"),
+            timestamp=datetime.datetime.now(),
+        )
+        self.tocembed.set_image(
+            "https://cdn.discordapp.com/attachments/263715783782301696/1093726711553724546/sol_journal_glow2.png"
+        )
+        self.tocembed.set_author(
+            name="The OneShot Discord and You",
+            icon_url="https://cdn.discordapp.com/attachments/263715783782301696/1093731958074392616/item_blue_journal_glow.png",
+        )
+        self.tocembed.add_field(
+            name="Section 1",
+            value="🔨 Moderation",
+            inline=True,
+        )
+        self.tocembed.add_field(
+            name="Section 2",
+            value="📂 Channels",
+            inline=True,
+        )
+        self.tocembed.add_field(
+            name="Section 3",
+            value="🌈 Roles",
+            inline=True,
+        )
+        self.tocembed.add_field(
+            name="Section 4",
+            value="🛠️ Bots",
+            inline=True,
+        )
+        self.tocembed.add_field(
+            name="Section 5",
+            value="🗃️ Links",
+            inline=True,
+        )
+        self.tocembed.add_field(
+            name="Section 6",
+            value="📜 FAQ",
+            inline=True,
+        )
+        self.tocembed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
+
+    def set(self, user, message):
+        self.openmessages[user] = message
+
+    def get(self, user):
+        return self.openmessages[user]
+
+    def toc(self):
+        return self.tocembed
+
+
 class journalBtn(discord.ui.View):
     @discord.ui.button(
         label="Get", custom_id="journalBtn", style=discord.ButtonStyle.primary
@@ -30,6 +90,68 @@ class journalBtn(discord.ui.View):
             )
 
 
+class tocBtns(discord.ui.View):
+    @discord.ui.button(
+        label="Moderation",
+        style=discord.ButtonStyle.primary,
+        emoji="🔨",
+    )
+    async def moderationbutton(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        msg = tsarList.get(interaction.user)
+
+    @discord.ui.button(
+        label="Channels",
+        style=discord.ButtonStyle.primary,
+        emoji="📂",
+    )
+    async def channelbutton(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        msg = tsarList.get(interaction.user)
+
+    @discord.ui.button(
+        label="Roles",
+        style=discord.ButtonStyle.primary,
+        emoji="🌈",
+    )
+    async def rolesbutton(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        msg = tsarList.get(interaction.user)
+
+    @discord.ui.button(
+        label="Bots",
+        style=discord.ButtonStyle.primary,
+        emoji="🛠️",
+    )
+    async def botsbutton(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        msg = tsarList.get(interaction.user)
+
+    @discord.ui.button(
+        label="Links",
+        style=discord.ButtonStyle.primary,
+        emoji="🗃️",
+    )
+    async def linksbutton(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        msg = tsarList.get(interaction.user)
+
+    @discord.ui.button(
+        label="FAQ",
+        style=discord.ButtonStyle.primary,
+        emoji="📜",
+    )
+    async def faqbutton(
+        self, button: discord.ui.Button, interaction: discord.Interaction
+    ):
+        msg = tsarList.get(interaction.user)
+
+
 class ctrlsBtn(discord.ui.View):
     @discord.ui.button(
         label="Open Index",
@@ -38,12 +160,10 @@ class ctrlsBtn(discord.ui.View):
         emoji="📖",
     )
     async def button_callback(self, interaction, button):
-        menu = interaction.response.send_message
-
-
-class colorSel(discord.ui.View):
-    def __init__(self):
-        super().__init__()
+        embed = tsarList.toc()
+        view = tocBtns()
+        msg = await interaction.response.send_message(embed=embed, view=view)
+        tsarList.set(interaction.user, msg)
 
 
 class TSAR(Cog):
@@ -83,17 +203,31 @@ class TSAR(Cog):
     @commands.guild_only()
     @commands.command()
     @commands.check(check_if_bot_manager)
-    async def rulesetup(self, ctx):
+    async def infosetup(self, ctx):
         embed = discord.Embed(
-            title="Server Information Index",
-            description="Please click the `Open Index` button below to open the Server Information Index.",
+            title="The OneShot Discord and You",
+            description="Enclosed below is a guide to the OneShot Discord.\nPlease click the 📖 **Open Index** button to get started.\nYou can also view it in website form via the link above.",
             color=discord.Color.from_str("#9cd8df"),
+            timestamp=datetime.datetime.now(),
+            url="https://oneshot.whistler.page",
         )
+        embed.set_image(
+            "https://cdn.discordapp.com/attachments/263715783782301696/1093726711323049994/sol_journal_glow1.png"
+        )
+        embed.set_author(
+            name="renavi's", url="https://0ccu.lt", icon_url="https://0ccu.lt/sigil.png"
+        )
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        view = ctrlsBtn()
         await ctx.send(
-            content="If you are unable to see the embed below:\n🔹 `Settings`\n🔹 `Text & Images`\n🔹 `Show embeds and preview website links pasted into chat`.",
+            content="If you are unable to see the embed below:\n🔹 `Settings`\n🔹 `Text & Images`\n🔹 `Show embeds and preview website links pasted into chat`",
             embed=embed,
             view=view,
         )
+        await ctx.message.delete()
+
+
+tsarList = tsarList()
 
 
 async def setup(bot):
