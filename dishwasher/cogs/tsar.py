@@ -96,7 +96,7 @@ class journalBtn(discord.ui.View):
 
 class tocBtns(discord.ui.View):
     @discord.ui.button(
-        label="Moderation", style=discord.ButtonStyle.primary, emoji="🔨", row=0
+        label="Moderation", style=discord.ButtonStyle.secondary, emoji="🔨", row=0
     )
     async def moderationbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -104,7 +104,7 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Channels", style=discord.ButtonStyle.primary, emoji="📂", row=0
+        label="Channels", style=discord.ButtonStyle.secondary, emoji="📂", row=0
     )
     async def channelbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -112,7 +112,7 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Roles", style=discord.ButtonStyle.primary, emoji="🌈", row=0
+        label="Roles", style=discord.ButtonStyle.secondary, emoji="🌈", row=0
     )
     async def rolesbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -120,7 +120,7 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Bots", style=discord.ButtonStyle.primary, emoji="🛠️", row=1
+        label="Bots", style=discord.ButtonStyle.secondary, emoji="🛠️", row=1
     )
     async def botsbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -128,14 +128,16 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Links", style=discord.ButtonStyle.primary, emoji="🗃️", row=1
+        label="Links", style=discord.ButtonStyle.secondary, emoji="🗃️", row=1
     )
     async def linksbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         msg = tsarList.get(interaction.user)
 
-    @discord.ui.button(label="FAQ", style=discord.ButtonStyle.primary, emoji="📜", row=1)
+    @discord.ui.button(
+        label="FAQ", style=discord.ButtonStyle.secondary, emoji="📜", row=1
+    )
     async def faqbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):

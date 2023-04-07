@@ -51,6 +51,10 @@ class ModAntiRaid(Cog):
         #    - Read messages: None/True
         #    - Send messages: None/True
 
+        # Catches threads.
+        if not isinstance(channel, discord.TextChannel):
+            return False
+
         default_role_override = channel.overwrites_for(channel.guild.default_role)
         authorized_role_override = channel.overwrites_for(self.allowed_role)
 
