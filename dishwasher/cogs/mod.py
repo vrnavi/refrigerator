@@ -120,8 +120,8 @@ class Mod(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
+        # elif self.check_if_target_is_staff(target):
+        #     return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
