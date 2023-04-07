@@ -150,7 +150,7 @@ class Mod(Cog):
                 # or has DMs disabled
                 pass
 
-        await target.ban(
+        await ctx.guild.ban(target,
             reason=f"[ Ban by {ctx.author} ] {reason}", delete_message_days=0
         )
 
