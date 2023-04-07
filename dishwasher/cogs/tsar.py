@@ -56,7 +56,7 @@ class tsarList:
 
     def set(self, user, message):
         self.openmessages[user] = message
-        
+
     def setbot(self, bot):
         self.bot = bot
 
@@ -96,9 +96,7 @@ class journalBtn(discord.ui.View):
 
 class tocBtns(discord.ui.View):
     @discord.ui.button(
-        label="Moderation",
-        style=discord.ButtonStyle.primary,
-        emoji="🔨",
+        label="Moderation", style=discord.ButtonStyle.primary, emoji="🔨", row=0
     )
     async def moderationbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -106,9 +104,7 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Channels",
-        style=discord.ButtonStyle.primary,
-        emoji="📂",
+        label="Channels", style=discord.ButtonStyle.primary, emoji="📂", row=0
     )
     async def channelbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -116,9 +112,7 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Roles",
-        style=discord.ButtonStyle.primary,
-        emoji="🌈",
+        label="Roles", style=discord.ButtonStyle.primary, emoji="🌈", row=0
     )
     async def rolesbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -126,9 +120,7 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Bots",
-        style=discord.ButtonStyle.primary,
-        emoji="🛠️",
+        label="Bots", style=discord.ButtonStyle.primary, emoji="🛠️", row=1
     )
     async def botsbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
@@ -136,20 +128,14 @@ class tocBtns(discord.ui.View):
         msg = tsarList.get(interaction.user)
 
     @discord.ui.button(
-        label="Links",
-        style=discord.ButtonStyle.primary,
-        emoji="🗃️",
+        label="Links", style=discord.ButtonStyle.primary, emoji="🗃️", row=1
     )
     async def linksbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
         msg = tsarList.get(interaction.user)
 
-    @discord.ui.button(
-        label="FAQ",
-        style=discord.ButtonStyle.primary,
-        emoji="📜",
-    )
+    @discord.ui.button(label="FAQ", style=discord.ButtonStyle.primary, emoji="📜", row=1)
     async def faqbutton(
         self, button: discord.ui.Button, interaction: discord.Interaction
     ):
@@ -166,7 +152,9 @@ class ctrlsBtn(discord.ui.View):
     async def button_callback(self, interaction, button):
         embed = tsarList.toc()
         view = tocBtns()
-        msg = await interaction.response.send_message(embed=embed, view=view, ephemeral=True)
+        msg = await interaction.response.send_message(
+            embed=embed, view=view, ephemeral=True
+        )
         tsarList.set(interaction.user, msg)
 
 
