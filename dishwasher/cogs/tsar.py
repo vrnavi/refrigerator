@@ -52,17 +52,21 @@ class tsarList:
             value="📜 FAQ",
             inline=True,
         )
-        self.tocembed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
-        )
+        self.bot = None
 
     def set(self, user, message):
         self.openmessages[user] = message
+        
+    def setbot(self, bot):
+        self.bot = bot
 
     def get(self, user):
         return self.openmessages[user]
 
     def toc(self):
+        self.tocembed.set_footer(
+            text=self.bot.userdisplay_name, icon_url=self.bot.user.display_avatar
+        )
         return self.tocembed
 
 
@@ -173,6 +177,7 @@ class TSAR(Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        tsarList.setbot(bot)
 
     @commands.guild_only()
     @commands.command()
