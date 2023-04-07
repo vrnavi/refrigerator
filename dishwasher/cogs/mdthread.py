@@ -36,16 +36,10 @@ class mdthread(Cog):
 
     async def send_message(self, ctx: Context, content: str):
         webhooks = await ctx.guild.webhooks()
-        webhook_results = [element for element in webhooks if element.name == self.webhook_name]
+        webhook_results = [element for element in webhooks if element.name == self.webhook_name and element.channel_id == ctx.channel.parent_id]
 
-        if (len(webhook_results) == 0):
-            await ctx.reply(
-                content = f"Unable to find a webhook to proxy your message through. Please ensure that a webhook named `{self.webhook_name}` exists for <#{ctx.channel.parent_id}>.",
-                mention_author = False
-            )
-
+        webhook = await ctx.channel.parent.create_webhook(name=self.webhook_name) if len(webhook_results) == 0 else webhook_results[0]
         await ctx.message.delete()
-        webhook = webhook_results[0]
 
         await webhook.send(
             content = content,
