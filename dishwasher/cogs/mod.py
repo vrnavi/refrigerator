@@ -114,14 +114,16 @@ class Mod(Cog):
     @commands.command(aliases=["yeet"])
     async def ban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user."""
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        # elif self.check_if_target_is_staff(target):
-        #     return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -150,8 +152,8 @@ class Mod(Cog):
                 # or has DMs disabled
                 pass
 
-        await ctx.guild.ban(target,
-            reason=f"[ Ban by {ctx.author} ] {reason}", delete_message_days=0
+        await ctx.guild.ban(
+            target, reason=f"[ Ban by {ctx.author} ] {reason}", delete_message_days=0
         )
 
         # Prepare embed msg
@@ -197,14 +199,16 @@ class Mod(Cog):
         self, ctx, day_count: int, target: discord.User, *, reason: str = ""
     ):
         """[S] Bans a user, with n days of messages deleted."""
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
 
         if day_count < 0 or day_count > 7:
             return await ctx.send(
@@ -402,14 +406,16 @@ class Mod(Cog):
     @commands.command(aliases=["silentban"])
     async def sban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user silently. Does not message them."""
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
             return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -604,14 +610,16 @@ class Mod(Cog):
     @commands.command()
     async def warn(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Warns a user."""
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
-            return await ctx.send("No.")
+            return await ctx.send("**No.**")
         elif target == self.bot.user:
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        # elif self.check_if_target_is_staff(target):
-        #     return await ctx.send("I cannot warn Staff members.")
 
         log_channel = self.bot.get_channel(config.modlog_channel)
 
