@@ -38,7 +38,6 @@ initial_cogs = [
     "cogs.basic",
     "cogs.basic_oneshot",
     "cogs.logs",
-    "cogs.logs",
     "cogs.lockdown",
     "cogs.remind",
     "cogs.reply",
@@ -47,6 +46,7 @@ initial_cogs = [
     "cogs.invites",
     "cogs.usertime",
     "cogs.prefixes",
+    "cogs.burstreacts"
 ]
 
 # The bot will only work in these guilds. The first in the list is considered the "main" guild.
