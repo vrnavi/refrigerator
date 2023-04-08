@@ -50,8 +50,16 @@ class CogBurstReacts(commands.Cog, name='Burst reactions handler'):
             timestamp=discord.utils.utcnow()
         )
         embed.set_thumbnail(url=author.display_avatar.url)
-        embed.add_field(name='User', value=f'{author.mention}\n(`{author}`)\nID: `{author.id}`', inline=True)
-        embed.add_field(name='Channel', value=f'{channel.mention}\nID: `{channel.id}`', inline=True)
+        embed.add_field(name='User', value=f'{author.mention}\n(`{author}`)\nID: `{author.id}`', inline=False)
+
+        if isinstance(channel, discord.Thread):
+            # Thread with parent channel
+            embed.add_field(name='Channel', value=f'{channel.parent.mention}\nID: `{channel.parent.id}`', inline=True)
+            embed.add_field(name='Thread', value=f'{channel.mention}\nID: `{channel.id}`', inline=True)
+        else:
+            # Regular channel
+            embed.add_field(name='Channel', value=f'{channel.mention}\nID: `{channel.id}`', inline=False)
+
         embed.add_field(name='Message', value=f'> ID: `{message.id}`\n> URL: {message.jump_url}', inline=False)
 
         if emoji.id:
