@@ -45,7 +45,7 @@ bot = commands.Bot(
     command_prefix=get_prefix,
     description=config.bot_description,
     intents=intents,
-    enable_debug_events=True  # for raw events (e.g. super reactions handler)
+    enable_debug_events=True,  # for raw events (e.g. super reactions handler)
 )
 bot.help_command = None
 bot.log = log

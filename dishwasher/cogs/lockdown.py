@@ -35,7 +35,9 @@ class Lockdown(Cog):
         Defaults to current channel."""
         if not channel:
             channel = ctx.channel
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
 
         roles = None
         for key, lockdown_conf in config.lockdown_configs.items():
@@ -71,7 +73,9 @@ class Lockdown(Cog):
         """[S] Unlocks speaking in current channel."""
         if not channel:
             channel = ctx.channel
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
 
         roles = None
         for key, lockdown_conf in config.lockdown_configs.items():

@@ -46,7 +46,7 @@ initial_cogs = [
     "cogs.invites",
     "cogs.usertime",
     "cogs.prefixes",
-    "cogs.burstreacts"
+    "cogs.burstreacts",
 ]
 
 # The bot will only work in these guilds. The first in the list is considered the "main" guild.

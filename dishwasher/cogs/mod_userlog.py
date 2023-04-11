@@ -162,7 +162,9 @@ class ModUserlog(Cog):
         except ValueError:
             target = await self.bot.fetch_user(target[2:-1])
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         msg = self.clear_event_from_id(str(target.id), event)
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
@@ -189,7 +191,9 @@ class ModUserlog(Cog):
         except ValueError:
             target = await self.bot.fetch_user(target[2:-1])
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         del_event = self.delete_event_from_id(str(target.id), idx, event)
         event_name = userlog_event_types[event].lower()
         # This is hell.

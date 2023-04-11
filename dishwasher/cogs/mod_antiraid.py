@@ -290,7 +290,7 @@ class ModAntiRaid(Cog):
 
     @Cog.listener()
     async def on_ready(self):
-        self.bot_guild = await self.bot.fetch_guild(config.guild_configs.keys()[0])
+        self.bot_guild = await self.bot.fetch_guild(next(iter(config.guild_configs)))
         if self.announce_channels != "all":
             self.announce_channels = (
                 self.bot_guild.get_channel(self.announce_channels)

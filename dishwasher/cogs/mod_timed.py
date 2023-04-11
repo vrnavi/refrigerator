@@ -77,9 +77,13 @@ class ModTimed(Cog):
 
         add_job("unban", target.id, {"guild": ctx.guild.id}, expiry_timestamp)
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         await mlog.send(chan_message)
-        await ctx.send(f"{safe_name} is now BANNED. " f"It will expire {duration_text}. 👍")
+        await ctx.send(
+            f"{safe_name} is now BANNED. " f"It will expire {duration_text}. 👍"
+        )
 
 
 async def setup(bot):

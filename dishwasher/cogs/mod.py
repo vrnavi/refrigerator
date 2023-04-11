@@ -25,7 +25,9 @@ class Mod(Cog):
         await ctx.guild.edit(icon=img_bytes, reason=str(ctx.author))
         await ctx.send(f"Done!")
 
-        slog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["slog_thread"])
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["slog_thread"]
+        )
         log_msg = (
             f"✏️ **Guild Icon Update**: {ctx.author} changed the guild icon."
             f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
@@ -103,7 +105,9 @@ class Mod(Cog):
                 inline=False,
             )
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         await mlog.send(embed=embed)
         await ctx.send(f"**{target.mention}** was KICKED.")
 
@@ -186,7 +190,9 @@ class Mod(Cog):
                 inline=False,
             )
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         await mlog.send(embed=embed)
         await ctx.send(f"**{target.mention}** is now BANNED.")
 
@@ -277,7 +283,9 @@ class Mod(Cog):
                 inline=False,
             )
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         await mlog.send(embed=embed)
         await ctx.send(
             f"**{target.mention}** is now BANNED.\n{day_count} days of messages were deleted."
@@ -347,7 +355,9 @@ class Mod(Cog):
                 inline=True,
             )
 
-            mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+            mlog = await self.bot.fetch_channel(
+                config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+            )
             await mlog.send(chan_message)
         await msg.edit(f"All {len(targets_int)} users are now BANNED.")
 
@@ -395,7 +405,9 @@ class Mod(Cog):
                 inline=False,
             )
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         await mlog.send(embed=embed)
         await ctx.send(f"{safe_name} is now UNBANNED.")
 
@@ -466,7 +478,9 @@ class Mod(Cog):
                 inline=False,
             )
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
         await mlog.send(embed=embed)
 
     @commands.guild_only()
@@ -474,7 +488,9 @@ class Mod(Cog):
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, arg1=None, arg2=None, arg3=None, arg4=None):
         """[S] Clears a given number of messages."""
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
 
         limit = 50
         channel = ctx.channel
@@ -620,7 +636,9 @@ class Mod(Cog):
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
 
-        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
 
         if reason:
             warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
