@@ -52,7 +52,7 @@ class Admin(Cog):
                 await f.save(f'data/{f}')
                 await ctx.reply(content=f"{f} file saved.", mention_author=False)
             else:
-                await ctx.reply(content="{f} is not a data file.", mention_author=False)
+                await ctx.reply(content=f"{f} is not a data file.", mention_author=False)
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
