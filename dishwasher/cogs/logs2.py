@@ -8,7 +8,7 @@ from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 
 
-class Logs(Cog):
+class Logs2(Cog):
     """
     An advanced logging mechanism, which logs to threads. Logs many changes.
     """
@@ -471,4 +471,4 @@ class Logs(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Logs(bot))
+    await bot.add_cog(Logs2(bot))
