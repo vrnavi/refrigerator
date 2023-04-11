@@ -10,7 +10,7 @@ bot_description = "Dishwasher, a spaghetti bot."
 
 # If you forked Dishwasher, put your repo here
 source_url = "https://github.com/vrnavi/dishwasher"
-rules_url = "https://reswitched.github.io/discord/#rules"
+rules_url = "https://oneshot.whistler.page"
 
 # The bot description to be used in pws about
 embed_desc = (
@@ -37,7 +37,6 @@ initial_cogs = [
     "cogs.mod_watch",
     "cogs.basic",
     "cogs.basic_oneshot",
-    "cogs.logs",
     "cogs.logs",
     "cogs.lockdown",
     "cogs.remind",
@@ -82,7 +81,27 @@ log_channel = 1006820351134683186  # dishwasher-log in OneShot
 botlog_channel = 1006820351134683186  # dishwasher-log in OneShot
 modlog_channel = 1006820351134683186  # dishwasher-log in OneShot
 spylog_channel = 1006820351134683186  # dishwasher-log in OneShot
-welcome_channel = 989959323771895880  # rules channel in OneShot.
+# Specific server configuration: Logs.
+guild_configs = {
+    # OneShot Discord
+    256926147827335170: {
+        "logs": {
+            # Main Log Channel
+            "logs_channel": 1095153813079457800,
+            # Thread for moderation logs.
+            "mlog_thread": 1095159750674624600,
+            # Thread for server logs.
+            "slog_thread": 1095159988814627000,
+            # Thread for user logs.
+            "ulog_thread": 1095160504470737000,
+        },
+        "staff": {
+            # Staff channel.
+            "staff_channel": 256964111626141706
+        },
+    }
+}
+
 # Staff channel.
 staff_channel = 256964111626141706
 
@@ -114,12 +133,6 @@ lockdown_configs = {
 # See https://github.com/reswitched/robocop-ng/issues/23
 minutely_clean_channels = []
 hourly_clean_channels = []
-
-# Edited and deletes messages in these channels will be logged
-spy_channels = general_channels
-
-# All lower case, no spaces, nothing non-alphanumeric
-suspect_words = []
 
 # List of words that will be ignored if they match one of the
 # suspect_words (This is used to remove false positives)

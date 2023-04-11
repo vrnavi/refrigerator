@@ -6,7 +6,6 @@ import re
 import config
 import datetime
 import random
-from helpers.restrictions import get_user_restrictions
 from helpers.checks import check_if_staff
 
 

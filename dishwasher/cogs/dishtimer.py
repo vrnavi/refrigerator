@@ -7,7 +7,6 @@ from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from discord.ext.commands import Cog
 from helpers.dishtimer import get_crontab, delete_job
-from helpers.restrictions import remove_restriction
 from helpers.checks import check_if_staff
 
 

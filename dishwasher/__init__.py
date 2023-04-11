@@ -32,7 +32,6 @@ def get_prefix(bot, message):
 
 
 wanted_jsons = [
-    "data/restrictions.json",
     "data/dishtimers.json",
     "data/userdata.json",
     "data/userlog.json",
@@ -185,15 +184,7 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    if (message.guild) and (message.guild.id not in config.guild_whitelist):
-        return
-
-    # Ignore messages in newcomers channel, unless it's potentially
-    # an allowed command
-    welcome_allowed = ["reset", "kick", "ban", "warn"]
-    if message.channel.id == config.welcome_channel and not any(
-        cmd in message.content for cmd in welcome_allowed
-    ):
+    if (message.guild) and (message.guild.id not in config.guild_configs):
         return
 
     ctx = await bot.get_context(message)
