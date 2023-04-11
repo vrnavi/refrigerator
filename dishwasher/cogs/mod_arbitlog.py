@@ -9,6 +9,7 @@ import datetime
 import config
 import asyncio
 import zipfile
+import textwrap
 
 from io import BytesIO
 
@@ -143,16 +144,6 @@ class Arbitlog(Cog):
 
         return ret
 
-    def is_rolebanned(self, member, hard=True):
-        roleban = [r for r in member.guild.roles if r.id == config.toss_role_id]
-        if roleban:
-            if config.toss_role_id in [r.id for r in member.roles]:
-                if hard:
-                    return len([r for r in member.roles if not (r.managed)]) == 2
-                return True
-
-        return (user, None)
-
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
@@ -182,9 +173,9 @@ class Arbitlog(Cog):
 
                 reply = "Saved to disk as `{}.txt`.\n".format(fn)
 
-            if zipped_files:
-                if not os.path.isdir("logs"):
-                    os.mkdir("logs")
+                if zipped_files:
+                    if not os.path.isdir("logs"):
+                        os.mkdir("logs")
 
                     with open("logs/"+fn+".zip", "wb+") as o:
                         o.write(zipped_files.getvalue())
@@ -193,7 +184,7 @@ class Arbitlog(Cog):
                 with open("logs/"+fn+".txt", "wb+") as o:
                     o.write(f.read())
 
-            await ctx.channel.send(reply)
+                await ctx.channel.send(reply)
 
             return True
 
