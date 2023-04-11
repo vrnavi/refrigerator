@@ -154,13 +154,13 @@ class Logs2(Cog):
     async def on_message_edit(self, before, after):
         await self.bot.wait_until_ready()
         if (
-            message.guild.id not in config.guild_configs
+            after.guild.id not in config.guild_configs
             or after.author.bot
             or before.clean_content == after.clean_content
         ):
             return
         ulog = await self.bot.fetch_channel(
-            config.guild_configs[member.guild.id]["logs"]["ulog_thread"]
+            config.guild_configs[after.guild.id]["logs"]["ulog_thread"]
         )
 
         # Prepare embed msg
@@ -226,7 +226,7 @@ class Logs2(Cog):
         if message.guild.id not in config.guild_configs or message.author.bot:
             return
         ulog = await self.bot.fetch_channel(
-            config.guild_configs[member.guild.id]["logs"]["ulog_thread"]
+            config.guild_configs[message.guild.id]["logs"]["ulog_thread"]
         )
 
         # Prepare embed msg
@@ -366,7 +366,7 @@ class Logs2(Cog):
         if guild.id not in config.guild_configs:
             return
         mlog = await self.bot.fetch_channel(
-            config.guild_configs[member.guild.id]["logs"]["mlog_thread"]
+            config.guild_configs[guild.id]["logs"]["mlog_thread"]
         )
 
         alog = [
@@ -386,7 +386,7 @@ class Logs2(Cog):
         if member_after.guild.id not in config.guild_configs:
             return
         ulog = await self.bot.fetch_channel(
-            config.guild_configs[member.guild.id]["logs"]["ulog_thread"]
+            config.guild_configs[member_after.guild.id]["logs"]["ulog_thread"]
         )
 
         # Swiftly deal with unreadable names.
