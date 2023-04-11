@@ -90,6 +90,7 @@ class Admin(Cog):
                 "json": json,
                 "asyncio": asyncio,
                 "random": random,
+                "os": os,
                 # utilities
                 "_get": discord.utils.get,
                 "_find": discord.utils.find,
