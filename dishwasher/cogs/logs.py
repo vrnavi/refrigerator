@@ -483,7 +483,7 @@ class Logs2(Cog):
             )
         if updated:
             await ulog.send(embed=embed)
-            
+
     @Cog.listener()
     async def on_guild_update(self, guild_before, guild_after):
         await self.bot.wait_until_ready()

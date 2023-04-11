@@ -41,7 +41,7 @@ class Admin(Cog):
             files=data_files,
             mention_author=False,
         )
-        
+
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
@@ -51,10 +51,14 @@ class Admin(Cog):
             ctx.reply(content="You need to supply the data files.")
         for f in ctx.message.attachments:
             if f"data/{f.filename}" in self.bot.wanted_jsons:
-                await f.save(f'data/{f.filename}')
-                await ctx.reply(content=f"{f.filename} file saved.", mention_author=False)
+                await f.save(f"data/{f.filename}")
+                await ctx.reply(
+                    content=f"{f.filename} file saved.", mention_author=False
+                )
             else:
-                await ctx.reply(content=f"{f.filename} is not a data file.", mention_author=False)
+                await ctx.reply(
+                    content=f"{f.filename} is not a data file.", mention_author=False
+                )
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
@@ -73,7 +77,7 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def taillogs(self, ctx):
-        """[O] Returns the last 20 lines of a log file."""
+        """[O] Returns the last 20 lines of the log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
             tail = "\n".join(f.read().split("\n")[-20:])

@@ -42,7 +42,7 @@ class Remind(Cog):
                 inline=False,
             )
         await ctx.send(embed=embed)
-        
+
     @reminders.command()
     async def remove(self, ctx, number: int):
         """[U] Removes one of your reminders."""

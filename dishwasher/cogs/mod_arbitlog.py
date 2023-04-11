@@ -45,7 +45,9 @@ class Arbitlog(Cog):
                 f.name
                 + (
                     ":"
-                    if not f.name.endswith(("!", ")", "}", "-", ":", ".", "?", "%", "$"))
+                    if not f.name.endswith(
+                        ("!", ")", "}", "-", ":", ".", "?", "%", "$")
+                    )
                     else ""
                 ),
                 *f.value.split("\n"),
@@ -169,7 +171,9 @@ class Arbitlog(Cog):
                 f.write(out.encode("utf-8"))
                 f.seek(0)
 
-                fn = "#{}-{}-{}".format(ch.name, ch.id, int(ctx.message.created_at.timestamp()))
+                fn = "#{}-{}-{}".format(
+                    ch.name, ch.id, int(ctx.message.created_at.timestamp())
+                )
 
                 reply = "Saved to disk as `{}.txt`.\n".format(fn)
 
@@ -177,16 +181,21 @@ class Arbitlog(Cog):
                     if not os.path.isdir("arbitlogs"):
                         os.mkdir("arbitlogs")
 
-                    with open("arbitlogs/"+fn+".zip", "wb+") as o:
+                    with open("arbitlogs/" + fn + ".zip", "wb+") as o:
                         o.write(zipped_files.getvalue())
-                    reply += "Also saved files to disk as `{}.zip` ({:,.2f} MB).".format(fn, int(len(zipped_files.getvalue())/(1024*1024)))
-            
-                with open("arbitlogs/"+fn+".txt", "wb+") as o:
+                    reply += (
+                        "Also saved files to disk as `{}.zip` ({:,.2f} MB).".format(
+                            fn, int(len(zipped_files.getvalue()) / (1024 * 1024))
+                        )
+                    )
+
+                with open("arbitlogs/" + fn + ".txt", "wb+") as o:
                     o.write(f.read())
 
                 await ctx.channel.send(reply)
 
             return True
+
 
 async def setup(bot):
     await bot.add_cog(Arbitlog(bot))

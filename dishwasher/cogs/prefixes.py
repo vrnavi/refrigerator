@@ -53,7 +53,8 @@ class prefixes(Cog):
             await ctx.reply(content="Prefix added.", mention_author=False)
         else:
             await ctx.reply(
-                content=f"You have reached your limit of {config.maxprefixes} prefixes.", mention_author=False
+                content=f"You have reached your limit of {config.maxprefixes} prefixes.",
+                mention_author=False,
             )
 
     @prefixes.command()

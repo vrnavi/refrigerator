@@ -97,6 +97,36 @@ class Lockdown(Cog):
         msg = f"🔓 **Unlock**: {ctx.channel.mention} by {safe_name}"
         await mlog.send(msg)
 
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def lockout(self, ctx, target: discord.Member):
+        if target == ctx.author:
+            return await ctx.send("Don't hurt yourself like that.")
+        elif target == self.bot.user:
+            return await ctx.send(
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
+            )
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot lockout Staff members.")
+
+        await ctx.channel.set_permissions(target, send_messages=False)
+        await ctx.reply(content=f"{target} has been locked out.")
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def unlockout(self, ctx, target: discord.Member):
+        if target == ctx.author:
+            return await ctx.send("**...How?**")
+        elif target == self.bot.user:
+            return await ctx.send(f"Leave me alone, weirdo.")
+        elif self.check_if_target_is_staff(target):
+            return await ctx.send("I cannot unlockout Staff members.")
+
+        await ctx.channel.set_permissions(target, overwrite=None)
+        await ctx.reply(content=f"{target} has been unlocked out.")
+
 
 async def setup(bot):
     await bot.add_cog(Lockdown(bot))

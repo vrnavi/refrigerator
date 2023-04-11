@@ -33,7 +33,7 @@ def delete_job(timestamp, job_type, job_name):
     ctab = get_crontab()
 
     del ctab[job_type][timestamp][job_name]
-    
+
     # smh, not checking for empty timestamps. Smells like bloat!
     if not ctab[job_type][timestamp]:
         del ctab[job_type][timestamp]
