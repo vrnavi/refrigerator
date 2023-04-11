@@ -9,6 +9,7 @@ import json
 import config
 import random
 import asyncio
+import shutil
 import os
 from helpers.checks import check_if_bot_manager
 
@@ -60,13 +61,28 @@ class Admin(Cog):
     @commands.command()
     async def getlogs(self, ctx):
         """[O] Returns the log file."""
-        os.system("cp logs/dishwasher.log logs/upload.log")
+        shutil.copy("logs/dishwasher.log", "logs/upload.log")
         await ctx.message.reply(
             content="The current log file...",
             file=discord.File("logs/upload.log", filename="dishwasher.log"),
             mention_author=False,
         )
-        os.system("rm logs/upload.log")
+        os.remove("logs/upload.log")
+
+    @commands.guild_only()
+    @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def taillogs(self, ctx):
+        """[O] Returns the last 20 lines of a log file."""
+        shutil.copy("logs/dishwasher.log", "logs/upload.log")
+        with open("logs/upload.log", "w") as f:
+            logs.write("\n".join(logs.readlines()[-20]))
+            await ctx.message.reply(
+                content="The current tailed log file...",
+                file=discord.File("logs/upload.log", filename="dishwasher.tail.log"),
+                mention_author=False,
+            )
+        os.remove("logs/upload.log")
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
