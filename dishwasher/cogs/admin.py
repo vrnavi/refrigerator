@@ -77,7 +77,7 @@ class Admin(Cog):
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
             f.seek(0)
-            f.write("\n".join(f[-20:]))
+            f.write("\n".join(f.read().split("\n")[-20:])
             f.truncate()
         await ctx.message.reply(
             content="The current tailed log file...",
