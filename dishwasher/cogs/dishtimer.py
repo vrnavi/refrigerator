@@ -24,7 +24,7 @@ class Dishtimer(Cog):
 
     async def send_data(self):
         data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
-        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        blog = await self.bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         await blog.send("Hourly data backups:", files=data_files)
 
     @commands.guild_only()
@@ -61,7 +61,7 @@ class Dishtimer(Cog):
         await ctx.send(f"{ctx.author.mention}: Deleted!")
 
     async def do_jobs(self, ctab, jobtype, timestamp):
-        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        blog = await self.bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         for job_name in ctab[jobtype][timestamp]:
             try:
                 job_details = ctab[jobtype][timestamp][job_name]
@@ -107,7 +107,7 @@ class Dishtimer(Cog):
                 )
 
     async def clean_channel(self, channel_id):
-        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        blog = await self.bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         channel = self.bot.get_channel(channel_id)
         try:
             done_cleaning = False
@@ -129,7 +129,7 @@ class Dishtimer(Cog):
     @tasks.loop(minutes=1)
     async def minutely(self):
         await self.bot.wait_until_ready()
-        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        blog = await self.bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         try:
             ctab = get_crontab()
             timestamp = time.time()
@@ -150,7 +150,7 @@ class Dishtimer(Cog):
     @tasks.loop(hours=1)
     async def hourly(self):
         await self.bot.wait_until_ready()
-        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        blog = await self.bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         try:
             await self.send_data()
             # Handle clean channels
@@ -170,7 +170,7 @@ class Dishtimer(Cog):
     @tasks.loop(hours=24)
     async def daily(self):
         await self.bot.wait_until_ready()
-        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        blog = await self.bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         try:
             pass
         except:

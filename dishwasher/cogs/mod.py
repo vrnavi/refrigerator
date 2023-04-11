@@ -6,7 +6,6 @@ import datetime
 import asyncio
 from helpers.checks import check_if_staff, check_if_bot_manager
 from helpers.userlogs import userlog
-from helpers.restrictions import add_restriction, remove_restriction
 import io
 
 
