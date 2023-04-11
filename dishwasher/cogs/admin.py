@@ -62,7 +62,7 @@ class Admin(Cog):
         log = open("logs/dishwasher.log", "rb")
         await ctx.message.reply(
             content="The log file...",
-            files=discord.File(log),
+            files=discord.File(log, filename="dishwasher.log"),
             mention_author=False,
         )
         log.close()
