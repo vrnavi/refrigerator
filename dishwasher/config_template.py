@@ -88,13 +88,13 @@ guild_configs = {
     256926147827335170: {
         "logs": {
             # Main Log Channel
-            "logs_channel": 1095153813079457800,
+            "logs_channel": 1095153813079457823,
             # Thread for moderation logs.
-            "mlog_thread": 1095159750674624600,
+            "mlog_thread": 1095159750674624583,
             # Thread for server logs.
-            "slog_thread": 1095159988814627000,
+            "slog_thread": 1095159988814626966,
             # Thread for user logs.
-            "ulog_thread": 1095160504470737000,
+            "ulog_thread": 1095160504470736987,
         },
         "staff": {
             # Staff channel.
