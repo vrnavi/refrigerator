@@ -75,7 +75,7 @@ class Admin(Cog):
     async def taillogs(self, ctx):
         """[O] Returns the last 20 lines of a log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
-        with open("logs/upload.log", "wt") as f:
+        with open("logs/upload.log", "r+") as f:
             f.write("\n".join(f.readlines()[-20:]))
         await ctx.message.reply(
             content="The current tailed log file...",
