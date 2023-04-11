@@ -40,10 +40,6 @@ class BasicOneShot(Cog):
         away = []
         dnd = []
         offline = []
-        onlinelist = "None."
-        awaylist = "None."
-        dndlist = "None."
-        offlinelist = "None."
         for m in staff_role.members:
             u = f"{m.mention}"
             if m.is_on_mobile():
@@ -57,33 +53,29 @@ class BasicOneShot(Cog):
             elif m.raw_status == "idle":
                 away.append(u)
         if online:
-            onlinelist = ",".join(online)
-        if offline:
-            offlinelist = ",".join(offline)
+            embed.add_field(
+                name=f"🟢 Online [`{len(online)}`/`{len(staff_role.members)}`]",
+                value=f"{','.join(online)}",
+                inline=False,
+            )
         if away:
-            awaylist = ",".join(away)
+            embed.add_field(
+                name=f"🟡 Idle [`{len(away)}`/`{len(staff_role.members)}`]",
+                value=f"{','.join(away)}",
+                inline=False,
+            )
         if dnd:
-            dndlist = ",".join(dnd)
-        embed.add_field(
-            name=f"🟢 Online [`{len(online)}`/`{len(staff_role.members)}`]",
-            value=f"{onlinelist}",
-            inline=False,
-        )
-        embed.add_field(
-            name=f"🟡 Idle [`{len(away)}`/`{len(staff_role.members)}`]",
-            value=f"{awaylist}",
-            inline=False,
-        )
-        embed.add_field(
-            name=f"🔴 Do Not Disturb [`{len(dnd)}`/`{len(staff_role.members)}`]",
-            value=f"{dndlist}",
-            inline=False,
-        )
-        embed.add_field(
-            name=f"⚫ Offline [`{len(offline)}`/`{len(staff_role.members)}`]",
-            value=f"{offlinelist}",
-            inline=False,
-        )
+            embed.add_field(
+                name=f"🔴 Do Not Disturb [`{len(dnd)}`/`{len(staff_role.members)}`]",
+                value=f"{','.join(dnd)}",
+                inline=False,
+            )
+        if offline:
+            embed.add_field(
+                name=f"⚫ Offline [`{len(offline)}`/`{len(staff_role.members)}`]",
+                value=f"{','.join(offline)}",
+                inline=False,
+            )
         await ctx.reply(embed=embed, mention_author=False)
 
 
