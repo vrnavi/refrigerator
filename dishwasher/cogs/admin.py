@@ -76,7 +76,9 @@ class Admin(Cog):
         """[O] Returns the last 20 lines of a log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
-            f.write("\n".join(f.readlines()[-20:]))
+            f.seek(0)
+            f.write("\n".join(f[-20:])
+            f.truncate()
         await ctx.message.reply(
             content="The current tailed log file...",
             file=discord.File("logs/upload.log", filename="dishwasher.tail.log"),
