@@ -40,7 +40,7 @@ class prefixes(Cog):
         embed.set_footer(
             text=f"Use {config.prefixes[0]}prefix add/remove to change your prefixes."
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @prefixes.command()
     async def add(self, ctx, *, arg: str):
@@ -50,10 +50,10 @@ class prefixes(Cog):
         if not len(userdata[uid]["prefixes"]) >= config.maxprefixes:
             userdata[uid]["prefixes"].append(f"{arg} ")
             set_userdata(json.dumps(userdata))
-            await ctx.send("Prefix added.")
+            await ctx.reply(content="Prefix added.", mention_author=False)
         else:
-            await ctx.send(
-                f"You have reached your limit of {config.maxprefixes} prefixes."
+            await ctx.reply(
+                content=f"You have reached your limit of {config.maxprefixes} prefixes.", mention_author=False
             )
 
     @prefixes.command()
@@ -64,9 +64,9 @@ class prefixes(Cog):
         try:
             userdata[uid]["prefixes"].pop(number - 1)
             set_userdata(json.dumps(userdata))
-            await ctx.send("Prefix removed.")
+            await ctx.reply(content="Prefix removed.", mention_author=False)
         except IndexError:
-            await ctx.send("This prefix does not exist.")
+            await ctx.reply(content="This prefix does not exist.", mention_author=False)
 
 
 async def setup(bot):
