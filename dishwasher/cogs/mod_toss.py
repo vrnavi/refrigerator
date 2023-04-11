@@ -132,8 +132,8 @@ class ModToss(Cog):
                 )
 
                 # Filler Spot for embed.
-                log_channel = self.bot.get_channel(config.modlog_channel)
-                # await log_channel.send(embed=embed)
+                mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+                # await mlog.send(embed=embed)
 
             except commands.MissingPermissions:
                 invalid_ids.append(us.name)

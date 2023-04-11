@@ -8,9 +8,9 @@ from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 
 
-class Logs(Cog):
+class Logs2(Cog):
     """
-    Logs join and leave messages, bans and unbans, and member changes.
+    An advanced logging mechanism, which logs to threads. Logs many changes.
     """
 
     def __init__(self, bot):
@@ -18,7 +18,6 @@ class Logs(Cog):
         self.invite_re = re.compile(
             r"((discord\.gg|discordapp\.com/" r"+invite)/+[a-zA-Z0-9-]+)", re.IGNORECASE
         )
-        self.name_re = re.compile(r"[a-zA-Z0-9].*")
         self.clean_re = re.compile(r"[^a-zA-Z0-9_ ]+", re.UNICODE)
         # All lower case, no spaces, nothing non-alphanumeric
         susp_hellgex = "|".join(
@@ -29,11 +28,13 @@ class Logs(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
-
-        if member.guild.id not in config.guild_whitelist:
+        if member.guild.id not in config.guild_configs:
             return
+        ulog = await self.bot.fetch_channel(
+            config.guild_configs[member.guild.id]["logs"]["ulog_thread"]
+        )
 
-        # Swiftly deal with unreadable names.
+        # Deal with unreadable names before anything.
         readable = 0
         for b in member.display_name:
             if b.isalnum():
@@ -45,7 +46,6 @@ class Logs(Cog):
         # Deal with "hoist" names. ᲼
         # WIP
 
-        log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
 
         # Attempt to correlate the user joining with an invite
@@ -96,7 +96,7 @@ class Logs(Cog):
             invite_used = "One of: "
             invite_used += ", ".join([x["code"] for x in probable_invites_used])
 
-        # Prepare embed msg
+        # Prepare embed message
         embeds = []
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -127,9 +127,7 @@ class Logs(Cog):
         with open("data/userlog.json", "r") as f:
             warns = json.load(f)
         try:
-            if len(warns[str(member.id)]["warns"]) == 0:
-                await log_channel.send(embeds=embeds)
-            else:
+            if len(warns[str(member.id)]["warns"]) != 0:
                 embed = discord.Embed(
                     color=discord.Color.red(),
                     title="⚠️ This user has warnings!",
@@ -147,94 +145,23 @@ class Logs(Cog):
                         inline=False,
                     )
                 embeds.append(embed)
-                await log_channel.send(embeds=embeds)
         except KeyError:  # if the user is not in the file
-            await log_channel.send(embeds=embeds)
+            pass
 
-    async def do_spy(self, message):
-        if message.author.bot:
-            return
-
-        if check_if_staff(message):
-            return
-
-        alert = False
-        cleancont = self.clean_re.sub("", message.content).lower()
-        msg = (
-            f"🚨 Suspicious message by {message.author.mention} "
-            f"({message.author.id}):"
-        )
-
-        invites = self.invite_re.findall(message.content)
-        for invite in invites:
-            msg += f"\n- Has invite: https://{invite[0]}"
-            alert = True
-
-        for susp_word in config.suspect_words:
-            if susp_word in cleancont and not any(
-                ok_word in cleancont for ok_word in config.suspect_ignored_words
-            ):
-                msg += f"\n- Contains suspicious word: `{susp_word}`"
-                alert = True
-
-        if alert:
-            msg += f"\n\nJump: <{message.jump_url}>"
-            spy_channel = self.bot.get_channel(config.spylog_channel)
-
-            # Bad Code :tm:, blame retr0id
-            message_clean = message.content.replace("*", "").replace("_", "")
-            regd = self.susp_hellgex.sub(
-                lambda w: "**{}**".format(w.group(0)), message_clean
-            )
-
-            # Show a message embed
-            embed = discord.Embed(description=regd)
-            embed.set_author(
-                name=message.author.display_name,
-                icon_url=message.author.display_avatar.url,
-            )
-
-            await spy_channel.send(msg, embed=embed)
-
-    async def do_nickcheck(self, message):
-        compliant = self.name_re.fullmatch(message.author.display_name)
-        if compliant:
-            return
-
-        msg = (
-            f"R11 violating name by {message.author.mention} " f"({message.author.id})."
-        )
-
-        spy_channel = self.bot.get_channel(config.spylog_channel)
-        await spy_channel.send(msg)
-
-    @Cog.listener()
-    async def on_message(self, message):
-        await self.bot.wait_until_ready()
-
-        if message.channel.id not in config.spy_channels:
-            return
-
-        await self.do_spy(message)
+        await ulog.send(embeds=embeds)
 
     @Cog.listener()
     async def on_message_edit(self, before, after):
         await self.bot.wait_until_ready()
-        if after.channel.id not in config.spy_channels or after.author.bot:
+        if (
+            after.guild.id not in config.guild_configs
+            or after.author.bot
+            or before.clean_content == after.clean_content
+        ):
             return
-
-        # If content is the same, just skip over it
-        # This usually means that something embedded.
-        if before.clean_content == after.clean_content:
-            return
-
-        await self.do_spy(after)
-
-        # U+200D is a Zero Width Joiner stopping backticks from breaking the formatting
-        before_content = before.clean_content.replace("`", "`\u200d")
-        after_content = after.clean_content.replace("`", "`\u200d")
-
-        log_channel = self.bot.get_channel(config.log_channel)
+        ulog = await self.bot.fetch_channel(
+            config.guild_configs[after.guild.id]["logs"]["ulog_thread"]
+        )
 
         # Prepare embed msg
         embed = discord.Embed(
@@ -248,40 +175,59 @@ class Logs(Cog):
             name=f"{self.bot.escape_message(after.author)}",
             icon_url=f"{after.author.display_avatar.url}",
         )
-        embed.add_field(
-            name=f"❌ Before on <t:{after.created_at.astimezone().strftime('%s')}:f>",
-            value=f">>> {before_content}",
-            inline=True,
-        )
-        embed.add_field(
-            name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
-            value=f">>> {after_content}",
-            inline=True,
-        )
-
-        msg = (
-            "📝 **Message edit**: \n"
-            f"from {self.bot.escape_message(after.author.name)} "
-            f"({after.author.id}), in {after.channel.mention}:\n"
-            f"```{before_content}``` → ```{after_content}```\n"
-            f"Jump: <{after.jump_url}>"
-        )
-
-        # If resulting message is too long, upload to hastebin
-        if len(msg) > 2000:
-            haste_url = await self.bot.haste(msg)
-            msg = f"📝 **Message Edit**\nToo long: <{haste_url}>"
-            await log_channel.send(msg)
+        # Split if too long.
+        if len(before.clean_content) > 1024:
+            split_before_msg = list([before.clean_content[i : i + 1020] for i in range(0, len(before.clean_content), 1020)])
+            embed.add_field(
+                name=f"❌ Before on <t:{before.created_at.astimezone().strftime('%s')}:f>",
+                value=f"**Message was too long to post!** Split into fragments below.",
+                inline=False,
+            )
+            ctr = 1
+            for p in split_before_msg:
+                embed.add_field(
+                    name=f"🧩 Fragment {ctr}",
+                    value=f">>> {p}",
+                    inline=True,
+                )
+                ctr = ctr + 1
         else:
-            await log_channel.send(embed=embed)
+            embed.add_field(
+                name=f"❌ Before on <t:{before.created_at.astimezone().strftime('%s')}:f>",
+                value=f">>> {before.clean_content}",
+                inline=False,
+            )
+        if len(after.clean_content) > 1024:
+            split_after_msg = list([after.clean_content[i : i + 1020] for i in range(0, len(after.clean_content), 1020)])
+            embed.add_field(
+                name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
+                value=f"**Message was too long to post!** Split into fragments below.",
+                inline=False,
+            )
+            ctr = 1
+            for p in split_after_msg:
+                embed.add_field(
+                    name=f"🧩 Fragment {ctr}",
+                    value=f">>> {p}",
+                    inline=True,
+                )
+                ctr = ctr + 1
+        else:
+            embed.add_field(
+                name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
+                value=f">>> {after.clean_content}",
+                inline=False,
+            )
+        await ulog.send(embed=embed)
 
     @Cog.listener()
     async def on_message_delete(self, message):
         await self.bot.wait_until_ready()
-        if message.channel.id not in config.spy_channels or message.author.bot:
+        if message.guild.id not in config.guild_configs or message.author.bot:
             return
-
-        log_channel = self.bot.get_channel(config.log_channel)
+        ulog = await self.bot.fetch_channel(
+            config.guild_configs[message.guild.id]["logs"]["ulog_thread"]
+        )
 
         # Prepare embed msg
         embed = discord.Embed(
@@ -295,35 +241,43 @@ class Logs(Cog):
             name=f"{self.bot.escape_message(message.author)}",
             icon_url=f"{message.author.display_avatar.url}",
         )
-        embed.add_field(
-            name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
-            value=f">>> {message.clean_content}",
-            inline=True,
-        )
 
-        msg = (
-            "🗑️ **Message delete**: \n"
-            f"from {self.bot.escape_message(message.author.name)} "
-            f"({message.author.id}), in {message.channel.mention}:\n"
-            f"`{message.clean_content}`"
-        )
-
-        # If resulting message is too long, upload to hastebin
-        if len(msg) > 2000:
-            haste_url = await self.bot.haste(msg)
-            msg = f"🗑️ **Message Delete**\nToo long: <{haste_url}>"
-            await log_channel.send(msg)
+        # Split if too long.
+        if len(message.clean_content) > 1024:
+            split_msg = list([message.clean_content[i : i + 1020] for i in range(0, len(message.clean_content), 1020)])
+            embed.add_field(
+                name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
+                value=f"**Message was too long to post!** Split into fragments below.",
+                inline=False,
+            )
+            ctr = 1
+            for p in split_msg:
+                embed.add_field(
+                    name=f"🧩 Fragment {ctr}",
+                    value=f">>> {p}",
+                    inline=True,
+                )
+                ctr = ctr + 1
         else:
-            await log_channel.send(embed=embed)
+            embed.add_field(
+                name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
+                value=f">>> {message.clean_content}",
+                inline=True,
+            )
+        await ulog.send(embed=embed)
 
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_ready()
-
-        if member.guild.id not in config.guild_whitelist:
+        if member.guild.id not in config.guild_configs:
             return
+        ulog = await self.bot.fetch_channel(
+            config.guild_configs[member.guild.id]["logs"]["ulog_thread"]
+        )
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[member.guild.id]["logs"]["mlog_thread"]
+        )
 
-        log_channel = self.bot.get_channel(config.log_channel)
         escaped_name = self.bot.escape_message(member)
 
         alog = [
@@ -343,7 +297,6 @@ class Logs(Cog):
         ]
         if alog[0].target.id == member.id:
             if alog[0].user.id != self.bot.user.id:
-                msg = f"👢 **Kick**: {escaped_name} (" f"{member.id})"
                 userlog(
                     member.id,
                     alog[0].user,
@@ -351,7 +304,8 @@ class Logs(Cog):
                     "kicks",
                     member.name,
                 )
-                await log_channel.send(msg)
+                # TODO: Replace with embed.
+                await mlog.send(f"👢 **Kick**: {escaped_name} (" f"{member.id})")
             return
 
         # Prepare embed msg
@@ -377,11 +331,14 @@ class Logs(Cog):
             inline=True,
         )
 
-        await log_channel.send(embed=embed)
+        await ulog.send(embed=embed)
 
     @Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[member.guild.id]["logs"]["mlog_thread"]
+        )
 
         if guild.id not in config.guild_whitelist:
             return
@@ -398,19 +355,19 @@ class Logs(Cog):
         userlog(
             member.id, alog[0].user, f"Banned by external method.", "bans", member.name
         )
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
         escaped_name = self.bot.escape_message(member)
 
-        msg = f"⛔ **Ban**: {escaped_name} (" f"{member.id})"
-        await log_channel.send(msg)
+        # TODO: Replace with embed.
+        await mlog.send(f"⛔ **Ban**: {escaped_name} (" f"{member.id})")
 
     @Cog.listener()
     async def on_member_unban(self, guild, user):
         await self.bot.wait_until_ready()
-
-        if guild.id not in config.guild_whitelist:
+        if guild.id not in config.guild_configs:
             return
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[guild.id]["logs"]["mlog_thread"]
+        )
 
         alog = [
             entry
@@ -420,28 +377,17 @@ class Logs(Cog):
         ]
         if alog[0].user.id == self.bot.user.id:
             return
-
-        log_channel = self.bot.get_channel(config.modlog_channel)
         escaped_name = self.bot.escape_message(member)
-
-        msg = f"⚠️ **Unban**: {escaped_name} (" f"{member.id})"
-        # if user.id in self.bot.timebans:
-        #     msg += "\nTimeban removed."
-        #     self.bot.timebans.pop(user.id)
-        #     with open("data/timebans.json", "r") as f:
-        #         timebans = json.load(f)
-        #     if user.id in timebans:
-        #         timebans.pop(user.id)
-        #         with open("data/timebans.json", "w") as f:
-        #             json.dump(timebans, f)
-        await log_channel.send(msg)
+        await mlog.send(f"⚠️ **Unban**: {escaped_name} (" f"{member.id})")
 
     @Cog.listener()
     async def on_member_update(self, member_before, member_after):
         await self.bot.wait_until_ready()
-
-        if member_after.guild.id not in config.guild_whitelist:
+        if member_after.guild.id not in config.guild_configs:
             return
+        ulog = await self.bot.fetch_channel(
+            config.guild_configs[member_after.guild.id]["logs"]["ulog_thread"]
+        )
 
         # Swiftly deal with unreadable names.
         if member_before.display_name != member_after.display_name:
@@ -471,7 +417,6 @@ class Logs(Cog):
             icon_url=f"{member_after.display_avatar.url}",
         )
 
-        log_channel = self.bot.get_channel(config.log_channel)
         if member_before.roles != member_after.roles:
             # role removal code
             role_removal = []
@@ -522,8 +467,8 @@ class Logs(Cog):
                 inline=False,
             )
         if updated:
-            await log_channel.send(embed=embed)
+            await ulog.send(embed=embed)
 
 
 async def setup(bot):
-    await bot.add_cog(Logs(bot))
+    await bot.add_cog(Logs2(bot))

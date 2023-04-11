@@ -57,7 +57,7 @@ bot.wanted_jsons = wanted_jsons
 async def on_ready():
     bot.aiosession = aiohttp.ClientSession()
     bot.app_info = await bot.application_info()
-    bot.botlog_channel = bot.get_channel(config.botlog_channel)
+    bot.blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
 
     log.info(
         f"\nLogged in as: {bot.user.name} - "
@@ -69,14 +69,14 @@ async def on_ready():
         tzinfo=datetime.timezone.utc
     )
 
-    # Send "Robocop has started! x has y members!"
-    guild = bot.botlog_channel.guild
+    # Send "Dishwasher has started! x has y members!"
+    guild = bot.blog.guild
     msg = (
-        f"**{bot.user.name} is now ONLINE.**\n"
+        f"**{bot.user.name} is now `🟢 ONLINE`.**\n"
         f"`{guild.name}` has `{guild.member_count}` members."
     )
 
-    await bot.botlog_channel.send(msg)
+    await bot.blog.send(msg)
 
 
 @bot.event
@@ -113,7 +113,7 @@ async def on_command_error(ctx, error):
 
     if not isinstance(error, commands.CommandNotFound):
         err_msg = bot.escape_message(err_msg)
-        await bot.botlog_channel.send(err_msg)
+        await bot.blog.send(err_msg)
 
     if isinstance(error, commands.NoPrivateMessage):
         return await ctx.send("This command doesn't work in DMs.")

@@ -26,14 +26,14 @@ class Mod(Cog):
         await ctx.guild.edit(icon=img_bytes, reason=str(ctx.author))
         await ctx.send(f"Done!")
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
+        slog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["slog_thread"])
         log_msg = (
             f"✏️ **Guild Icon Update**: {ctx.author} changed the guild icon."
             f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
         )
         img_filename = url.split("/")[-1].split("#")[0]  # hacky
         img_file = discord.File(io.BytesIO(img_bytes), filename=img_filename)
-        await log_channel.send(log_msg, file=img_file)
+        await slog.send(log_msg, file=img_file)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
@@ -104,8 +104,8 @@ class Mod(Cog):
                 inline=False,
             )
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(embed=embed)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        await mlog.send(embed=embed)
         await ctx.send(f"**{target.mention}** was KICKED.")
 
     @commands.guild_only()
@@ -187,8 +187,8 @@ class Mod(Cog):
                 inline=False,
             )
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(embed=embed)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        await mlog.send(embed=embed)
         await ctx.send(f"**{target.mention}** is now BANNED.")
 
     @commands.guild_only()
@@ -278,8 +278,8 @@ class Mod(Cog):
                 inline=False,
             )
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(embed=embed)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        await mlog.send(embed=embed)
         await ctx.send(
             f"**{target.mention}** is now BANNED.\n{day_count} days of messages were deleted."
         )
@@ -348,8 +348,8 @@ class Mod(Cog):
                 inline=True,
             )
 
-            log_channel = self.bot.get_channel(config.modlog_channel)
-            await log_channel.send(chan_message)
+            mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+            await mlog.send(chan_message)
         await msg.edit(f"All {len(targets_int)} users are now BANNED.")
 
     @commands.guild_only()
@@ -396,8 +396,8 @@ class Mod(Cog):
                 inline=False,
             )
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(embed=embed)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        await mlog.send(embed=embed)
         await ctx.send(f"{safe_name} is now UNBANNED.")
 
     @commands.guild_only()
@@ -467,15 +467,15 @@ class Mod(Cog):
                 inline=False,
             )
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
-        await log_channel.send(embed=embed)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
+        await mlog.send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["clear"])
     async def purge(self, ctx, arg1=None, arg2=None, arg3=None, arg4=None):
         """[S] Clears a given number of messages."""
-        log_channel = self.bot.get_channel(config.modlog_channel)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
 
         limit = 50
         channel = ctx.channel
@@ -602,7 +602,7 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
 
-        await log_channel.send(embed=embed)
+        await mlog.send(embed=embed)
         await ctx.send(f"🚮 `{deleted}` {purgetype} purged.", delete_after=5)
 
     @commands.guild_only()
@@ -621,7 +621,7 @@ class Mod(Cog):
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
 
-        log_channel = self.bot.get_channel(config.modlog_channel)
+        mlog = await self.bot.fetch_channel(config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"])
 
         if reason:
             warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
@@ -687,7 +687,7 @@ class Mod(Cog):
         await ctx.send(
             f"{target.mention} has been warned. This user now has {warn_count} warning(s)."
         )
-        await log_channel.send(embed=embed)
+        await mlog.send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)

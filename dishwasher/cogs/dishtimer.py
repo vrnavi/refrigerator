@@ -24,8 +24,8 @@ class Dishtimer(Cog):
 
     async def send_data(self):
         data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
-        log_channel = self.bot.get_channel(config.botlog_channel)
-        await log_channel.send("Hourly data backups:", files=data_files)
+        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
+        await blog.send("Hourly data backups:", files=data_files)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -61,7 +61,7 @@ class Dishtimer(Cog):
         await ctx.send(f"{ctx.author.mention}: Deleted!")
 
     async def do_jobs(self, ctab, jobtype, timestamp):
-        log_channel = self.bot.get_channel(config.botlog_channel)
+        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         for job_name in ctab[jobtype][timestamp]:
             try:
                 job_details = ctab[jobtype][timestamp][job_name]
@@ -101,13 +101,13 @@ class Dishtimer(Cog):
             except:
                 # Don't kill cronjobs if something goes wrong.
                 delete_job(timestamp, jobtype, job_name)
-                await log_channel.send(
+                await blog.send(
                     "Crondo has errored, job deleted: ```"
                     f"{traceback.format_exc()}```"
                 )
 
     async def clean_channel(self, channel_id):
-        log_channel = self.bot.get_channel(config.botlog_channel)
+        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         channel = self.bot.get_channel(channel_id)
         try:
             done_cleaning = False
@@ -117,19 +117,19 @@ class Dishtimer(Cog):
                 count += len(purge_res)
                 if len(purge_res) != 100:
                     done_cleaning = True
-            await log_channel.send(
+            await blog.send(
                 f"Wiped {count} messages from <#{channel.id}> automatically."
             )
         except:
             # Don't kill cronjobs if something goes wrong.
-            await log_channel.send(
+            await blog.send(
                 f"Cronclean has errored: ```{traceback.format_exc()}```"
             )
 
     @tasks.loop(minutes=1)
     async def minutely(self):
         await self.bot.wait_until_ready()
-        log_channel = self.bot.get_channel(config.botlog_channel)
+        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         try:
             ctab = get_crontab()
             timestamp = time.time()
@@ -143,14 +143,14 @@ class Dishtimer(Cog):
                 await self.clean_channel(clean_channel)
         except:
             # Don't kill cronjobs if something goes wrong.
-            await log_channel.send(
+            await blog.send(
                 f"Cron-minutely has errored: ```{traceback.format_exc()}```"
             )
 
     @tasks.loop(hours=1)
     async def hourly(self):
         await self.bot.wait_until_ready()
-        log_channel = self.bot.get_channel(config.botlog_channel)
+        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         try:
             await self.send_data()
             # Handle clean channels
@@ -163,19 +163,19 @@ class Dishtimer(Cog):
             await self.bot.change_presence(activity=activity)
         except:
             # Don't kill cronjobs if something goes wrong.
-            await log_channel.send(
+            await blog.send(
                 f"Cron-hourly has errored: ```{traceback.format_exc()}```"
             )
 
     @tasks.loop(hours=24)
     async def daily(self):
         await self.bot.wait_until_ready()
-        log_channel = self.bot.get_channel(config.botlog_channel)
+        blog = await bot.fetch_channel(config.guild_configs[0]["logs"]["blog_thread"])
         try:
             pass
         except:
             # Don't kill cronjobs if something goes wrong.
-            await log_channel.send(
+            await blog.send(
                 f"Cron-daily has errored: ```{traceback.format_exc()}```"
             )
 

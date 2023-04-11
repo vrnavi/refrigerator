@@ -79,9 +79,6 @@ bot_role = 257036973187923968
 # Spylog channel logs suspicious messages or messages by members under watch
 # Invites created with .invite will direct to the welcome channel.
 log_channel = 1006820351134683186  # dishwasher-log in OneShot
-botlog_channel = 1006820351134683186  # dishwasher-log in OneShot
-modlog_channel = 1006820351134683186  # dishwasher-log in OneShot
-spylog_channel = 1006820351134683186  # dishwasher-log in OneShot
 # Specific server configuration: Logs.
 guild_configs = {
     # OneShot Discord
@@ -95,6 +92,8 @@ guild_configs = {
             "slog_thread": 1095159988814626966,
             # Thread for user logs.
             "ulog_thread": 1095160504470736987,
+            # Thread for bot logs. This is only read for the first guild in the config list.
+            "blog_thread": 1095188569615781898,
         },
         "staff": {
             # Staff channel.
