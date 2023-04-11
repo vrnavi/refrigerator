@@ -180,6 +180,8 @@ class Arbitlog(Cog):
 
                 fn = "#{}-{}-{}".format(ch.name, ch.id, int(ctx.message.created_at.timestamp()))
 
+                reply = "Saved to disk as `{}.txt`.\n".format(fn)
+
             if zipped_files:
                 if not os.path.isdir("logs"):
                     os.mkdir("logs")
@@ -191,7 +193,7 @@ class Arbitlog(Cog):
                 with open("logs/"+fn+".txt", "wb+") as o:
                     o.write(f.read())
 
-            await ctx.channel.send("Saved to disk as `{}.txt`.\n".format(fn) + reply)
+            await ctx.channel.send(reply)
 
             return True
 
