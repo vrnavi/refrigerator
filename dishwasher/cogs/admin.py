@@ -76,8 +76,9 @@ class Admin(Cog):
         """[O] Returns the last 20 lines of a log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
+            tail = "\n".join(f.read().split("\n")[-20:])
             f.seek(0)
-            f.write("\n".join(f.read().split("\n")[-20:]))
+            f.write(tail)
             f.truncate()
         await ctx.message.reply(
             content="The current tailed log file...",
