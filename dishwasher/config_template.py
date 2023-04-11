@@ -76,10 +76,8 @@ bot_role = 257036973187923968
 
 # Various log channels used to log bot and guild's activity
 # You can use same channel for multiple log types
-# Spylog channel logs suspicious messages or messages by members under watch
-# Invites created with .invite will direct to the welcome channel.
 log_channel = 1006820351134683186  # dishwasher-log in OneShot
-# Specific server configuration: Logs.
+# Specific server configuration. Some cogs will default to the first in the list.
 guild_configs = {
     # OneShot Discord
     256926147827335170: {

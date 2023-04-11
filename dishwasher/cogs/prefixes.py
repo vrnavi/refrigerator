@@ -29,7 +29,7 @@ class prefixes(Cog):
         userprefixes = get_userprefix(uid)
 
         for i in range(
-            config.maxprefixes
+            max(config.maxprefixes, len(userprefixes))
         ):  # max of 24 prefixes as discord does not allow more than 25 fields in embeds
             try:
                 value = userprefixes[i]

@@ -21,7 +21,7 @@ class Basic(Cog):
 
     @commands.command(aliases=["yt"])
     async def youtube(self, ctx, *, arg: str):
-        """[U] returns the first video in youtubes search."""
+        """[U] Returns the first video in a YouTube search."""
         try:
             async with aiohttp.ClientSession() as session:  # common.aioget spams info with entire reponse body, so am doing this instead
                 async with session.get(
@@ -97,11 +97,14 @@ class Basic(Cog):
             mention_author=False,
         )
 
-    @commands.command(hidden=True)
+    @commands.command()
     async def about(self, ctx):
         """[U] Shows a quick embed with bot info."""
         embed = discord.Embed(
-            title="Dishwasher", url=config.source_url, description=config.embed_desc
+            title="Dishwasher",
+            url=config.source_url,
+            description=config.embed_desc,
+            color=ctx.guild.me.color,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
