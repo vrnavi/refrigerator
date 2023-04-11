@@ -60,13 +60,13 @@ class Admin(Cog):
     @commands.command()
     async def getlogs(self, ctx):
         """[O] Returns the log file."""
-        log = open("logs/dishwasher.log", "rb")
+        os.system("cp logs/dishwasher.log logs/upload.log")
         await ctx.message.reply(
-            content="The log file...",
-            file=discord.File(log, filename="dishwasher.log"),
+            content="The current log file...",
+            file=discord.File("logs/upload.log", filename="dishwasher.log"),
             mention_author=False,
         )
-        log.close()
+        os.system("rm logs/upload.log")
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
