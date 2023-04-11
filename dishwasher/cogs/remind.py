@@ -25,9 +25,11 @@ class Remind(Cog):
             icon_url=ctx.author.display_avatar.url, name=ctx.author.display_name
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.avatar.url)
+        idx = 0
         for jobtimestamp in ctab["remind"]:
             if uid not in ctab["remind"][jobtimestamp]:
                 continue
+            idx = idx + 1
             job_details = ctab["remind"][jobtimestamp][uid]
             addedtime = int(
                 datetime.strptime(
@@ -35,7 +37,7 @@ class Remind(Cog):
                 ).timestamp()
             )
             embed.add_field(
-                name=f"Reminder on <t:{jobtimestamp}:F>",
+                name=f"`{idx}` | Reminder on <t:{jobtimestamp}:F>",
                 value=f"*Added <t:{addedtime}:R>.*\n" f"{job_details['text']}",
                 inline=False,
             )

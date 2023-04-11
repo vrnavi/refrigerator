@@ -483,6 +483,16 @@ class Logs2(Cog):
             )
         if updated:
             await ulog.send(embed=embed)
+            
+    @Cog.listener()
+    async def on_guild_update(self, guild_before, guild_after):
+        await self.bot.wait_until_ready()
+        if guild_after.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
+        )
+        pass
 
 
 async def setup(bot):
