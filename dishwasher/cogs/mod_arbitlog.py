@@ -174,14 +174,14 @@ class Arbitlog(Cog):
                 reply = "Saved to disk as `{}.txt`.\n".format(fn)
 
                 if zipped_files:
-                    if not os.path.isdir("logs"):
-                        os.mkdir("logs")
+                    if not os.path.isdir("arbitlogs"):
+                        os.mkdir("arbitlogs")
 
-                    with open("logs/"+fn+".zip", "wb+") as o:
+                    with open("arbitlogs/"+fn+".zip", "wb+") as o:
                         o.write(zipped_files.getvalue())
                     reply += "Also saved files to disk as `{}.zip` ({:,.2f} MB).".format(fn, int(len(zipped_files.getvalue())/(1024*1024)))
             
-                with open("logs/"+fn+".txt", "wb+") as o:
+                with open("arbitlogs/"+fn+".txt", "wb+") as o:
                     o.write(f.read())
 
                 await ctx.channel.send(reply)
