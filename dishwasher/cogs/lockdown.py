@@ -107,7 +107,7 @@ class Lockdown(Cog):
             return await ctx.send(
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
-        elif self.check_if_target_is_staff(target):
+        elif check_if_target_is_staff(target):
             return await ctx.send("I cannot lockout Staff members.")
 
         await ctx.channel.set_permissions(target, send_messages=False)
@@ -121,7 +121,7 @@ class Lockdown(Cog):
             return await ctx.send("**...How?**")
         elif target == self.bot.user:
             return await ctx.send(f"Leave me alone, weirdo.")
-        elif self.check_if_target_is_staff(target):
+        elif check_if_target_is_staff(target):
             return await ctx.send("I cannot unlockout Staff members.")
 
         await ctx.channel.set_permissions(target, overwrite=None)
