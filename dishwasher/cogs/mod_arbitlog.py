@@ -151,29 +151,6 @@ class Arbitlog(Cog):
                     return len([r for r in member.roles if not (r.managed)]) == 2
                 return True
 
-    async def get_members(self, message, args):
-        user = []
-        if args:
-            user = message.guild.get_member_named(args)
-            if not user:
-                user = []
-                arg_split = args.split()
-                for a in arg_split:
-                    try:
-                        a = int(a.strip("<@!#>"))
-                    except:
-                        continue
-                    u = message.guild.get_member(a)
-                    if not u:
-                        try:
-                            u = await self.bot.fetch_user(a)
-                        except:
-                            pass
-                    if u:
-                        user += [u]
-            else:
-                user = [user]
-
         return (user, None)
 
     @commands.guild_only()
@@ -183,7 +160,7 @@ class Arbitlog(Cog):
         channels = args.split()
         to_log = []
         for ch in channels:
-            ch = message.guild.get_channel_or_thread(int(ch.strip("<#>")))
+            ch = ctx.guild.get_channel_or_thread(int(ch.strip("<#>")))
             if ch:
                 if type(ch) == discord.CategoryChannel:
                     to_log += ch.channels
