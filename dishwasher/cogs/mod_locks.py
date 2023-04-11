@@ -5,7 +5,7 @@ import discord
 from helpers.checks import check_if_staff
 
 
-class Lockdown(Cog):
+class ModLocks(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -132,4 +132,4 @@ class Lockdown(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Lockdown(bot))
+    await bot.add_cog(ModLocks(bot))
