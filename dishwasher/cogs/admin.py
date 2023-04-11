@@ -56,6 +56,17 @@ class Admin(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def getlogs(self, ctx):
+        """[O] Returns the log file."""
+        await ctx.message.reply(
+            content="The log file...",
+            files=discord.File("logs/dishwasher.log"),
+            mention_author=False,
+        )
+
+    @commands.guild_only()
+    @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
     async def _eval(self, ctx, *, code: str):
         """[O] Evaluates some code."""
