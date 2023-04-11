@@ -186,14 +186,14 @@ class Arbitlog(Cog):
                 if not os.path.isdir("logs"):
                     os.mkdir("logs")
 
-                    with open("logs/"+filename+".zip", "wb+") as o:
+                    with open("logs/"+fn+".zip", "wb+") as o:
                         o.write(zipped.getvalue())
-                    reply += "Also saved files to disk as `{}.zip` ({:,.2f} MB).".format(filename, int(len(zipped.getvalue())/(1024*1024)))
+                    reply += "Also saved files to disk as `{}.zip` ({:,.2f} MB).".format(fn, int(len(zipped.getvalue())/(1024*1024)))
             
-                with open("logs/"+filename+".txt", "wb+") as o:
+                with open("logs/"+fn+".txt", "wb+") as o:
                     o.write(f.read())
 
-            await ctx.channel.send("Saved to disk as `{}.txt`.\n".format(filename) + reply)
+            await ctx.channel.send("Saved to disk as `{}.txt`.\n".format(fn) + reply)
 
             return True
 
