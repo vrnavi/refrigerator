@@ -31,14 +31,28 @@ class Admin(Cog):
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def fetchdata(self, ctx):
+    async def getdata(self, ctx):
         """[O] Returns data files."""
         data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
         await ctx.message.reply(
-            content="Here's the current data files:",
+            content="Your current data files...",
             files=data_files,
             mention_author=False,
         )
+        
+    @commands.guild_only()
+    @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def setdata(self, ctx):
+        """[O] Replaces data files. This is destructive behavior!"""
+        if not ctx.message.attachments:
+            ctx.reply(content="You need to supply the data files.")
+        for f in ctx.message.attachments:
+            if f"data/{f}" in self.bot.wanted_jsons:
+                await f.save(f'data/{f}')
+                await ctx.reply(content=f"{f} file saved.", mention_author=False)
+            else:
+                await ctx.reply(content="{f} is not a data file.", mention_author=False)
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
