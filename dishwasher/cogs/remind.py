@@ -54,7 +54,6 @@ class Remind(Cog):
                 continue
             idx = idx + 1
             if idx == number:
-                rmdrs[jobtimestamp] = ctab["remind"][jobtimestamp]
                 delete_job(jobtimestamp, "remind", uid)
                 await ctx.reply(content="Reminder removed.", mention_author=False)
                 return
