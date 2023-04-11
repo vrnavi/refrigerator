@@ -177,7 +177,7 @@ class Logs2(Cog):
         )
         # Split if too long.
         if len(before.clean_content) > 1024:
-            split_before_msg = list([x[i : i + 1020] for i in range(0, len(x), n)])
+            split_before_msg = list([before.clean_content[i : i + 1020] for i in range(0, len(before.clean_content), n)])
             embed.add_field(
                 name=f"❌ Before on <t:{before.created_at.astimezone().strftime('%s')}:f>",
                 value=f"**Message was too long to post!** Split into fragments below.",
@@ -198,7 +198,7 @@ class Logs2(Cog):
                 inline=False,
             )
         if len(after.clean_content) > 1024:
-            split_after_msg = list([x[i : i + 1020] for i in range(0, len(x), n)])
+            split_after_msg = list([after.clean_content[i : i + 1020] for i in range(0, len(after.clean_content), n)])
             embed.add_field(
                 name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
                 value=f"**Message was too long to post!** Split into fragments below.",
@@ -243,8 +243,8 @@ class Logs2(Cog):
         )
 
         # Split if too long.
-        if len(msg) > 1024:
-            split_msg = list([x[i : i + 1020] for i in range(0, len(x), n)])
+        if len(message) > 1024:
+            split_msg = list([message[i : i + 1020] for i in range(0, len(message), n)])
             embed.add_field(
                 name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
                 value=f"**Message was too long to post!** Split into fragments below.",
