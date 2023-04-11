@@ -48,11 +48,11 @@ class Admin(Cog):
         if not ctx.message.attachments:
             ctx.reply(content="You need to supply the data files.")
         for f in ctx.message.attachments:
-            if f"data/{f}" in self.bot.wanted_jsons:
-                await f.save(f'data/{f}')
-                await ctx.reply(content=f"{f} file saved.", mention_author=False)
+            if f"data/{f.filename}" in self.bot.wanted_jsons:
+                await f.save(f'data/{f.filename}')
+                await ctx.reply(content=f"{f.filename} file saved.", mention_author=False)
             else:
-                await ctx.reply(content=f"{f} is not a data file.", mention_author=False)
+                await ctx.reply(content=f"{f.filename} is not a data file.", mention_author=False)
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
