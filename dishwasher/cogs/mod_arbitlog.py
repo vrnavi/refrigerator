@@ -23,7 +23,7 @@ class Arbitlog(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def textify_embed(embed, limit=40, padding=0, pad_first_line=True):
+    def textify_embed(self, embed, limit=40, padding=0, pad_first_line=True):
         text_proc = []
         title = ""
         if embed.title:
