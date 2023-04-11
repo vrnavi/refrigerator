@@ -1,6 +1,7 @@
 import json
 from typing import Dict
 import discord
+import config
 from discord.ext import commands
 
 
@@ -28,7 +29,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
             return
 
         # Ignore not whitelisted guilds
-        if int(guild_id) not in self.bot.config.guild_whitelist:
+        if int(guild_id) not in config.guild_configs:
             return
 
         guild = self.bot.get_guild(int(guild_id))
@@ -40,7 +41,9 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         await message.remove_reaction(emoji, author)
 
         # Send information to log channel
-        log_channel = self.bot.get_channel(self.bot.config.log_channel)
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[guild.id]["logs"]["mlog_thread"]
+        )
 
         embed = discord.Embed(
             title=":wastebasket: Super Reaction autoremove",
@@ -97,7 +100,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         view = discord.ui.View(timeout=0.0)
         view.add_item(discord.ui.Button(label="Go to message", url=message.jump_url))
 
-        await log_channel.send(embed=embed, view=view)
+        await mlog.send(embed=embed, view=view)
 
     @commands.Cog.listener()
     async def on_socket_raw_receive(self, msg: str):
