@@ -155,28 +155,46 @@ class Basic(Cog):
         message_text = f":ping_pong:\nrtt: `{rtt_ms:.1f}ms`\ngw: `{gw_ms:.1f}ms`"
         self.bot.log.info(message_text)
         await tmp.edit(content=message_text)
-        
+
     @commands.guild_only()
     @commands.command()
     async def poll(self, ctx, poll_title: str, *, options: str):
-        poll_emoji = ["1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣","🔟"]
+        poll_emoji = [
+            "1️⃣",
+            "2️⃣",
+            "3️⃣",
+            "4️⃣",
+            "5️⃣",
+            "6️⃣",
+            "7️⃣",
+            "8️⃣",
+            "9️⃣",
+            "🔟",
+        ]
         optionlines = ""
         idx = 0
         for l in options.split():
             idx += 1
-            if idx = 11:
-                ctx.reply(content="**Too many options.** Remove some and try again.", mention_author=False)
+            if idx == 11:
+                ctx.reply(
+                    content="**Too many options.** Remove some and try again.",
+                    mention_author=False,
+                )
                 return
             if l[-1:] == '"' and l[:1] == '"':
                 optionlines = f"{optionlines}\n`#{idx}:` {l[1:-1]}"
-            elif (if l[-1:] == '"' or l[:1] == '"') and not (if l[-1:] == '"' and l[:1] == '"'):
-                ctx.reply(content="**Malformed poll options.** Check your quotes.", mention_author=True)
+            elif (l[-1:] == '"' or l[:1] == '"') and not (
+                l[-1:] == '"' and l[:1] == '"'
+            ):
+                ctx.reply(
+                    content="**Malformed poll options.** Check your quotes.",
+                    mention_author=True,
+                )
             else:
                 optionlines = f"{optionlines}\n`#{idx}:` {l}"
         poll = await ctx.reply(content=f"**{poll_title}**{optionlines}")
         for n in range(idx):
             await poll.add_reaction(poll_emoji[n])
-            
 
     @commands.guild_only()
     @commands.command()
