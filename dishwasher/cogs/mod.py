@@ -78,7 +78,7 @@ class Mod(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFFF00"),
             title="👢 Kick",
-            description=f"{target.mention} was kicked by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+            description=f"{target.mention} was kicked by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
@@ -163,7 +163,7 @@ class Mod(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
             title="⛔ Ban",
-            description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+            description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
@@ -256,7 +256,7 @@ class Mod(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
             title="⛔ Ban",
-            description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+            description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
@@ -336,7 +336,7 @@ class Mod(Cog):
             embed = discord.Embed(
                 color=discord.Colour.from_str("#FF0000"),
                 title="🚨 Massban",
-                description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+                description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
                 timestamp=datetime.datetime.now(),
             )
             embed.set_footer(text="Dishwasher")
@@ -378,7 +378,7 @@ class Mod(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#00FF00"),
             title="🎁 Unban",
-            description=f"{target.mention} was unbanned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+            description=f"{target.mention} was unbanned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
@@ -451,7 +451,7 @@ class Mod(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
             title="⛔ Silent Ban",
-            description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+            description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
@@ -733,8 +733,8 @@ class Mod(Cog):
         # Prepare embed msg
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFFF00"),
-            title="🗞️ Warn #{warn_count}",
-            description=f"{target.mention} was warned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url}])",
+            title=f"🗞️ Warn #{warn_count}",
+            description=f"{target.mention} was warned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
