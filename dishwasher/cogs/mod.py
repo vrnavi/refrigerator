@@ -633,8 +633,6 @@ class Mod(Cog):
         mlog = await self.bot.fetch_channel(
             config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
         )
-        if not channel:
-            channel = ctx.channel
         deleted = 0
         msg = await ctx.channel.send(
             content="🔎 **Interactive Reactions enabled.** React here when done."
