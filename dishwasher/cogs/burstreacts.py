@@ -46,61 +46,14 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         )
 
         embed = discord.Embed(
-            title=":wastebasket: Super Reaction autoremove",
-            description=f'Removing "{emoji}" Super Reaction from message',
+            title="🗑️ Autoremoved a Super Reaction",
+            description=f"{author}`'s {emoji} was removed from [message]({message.jump_url}) [{channel.mention}]",
             colour=0xEA50BA,
             timestamp=discord.utils.utcnow(),
         )
         embed.set_thumbnail(url=author.display_avatar.url)
-        embed.add_field(
-            name="User",
-            value=f"{author.mention}\n(`{author}`)\nID: `{author.id}`",
-            inline=False,
-        )
 
-        if isinstance(channel, discord.Thread):
-            # Thread with parent channel
-            embed.add_field(
-                name="Channel",
-                value=f"{channel.parent.mention}\nID: `{channel.parent.id}`",
-                inline=True,
-            )
-            embed.add_field(
-                name="Thread",
-                value=f"{channel.mention}\nID: `{channel.id}`",
-                inline=True,
-            )
-        else:
-            # Regular channel
-            embed.add_field(
-                name="Channel",
-                value=f"{channel.mention}\nID: `{channel.id}`",
-                inline=False,
-            )
-
-        embed.add_field(
-            name="Message",
-            value=f"> ID: `{message.id}`\n> URL: {message.jump_url}",
-            inline=False,
-        )
-
-        if emoji.id:
-            # Custom emoji
-            embed.add_field(
-                name="Reaction emoji",
-                value=f"> Name: `{emoji.name}`\n> ID: `{emoji.id}`\n> URL: {emoji.url}",
-                inline=False,
-            )
-        else:
-            # Default emoji
-            embed.add_field(
-                name="Reaction emoji", value=f"> Unicode: `{emoji.name}`", inline=False
-            )
-
-        view = discord.ui.View(timeout=0.0)
-        view.add_item(discord.ui.Button(label="Go to message", url=message.jump_url))
-
-        await mlog.send(embed=embed, view=view)
+        await mlog.send(embed=embed)
 
     @commands.Cog.listener()
     async def on_socket_raw_receive(self, msg: str):
