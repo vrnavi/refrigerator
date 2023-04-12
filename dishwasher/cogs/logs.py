@@ -586,7 +586,7 @@ class Logs2(Cog):
         embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{channel_after.guild.name}",
-            icon_url=f"{channel_after.icon.url}",
+            icon_url=f"{channel_after.guild.icon.url}",
         )
         
         if channel_before.name != channel_after.name:
