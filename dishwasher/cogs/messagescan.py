@@ -62,6 +62,7 @@ class Messagescan(Cog):
             for t in twitterlinks:
                 tlinks.append(t[:8] + "vx" + t[8:])
             tlinks = "\n".join(tlinks)
+            await message.edit(suppress=True)
 
         if msglinks:
             embeds = []
