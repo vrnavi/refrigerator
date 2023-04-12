@@ -666,7 +666,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=role_after.color,
             title="🖋️ Role Update",
-            description=f"{role.name} ({role.id}) [<@&{role.id}>]",
+            description=f"{role_after.name} ({role_after.id}) [<@&{role_after.id}>]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
