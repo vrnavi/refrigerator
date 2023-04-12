@@ -415,7 +415,7 @@ class Logs2(Cog):
         updated = False
         # initialize embed
         embed = discord.Embed(
-            color=member_after.color
+            color=member_after.color,
             title="ℹ️ Member Update",
             description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})",
             timestamp=datetime.datetime.now(),
