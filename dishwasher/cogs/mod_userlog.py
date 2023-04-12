@@ -113,21 +113,13 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(name="userlog", aliases=["logs"])
-    async def userlog_cmd(self, ctx, target, event=""):
+    async def userlog_cmd(self, ctx, target: discord.User, event=""):
         """[S] Lists userlog events for a user."""
-        # In the case of IDs.
-        try:
-            target_id = int(target)
-            user = await self.bot.fetch_user(target_id)
-            embed = self.get_userlog_embed_for_id(
-                target, str(user.display_name), event=event
-            )
-        # In the case of mentions.
-        except ValueError:
-            user = await self.bot.fetch_user(target[2:-1])
-            embed = self.get_userlog_embed_for_id(
-                str(user.id), str(user.display_name), event=event
-            )
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+        embed = self.get_userlog_embed_for_id(
+            str(target.id), str(target.display_name), event=event
+        )
         await ctx.send(embed=embed)
 
     @commands.guild_only()
