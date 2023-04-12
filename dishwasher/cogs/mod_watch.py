@@ -134,7 +134,7 @@ class ModWatch(Cog):
                     name=f"{self.bot.escape_message(message.author)}",
                     icon_url=f"{message.author.display_avatar.url}",
                 )
-                await trackermsg.edit(embed=msgembed)
+                await trackermsg.edit(content=None, embed=msgembed)
         except KeyError:
             return
 
