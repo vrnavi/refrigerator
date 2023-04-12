@@ -36,7 +36,7 @@ class Messagescan(Cog):
                 text=f"Sniped by {ctx.author.name}#{ctx.author.discriminator}"
             )
             embed.set_author(
-                name=f"💬 {lastmsg.author.name}#{lastmsg.author.discriminator} said in #{lastmsg.channel.name}...",
+                name=f"💬 {lastmsg.author} said in #{lastmsg.channel.name}...",
                 icon_url=f"{lastmsg.author.display_avatar.url}",
             )
             await ctx.reply(embed=embed, mention_author=False)
@@ -49,6 +49,8 @@ class Messagescan(Cog):
     @Cog.listener()
     async def on_message(self, message):
         await self.bot.wait_until_ready()
+        if message.author.bot or not message.content:
+            return
 
         msglinks = self.link_re.findall(message.content)
         twitterlinks = self.twitterlink_re.findall(message.content)
@@ -85,7 +87,7 @@ class Messagescan(Cog):
                     text=f"Quoted by {message.author.name}#{message.author.discriminator}"
                 )
                 embed.set_author(
-                    name=f"💬 {rcvmessage.author.name}#{rcvmessage.author.discriminator} said in #{rcvmessage.channel.name}...",
+                    name=f"💬 {rcvmessage.author} said in #{rcvmessage.channel.name}...",
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
                 embeds.append(embed)

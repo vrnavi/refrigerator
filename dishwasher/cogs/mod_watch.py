@@ -59,15 +59,15 @@ class ModWatch(Cog):
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
 
-        trackerlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
-        )
         userlog = get_userlog()
         if userlog[str(target.id)]["watch"]["state"]:
             trackerthread = await self.bot.fetch_channel(
                 userlog[str(target.id)]["watch"]["thread"]
             )
             await trackerthread.edit(archived=True)
+            trackerlog = await self.bot.fetch_channel(
+                config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
+            )
             trackermsg = await trackerlog.fetch_message(
                 userlog[str(target.id)]["watch"]["message"]
             )
@@ -78,6 +78,33 @@ class ModWatch(Cog):
             return await ctx.reply(
                 content="User isn't on watch...", mention_author=False
             )
+
+    @Cog.listener()
+    async def on_message(self, message):
+        await self.bot.wait_until_ready()
+        if (
+            message.author.bot
+            or not message.content
+            or not message.guild
+            or message.guild.id not in config.guild_configs
+        ):
+            return
+        userlog = get_userlog()
+        if userlog[str(target.id)]["watch"]["state"]:
+            trackerthread = await self.bot.fetch_channel(
+                userlog[str(target.id)]["watch"]["thread"]
+            )
+            embed = discord.Embed(
+                color=message.author.color,
+                description=f"{message.content}",
+                timestamp=message.created_at,
+            )
+            embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+            embed.set_author(
+                name=f"💬 {message.author} said in #{message.channel.name}...",
+                icon_url=f"{message.author.display_avatar.url}",
+            )
+            trackerthread.send(embed=embed)
 
 
 async def setup(bot):
