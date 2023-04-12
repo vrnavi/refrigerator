@@ -34,7 +34,7 @@ class ModWatch(Cog):
         )
         trackerthread = await trackerlog.create_thread(name=f"{target.name} Watchlog")
         trackermsg = await trackerlog.send(
-            f"**Watch Thread** for {target}: {trackerthread.mention}"
+            f"**Watch Thread** for {target}: {trackerthread.mention}\nLast message sent `never`."
         )
         setwatch(
             target.id, ctx.author, True, target.name, trackerthread.id, trackermsg.id
@@ -94,6 +94,11 @@ class ModWatch(Cog):
                 trackerthread = await self.bot.fetch_channel(
                     userlog[str(message.author.id)]["watch"]["thread"]
                 )
+                trackermsg = await self.bot.get_channel(
+                    config.guild_configs[ctx.guild.id]["logs"][
+                        "tracker_channel"
+                    ].fetch_message(userlog[str(target.id)]["watch"]["message"])
+                )
                 embed = discord.Embed(
                     color=message.author.color,
                     description=f"{message.content}",
@@ -107,6 +112,9 @@ class ModWatch(Cog):
                     icon_url=f"{message.author.display_avatar.url}",
                 )
                 await trackerthread.send(embed=embed)
+                await trackermsg.edit(
+                    content=f"**Watch Thread** for {target}: {trackerthread.mention}\nLast message sent <t:{message.created_at.strftime('%s')}:f>"
+                )
         except TypeError:
             # Old Farts.
             return

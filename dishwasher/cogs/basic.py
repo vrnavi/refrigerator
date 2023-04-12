@@ -173,6 +173,12 @@ class Basic(Cog):
         ]
         optionlines = ""
         idx = 0
+        if not options:
+            await ctx.reply(
+                content="**No options specified.** Add some and try again.",
+                mention_author=True,
+            )
+            return
         for l in options:
             idx += 1
             if idx == 11:
