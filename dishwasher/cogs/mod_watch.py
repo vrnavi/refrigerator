@@ -105,6 +105,9 @@ class ModWatch(Cog):
                     icon_url=f"{message.author.display_avatar.url}",
                 )
                 await trackerthread.send(embed=embed)
+        except TypeError:
+            # Old Farts.
+            return
         except KeyError:
             return
 
