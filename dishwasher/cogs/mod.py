@@ -4,6 +4,7 @@ from discord.ext.commands import Cog
 import config
 import datetime
 import asyncio
+import typing
 from helpers.checks import check_if_staff, check_if_bot_manager
 from helpers.userlogs import userlog
 import io
@@ -816,7 +817,13 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["send"])
-    async def speak(self, ctx, channel: discord.abc.GuildChannel, *, the_text: str):
+    async def speak(
+        self,
+        ctx,
+        channel: typing.Union[discord.abc.GuildChannel, discord.Thread],
+        *,
+        the_text: str,
+    ):
         """[S] Posts a given text in a given channel."""
         await channel.send(the_text)
         await ctx.message.reply("👍", mention_author=False)
@@ -825,7 +832,12 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def reply(
-        self, ctx, channel: discord.abc.GuildChannel, message: int, *, the_text: str
+        self,
+        ctx,
+        channel: typing.Union[discord.abc.GuildChannel, discord.Thread],
+        message: int,
+        *,
+        the_text: str,
     ):
         """[S] Replies to a message with a given text in a given channel."""
         await self.bot.get_partial_messageable(f"{channel.id}").get_partial_message(
@@ -837,7 +849,11 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def react(
-        self, ctx, channel: discord.abc.GuildChannel, message: int, emoji: str
+        self,
+        ctx,
+        channel: typing.Union[discord.abc.GuildChannel, discord.Thread],
+        message: int,
+        emoji: str,
     ):
         """[S] Reacts to a message with a given emoji in a given channel."""
         emoji = discord.PartialEmoji.from_str(emoji)
@@ -848,7 +864,12 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def typing(self, ctx, channel: discord.abc.GuildChannel, duration: int):
+    async def typing(
+        self,
+        ctx,
+        channel: typing.Union[discord.abc.GuildChannel, discord.Thread],
+        duration: int,
+    ):
         """[S] Sends a typing indicator for a given duration of seconds.."""
         await ctx.send("👍")
         async with channel.typing():

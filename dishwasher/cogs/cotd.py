@@ -33,7 +33,7 @@ class Cotd(Cog):
         for i in colors:
             if i["hex"] == "#%02x%02x%02x".upper() % cotd_role.color.to_rgb():
                 inlist = True
-                color = i['hex']
+                color = i["hex"]
                 cotdlist = f"{cotdlist}\n**{i['name']}** *{i['hex']}*"
         if inlist == False:
             await ctx.send(content="The CoTD role's color is not in the color list!")
@@ -47,7 +47,7 @@ class Cotd(Cog):
             text=f"{self.bot.user.name}'s Color of The Day",
             icon_url=self.bot.user.display_avatar.url,
         )
-        embed.set_image(url=f'https://singlecolorimage.com/get/{color[1:]}/128x128')
+        embed.set_image(url=f"https://singlecolorimage.com/get/{color[1:]}/128x128")
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.guild_only()
