@@ -81,7 +81,9 @@ class Mod(Cog):
             description=f"{target.mention} was kicked by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
@@ -166,7 +168,9 @@ class Mod(Cog):
             description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
@@ -259,7 +263,9 @@ class Mod(Cog):
             description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
@@ -339,7 +345,9 @@ class Mod(Cog):
                 description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
                 timestamp=datetime.datetime.now(),
             )
-            embed.set_footer(text="Dishwasher")
+            embed.set_footer(
+                text="Dishwasher", icon_url=self.bot.user.display_avatar
+            )
             embed.set_author(
                 name=f"{self.bot.escape_message(target)}",
                 icon_url=f"{target.display_avatar.url}",
@@ -381,7 +389,9 @@ class Mod(Cog):
             description=f"{target.mention} was unbanned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
@@ -454,7 +464,9 @@ class Mod(Cog):
             description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
@@ -500,7 +512,9 @@ class Mod(Cog):
             description=f"{str(ctx.author)} purged {deleted} messages in {channel.mention}.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
@@ -528,7 +542,9 @@ class Mod(Cog):
             description=f"{str(ctx.author)} purged {deleted} bot messages in {channel.mention}.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
@@ -562,7 +578,9 @@ class Mod(Cog):
             description=f"{str(ctx.author)} purged {deleted} messages from {target} in {channel.mention}.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
@@ -590,7 +608,9 @@ class Mod(Cog):
             description=f"{str(ctx.author)} purged {deleted} embeds in {channel.mention}.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
@@ -618,7 +638,9 @@ class Mod(Cog):
             description=f"{str(ctx.author)} purged {deleted} reactions in {channel.mention}.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
@@ -686,7 +708,9 @@ class Mod(Cog):
                 description=f"{str(ctx.author)} purged {deleted} reactions interactively in {channel.mention}.",
                 timestamp=datetime.datetime.now(),
             )
-            embed.set_footer(text="Dishwasher")
+            embed.set_footer(
+                text="Dishwasher", icon_url=self.bot.user.display_avatar
+            )
             embed.set_author(
                 name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
             )
@@ -737,7 +761,9 @@ class Mod(Cog):
             description=f"{target.mention} was warned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text="Dishwasher", icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
