@@ -54,17 +54,14 @@ class Messagescan(Cog):
         twitterlinks = self.twitterlink_re.findall(message.content)
         if not msglinks or twitterlinks:
             return
-        ctx.send("1")
         tlinks = None
         embeds = None
 
         if twitterlinks:
-            ctx.send("2")
             tlinks = []
             for t in twitterlinks:
-                tlinks.append(t[:8] + "vx" + t[8:])        
-            tlinks = "\n".join(tlinks)    
-            ctx.send(tlinks)    
+                tlinks.append(t[:8] + "vx" + t[8:])
+            tlinks = "\n".join(tlinks)
 
         if msglinks:
             embeds = []
@@ -92,7 +89,6 @@ class Messagescan(Cog):
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
                 embeds.append(embed)
-        ctx.send("3")
         await message.reply(content=tlinks, embeds=embeds, mention_author=False)
 
     @Cog.listener()
