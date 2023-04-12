@@ -415,7 +415,7 @@ class Logs2(Cog):
         updated = False
         # initialize embed
         embed = discord.Embed(
-            color=discord.Colour.from_str("#0000FF"),
+            color=member_after.color
             title="ℹ️ Member Update",
             description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})",
             timestamp=datetime.datetime.now(),
@@ -486,7 +486,78 @@ class Logs2(Cog):
         slog = await self.bot.fetch_channel(
             config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
         )
-        pass
+
+        updated = False
+        # initialize embed
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FFCC00"),
+            title="🏡 Server Update",
+            description=f"{server_after.name} `{server_after.member_count}`",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(
+            name=f"{server_after.name}",
+            icon_url=f"{server_after.icon.url}",
+        )
+        
+        if guild_before.name != guild_after.name:
+            updated = True
+            embed.add_field(
+                name=f"📝  Name Change",
+                value=f"❌ {server_before.name}\n⬇️\n⭕ {server_after.name}",
+                inline=False,
+            )
+        if updated:
+            await slog.send(embed=embed)
+
+    @Cog.listener()
+    async def on_guild_channel_create(self, channel):
+        await self.bot.wait_until_ready()
+        if guild_after.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
+        )
+        
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#00FFFF"),
+            title="🏠 Channel Created",
+            description=f"`{str(channel.category)}/`{channel.mention} ({channel.id})",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(
+            name=f"{channel.guild.name}",
+            icon_url=f"{channel.guild.icon.url}",
+        )
+        await slog.send(embed=embed)
+
+    @Cog.listener()
+    async def on_guild_channel_delete(self, channel):
+        await self.bot.wait_until_ready()
+        if guild_after.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
+        )
+        
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FF00FF"),
+            title="🏚️ Channel Deleted",
+            description=f"`{str(channel.category)}/`{channel.mention} ({channel.id})",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(
+            name=f"{channel.guild.name}",
+            icon_url=f"{channel.guild.icon.url}",
+        )
+        await slog.send(embed=embed)
+        
+        
+            
+            
 
 
 async def setup(bot):
