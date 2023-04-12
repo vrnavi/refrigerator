@@ -481,10 +481,10 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_update(self, guild_before, guild_after):
         await self.bot.wait_until_ready()
-        if guild_after.guild.id not in config.guild_configs:
+        if guild_after.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
-            config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
+            config.guild_configs[guild_after.id]["logs"]["slog_thread"]
         )
 
         updated = False
@@ -492,20 +492,20 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFCC00"),
             title="🏡 Server Update",
-            description=f"{server_after.name} `{server_after.member_count}`",
+            description=f"{guild_after.name} `{guild_after.member_count}`",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
         embed.set_author(
-            name=f"{server_after.name}",
-            icon_url=f"{server_after.icon.url}",
+            name=f"{guild_after.name}",
+            icon_url=f"{guild_after.icon.url}",
         )
         
         if guild_before.name != guild_after.name:
             updated = True
             embed.add_field(
                 name=f"📝  Name Change",
-                value=f"❌ {server_before.name}\n⬇️\n⭕ {server_after.name}",
+                value=f"❌ {guild_before.name}\n⬇️\n⭕ {guild_after.name}",
                 inline=False,
             )
         if updated:
@@ -514,10 +514,10 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_channel_create(self, channel):
         await self.bot.wait_until_ready()
-        if guild_after.guild.id not in config.guild_configs:
+        if channel.guild.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
-            config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
+            config.guild_configs[channel.guild.id]["logs"]["slog_thread"]
         )
         
         embed = discord.Embed(
@@ -536,10 +536,10 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_channel_delete(self, channel):
         await self.bot.wait_until_ready()
-        if guild_after.guild.id not in config.guild_configs:
+        if channel.guild.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
-            config.guild_configs[guild_after.guild.id]["logs"]["slog_thread"]
+            config.guild_configs[channel.guild.id]["logs"]["slog_thread"]
         )
         
         embed = discord.Embed(
