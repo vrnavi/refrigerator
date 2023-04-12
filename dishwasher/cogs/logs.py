@@ -336,7 +336,9 @@ class Logs2(Cog):
                     value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
                     inline=True,
                 )
-                embed.add_field(name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False)
+                embed.add_field(
+                    name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
+                )
                 await mlog.send(embed=embed)
             return
 
@@ -389,7 +391,6 @@ class Logs2(Cog):
         )
         escaped_name = self.bot.escape_message(member)
 
-        # TODO: Replace with embed.
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
             title="⛔ Ban",
