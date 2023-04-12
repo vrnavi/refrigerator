@@ -89,7 +89,7 @@ class ModWatch(Cog):
         ):
             return
         userlog = get_userlog()
-        try: 
+        try:
             if userlog[str(message.author.id)]["watch"]["state"]:
                 trackerthread = await self.bot.fetch_channel(
                     userlog[str(message.author.id)]["watch"]["thread"]
@@ -99,7 +99,9 @@ class ModWatch(Cog):
                     description=f"{message.content}",
                     timestamp=message.created_at,
                 )
-                embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+                embed.set_footer(
+                    text="Dishwasher", icon_url=self.bot.user.display_avatar
+                )
                 embed.set_author(
                     name=f"💬 {message.author} said in #{message.channel.name}...",
                     icon_url=f"{message.author.display_avatar.url}",
