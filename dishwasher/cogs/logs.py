@@ -127,7 +127,9 @@ class Logs2(Cog):
                     title="⚠️ This user has warnings!",
                     timestamp=datetime.datetime.now(),
                 )
-                embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+                embed.set_footer(
+                    text="Dishwasher", icon_url=self.bot.user.display_avatar
+                )
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
                     timestamp = datetime.datetime.strptime(
                         warn["timestamp"], "%Y-%m-%d %H:%M:%S"
@@ -500,7 +502,7 @@ class Logs2(Cog):
             name=f"{guild_after.name}",
             icon_url=f"{guild_after.icon.url}",
         )
-        
+
         if guild_before.name != guild_after.name:
             updated = True
             embed.add_field(
@@ -508,7 +510,7 @@ class Logs2(Cog):
                 value=f"❌ {guild_before.name}\n⬇️\n⭕ {guild_after.name}",
                 inline=False,
             )
-        
+
         if guild_before.banner.url != guild_after.banner.url:
             updated = True
             embed.add_field(
@@ -518,7 +520,7 @@ class Logs2(Cog):
             )
             if guild_after.banner:
                 embed.set_image(guild_after.banner.url)
-            
+
         if updated:
             await slog.send(embed=embed)
 
@@ -530,7 +532,7 @@ class Logs2(Cog):
         slog = await self.bot.fetch_channel(
             config.guild_configs[channel.guild.id]["logs"]["slog_thread"]
         )
-        
+
         embed = discord.Embed(
             color=discord.Colour.from_str("#00FFFF"),
             title="🏠 Channel Created",
@@ -552,7 +554,7 @@ class Logs2(Cog):
         slog = await self.bot.fetch_channel(
             config.guild_configs[channel.guild.id]["logs"]["slog_thread"]
         )
-        
+
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF00FF"),
             title="🏚️ Channel Deleted",
@@ -567,13 +569,13 @@ class Logs2(Cog):
         await slog.send(embed=embed)
 
     @Cog.listener()
-    async def on_guild_channel_update(self, channel_before, channel_after):     
+    async def on_guild_channel_update(self, channel_before, channel_after):
         await self.bot.wait_until_ready()
         if channel_after.guild.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
             config.guild_configs[channel_after.guild.id]["logs"]["slog_thread"]
-        )   
+        )
 
         updated = False
         # initialize embed
@@ -588,7 +590,7 @@ class Logs2(Cog):
             name=f"{channel_after.guild.name}",
             icon_url=f"{channel_after.guild.icon.url}",
         )
-        
+
         if channel_before.name != channel_after.name:
             updated = True
             embed.add_field(
@@ -596,7 +598,7 @@ class Logs2(Cog):
                 value=f"❌ {channel_before.name}\n⬇️\n⭕ {channel_after.name}",
                 inline=False,
             )
-        
+
         if channel_before.position != channel_after.position:
             updated = True
             embed.add_field(
@@ -604,19 +606,19 @@ class Logs2(Cog):
                 value=f"❌ {channel_before.position}\n⬇️\n⭕ {channel_after.position}",
                 inline=False,
             )
-            
+
         if updated:
             await slog.send(embed=embed)
 
     @Cog.listener()
-    async def on_guild_role_create(self, role):     
+    async def on_guild_role_create(self, role):
         await self.bot.wait_until_ready()
         if role.guild.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
             config.guild_configs[role.guild.id]["logs"]["slog_thread"]
         )
-        
+
         embed = discord.Embed(
             color=role.color,
             title="🏷️ Role Created",
@@ -631,14 +633,14 @@ class Logs2(Cog):
         await slog.send(embed=embed)
 
     @Cog.listener()
-    async def on_guild_role_delete(self, role):     
+    async def on_guild_role_delete(self, role):
         await self.bot.wait_until_ready()
         if role.guild.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
             config.guild_configs[role.guild.id]["logs"]["slog_thread"]
         )
-        
+
         embed = discord.Embed(
             color=role.color,
             title="🔥 Role Deleted",
@@ -653,13 +655,13 @@ class Logs2(Cog):
         await slog.send(embed=embed)
 
     @Cog.listener()
-    async def on_guild_role_update(self, role_before, role_after):     
+    async def on_guild_role_update(self, role_before, role_after):
         await self.bot.wait_until_ready()
         if role_after.guild.id not in config.guild_configs:
             return
         slog = await self.bot.fetch_channel(
             config.guild_configs[role_after.guild.id]["logs"]["slog_thread"]
-        )   
+        )
 
         updated = False
         # initialize embed
@@ -674,7 +676,7 @@ class Logs2(Cog):
             name=f"{role_after.guild.name}",
             icon_url=f"{role_after.guild.icon.url}",
         )
-        
+
         if role_before.name != role_after.name:
             updated = True
             embed.add_field(
@@ -682,7 +684,7 @@ class Logs2(Cog):
                 value=f"❌ {role_before.name}\n⬇️\n⭕ {role_after.name}",
                 inline=False,
             )
-        
+
         if role_before.position != role_after.position:
             updated = True
             embed.add_field(
@@ -690,7 +692,7 @@ class Logs2(Cog):
                 value=f"❌ {role_before.position}\n⬇️\n⭕ {role_after.position}",
                 inline=False,
             )
-        
+
         if role_before.color != role_after.color:
             updated = True
             embed.add_field(
@@ -698,7 +700,7 @@ class Logs2(Cog):
                 value=f"❌ {str(role_before.color)}\n⬇️\n⭕ {str(role_after.color)}",
                 inline=False,
             )
-        
+
         if role_before.icon != role_after.icon:
             updated = True
             embed.add_field(
@@ -707,7 +709,7 @@ class Logs2(Cog):
                 inline=False,
             )
             embed.set_thumbnail(role_after.icon.url)
-        
+
         if role_before.hoist != role_after.hoist:
             updated = True
             embed.add_field(
@@ -715,7 +717,7 @@ class Logs2(Cog):
                 value=f"❌ {str(role_before.hoist)}\n⬇️\n⭕ {str(role_after.hoist)}",
                 inline=False,
             )
-            
+
         if role_before.mentionable != role_after.mentionable:
             updated = True
             embed.add_field(
@@ -723,14 +725,9 @@ class Logs2(Cog):
                 value=f"❌ {str(role_before.mentionable)}\n⬇️\n⭕ {str(role_after.mentionable)}",
                 inline=False,
             )
-            
+
         if updated:
             await slog.send(embed=embed)
-            
-            
-        
-            
-            
 
 
 async def setup(bot):

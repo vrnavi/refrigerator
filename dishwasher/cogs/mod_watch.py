@@ -2,46 +2,71 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
-from helpers.userlogs import setwatch
+from helpers.userlogs import setwatch, get_userlog
 
 
 class ModWatch(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    def check_if_target_is_staff(self, target):
+        return any(r.id in config.staff_role_ids for r in target.roles)
+
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def watch(self, ctx, target, *, note: str = ""):
+    async def watch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Puts a user under watch."""
-        # target handler
-        # In the case of IDs.
-        try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
-        # In the case of mentions.
-        except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot watch Staff members.")
+        if target == ctx.author:
+            return await ctx.send("**No.**")
+        elif target == self.bot.user:
+            return await ctx.send(
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
+            )
 
-        setwatch(target.id, ctx.author, True, target.name)
-        await ctx.send(f"User is now on watch.")
+        trackerlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
+        )
+        trackerthread = await trackerlog.create_thread(name=f"{target.name} Watchlog")
+        setwatch(target.id, ctx.author, True, target.name, trackerthread.id)
+        await trackerlog.send(f"**Watch Thread** for {target}: {trackerthread.mention}")
+        await ctx.send(
+            f"**User is now on watch.**\nRelay thread available at {trackerthread.mention}."
+        )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def unwatch(self, ctx, target, *, note: str = ""):
+    async def unwatch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Removes a user from watch."""
-        # target handler
-        # In the case of IDs.
-        try:
-            target_id = int(target)
-            target = await self.bot.fetch_user(target_id)
-        # In the case of mentions.
-        except ValueError:
-            target = await self.bot.fetch_user(target[2:-1])
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot unwatch Staff members.")
+        if target == ctx.author:
+            return await ctx.send("**No.**")
+        elif target == self.bot.user:
+            return await ctx.send(
+                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
+            )
 
-        setwatch(target.id, ctx.author, False, target.name)
-        await ctx.send(f"User is now not on watch.")
+        userlog = get_userlog()
+        if userlog[target.id]["watch"]["state"]:
+            trackerthread = await self.bot.fetch_channel(
+                userlog[target.id]["watch"]["thread"]
+            )
+            await trackerthread.edit(archived=True)
+        else:
+            return await ctx.reply(
+                content="User isn't on watch...", mention_author=False
+            )
+
+        setwatch(target.id, ctx.author, False, target.name, None)
+        await ctx.reply("User is now not on watch.", mention_author=False)
 
 
 async def setup(bot):

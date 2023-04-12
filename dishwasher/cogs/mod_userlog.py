@@ -48,7 +48,7 @@ class ModUserlog(Cog):
                     )
 
         if not own and "watch" in userlog[uid]:
-            if userlog[uid]["watch"]:
+            if userlog[uid]["watch"]["state"]:
                 watch_state = ""
             else:
                 watch_state = "not "

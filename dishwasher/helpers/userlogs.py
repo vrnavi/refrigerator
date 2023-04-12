@@ -56,9 +56,9 @@ def userlog(uid, issuer, reason, event_type, uname: str = ""):
     return len(userlogs[uid][event_type])
 
 
-def setwatch(uid, issuer, watch_state, uname: str = ""):
+def setwatch(uid, issuer, watch_state, uname: str = "", tracker_thread=None):
     userlogs, uid = fill_userlog(uid, uname)
 
-    userlogs[uid]["watch"] = watch_state
+    userlogs[uid]["watch"] = {"state": watch_state, "thread": tracker_thread}
     set_userlog(json.dumps(userlogs))
     return

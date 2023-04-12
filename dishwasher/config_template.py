@@ -92,6 +92,8 @@ guild_configs = {
             "ulog_thread": 1095160504470736987,
             # Thread for bot logs. This is only read for the first guild in the config list.
             "blog_thread": 1095188569615781898,
+            # Channel for tracking watched users.
+            "tracker_channel": 1095559009152536626,
         },
         "staff": {
             # Staff channel.
