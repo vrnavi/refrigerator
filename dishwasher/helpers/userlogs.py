@@ -30,7 +30,7 @@ def fill_userlog(userid, uname):
             "kicks": [],
             "bans": [],
             "notes": [],
-            "watch": False,
+            "watch": {"state": False, "thread": None, "message": None},
             "name": "n/a",
         }
     if uname:
