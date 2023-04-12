@@ -117,12 +117,6 @@ class Logs2(Cog):
         embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
         embeds.append(embed)
 
-        # Handles user restrictions
-        # Basically, gives back muted role to users that leave with it.
-        rsts = get_user_restrictions(member.id)
-        roles = [discord.utils.get(member.guild.roles, id=rst) for rst in rsts]
-        await member.add_roles(*roles)
-
         # Real hell zone.
         with open("data/userlog.json", "r") as f:
             warns = json.load(f)
