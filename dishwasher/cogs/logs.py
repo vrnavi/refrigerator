@@ -716,7 +716,7 @@ class Logs2(Cog):
                 inline=False,
             )
             
-            if role_before.mentionable != role_after.mentionable:
+        if role_before.mentionable != role_after.mentionable:
             updated = True
             embed.add_field(
                 name=f"1️⃣ Mentionable Change",
