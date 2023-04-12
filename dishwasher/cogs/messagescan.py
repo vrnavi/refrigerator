@@ -52,7 +52,7 @@ class Messagescan(Cog):
 
         msglinks = self.link_re.findall(message.content)
         twitterlinks = self.twitterlink_re.findall(message.content)
-        if not msglinks or twitterlinks:
+        if not msglinks or not twitterlinks:
             return
         tlinks = None
         embeds = None
