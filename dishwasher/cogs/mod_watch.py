@@ -113,9 +113,6 @@ class ModWatch(Cog):
                 await trackermsg.edit(
                     content=f"**Watch Thread** for {message.author}: {trackerthread.mention}\nLast message sent <t:{int(message.created_at.timestamp())}:f>"
                 )
-        except TypeError:
-            # Old Farts.
-            return
         except KeyError:
             return
 
