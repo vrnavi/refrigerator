@@ -31,10 +31,7 @@ def fill_userlog(userid, uname):
             "bans": [],
             "notes": [],
             "watch": {"state": False, "thread": None, "message": None},
-            "name": "n/a",
         }
-    if uname:
-        userlogs[uid]["name"] = uname
 
     return userlogs, uid
 
