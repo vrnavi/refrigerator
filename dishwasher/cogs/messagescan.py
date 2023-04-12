@@ -62,7 +62,6 @@ class Messagescan(Cog):
             for t in twitterlinks:
                 tlinks.append(t[:8] + "vx" + t[8:])
             tlinks = "\n".join(tlinks)
-            await message.edit(suppress=True)
 
         if msglinks:
             embeds = []
@@ -90,6 +89,7 @@ class Messagescan(Cog):
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
                 embeds.append(embed)
+        await message.edit(suppress=True)
         await message.reply(content=tlinks, embeds=embeds, mention_author=False)
 
     @Cog.listener()
