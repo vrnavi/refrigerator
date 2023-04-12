@@ -833,14 +833,10 @@ class Mod(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def react(
-        self, ctx, channel: discord.TextChannel, message: int, emoji: discord.Emoji
+        self, ctx, channel: discord.TextChannel, message: int, emoji: discord.PartialEmoji
     ):
         """[S] Reacts to a message with a given emoji in a given channel."""
-        msg = (
-            await self.bot.get_guild(ctx.guild.id)
-            .get_channel(channel)
-            .fetch_message(message)
-        )
+        msg = await ctx.guild.get_channel(channel).fetch_message(message)
         await msg.add_reaction(emoji)
         await ctx.message.reply("👍", mention_author=False)
 
