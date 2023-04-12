@@ -83,8 +83,7 @@ class ModWatch(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         if (
-            message.author.bot
-            or not message.content
+            not message.content
             or not message.guild
             or message.guild.id not in config.guild_configs
         ):
