@@ -492,7 +492,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFCC00"),
             title="🏡 Server Update",
-            description=f"{guild_after.name} `{guild_after.member_count}`",
+            description=f"{guild_after.name} with `{guild_after.member_count}` members.",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
@@ -545,7 +545,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF00FF"),
             title="🏚️ Channel Deleted",
-            description=f"`{str(channel.category)}/`{channel.mention} ({channel.id})",
+            description=f"`{str(channel.category)}/`#{channel.name} ({channel.id})",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher")
