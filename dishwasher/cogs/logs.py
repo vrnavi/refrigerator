@@ -523,7 +523,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#00FFFF"),
             title="🏠 Channel Created",
-            description=f"`{str(channel.category)}/`{channel.name} ({channel.id}) [{channel.mention}]",
+            description=f"`{str(channel.category)}/`#{channel.name} ({channel.id}) [{channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
