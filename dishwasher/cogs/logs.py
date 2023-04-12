@@ -667,14 +667,6 @@ class Logs2(Cog):
                 inline=False,
             )
 
-        if channel_before.position != channel_after.position:
-            updated = True
-            embed.add_field(
-                name=f"#️⃣ Position Change",
-                value=f"❌ {channel_before.position}\n⬇️\n⭕ {channel_after.position}",
-                inline=False,
-            )
-
         if updated:
             await slog.send(embed=embed)
 
