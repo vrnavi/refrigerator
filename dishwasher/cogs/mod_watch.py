@@ -40,7 +40,7 @@ class ModWatch(Cog):
             description=f"**Thread:** {trackerthread.mention}\n**Last Update:** `???`",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
             icon_url=f"{target.display_avatar.url}",
@@ -113,7 +113,7 @@ class ModWatch(Cog):
                     timestamp=message.created_at,
                 )
                 threadembed.set_footer(
-                    text="Dishwasher", icon_url=self.bot.user.display_avatar
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
                 )
                 threadembed.set_author(
                     name=f"💬 {message.author} said in #{message.channel.name}...",
@@ -128,7 +128,7 @@ class ModWatch(Cog):
                     timestamp=datetime.datetime.now(),
                 )
                 msgembed.set_footer(
-                    text="Dishwasher", icon_url=self.bot.user.display_avatar
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
                 )
                 msgembed.set_author(
                     name=f"{self.bot.escape_message(message.author)}",

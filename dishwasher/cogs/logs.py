@@ -399,9 +399,7 @@ class Logs2(Cog):
             description=f"{alog[0].target.mention} was banned by {alog[0].user.mention} [External Method]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(
-            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(alog[0].target)}",
             icon_url=f"{alog[0].target.display_avatar.url}",
@@ -443,9 +441,7 @@ class Logs2(Cog):
             description=f"{user.mention} was unbanned by {alog[0].user.mention} [External Method]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(
-            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(user)}",
             icon_url=f"{user.display_avatar.url}",

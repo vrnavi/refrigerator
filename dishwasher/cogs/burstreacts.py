@@ -55,9 +55,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
             name=f"{self.bot.escape_message(author)}",
             icon_url=f"{author.display_avatar.url}",
         )
-        embed.set_footer(
-            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
 
         await mlog.send(embed=embed)
 
