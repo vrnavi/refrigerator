@@ -177,7 +177,7 @@ class Basic(Cog):
         for l in options:
             idx += 1
             if idx == 11:
-                ctx.reply(
+                await ctx.reply(
                     content="**Too many options.** Remove some and try again.",
                     mention_author=False,
                 )
@@ -187,7 +187,7 @@ class Basic(Cog):
             elif (l[-1:] == '"' or l[:1] == '"') and not (
                 l[-1:] == '"' and l[:1] == '"'
             ):
-                ctx.reply(
+                await ctx.reply(
                     content="**Malformed poll options.** Check your quotes.",
                     mention_author=True,
                 )
