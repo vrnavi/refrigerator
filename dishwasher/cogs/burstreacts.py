@@ -47,7 +47,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
 
         embed = discord.Embed(
             title="🗑️ Autoremoved a Super Reaction",
-            description=f"{author}`'s {emoji} was removed. [{message.jump_url}] [{channel.mention}]",
+            description=f"{author}`'s {emoji} was removed. [{message.jump_url}]",
             colour=0xEA50BA,
             timestamp=discord.utils.utcnow(),
         )
@@ -56,7 +56,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
             icon_url=f"{author.display_avatar.url}",
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
 
         await mlog.send(embed=embed)

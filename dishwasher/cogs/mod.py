@@ -82,7 +82,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
@@ -169,7 +169,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
@@ -264,7 +264,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
@@ -346,7 +346,7 @@ class Mod(Cog):
                 timestamp=datetime.datetime.now(),
             )
             embed.set_footer(
-                text="Dishwasher", icon_url=self.bot.user.display_avatar
+                text=self.bot.user.name, icon_url=self.bot.user.display_avatar
             )
             embed.set_author(
                 name=f"{self.bot.escape_message(target)}",
@@ -390,7 +390,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
@@ -465,7 +465,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",
@@ -513,7 +513,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
@@ -543,7 +543,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
@@ -579,7 +579,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
@@ -609,7 +609,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
@@ -639,7 +639,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
@@ -709,7 +709,7 @@ class Mod(Cog):
                 timestamp=datetime.datetime.now(),
             )
             embed.set_footer(
-                text="Dishwasher", icon_url=self.bot.user.display_avatar
+                text=self.bot.user.name, icon_url=self.bot.user.display_avatar
             )
             embed.set_author(
                 name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
@@ -762,7 +762,7 @@ class Mod(Cog):
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(
-            text="Dishwasher", icon_url=self.bot.user.display_avatar
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
         )
         embed.set_author(
             name=f"{self.bot.escape_message(target)}",

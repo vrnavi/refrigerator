@@ -104,7 +104,7 @@ class Logs2(Cog):
             description=f"<@{member.id}> ({member.id})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
         )
@@ -128,7 +128,7 @@ class Logs2(Cog):
                     timestamp=datetime.datetime.now(),
                 )
                 embed.set_footer(
-                    text="Dishwasher", icon_url=self.bot.user.display_avatar
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
                 )
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
                     timestamp = datetime.datetime.strptime(
@@ -166,7 +166,7 @@ class Logs2(Cog):
             description=f"<@{after.author.id}> ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(after.author)}",
             icon_url=f"{after.author.display_avatar.url}",
@@ -242,7 +242,7 @@ class Logs2(Cog):
             description=f"<@{message.author.id}> ({message.author.id}) [{message.channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(message.author)}",
             icon_url=f"{message.author.display_avatar.url}",
@@ -321,7 +321,9 @@ class Logs2(Cog):
                     description=f"{alog[0].target.mention} was kicked by {alog[0].user.mention} [External Method]",
                     timestamp=datetime.datetime.now(),
                 )
-                embed.set_footer(text="Dishwasher")
+                embed.set_footer(
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                )
                 embed.set_author(
                     name=f"{self.bot.escape_message(alog[0].target)}",
                     icon_url=f"{alog[0].target.display_avatar.url}",
@@ -349,7 +351,7 @@ class Logs2(Cog):
             description=f"<@{member.id}> ({member.id})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
         )
@@ -397,7 +399,9 @@ class Logs2(Cog):
             description=f"{alog[0].target.mention} was banned by {alog[0].user.mention} [External Method]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(alog[0].target)}",
             icon_url=f"{alog[0].target.display_avatar.url}",
@@ -439,7 +443,9 @@ class Logs2(Cog):
             description=f"{user.mention} was unbanned by {alog[0].user.mention} [External Method]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+        )
         embed.set_author(
             name=f"{self.bot.escape_message(user)}",
             icon_url=f"{user.display_avatar.url}",
@@ -488,7 +494,7 @@ class Logs2(Cog):
             description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(member_after)}",
             icon_url=f"{member_after.display_avatar.url}",
@@ -563,7 +569,7 @@ class Logs2(Cog):
             description=f"{guild_after.name} with `{guild_after.member_count}` members.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{guild_after.name}",
             icon_url=f"{guild_after.icon.url}",
@@ -605,7 +611,7 @@ class Logs2(Cog):
             description=f"`{str(channel.category)}/`#{channel.name} ({channel.id}) [{channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{channel.guild.name}",
             icon_url=f"{channel.guild.icon.url}",
@@ -627,7 +633,7 @@ class Logs2(Cog):
             description=f"`{str(channel.category)}/`#{channel.name} ({channel.id}) [{channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{channel.guild.name}",
             icon_url=f"{channel.guild.icon.url}",
@@ -651,7 +657,7 @@ class Logs2(Cog):
             description=f"{channel_after.name} ({channel_after.id}) [{channel_after.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{channel_after.guild.name}",
             icon_url=f"{channel_after.guild.icon.url}",
@@ -691,7 +697,7 @@ class Logs2(Cog):
             description=f"{role.name} ({role.id}) [<@&{role.id}>]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{role.guild.name}",
             icon_url=f"{role.guild.icon.url}",
@@ -713,7 +719,7 @@ class Logs2(Cog):
             description=f"{role.name} ({role.id}) [<@&{role.id}>]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{role.guild.name}",
             icon_url=f"{role.guild.icon.url}",
@@ -737,7 +743,7 @@ class Logs2(Cog):
             description=f"{role_after.name} ({role_after.id}) [<@&{role_after.id}>]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{role_after.guild.name}",
             icon_url=f"{role_after.guild.icon.url}",
