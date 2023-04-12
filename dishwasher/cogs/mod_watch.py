@@ -33,9 +33,18 @@ class ModWatch(Cog):
             config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
         )
         trackerthread = await trackerlog.create_thread(name=f"{target.name} Watchlog")
-        trackermsg = await trackerlog.send(
-            f"**Watch Thread** for {target}: {trackerthread.mention}\nLast message sent `never`."
+        embed = discord.Embed(
+            color=target.color,
+            title="🔍 User on watch...",
+            description=f"**Thread:** {trackerthread.mention}\n**Last Update:** `???`",
+            timestamp=datetime.datetime.now(),
         )
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_author(
+            name=f"{self.bot.escape_message(target)}",
+            icon_url=f"{target.display_avatar.url}",
+        )
+        trackermsg = await trackerlog.send(embed=embed)
         setwatch(
             target.id, ctx.author, True, target.name, trackerthread.id, trackermsg.id
         )
@@ -97,22 +106,34 @@ class ModWatch(Cog):
                 trackermsg = await self.bot.get_channel(
                     config.guild_configs[message.guild.id]["logs"]["tracker_channel"]
                 ).fetch_message(userlog[str(message.author.id)]["watch"]["message"])
-                embed = discord.Embed(
+                threadembed = discord.Embed(
                     color=message.author.color,
                     description=f"{message.content}",
                     timestamp=message.created_at,
+                    url=message.jump_url,
                 )
-                embed.set_footer(
+                threadembed.set_footer(
                     text="Dishwasher", icon_url=self.bot.user.display_avatar
                 )
-                embed.set_author(
+                threadembed.set_author(
                     name=f"💬 {message.author} said in #{message.channel.name}...",
                     icon_url=f"{message.author.display_avatar.url}",
                 )
-                await trackerthread.send(embed=embed)
-                await trackermsg.edit(
-                    content=f"**Watch Thread** for {message.author}: {trackerthread.mention}\nLast message sent <t:{int(message.created_at.timestamp())}:f>"
+                await trackerthread.send(embed=threadembed)
+                msgembed = discord.Embed(
+                    color=message.author.color,
+                    title="🔍 User on watch...",
+                    description=f"**Thread:** {trackerthread.mention}\n**Last Update:** <t:{int(message.created_at.timestamp())}:f>",
+                    timestamp=datetime.datetime.now(),
                 )
+                msgembed.set_footer(
+                    text="Dishwasher", icon_url=self.bot.user.display_avatar
+                )
+                msgembed.set_author(
+                    name=f"{self.bot.escape_message(message.author)}",
+                    icon_url=f"{message.author.display_avatar.url}",
+                )
+                await trackermsg.edit(embed=msgembed)
         except KeyError:
             return
 
