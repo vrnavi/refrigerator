@@ -158,7 +158,7 @@ class Basic(Cog):
 
     @commands.guild_only()
     @commands.command()
-    async def poll(self, ctx, poll_title: str, *, options: str):
+    async def poll(self, ctx, poll_title: str, *options: str):
         poll_emoji = [
             "1️⃣",
             "2️⃣",
@@ -173,7 +173,6 @@ class Basic(Cog):
         ]
         optionlines = ""
         idx = 0
-        options = ren.compile(r'"[^"]*"|[!-~]+', ren.IGNORECASE).findall(options)
         for l in options:
             idx += 1
             if idx == 11:
