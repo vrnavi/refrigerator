@@ -315,8 +315,29 @@ class Logs2(Cog):
                     "kicks",
                     member.name,
                 )
-                # TODO: Replace with embed.
-                await mlog.send(f"👢 **Kick**: {escaped_name} (" f"{member.id})")
+                embed = discord.Embed(
+                    color=discord.Colour.from_str("#FFFF00"),
+                    title="👢 Kick",
+                    description=f"{alog[0].target.mention} was kicked by {alog[0].user.mention} [External Method]",
+                    timestamp=datetime.datetime.now(),
+                )
+                embed.set_footer(text="Dishwasher")
+                embed.set_author(
+                    name=f"{self.bot.escape_message(alog[0].target)}",
+                    icon_url=f"{alog[0].target.display_avatar.url}",
+                )
+                embed.add_field(
+                    name=f"👤 User",
+                    value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
+                    inline=True,
+                )
+                embed.add_field(
+                    name=f"🛠️ Staff",
+                    value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
+                    inline=True,
+                )
+                embed.add_field(name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False)
+                await mlog.send(embed=embed)
             return
 
         # Prepare embed msg
@@ -369,7 +390,29 @@ class Logs2(Cog):
         escaped_name = self.bot.escape_message(member)
 
         # TODO: Replace with embed.
-        await mlog.send(f"⛔ **Ban**: {escaped_name} (" f"{member.id})")
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FF0000"),
+            title="⛔ Ban",
+            description=f"{alog[0].target.mention} was banned by {alog[0].user.mention} [External Method]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(
+            name=f"{self.bot.escape_message(alog[0].target)}",
+            icon_url=f"{alog[0].target.display_avatar.url}",
+        )
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
+            inline=True,
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
+            inline=True,
+        )
+        embed.add_field(name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False)
+        await mlog.send(embed=embed)
 
     @Cog.listener()
     async def on_member_unban(self, guild, user):
@@ -388,8 +431,30 @@ class Logs2(Cog):
         ]
         if alog[0].user.id == self.bot.user.id:
             return
-        escaped_name = self.bot.escape_message(member)
-        await mlog.send(f"⚠️ **Unban**: {escaped_name} (" f"{member.id})")
+        escaped_name = self.bot.escape_message(user)
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#00FF00"),
+            title="🎁 Unban",
+            description=f"{user.mention} was unbanned by {alog[0].user.mention} [External Method]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher")
+        embed.set_author(
+            name=f"{self.bot.escape_message(user)}",
+            icon_url=f"{user.display_avatar.url}",
+        )
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{escaped_name}**\n{user.mention} ({user.id})",
+            inline=True,
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
+            inline=True,
+        )
+        embed.add_field(name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False)
+        await mlog.send(embed=embed)
 
     @Cog.listener()
     async def on_member_update(self, member_before, member_after):
