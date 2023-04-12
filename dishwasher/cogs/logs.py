@@ -580,7 +580,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFFF00"),
             title="🏘️ Channel Update",
-            description=f"{channel_after.name} ({channel_after.id}) [{channel.mention}]",
+            description=f"{channel_after.name} ({channel_after.id}) [{channel_after.mention}]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
