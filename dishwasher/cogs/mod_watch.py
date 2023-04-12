@@ -96,7 +96,7 @@ class ModWatch(Cog):
                 )
                 trackermsg = await self.bot.get_channel(
                     config.guild_configs[message.guild.id]["logs"]["tracker_channel"]
-                ).fetch_message(userlog[str(target.id)]["watch"]["message"])
+                ).fetch_message(userlog[str(message.author.id)]["watch"]["message"])
                 embed = discord.Embed(
                     color=message.author.color,
                     description=f"{message.content}",
