@@ -458,7 +458,7 @@ class Logs2(Cog):
         if member_before.name != member_after.name:
             updated = True
             embed.add_field(
-                name=f"📝  Username Change",
+                name=f"📝 Username Change",
                 value=f"❌ {self.bot.escape_message(member_before)}\n⬇️\n⭕ {self.bot.escape_message(member_after)}",
                 inline=False,
             )
@@ -504,10 +504,21 @@ class Logs2(Cog):
         if guild_before.name != guild_after.name:
             updated = True
             embed.add_field(
-                name=f"📝  Name Change",
+                name=f"📝 Name Change",
                 value=f"❌ {guild_before.name}\n⬇️\n⭕ {guild_after.name}",
                 inline=False,
             )
+        
+        if guild_before.banner.url != guild_after.banner.url:
+            updated = True
+            embed.add_field(
+                name=f"🎨 Banner Change",
+                value=f"If there is a new banner, it is below.",
+                inline=False,
+            )
+            if guild_after.banner:
+                embed.set_image(guild_after.banner.url)
+            
         if updated:
             await slog.send(embed=embed)
 
@@ -554,7 +565,169 @@ class Logs2(Cog):
             icon_url=f"{channel.guild.icon.url}",
         )
         await slog.send(embed=embed)
+
+    @Cog.listener()
+    async def on_guild_channel_update(self, channel_before, channel_after):     
+        await self.bot.wait_until_ready()
+        if channel_after.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[channel_after.guild.id]["logs"]["slog_thread"]
+        )   
+
+        updated = False
+        # initialize embed
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FFFF00"),
+            title="🏘️ Channel Update",
+            description=f"{channel_after.name} ({channel_after.id}) [{channel.mention}]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_author(
+            name=f"{channel_after.guild.name}",
+            icon_url=f"{channel_after.icon.url}",
+        )
         
+        if channel_before.name != channel_after.name:
+            updated = True
+            embed.add_field(
+                name=f"📝 Name Change",
+                value=f"❌ {channel_before.name}\n⬇️\n⭕ {channel_after.name}",
+                inline=False,
+            )
+        
+        if channel_before.position != channel_after.position:
+            updated = True
+            embed.add_field(
+                name=f"#️⃣ Position Change",
+                value=f"❌ {channel_before.position}\n⬇️\n⭕ {channel_after.position}",
+                inline=False,
+            )
+            
+        if updated:
+            await slog.send(embed=embed)
+
+    @Cog.listener()
+    async def on_guild_role_create(self, role):     
+        await self.bot.wait_until_ready()
+        if role.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[role.guild.id]["logs"]["slog_thread"]
+        )
+        
+        embed = discord.Embed(
+            color=role.color,
+            title="🏷️ Role Created",
+            description=f"{role.name} ({role.id}) [<@&{role.id}>]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_author(
+            name=f"{role.guild.name}",
+            icon_url=f"{role.guild.icon.url}",
+        )
+        await slog.send(embed=embed)
+
+    @Cog.listener()
+    async def on_guild_role_delete(self, role):     
+        await self.bot.wait_until_ready()
+        if role.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[role.guild.id]["logs"]["slog_thread"]
+        )
+        
+        embed = discord.Embed(
+            color=role.color,
+            title="🔥 Role Deleted",
+            description=f"{role.name} ({role.id}) [<@&{role.id}>]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_author(
+            name=f"{role.guild.name}",
+            icon_url=f"{role.guild.icon.url}",
+        )
+        await slog.send(embed=embed)
+
+    @Cog.listener()
+    async def on_guild_role_update(self, role_before, role_after):     
+        await self.bot.wait_until_ready()
+        if role_after.guild.id not in config.guild_configs:
+            return
+        slog = await self.bot.fetch_channel(
+            config.guild_configs[role_after.guild.id]["logs"]["slog_thread"]
+        )   
+
+        updated = False
+        # initialize embed
+        embed = discord.Embed(
+            color=role_after.color,
+            title="🖋️ Role Update",
+            description=f"{role.name} ({role.id}) [<@&{role.id}>]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
+        embed.set_author(
+            name=f"{role_after.guild.name}",
+            icon_url=f"{role_after.icon.url}",
+        )
+        
+        if role_before.name != role_after.name:
+            updated = True
+            embed.add_field(
+                name=f"📝 Name Change",
+                value=f"❌ {role_before.name}\n⬇️\n⭕ {role_after.name}",
+                inline=False,
+            )
+        
+        if role_before.position != role_after.position:
+            updated = True
+            embed.add_field(
+                name=f"#️⃣ Position Change",
+                value=f"❌ {role_before.position}\n⬇️\n⭕ {role_after.position}",
+                inline=False,
+            )
+        
+        if role_before.color != role_after.color:
+            updated = True
+            embed.add_field(
+                name=f"🌈 Position Change",
+                value=f"❌ {str(role_before)}\n⬇️\n⭕ {str(role_after)}",
+                inline=False,
+            )
+        
+        if role_before.icon != role_after.icon:
+            updated = True
+            embed.add_field(
+                name=f"ℹ️ Icon Change",
+                value=f"If there is a new icon, it is to the right.",
+                inline=False,
+            )
+            embed.set_thumbnail(role_after.icon.url)
+        
+        if role_before.hoist != role_after.hoist:
+            updated = True
+            embed.add_field(
+                name=f"🆙 Hoist Change",
+                value=f"❌ {str(role_before.hoist)}\n⬇️\n⭕ {str(role_after.hoist)}",
+                inline=False,
+            )
+            
+            if role_before.mentionable != role_after.mentionable:
+            updated = True
+            embed.add_field(
+                name=f"1️⃣ Mentionable Change",
+                value=f"❌ {str(role_before.mentionable)}\n⬇️\n⭕ {str(role_after.mentionable)}",
+                inline=False,
+            )
+            
+        if updated:
+            await slog.send(embed=embed)
+            
+            
         
             
             
