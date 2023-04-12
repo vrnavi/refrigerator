@@ -173,7 +173,8 @@ class Basic(Cog):
         ]
         optionlines = ""
         idx = 0
-        for l in options.split():
+        options = ren.compile(r'"[^"]*" [ -~]', re.IGNORECASE).findall(options)
+        for l in options:
             idx += 1
             if idx == 11:
                 ctx.reply(
