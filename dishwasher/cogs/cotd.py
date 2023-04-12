@@ -47,7 +47,7 @@ class Cotd(Cog):
             text=f"{self.bot.user.name}'s Color of The Day",
             icon_url=self.bot.user.display_avatar.url,
         )
-        embed.set_image(url=f'https://singlecolorimage.com/get/{color}/128x128')
+        embed.set_image(url=f'https://singlecolorimage.com/get/{color[1:]}/128x128')
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.guild_only()
