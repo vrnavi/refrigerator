@@ -95,7 +95,7 @@ class ModWatch(Cog):
                     userlog[str(message.author.id)]["watch"]["thread"]
                 )
                 trackermsg = await self.bot.get_channel(
-                    config.guild_configs[ctx.guild.id]["logs"][
+                    config.guild_configs[message.guild.id]["logs"][
                         "tracker_channel"
                     ].fetch_message(userlog[str(target.id)]["watch"]["message"])
                 )
