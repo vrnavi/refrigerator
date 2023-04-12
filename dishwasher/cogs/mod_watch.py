@@ -33,8 +33,12 @@ class ModWatch(Cog):
             config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
         )
         trackerthread = await trackerlog.create_thread(name=f"{target.name} Watchlog")
-        setwatch(target.id, ctx.author, True, target.name, trackerthread.id)
-        await trackerlog.send(f"**Watch Thread** for {target}: {trackerthread.mention}")
+        trackermsg = await trackerlog.send(
+            f"**Watch Thread** for {target}: {trackerthread.mention}"
+        )
+        setwatch(
+            target.id, ctx.author, True, target.name, trackerthread.id, trackermsg.id
+        )
         await ctx.send(
             f"**User is now on watch.**\nRelay thread available at {trackerthread.mention}."
         )
@@ -55,19 +59,25 @@ class ModWatch(Cog):
                 f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
             )
 
+        trackerlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
+        )
         userlog = get_userlog()
-        if userlog[target.id]["watch"]["state"]:
+        if userlog[str(target.id)]["watch"]["state"]:
             trackerthread = await self.bot.fetch_channel(
-                userlog[target.id]["watch"]["thread"]
+                userlog[str(target.id)]["watch"]["thread"]
             )
             await trackerthread.edit(archived=True)
+            trackermsg = await trackerlog.fetch_message(
+                userlog[str(target.id)]["watch"]["message"]
+            )
+            await trackermsg.delete()
+            setwatch(target.id, ctx.author, False, target.name, None)
+            await ctx.reply("User is now not on watch.", mention_author=False)
         else:
             return await ctx.reply(
                 content="User isn't on watch...", mention_author=False
             )
-
-        setwatch(target.id, ctx.author, False, target.name, None)
-        await ctx.reply("User is now not on watch.", mention_author=False)
 
 
 async def setup(bot):
