@@ -47,13 +47,20 @@ class ModUserlog(Cog):
                         inline=False,
                     )
 
-        if not own and "watch" in userlog[uid]:
-            if userlog[uid]["watch"]["state"]:
-                watch_state = ""
-            else:
-                watch_state = "not "
-                embed.color = discord.Color.orange()
+        try:
+            if not own and "watch" in userlog[uid]:
+                if userlog[uid]["watch"]["state"]:
+                    watch_state = ""
+                else:
+                    watch_state = "not "
+                    embed.color = discord.Color.orange()
+                embed.set_footer(text=f"User is {watch_state}under watch.")
+        except TypeError:
+            # Old Farts
+            watch_state = "not "
+            embed.color = discord.Color.orange()
             embed.set_footer(text=f"User is {watch_state}under watch.")
+            
 
         if not embed.fields:
             embed.description = f"No logs recorded.{own_note}"
