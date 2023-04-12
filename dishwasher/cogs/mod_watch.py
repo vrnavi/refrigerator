@@ -1,4 +1,5 @@
 import discord
+import config
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
