@@ -90,9 +90,9 @@ class ModWatch(Cog):
         ):
             return
         userlog = get_userlog()
-        if userlog[str(target.id)]["watch"]["state"]:
+        if userlog[str(message.author.id)]["watch"]["state"]:
             trackerthread = await self.bot.fetch_channel(
-                userlog[str(target.id)]["watch"]["thread"]
+                userlog[str(message.author.id)]["watch"]["thread"]
             )
             embed = discord.Embed(
                 color=message.author.color,
