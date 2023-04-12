@@ -191,6 +191,7 @@ class Basic(Cog):
                     content="**Malformed poll options.** Check your quotes.",
                     mention_author=True,
                 )
+                return
             else:
                 optionlines = f"{optionlines}\n`#{idx}:` {l}"
         poll = await ctx.reply(content=f"**{poll_title}**{optionlines}")
