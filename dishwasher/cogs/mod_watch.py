@@ -111,7 +111,6 @@ class ModWatch(Cog):
                     color=message.author.color,
                     description=f"{message.content}",
                     timestamp=message.created_at,
-                    url=message.jump_url,
                 )
                 threadembed.set_footer(
                     text="Dishwasher", icon_url=self.bot.user.display_avatar
@@ -119,6 +118,7 @@ class ModWatch(Cog):
                 threadembed.set_author(
                     name=f"💬 {message.author} said in #{message.channel.name}...",
                     icon_url=f"{message.author.display_avatar.url}",
+                    url=message.jump_url,
                 )
                 await trackerthread.send(embed=threadembed)
                 msgembed = discord.Embed(
