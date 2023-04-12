@@ -832,6 +832,21 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
+    async def react(
+        self, ctx, channel: discord.TextChannel, message: int, emoji: discord.Emoji
+    ):
+        """[S] Reacts to a message with a given emoji in a given channel."""
+        msg = (
+            await self.bot.get_guild(ctx.guild.id)
+            .get_channel(channel)
+            .fetch_message(message)
+        )
+        await msg.add_reaction(emoji)
+        await ctx.message.reply("👍", mention_author=False)
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
     async def typing(self, ctx, channel: discord.TextChannel, duration: int):
         """[S] Sends a typing indicator for a given duration of seconds.."""
         await ctx.send("👍")
