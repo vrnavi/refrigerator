@@ -173,7 +173,7 @@ class Basic(Cog):
         ]
         optionlines = ""
         idx = 0
-        options = ren.compile(r'"[^"]*" [ -~]', re.IGNORECASE).findall(options)
+        options = ren.compile(r'"[^"]*" [ -~]', ren.IGNORECASE).findall(options)
         for l in options:
             idx += 1
             if idx == 11:
