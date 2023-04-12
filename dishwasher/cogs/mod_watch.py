@@ -111,7 +111,7 @@ class ModWatch(Cog):
                 )
                 await trackerthread.send(embed=embed)
                 await trackermsg.edit(
-                    content=f"**Watch Thread** for {target}: {trackerthread.mention}\nLast message sent <t:{message.created_at.strftime('%s')}:f>"
+                    content=f"**Watch Thread** for {message.author}: {trackerthread.mention}\nLast message sent <t:{message.created_at.strftime('%s')}:f>"
                 )
         except TypeError:
             # Old Farts.
