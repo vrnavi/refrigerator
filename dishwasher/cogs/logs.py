@@ -104,7 +104,7 @@ class Logs2(Cog):
             description=f"<@{member.id}> ({member.id})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
         )
@@ -127,7 +127,7 @@ class Logs2(Cog):
                     title="⚠️ This user has warnings!",
                     timestamp=datetime.datetime.now(),
                 )
-                embed.set_footer(text="Dishwasher")
+                embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
                 for idx, warn in enumerate(warns[str(member.id)]["warns"]):
                     timestamp = datetime.datetime.strptime(
                         warn["timestamp"], "%Y-%m-%d %H:%M:%S"
@@ -164,7 +164,7 @@ class Logs2(Cog):
             description=f"<@{after.author.id}> ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(after.author)}",
             icon_url=f"{after.author.display_avatar.url}",
@@ -240,7 +240,7 @@ class Logs2(Cog):
             description=f"<@{message.author.id}> ({message.author.id}) [{message.channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(message.author)}",
             icon_url=f"{message.author.display_avatar.url}",
@@ -324,7 +324,7 @@ class Logs2(Cog):
             description=f"<@{member.id}> ({member.id})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
         )
@@ -420,7 +420,7 @@ class Logs2(Cog):
             description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{self.bot.escape_message(member_after)}",
             icon_url=f"{member_after.display_avatar.url}",
@@ -495,7 +495,7 @@ class Logs2(Cog):
             description=f"{guild_after.name} with `{guild_after.member_count}` members.",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{guild_after.name}",
             icon_url=f"{guild_after.icon.url}",
@@ -523,10 +523,10 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#00FFFF"),
             title="🏠 Channel Created",
-            description=f"`{str(channel.category)}/`{channel.mention} ({channel.id})",
+            description=f"`{str(channel.category)}/`{channel.name} ({channel.id}) [{channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{channel.guild.name}",
             icon_url=f"{channel.guild.icon.url}",
@@ -545,10 +545,10 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF00FF"),
             title="🏚️ Channel Deleted",
-            description=f"`{str(channel.category)}/`#{channel.name} ({channel.id})",
+            description=f"`{str(channel.category)}/`#{channel.name} ({channel.id}) [{channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text="Dishwasher", icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=f"{channel.guild.name}",
             icon_url=f"{channel.guild.icon.url}",
