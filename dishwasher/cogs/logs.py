@@ -753,14 +753,6 @@ class Logs2(Cog):
                 inline=False,
             )
 
-        if role_before.position != role_after.position:
-            updated = True
-            embed.add_field(
-                name=f"#️⃣ Position Change",
-                value=f"❌ {role_before.position}\n⬇️\n⭕ {role_after.position}",
-                inline=False,
-            )
-
         if role_before.color != role_after.color:
             updated = True
             embed.add_field(
