@@ -125,10 +125,15 @@ class Mod(Cog):
                 return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
             return await ctx.send(
-                random.choice(config.if_target_self_messages).format(authorname=ctx.author.name))
+                random.choice(config.target_self_messages).format(
+                    authorname=ctx.author.name
+                )
+            )
         elif target == self.bot.user:
             return await ctx.send(
-                random.choice(config.if_target_bot_messages).format(authorname=ctx.author.name)
+                random.choice(config.target_bot_messages).format(
+                    authorname=ctx.author.name
+                )
             )
 
         if reason:

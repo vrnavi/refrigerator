@@ -219,8 +219,8 @@ game_names = placeholders["games"]
 # These appear when doing pws quit.
 death_messages = placeholders["deaths"]
 # These appear when the bot tells you not to do a command to itself.
-if_target_bot_messages = placeholders["is_target_bot"]
+target_bot_messages = placeholders["if_target_bot"]
 # These appear when the bot tells you not to do a command to yourself.
-if_target_self_messages = placeholders["is_target_self"]
+target_self_messages = placeholders["if_target_self"]
 # Currently unused.
 tarot_cards = placeholders["tarot"]
