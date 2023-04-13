@@ -62,8 +62,6 @@ class Remind(Cog):
     @commands.command(aliases=["remindme"])
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """[U] Reminds you about something."""
-        #        if ctx.guild:
-        #            await ctx.message.delete()
         current_timestamp = time.time()
         expiry_timestamp = self.bot.parse_time(when)
 

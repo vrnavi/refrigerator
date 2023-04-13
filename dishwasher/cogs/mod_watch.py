@@ -16,14 +16,10 @@ class ModWatch(Cog):
         return any(r.id in config.staff_role_ids for r in target.roles)
 
     def random_self_msg(self, authorname):
-        return random.choice(config.target_self_messages).format(
-            authorname=authorname
-        )
+        return random.choice(config.target_self_messages).format(authorname=authorname)
 
     def random_bot_msg(self, authorname):
-        return random.choice(config.target_bot_messages).format(
-            authorname=author.name
-        )
+        return random.choice(config.target_bot_messages).format(authorname=author.name)
 
     @commands.guild_only()
     @commands.check(check_if_staff)

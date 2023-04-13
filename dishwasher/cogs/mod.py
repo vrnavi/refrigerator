@@ -19,14 +19,10 @@ class Mod(Cog):
         return any(r.id in config.staff_role_ids for r in target.roles)
 
     def random_self_msg(self, authorname):
-        return random.choice(config.target_self_messages).format(
-            authorname=authorname
-        )
+        return random.choice(config.target_self_messages).format(authorname=authorname)
 
     def random_bot_msg(self, authorname):
-        return random.choice(config.target_bot_messages).format(
-            authorname=authorname
-        )
+        return random.choice(config.target_bot_messages).format(authorname=authorname)
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
@@ -111,7 +107,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason was set!**\nPlease use `pws kick <user> [reason]` in the future.\Kick reasons are sent to the user.",
+                value=f"**No reason was set!**\nPlease use `{config.prefixes[0]}kick <user> [reason]` in the future.\Kick reasons are sent to the user.",
                 inline=False,
             )
 
@@ -194,7 +190,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason provided!**\nPlease use `pws ban <user> [reason]` in the future.\nBan reasons are sent to the user.",
+                value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}ban <user> [reason]` in the future.\nBan reasons are sent to the user.",
                 inline=False,
             )
 
@@ -285,7 +281,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason provided!**\nPlease use `pws dban <user> [reason]` in the future.\nBan reasons are sent to the user.",
+                value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}dban <user> [reason]` in the future.\nBan reasons are sent to the user.",
                 inline=False,
             )
 
@@ -407,7 +403,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason provided!**\nPlease use `pws unban <user> [reason]` in the future.",
+                value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}unban <user> [reason]` in the future.",
                 inline=False,
             )
 
@@ -478,7 +474,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason provided!**\nPlease use `pws sban <user> [reason]` in the future.",
+                value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}sban <user> [reason]` in the future.",
                 inline=False,
             )
 
@@ -761,7 +757,7 @@ class Mod(Cog):
         else:
             embed.add_field(
                 name=f"📝 Reason",
-                value=f"**No reason was set!**\nPlease use `pws warn <user> [reason]` in the future.\Warn reasons are sent to the user.",
+                value=f"**No reason was set!**\nPlease use `{config.prefixes[0]}warn <user> [reason]` in the future.\Warn reasons are sent to the user.",
                 inline=False,
             )
 

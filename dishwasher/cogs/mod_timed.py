@@ -15,6 +15,12 @@ class ModTimed(Cog):
     def check_if_target_is_staff(self, target):
         return any(r.id in config.staff_role_ids for r in target.roles)
 
+    def random_self_msg(self, authorname):
+        return random.choice(config.target_self_messages).format(authorname=authorname)
+
+    def random_bot_msg(self, authorname):
+        return random.choice(config.target_bot_messages).format(authorname=authorname)
+
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
     @commands.check(check_if_staff)
@@ -24,20 +30,18 @@ class ModTimed(Cog):
     ):
         """[S] Bans a user for a specified amount of time."""
         if target == ctx.author:
-            return await ctx.send("You can't do mod actions on yourself.")
+            return await ctx.send(self.random_self_msg(ctx.author.name))
+        elif target == self.bot.user:
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         elif self.check_if_target_is_staff(target):
-            return await ctx.send("I can't ban this user as they're a member of staff.")
+            return await ctx.send("I cannot ban Staff members.")
 
         expiry_timestamp = self.bot.parse_time(duration)
-        expiry_datetime = datetime.utcfromtimestamp(expiry_timestamp)
-        duration_text = self.bot.get_relative_timestamp(
-            time_to=expiry_datetime, include_to=True, humanized=True
-        )
 
         userlog(
             target.id,
             ctx.author,
-            f"{reason} (Timed, until " f"{duration_text})",
+            f"{reason} (Timed, expires <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>)",
             "bans",
             target.name,
         )
@@ -49,7 +53,7 @@ class ModTimed(Cog):
         dm_message = f"You were banned from {ctx.guild.name}."
         if reason:
             dm_message += f' The given reason is: "{reason}".'
-        dm_message += f"\n\nThis ban will expire {duration_text}."
+        dm_message += f"\n\nThis ban will expire <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>."
 
         try:
             await target.send(dm_message)
@@ -63,7 +67,7 @@ class ModTimed(Cog):
         )
         chan_message = (
             f"⛔ **Timed Ban**: {ctx.author.mention} banned "
-            f"{target.mention} for {duration_text} | {safe_name}\n"
+            f"{target.mention} expiring <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f> | {safe_name}\n"
             f"🏷 __User ID__: {target.id}\n"
         )
         if reason:
@@ -71,7 +75,7 @@ class ModTimed(Cog):
         else:
             chan_message += (
                 "Please add an explanation below. In the future"
-                ", it is recommended to use `.ban <user> [reason]`"
+                f", it is recommended to use `{config.prefixes[0]}ban <user> [reason]`"
                 " as the reason is automatically sent to the user."
             )
 
@@ -82,7 +86,7 @@ class ModTimed(Cog):
         )
         await mlog.send(chan_message)
         await ctx.send(
-            f"{safe_name} is now BANNED. " f"It will expire {duration_text}. 👍"
+            f"{safe_name} is now BANNED. It will expire <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>. 👍"
         )
 
 
