@@ -4,6 +4,7 @@ import json
 import os
 import config
 import asyncio
+import random
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
@@ -14,6 +15,16 @@ from helpers.userlogs import userlog
 class ModToss(Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    def random_self_msg(self, authorname):
+        return random.choice(config.target_self_messages).format(
+            authorname=ctx.author.name
+        )
+
+    def random_bot_msg(self, authorname):
+        return random.choice(config.target_bot_messages).format(
+            authorname=ctx.author.name
+        )
 
     def get_user_list(self, ctx, user_ids):
         user_id_list = []
@@ -53,14 +64,14 @@ class ModToss(Cog):
         for us in user_id_list:
             if us.id == ctx.author.id:
                 await ctx.reply(
-                    "Nice try, tossing yourself. **No.**",
+                    self.random_self_msg(ctx.author.name),
                     mention_author=False,
                 )
                 continue
 
             if us.id == self.bot.application_id:
                 await ctx.reply(
-                    f"I'm sorry {ctx.author.name}, I'm afraid I can't do that.",
+                    self.random_bot_msg(ctx.author.name),
                     mention_author=False,
                 )
                 continue
@@ -212,11 +223,11 @@ class ModToss(Cog):
 
         for us in user_id_list:
             if us.id == self.bot.application_id:
-                await ctx.reply("Leave me alone.", mention_author=False)
+                await ctx.reply(self.random_bot_msg(ctx.author.name), mention_author=False)
                 continue
 
             if us.id == ctx.author.id:
-                await ctx.reply("This is not an option.", mention_author=False)
+                await ctx.reply(self.random_self_msg(ctx.author.name), mention_author=False)
                 continue
 
             try:

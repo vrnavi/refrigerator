@@ -1,6 +1,7 @@
 import discord
 import config
 import datetime
+import random
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
@@ -14,21 +15,29 @@ class ModWatch(Cog):
     def check_if_target_is_staff(self, target):
         return any(r.id in config.staff_role_ids for r in target.roles)
 
+    def random_self_msg(self, authorname):
+        return random.choice(config.target_self_messages).format(
+            authorname=ctx.author.name
+        )
+
+    def random_bot_msg(self, authorname):
+        return random.choice(config.target_bot_messages).format(
+            authorname=ctx.author.name
+        )
+
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def watch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Puts a user under watch."""
+        if target == ctx.author:
+            return await ctx.send(self.random_self_msg(ctx.author.name))
+        elif target == self.bot.user:
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot watch Staff members.")
-        if target == ctx.author:
-            return await ctx.send("**No.**")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
 
         trackerlog = await self.bot.fetch_channel(
             config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
@@ -58,16 +67,14 @@ class ModWatch(Cog):
     @commands.command()
     async def unwatch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Removes a user from watch."""
+        if target == ctx.author:
+            return await ctx.send(self.random_self_msg(ctx.author.name))
+        elif target == self.bot.user:
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot unwatch Staff members.")
-        if target == ctx.author:
-            return await ctx.send("**No.**")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
 
         userlog = get_userlog()
         if userlog[str(target.id)]["watch"]["state"]:

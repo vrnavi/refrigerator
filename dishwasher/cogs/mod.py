@@ -18,6 +18,16 @@ class Mod(Cog):
     def check_if_target_is_staff(self, target):
         return any(r.id in config.staff_role_ids for r in target.roles)
 
+    def random_self_msg(self, authorname):
+        return random.choice(config.target_self_messages).format(
+            authorname=ctx.author.name
+        )
+
+    def random_bot_msg(self, authorname):
+        return random.choice(config.target_bot_messages).format(
+            authorname=ctx.author.name
+        )
+
     @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
@@ -45,11 +55,9 @@ class Mod(Cog):
     async def kick(self, ctx, target: discord.Member, *, reason: str = ""):
         """[S] Kicks a user."""
         if target == ctx.author:
-            return await ctx.send("**No.**")
+            return await ctx.send(self.random_self_msg(ctx.author.name))
         elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         elif self.check_if_target_is_staff(target):
             return await ctx.send("I cannot ban Staff members.")
 
@@ -120,17 +128,9 @@ class Mod(Cog):
     async def ban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user."""
         if target == ctx.author:
-            return await ctx.send(
-                random.choice(config.target_self_messages).format(
-                    authorname=ctx.author.name
-                )
-            )
+            return await ctx.send(self.random_self_msg(ctx.author.name))
         elif target == self.bot.user:
-            return await ctx.send(
-                random.choice(config.target_bot_messages).format(
-                    authorname=ctx.author.name
-                )
-            )
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
@@ -212,16 +212,14 @@ class Mod(Cog):
         self, ctx, day_count: int, target: discord.User, *, reason: str = ""
     ):
         """[S] Bans a user, with n days of messages deleted."""
+        if target == ctx.author:
+            return await ctx.send(self.random_self_msg(ctx.author.name))
+        elif target == self.bot.user:
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot ban Staff members.")
-        if target == ctx.author:
-            return await ctx.send("**No.**")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
 
         if day_count < 0 or day_count > 7:
             return await ctx.send(
@@ -311,12 +309,10 @@ class Mod(Cog):
             target_user = await self.bot.fetch_user(target)
             target_member = ctx.guild.get_member(target)
             if target == ctx.author.id:
-                await ctx.send(f"(re: {target}) You can't do mod actions on yourself.")
+                await ctx.send(self.random_self_msg(ctx.author.name))
                 continue
             elif target == self.bot.user:
-                await ctx.send(
-                    f"(re: {target}) I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-                )
+                await ctx.send(self.random_bot_msg(ctx.author.name))
                 continue
             elif target_member and self.check_if_target_is_staff(target_member):
                 await ctx.send(f"(re: {target}) I cannot ban Staff members.")
@@ -427,16 +423,14 @@ class Mod(Cog):
     @commands.command(aliases=["silentban"])
     async def sban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user silently. Does not message them."""
+        if target == ctx.author:
+            return await ctx.send(self.random_self_msg(ctx.author.name))
+        elif target == self.bot.user:
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot ban Staff members.")
-        if target == ctx.author:
-            return await ctx.send("**No.**")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
@@ -712,16 +706,14 @@ class Mod(Cog):
     @commands.command()
     async def warn(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Warns a user."""
+        if target == ctx.author:
+            return await ctx.send(self.random_self_msg(ctx.author.name))
+        elif target == self.bot.user:
+            return await ctx.send(self.random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot ban Staff members.")
-        if target == ctx.author:
-            return await ctx.send("**No.**")
-        elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
 
         mlog = await self.bot.fetch_channel(
             config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
