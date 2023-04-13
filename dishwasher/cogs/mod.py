@@ -5,6 +5,7 @@ import config
 import datetime
 import asyncio
 import typing
+import random
 from helpers.checks import check_if_staff, check_if_bot_manager
 from helpers.userlogs import userlog
 import io
@@ -123,10 +124,11 @@ class Mod(Cog):
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
-            return await ctx.send("**No.**")
+            return await ctx.send(
+                random.choice(config.if_target_self_messages).format(authorname=ctx.author.name))
         elif target == self.bot.user:
             return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
+                random.choice(config.if_target_bot_messages).format(authorname=ctx.author.name)
             )
 
         if reason:
