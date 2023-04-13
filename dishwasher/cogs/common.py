@@ -1,7 +1,6 @@
 import asyncio
 import traceback
 import datetime
-import humanize
 import time
 import math
 import parsedatetime
