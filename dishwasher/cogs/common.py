@@ -13,7 +13,6 @@ class Common(Cog):
 
         self.bot.async_call_shell = self.async_call_shell
         self.bot.slice_message = self.slice_message
-        self.max_split_length = 3
         self.bot.hex_to_int = self.hex_to_int
         self.bot.download_file = self.download_file
         self.bot.aiojson = self.aiojson
@@ -21,7 +20,6 @@ class Common(Cog):
         self.bot.aiogetbytes = self.aiogetbytes
         self.bot.escape_message = self.escape_message
         self.bot.parse_time = self.parse_time
-        self.bot.haste = self.haste
         self.bot.c_to_f = self.c_to_f
         self.bot.f_to_c = self.f_to_c
         self.bot.c_to_k = self.c_to_k
@@ -111,14 +109,6 @@ class Common(Cog):
     # 2000 is maximum limit of discord
     async def slice_message(self, text, size=2000, prefix="", suffix=""):
         """Slices a message into multiple messages"""
-        if len(text) > size * self.max_split_length:
-            haste_url = await self.haste(text)
-            return [
-                f"Message is too long ({len(text)} > "
-                f"{size * self.max_split_length} "
-                f"({size} * {self.max_split_length}))"
-                f", go to haste: <{haste_url}>"
-            ]
         reply_list = []
         size_wo_fix = size - len(prefix) - len(suffix)
         while len(text) > size_wo_fix:
@@ -126,14 +116,6 @@ class Common(Cog):
             text = text[size_wo_fix:]
         reply_list.append(f"{prefix}{text}{suffix}")
         return reply_list
-
-    async def haste(self, text, instance="https://api.mystb.in/"):
-        response = await self.bot.aiosession.put(f"{instance}documents", data=text)
-        if response.status == 200:
-            result_json = await response.json()
-            return f"{instance}{result_json['key']}"
-        else:
-            return f"Error {response.status}: {response.text}"
 
     async def async_call_shell(
         self, shell_command: str, inc_stdout=True, inc_stderr=True
