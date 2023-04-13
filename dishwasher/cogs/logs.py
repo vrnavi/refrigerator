@@ -626,7 +626,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF00FF"),
             title="🏚️ Channel Deleted",
-            description=f"`{str(channel.category)}/`#{channel.name} ({channel.id}) [{channel.mention}]",
+            description=f"`{str(channel.category)}/`#{channel.name} ({channel.id})",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
