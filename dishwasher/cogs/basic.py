@@ -214,7 +214,7 @@ class Basic(Cog):
             target = ctx.author
 
         nickname = (
-            f"\n**Nickname:** `{target.nick}`"
+            f"\n**Nickname:** `{ctx.guild.get_member(target.id).nick}`"
             if ctx.guild.get_member(target.id)
             else ""
         )
