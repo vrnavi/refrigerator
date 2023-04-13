@@ -135,7 +135,7 @@ class ModToss(Cog):
                     color=discord.Colour.from_str("#FF0000"),
                     title="🚷 Toss",
                     description=f"{us.mention} was tossed by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
-                    timestamp=datetime.datetime.now(),
+                    timestamp=datetime.now(),
                 )
                 embed.set_footer(
                     text=self.bot.user.name, icon_url=self.bot.user.display_avatar
