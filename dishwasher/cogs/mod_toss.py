@@ -10,17 +10,12 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
+from helpers.placeholders import random_self_msg, random_bot_msg
 
 
 class ModToss(Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    def random_self_msg(self, authorname):
-        return random.choice(config.target_self_messages).format(authorname=authorname)
-
-    def random_bot_msg(self, authorname):
-        return random.choice(config.target_bot_messages).format(authorname=authorname)
 
     def get_user_list(self, ctx, user_ids):
         user_id_list = []
@@ -60,14 +55,14 @@ class ModToss(Cog):
         for us in user_id_list:
             if us.id == ctx.author.id:
                 await ctx.reply(
-                    self.random_self_msg(ctx.author.name),
+                    random_self_msg(ctx.author.name),
                     mention_author=False,
                 )
                 continue
 
             if us.id == self.bot.application_id:
                 await ctx.reply(
-                    self.random_bot_msg(ctx.author.name),
+                    random_bot_msg(ctx.author.name),
                     mention_author=False,
                 )
                 continue
@@ -219,15 +214,11 @@ class ModToss(Cog):
 
         for us in user_id_list:
             if us.id == self.bot.application_id:
-                await ctx.reply(
-                    self.random_bot_msg(ctx.author.name), mention_author=False
-                )
+                await ctx.reply(random_bot_msg(ctx.author.name), mention_author=False)
                 continue
 
             if us.id == ctx.author.id:
-                await ctx.reply(
-                    self.random_self_msg(ctx.author.name), mention_author=False
-                )
+                await ctx.reply(random_self_msg(ctx.author.name), mention_author=False)
                 continue
 
             try:

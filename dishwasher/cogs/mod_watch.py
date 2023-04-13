@@ -6,6 +6,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import setwatch, get_userlog
+from helpers.placeholders import random_self_msg, random_bot_msg
 
 
 class ModWatch(Cog):
@@ -15,21 +16,15 @@ class ModWatch(Cog):
     def check_if_target_is_staff(self, target):
         return any(r.id in config.staff_role_ids for r in target.roles)
 
-    def random_self_msg(self, authorname):
-        return random.choice(config.target_self_messages).format(authorname=authorname)
-
-    def random_bot_msg(self, authorname):
-        return random.choice(config.target_bot_messages).format(authorname=author.name)
-
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def watch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Puts a user under watch."""
         if target == ctx.author:
-            return await ctx.send(self.random_self_msg(ctx.author.name))
+            return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
-            return await ctx.send(self.random_bot_msg(ctx.author.name))
+            return await ctx.send(random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
@@ -64,9 +59,9 @@ class ModWatch(Cog):
     async def unwatch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Removes a user from watch."""
         if target == ctx.author:
-            return await ctx.send(self.random_self_msg(ctx.author.name))
+            return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
-            return await ctx.send(self.random_bot_msg(ctx.author.name))
+            return await ctx.send(random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
             if self.check_if_target_is_staff(target):
