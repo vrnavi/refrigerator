@@ -113,7 +113,7 @@ class Basic(Cog):
     async def help(self, ctx):
         """Posts a help command."""
         await ctx.reply(
-            "[Press F1 For] HELP\nhttps://os.whistler.page/F1", mention_author=False
+            "[Press F1 For] HELP\nhttps://0ccu.lt/dishwasher/commands/", mention_author=False
         )
 
     @commands.command(aliases=["showcolor"])
