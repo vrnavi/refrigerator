@@ -223,11 +223,15 @@ class ModToss(Cog):
 
         for us in user_id_list:
             if us.id == self.bot.application_id:
-                await ctx.reply(self.random_bot_msg(ctx.author.name), mention_author=False)
+                await ctx.reply(
+                    self.random_bot_msg(ctx.author.name), mention_author=False
+                )
                 continue
 
             if us.id == ctx.author.id:
-                await ctx.reply(self.random_self_msg(ctx.author.name), mention_author=False)
+                await ctx.reply(
+                    self.random_self_msg(ctx.author.name), mention_author=False
+                )
                 continue
 
             try:
