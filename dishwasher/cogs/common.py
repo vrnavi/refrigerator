@@ -4,6 +4,7 @@ import datetime
 import time
 import math
 import parsedatetime
+import random
 from discord.ext.commands import Cog
 
 

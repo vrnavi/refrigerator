@@ -373,7 +373,7 @@ class Logs2(Cog):
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
         mlog = await self.bot.fetch_channel(
-            config.guild_configs[member.guild.id]["logs"]["mlog_thread"]
+            config.guild_configs[guild.id]["logs"]["mlog_thread"]
         )
 
         if guild.id not in config.guild_whitelist:
@@ -587,7 +587,7 @@ class Logs2(Cog):
                 inline=False,
             )
             if guild_after.banner:
-                embed.set_image(guild_after.banner.url)
+                embed.set_image(url=guild_after.banner.url)
 
         if updated:
             await slog.send(embed=embed)
