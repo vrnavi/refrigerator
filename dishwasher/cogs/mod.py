@@ -20,12 +20,12 @@ class Mod(Cog):
 
     def random_self_msg(self, authorname):
         return random.choice(config.target_self_messages).format(
-            authorname=ctx.author.name
+            authorname=authorname
         )
 
     def random_bot_msg(self, authorname):
         return random.choice(config.target_bot_messages).format(
-            authorname=ctx.author.name
+            authorname=authorname
         )
 
     @commands.guild_only()

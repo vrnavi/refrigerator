@@ -18,12 +18,12 @@ class ModToss(Cog):
 
     def random_self_msg(self, authorname):
         return random.choice(config.target_self_messages).format(
-            authorname=ctx.author.name
+            authorname=authorname
         )
 
     def random_bot_msg(self, authorname):
         return random.choice(config.target_bot_messages).format(
-            authorname=ctx.author.name
+            authorname=authorname
         )
 
     def get_user_list(self, ctx, user_ids):
