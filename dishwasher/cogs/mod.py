@@ -119,10 +119,6 @@ class Mod(Cog):
     @commands.command(aliases=["yeet"])
     async def ban(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Bans a user."""
-        if ctx.guild.get_member(target.id):
-            target = ctx.guild.get_member(target.id)
-            if self.check_if_target_is_staff(target):
-                return await ctx.send("I cannot ban Staff members.")
         if target == ctx.author:
             return await ctx.send(
                 random.choice(config.target_self_messages).format(
@@ -135,6 +131,10 @@ class Mod(Cog):
                     authorname=ctx.author.name
                 )
             )
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            if self.check_if_target_is_staff(target):
+                return await ctx.send("I cannot ban Staff members.")
 
         if reason:
             userlog(target.id, ctx.author, reason, "bans", target.name)
