@@ -212,12 +212,10 @@ class Basic(Cog):
         """[S] Gets full user info."""
         if target == None:
             target = ctx.author
-
-        nickname = (
-            f"\n**Nickname:** `{ctx.guild.get_member(target.id).nick}`"
-            if ctx.guild.get_member(target.id)
-            else ""
-        )
+        nickname = ""
+        if ctx.guild.get_member(target.id):
+            target = ctx.guild.get_member(target.id)
+            nickname = f"\n**Nickname:** `{ctx.guild.get_member(target.id).nick}`"
 
         embed = discord.Embed(
             color=target.color,
