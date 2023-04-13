@@ -302,7 +302,7 @@ class Basic(Cog):
             value=f"**Hoisted:** {str(role.hoist)}\n**Mentionable:** {str(role.mentionable)}",
             inline=True,
         )
-        ctx.reply(embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 async def setup(bot):
