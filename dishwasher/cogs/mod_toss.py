@@ -131,11 +131,33 @@ class ModToss(Cog):
                     us.name,
                 )
 
-                # Filler Spot for embed.
+                embed = discord.Embed(
+                    color=discord.Colour.from_str("#FF0000"),
+                    title="🚷 Toss",
+                    description=f"{us.mention} was tossed by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
+                    timestamp=datetime.datetime.now(),
+                )
+                embed.set_footer(
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                )
+                embed.set_author(
+                    name=f"{self.bot.escape_message(us)}",
+                    icon_url=f"{us.display_avatar.url}",
+                )
+                embed.add_field(
+                    name=f"👤 User",
+                    value=f"**{self.bot.escape_message(us)}**\n{us.mention} ({us.id})",
+                    inline=True,
+                )
+                embed.add_field(
+                    name=f"🛠️ Staff",
+                    value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+                    inline=True,
+                )
                 mlog = await self.bot.fetch_channel(
                     config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
                 )
-                # await mlog.send(embed=embed)
+                await mlog.send(embed=embed)
 
             except commands.MissingPermissions:
                 invalid_ids.append(us.name)
