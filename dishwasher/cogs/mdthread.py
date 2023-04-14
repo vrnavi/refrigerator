@@ -27,21 +27,22 @@ class mdthread(Cog):
         async for member in reaction.users():
             mentions.append(f"<@{member.id}>")
 
-        await ctx.reply(
+        def check(r, u):
+            return u == ctx.author and str(r.emoji) == "✅"
+
+        confirmmsg = await ctx.reply(
             content=f"You're about to mention {len(mentions)} member{'' if len(mentions) == 1 else 's'}. Are you sure you want to do this?",
-            view=ConfirmationButtonView(
-                timeout=15,
-                author_id=ctx.author.id,
-                yes_action=lambda: self.send_message(
-                    ctx, f"{' '.join(mentions)} {content}"
-                ),
-                no_action=lambda: self.cancel_message(ctx),
-            ),
             mention_author=False,
-            ephemeral=True,
         )
 
-    async def send_message(self, ctx: Context, content: str):
+        try:
+            r, u = await client.wait_for("reaction_add", timeout=60.0, check=check)
+        except asyncio.TimeoutError:
+            self.cancel_message(ctx, confirmation_msg)
+        else:
+            self.send_message(ctx, f"{' '.join(mentions)} {content}", confirmation_msg)
+
+    async def send_message(self, ctx: Context, content: str, confirmation_msg):
         webhooks = await ctx.guild.webhooks()
         webhook_results = [
             element
@@ -55,6 +56,7 @@ class mdthread(Cog):
             if len(webhook_results) == 0
             else webhook_results[0]
         )
+        await confirmation_message.delete()
         await ctx.message.delete()
 
         await webhook.send(
@@ -67,11 +69,10 @@ class mdthread(Cog):
             thread=ctx.channel,
         )
 
-    async def cancel_message(self, ctx: Context):
-        await ctx.reply(
+    async def cancel_message(self, ctx: Context, confirmation_msg):
+        await confirmmsg.edit(
             content="Your message has been cancelled.",
             delete_after=5,
-            mention_author=False,
         )
         await ctx.message.delete()
         self.mdping.reset_cooldown(ctx)

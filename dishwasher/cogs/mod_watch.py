@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import setwatch, get_userlog
-from helpers.placeholders import random_self_msg, random_bot_msg
+from helpers.placeholders import random_self_msg, random_bot_msg, create_log_embed
 
 
 class ModWatch(Cog):
