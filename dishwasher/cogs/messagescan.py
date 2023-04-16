@@ -2,6 +2,7 @@ import json
 import re
 import discord
 import datetime
+import config
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
 from helpers.checks import check_if_staff, check_if_bot_manager
