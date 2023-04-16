@@ -2,7 +2,6 @@ import json
 import re
 import discord
 import datetime
-import config
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
 from helpers.checks import check_if_staff, check_if_bot_manager
@@ -53,8 +52,7 @@ class Messagescan(Cog):
         if (
             message.author.bot
             or not message.content
-            or message.guild.get_role(config.named_roles["journal"])
-            not in message.author.roles
+            or not message.channel.permissions_for(message.author).embed_links
         ):
             return
 
