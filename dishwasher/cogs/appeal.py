@@ -34,7 +34,7 @@ class Appeal(Cog):
                 name=f"{message.embeds[0].fields[1].value[:-5]}'s Appeal",
                 reason="Automatic Appeal Thread Generating by Dishwasher.",
             )
-            staff_role = ctx.guild.get_role(config.staff_role_id)
+            staff_role = ctx.guild.get_role(config.staff_role_ids[0])
             await appealthread.send(
                 content=f"**Voting has MOVED to the appeal's post itself!**\nVote using reactions. Use this thread for discussion.\n`✅ = Yes`\n`❎ = No`\n`✳️ = Abstain`\n\nUntil it can be coded to automatically appear here, use `pws logs {message.embeds[0].fields[2].value}`.\nRemember to post ban context if available (ban record, modmail logs, etc.).\n\nThere are currently `{int(len(staff_role.members))}` Staff members at this time.\nVoting should end once one option reaches `{int(len(staff_role.members)/2//1+1)}` votes.\n\nThis appeal will turn stale on <t:{int(datetime.now(timezone.utc).timestamp())+604800}:f>, or <t:{int(datetime.now(timezone.utc).timestamp())+604800}:R>."
             )
