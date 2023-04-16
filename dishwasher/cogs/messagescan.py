@@ -49,7 +49,12 @@ class Messagescan(Cog):
     @Cog.listener()
     async def on_message(self, message):
         await self.bot.wait_until_ready()
-        if message.author.bot or not message.content:
+        if (
+            message.author.bot
+            or not message.content
+            or message.guild.get_role(config.named_roles["journal"])
+            not in message.author.roles
+        ):
             return
 
         msglinks = self.link_re.findall(message.content)
