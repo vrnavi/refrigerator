@@ -31,15 +31,16 @@ class Messagescan(Cog):
             # Prepare embed msg
             embed = discord.Embed(
                 color=ctx.author.color,
-                description=f"{lastmsg.content}",
+                description=lastmsg.content,
                 timestamp=lastmsg.created_at,
             )
             embed.set_footer(
-                text=f"Sniped by {ctx.author}"
+                text=f"Sniped by {ctx.author}",
+                icon_url=ctx.author.display_avatar.url,
             )
             embed.set_author(
                 name=f"💬 {lastmsg.author} said in #{lastmsg.channel.name}...",
-                icon_url=f"{lastmsg.author.display_avatar.url}",
+                icon_url=lastmsg.author.display_avatar.url,
             )
             await ctx.reply(embed=embed, mention_author=False)
         else:
@@ -61,12 +62,13 @@ class Messagescan(Cog):
                 timestamp=lastaftermsg.created_at,
             )
             embed.set_footer(
-                text=f"Sniped by {ctx.author}"
+                text=f"Sniped by {ctx.author}",
+                icon_url=ctx.author.display_avatar.url,
             )
             embed.set_author(
                 name=f"💬 {lastaftermsg.author} said in #{lastaftermsg.channel.name}...",
                 icon_url=f"{lastaftermsg.author.display_avatar.url}",
-                url=f"{lastaftermsg.jump_url}"
+                url=lastaftermsg.jump_url
             )
             # Split if too long.
             if len(lastbeforemsg.clean_content) > 1024:
