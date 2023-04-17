@@ -37,7 +37,7 @@ class ModWatch(Cog):
         embed = discord.Embed(
             color=target.color,
             title="🔍 User on watch...",
-            description=f"**Thread:** {trackerthread.mention}\n**Last Update:** `???`",
+            description=f"ID: `{target.id}`\n**Thread:** {trackerthread.mention}\n**Last Update:** `???`",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
@@ -122,7 +122,7 @@ class ModWatch(Cog):
                 msgembed = discord.Embed(
                     color=message.author.color,
                     title="🔍 User on watch...",
-                    description=f"**Thread:** {trackerthread.mention}\n**Last Update:** <t:{int(message.created_at.timestamp())}:f>",
+                    description=f"**ID:** `{message.author.id}`\n**Thread:** {trackerthread.mention}\n**Last Update:** <t:{int(message.created_at.timestamp())}:f>",
                     timestamp=datetime.datetime.now(),
                 )
                 msgembed.set_footer(
