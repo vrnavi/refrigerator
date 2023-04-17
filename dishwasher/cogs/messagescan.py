@@ -102,19 +102,19 @@ class Messagescan(Cog):
                         for i in range(0, len(lastaftermsg.clean_content), 1020)
                     ]
                 )
-            embed.add_field(
-                name=f"⭕ After on <t:{lastaftermsg.edited_at.astimezone().strftime('%s')}:f>",
-                value=f"**Message was too long to post!** Split into fragments below.",
-                inline=False,
-            )
-            ctr = 1
-            for p in split_after_msg:
                 embed.add_field(
-                    name=f"🧩 Fragment {ctr}",
-                    value=f">>> {p}",
-                    inline=True,
+                    name=f"⭕ After on <t:{lastaftermsg.edited_at.astimezone().strftime('%s')}:f>",
+                    value=f"**Message was too long to post!** Split into fragments below.",
+                    inline=False,
                 )
-                ctr = ctr + 1
+                ctr = 1
+                for p in split_after_msg:
+                    embed.add_field(
+                        name=f"🧩 Fragment {ctr}",
+                        value=f">>> {p}",
+                        inline=True,
+                    )
+                    ctr = ctr + 1
             else:
                 embed.add_field(
                     name=f"⭕ After on <t:{lastaftermsg.edited_at.astimezone().strftime('%s')}:f>",
