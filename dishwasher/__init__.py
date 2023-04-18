@@ -106,10 +106,6 @@ async def on_error(event_method, *args, **kwargs):
         timestamp=datetime.datetime.now(),
     )
     err_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
-    err_embed.set_author(
-        name=f"{bot.escape_message(ctx.author)}",
-        icon_url=f"{ctx.author.display_avatar.url}",
-    )
 
     for m in config.bot_managers:
         await bot.get_user(m).send(embed=err_embed)
