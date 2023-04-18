@@ -1,5 +1,3 @@
-import hashlib
-import datetime
 import discord
 import json
 
@@ -36,6 +34,7 @@ initial_cogs = [
     "cogs.mod_note",
     "cogs.mod_userlog",
     "cogs.mod_timed",
+    "cogs.mod_toss",
     "cogs.mod_watch",
     "cogs.basic",
     "cogs.oneshot",
@@ -44,16 +43,16 @@ initial_cogs = [
     "cogs.reply",
     "cogs.dishtimer",
     "cogs.meme",
-    "cogs.invites",
     "cogs.usertime",
     "cogs.prefixes",
+    "cogs.messagescan",
     "cogs.burstreacts",
 ]
 
 # == cogs.prefixes maximum prefixes. ==
 maxprefixes = 6  # !max of 24!
 
-# Specific server configuration. Some cogs will default to the first in the list.
+# Specific server configuration.
 guild_configs = {
     # OneShot Discord
     256926147827335170: {
