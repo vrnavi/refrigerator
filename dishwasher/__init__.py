@@ -118,7 +118,7 @@ async def on_command_error(ctx, error):
             f"An error occurred...\n"
             f"**Command:** `{ctx.message.content}`\n"
             f"**User:** {ctx.message.author} ({ctx.message.author.id})\n"
-            f"{f'**Guild:** {ctx.guild.name}' if ctx.guild else f'**User:** {ctx.channel.recipient}'}\n"
+            f"{f'**Guild:** {ctx.guild.name}\n' if ctx.guild else ''}"
             f"```{type(error)}: {error}```"
         ),
         timestamp=datetime.datetime.now(),
