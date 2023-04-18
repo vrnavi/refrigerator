@@ -117,8 +117,8 @@ async def on_command_error(ctx, error):
         description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id}):\n```{type(error)}: {error}```",
         timestamp=datetime.datetime.now(),
     )
-    embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
-    embed.set_author(
+    error_log_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
+    error_log_embed.set_author(
         name=f"{bot.escape_message(ctx.author)}",
         icon_url=f"{ctx.author.display_avatar.url}",
     )
