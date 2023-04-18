@@ -115,12 +115,12 @@ async def on_command_error(ctx, error):
         color=ctx.author.color,
         title="⚠️ Error",
         description=(
-        f"An error occurred...\n"
-        f"**Command:** `{ctx.message.content}`\n"
-        f"**User:** {ctx.message.author} ({ctx.message.author.id}):\n"
-        f"**Guild:** {ctx.guild.name if ctx.guild else ctx.channel.name}\n"
-        f"```{type(error)}: {error}```"
-    ),
+            f"An error occurred...\n"
+            f"**Command:** `{ctx.message.content}`\n"
+            f"**User:** {ctx.message.author} ({ctx.message.author.id}):\n"
+            f"**Guild:** {ctx.guild.name if ctx.guild else ctx.channel.name}\n"
+            f"```{type(error)}: {error}```"
+        ),
         timestamp=datetime.datetime.now(),
     )
     err_log_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
