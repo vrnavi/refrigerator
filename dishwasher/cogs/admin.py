@@ -45,7 +45,9 @@ class Admin(Cog):
     async def setdata(self, ctx):
         """[O] Replaces data files. This is destructive behavior!"""
         if not ctx.message.attachments:
-            ctx.reply(content="You need to supply the data files.", mention_author=False)
+            ctx.reply(
+                content="You need to supply the data files.", mention_author=False
+            )
             return
         for f in ctx.message.attachments:
             if f"data/{f.filename}" in self.bot.wanted_jsons:
@@ -70,14 +72,19 @@ class Admin(Cog):
                 mention_author=False,
             )
         except FileNotFoundError:
-            await ctx.message.reply(content="That server doesn't have a userdata file.", mention_author = False)
+            await ctx.message.reply(
+                content="That server doesn't have a userdata file.",
+                mention_author=False,
+            )
 
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def setudata(self, ctx, server: discord.Guild):
         """[O] Replaces a server's userdata file. This is destructive behavior!"""
         if not ctx.message.attachments:
-            ctx.reply(content="You need to supply the userdata file.", mention_author = False)
+            ctx.reply(
+                content="You need to supply the userdata file.", mention_author=False
+            )
             return
         if not os.path.exists(f"data/userlogs/{server.id}"):
             os.makedirs(f"data/userlogs/{server.id}")
