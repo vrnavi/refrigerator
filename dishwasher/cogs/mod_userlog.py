@@ -134,7 +134,9 @@ class ModUserlog(Cog):
     )
     async def myuserlog(self, ctx):
         """[U] Lists your userlog events (warns, etc)."""
-        embed = self.get_userlog_embed_for_id(ctx.guild.id, str(ctx.author.id), str(ctx.author), True)
+        embed = self.get_userlog_embed_for_id(
+            ctx.guild.id, str(ctx.author.id), str(ctx.author), True
+        )
         await ctx.author.send(embed=embed)
         await ctx.message.add_reaction("📨")
         await ctx.reply(

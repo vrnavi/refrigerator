@@ -100,19 +100,30 @@ async def on_error(event_method, *args, **kwargs):
 
 @bot.event
 async def on_command_error(ctx, error):
-    error_text = str(error)
+    # We don't want to log commands that don't exist.
+    if isinstance(error, commands.CommandNotFound):
+        return
 
-    err_msg = (
-        f"⚠️ **Error:**\nAn error occurred with `{ctx.message.content}` from "
+    err_log_msg = (
+        f"An error occurred with `{ctx.message.content}` from "
         f"{ctx.message.author} ({ctx.message.author.id}):\n"
-        f"```{type(error)}: {error_text}```"
+        f"{type(error)}: {error}"
+    )
+    log.error(err_log_msg)
+
+    error_log_embed = discord.Embed(
+        color=ctx.author.color,
+        title="⚠️ Error",
+        description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id}):\n```{type(error)}: {error}```",
+        timestamp=datetime.datetime.now(),
+    )
+    embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
+    embed.set_author(
+        name=f"{bot.escape_message(ctx.author)}",
+        icon_url=f"{ctx.author.display_avatar.url}",
     )
 
-    log.error(err_msg)
-
-    if not isinstance(error, commands.CommandNotFound):
-        err_msg = bot.escape_message(err_msg)
-        await bot.log_channel.send(err_msg)
+    await bot.log_channel.send(embed=err_log_embed)
 
     if isinstance(error, commands.NoPrivateMessage):
         return await ctx.send("This command doesn't work in DMs.")
@@ -145,7 +156,7 @@ async def on_command_error(ctx, error):
             "to run this command in the current channel."
         )
     elif isinstance(error, commands.CommandInvokeError) and (
-        "Cannot send messages to this user" in error_text
+        "Cannot send messages to this user" in str(error)
     ):
         return await ctx.send(
             f"**Error: DM Failure**\n"
@@ -154,9 +165,6 @@ async def on_command_error(ctx, error):
             "Please resolve that, then "
             "try again."
         )
-    elif isinstance(error, commands.CommandNotFound):
-        # Nothing to do when command is not found.
-        return
 
     help_text = (
         f"Usage of this command is: ```{ctx.prefix}{ctx.command.name} "

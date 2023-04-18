@@ -164,7 +164,8 @@ class ModAntiRaid(Cog):
                     o.send_messages = None
 
             overrides = [
-                (c.guild.default_role, default_role_override), (c.guild.me, bot_override)
+                (c.guild.default_role, default_role_override),
+                (c.guild.me, bot_override),
             ]
             for r, o in zip(allowed_roles, authorized_role_overrides):
                 overrides.append((r, o))
