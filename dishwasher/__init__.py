@@ -56,7 +56,7 @@ bot.wanted_jsons = wanted_jsons
 async def on_ready():
     bot.aiosession = aiohttp.ClientSession()
     bot.app_info = await bot.application_info()
-    bot.log_channel = await bot.fetch_channel(config.bot_logchannel)
+    bot.log_channel = bot.get_channel(config.bot_logchannel)
 
     log.info(
         f"\nLogged in as: {bot.user.name} - "
