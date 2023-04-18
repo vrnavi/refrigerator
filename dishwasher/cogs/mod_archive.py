@@ -8,6 +8,7 @@ import re
 import datetime
 import config
 import asyncio
+import textwrap
 import zipfile
 
 from pydrive.auth import GoogleAuth
@@ -66,7 +67,7 @@ class ModArchive(Cog):
                 if e.type == "rich":
                     if not blank_content:
                         add += "\n"
-                    add += textify_embed(
+                    add += self.textify_embed(
                         e, limit=40, padding=padding, pad_first_line=not blank_content
                     )
                     blank_content = False
@@ -107,6 +108,59 @@ class ModArchive(Cog):
                 if hard:
                     return len([r for r in member.roles if not (r.managed)]) == 2
                 return True
+
+
+    def textify_embed(self, embed, limit=40, padding=0, pad_first_line=True):
+        text_proc = []
+        title = ""
+        if embed.title:
+            title += embed.title
+            if embed.url:
+                title += " - "
+        if embed.url:
+            title += embed.url
+        if not title and embed.author:
+            title = embed.author.name
+        if title:
+            text_proc += [title, ""]
+        if embed.description:
+            text_proc += [embed.description, ""]
+        if embed.thumbnail:
+            text_proc += ["Thumbnail: " + embed.thumbnail.url, ""]
+        for f in embed.fields:
+            text_proc += [
+                f.name
+                + (
+                    ":"
+                    if not f.name.endswith(("!", ")", "}", "-", ":", ".", "?", "%", "$"))
+                    else ""
+                ),
+                *f.value.split("\n"),
+                "",
+            ]
+        if embed.image:
+            text_proc += ["Image: " + embed.image.url, ""]
+        if embed.footer:
+            text_proc += [embed.footer.text, ""]
+
+        text_proc = [textwrap.wrap(t, width=limit) for t in text_proc]
+
+        texts = []
+
+        for tt in text_proc:
+            if not tt:
+                tt = [""]
+            for t in tt:
+                texts += [t + " " * (limit - len(t))]
+
+        ret = " " * (padding * pad_first_line) + "╓─" + "─" * limit + "─╮"
+
+        for t in texts[:-1]:
+            ret += "\n" + " " * padding + "║ " + t + " │"
+
+        ret += "\n" + " " * padding + "╙─" + "─" * limit + "─╯"
+
+        return ret
 
     async def get_members(self, message, args):
         user = []
