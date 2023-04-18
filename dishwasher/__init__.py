@@ -111,14 +111,14 @@ async def on_command_error(ctx, error):
     )
     log.error(err_log_msg)
 
-    error_log_embed = discord.Embed(
+    err_log_embed = discord.Embed(
         color=ctx.author.color,
         title="⚠️ Error",
         description=f"An error occurred with `{ctx.message.content}` from {ctx.message.author} ({ctx.message.author.id}):\n```{type(error)}: {error}```",
         timestamp=datetime.datetime.now(),
     )
-    error_log_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
-    error_log_embed.set_author(
+    err_log_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
+    err_log_embed.set_author(
         name=f"{bot.escape_message(ctx.author)}",
         icon_url=f"{ctx.author.display_avatar.url}",
     )
