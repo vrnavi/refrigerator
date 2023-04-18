@@ -28,6 +28,7 @@ initial_cogs = [
     "cogs.cotd",
     "cogs.explains",
     "cogs.mod",
+    "cogs.mod_antiraid",
     "cogs.mod_appeal",
     "cogs.mod_archive",
     "cogs.mod_locks",
