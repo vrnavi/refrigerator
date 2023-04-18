@@ -96,7 +96,7 @@ guild_configs = {
             "drive_folder": "folder_goes_here",
             "unroleban_expiry": 180,
         },
-        "anitraid": {
+        "antiraid": {
             # [cogs.mod_antiraid] Announcement channels. Set to "all" for all.
             "announce_channels": [256926147827335170],
             # [cogs.mod_antiraid] Mention threshold.
