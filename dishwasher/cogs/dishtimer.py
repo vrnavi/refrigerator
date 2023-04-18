@@ -25,8 +25,9 @@ class Dishtimer(Cog):
         self.daily.cancel()
 
     async def send_data(self):
+        log_channel = self.bot.get_channel(config.bot_logchannel)
         data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
-        await self.bot.log_channel.send("Hourly data backups:", files=data_files)
+        await log_channel.send("Hourly data backups:", files=data_files)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -62,6 +63,7 @@ class Dishtimer(Cog):
         await ctx.send(f"{ctx.author.mention}: Deleted!")
 
     async def do_jobs(self, ctab, jobtype, timestamp):
+        log_channel = self.bot.get_channel(config.bot_logchannel)
         for job_name in ctab[jobtype][timestamp]:
             try:
                 job_details = ctab[jobtype][timestamp][job_name]
@@ -101,12 +103,13 @@ class Dishtimer(Cog):
             except:
                 # Don't kill cronjobs if something goes wrong.
                 delete_job(timestamp, jobtype, job_name)
-                await self.bot.log_channel.send(
+                await log_channel.send(
                     "Crondo has errored, job deleted: ```"
                     f"{traceback.format_exc()}```"
                 )
 
     async def clean_channel(self, channel_id):
+        log_channel = self.bot.get_channel(config.bot_logchannel)
         channel = self.bot.get_channel(channel_id)
         try:
             done_cleaning = False
@@ -118,13 +121,14 @@ class Dishtimer(Cog):
                     done_cleaning = True
         except:
             # Don't kill cronjobs if something goes wrong.
-            await self.bot.log_channel.send(
+            await log_channel.send(
                 f"Cronclean has errored: ```{traceback.format_exc()}```"
             )
 
     @tasks.loop(minutes=1)
     async def minutely(self):
         await self.bot.wait_until_ready()
+        log_channel = self.bot.get_channel(config.bot_logchannel)
         try:
             ctab = get_crontab()
             timestamp = time.time()
@@ -138,13 +142,14 @@ class Dishtimer(Cog):
                 await self.clean_channel(clean_channel)
         except:
             # Don't kill cronjobs if something goes wrong.
-            await self.bot.log_channel.send(
+            await log_channel.send(
                 f"Cron-minutely has errored: ```{traceback.format_exc()}```"
             )
 
     @tasks.loop(hours=1)
     async def hourly(self):
         await self.bot.wait_until_ready()
+        log_channel = self.bot.get_channel(config.bot_logchannel)
         try:
             await self.send_data()
             # Handle clean channels
@@ -157,13 +162,14 @@ class Dishtimer(Cog):
             await self.bot.change_presence(activity=activity)
         except:
             # Don't kill cronjobs if something goes wrong.
-            await self.bot.log_channel.send(
+            await log_channel.send(
                 f"Cron-hourly has errored: ```{traceback.format_exc()}```"
             )
 
     @tasks.loop(hours=24)
     async def daily(self):
         await self.bot.wait_until_ready()
+        log_channel = self.bot.get_channel(config.bot_logchannel)
         try:
             shutil.make_archive("data/userlogs_backup", "zip", "data/userlogs")
             for m in config.bot_managers:
@@ -174,7 +180,7 @@ class Dishtimer(Cog):
             os.remove("data/userlogs_backup.zip")
         except:
             # Don't kill cronjobs if something goes wrong.
-            await self.bot.log_channel.send(
+            await log_channel.send(
                 f"Cron-daily has errored: ```{traceback.format_exc()}```"
             )
 
