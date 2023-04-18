@@ -25,7 +25,7 @@ class ModTimed(Cog):
             return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
             return await ctx.send(random_bot_msg(ctx.author.name))
-        elif self.bot.check_if_target_is_staff(target):
+        elif self.bot.check_if_target_is_staff(ctx, target):
             return await ctx.send("I cannot ban Staff members.")
 
         expiry_timestamp = self.bot.parse_time(duration)
