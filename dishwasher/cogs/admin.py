@@ -109,10 +109,10 @@ class Admin(Cog):
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def taillogs(self, ctx):
-        """[O] Returns the last 20 lines of the log file."""
+        """[O] Returns the last 10 lines of the log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
-            tail = "\n".join(f.read().split("\n")[-20:])
+            tail = "\n".join(f.read().split("\n")[-10:])
         await ctx.message.reply(
             content=f"The current tailed log file...\n```{tail}```",
             mention_author=False,
