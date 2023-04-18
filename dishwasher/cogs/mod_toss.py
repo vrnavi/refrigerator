@@ -189,7 +189,7 @@ class ModToss(Cog):
         hardmsg = ""
         if (
             ctx.channel.permissions_for(ctx.guild.default_role).read_messages
-            or len(ctx.channel.members) >= 10
+            or len(ctx.channel.members) >= 100
         ):
             hardmsg = "Please change the topic. **Discussion of tossed users will lead to warnings.**"
         await ctx.reply(f"{toss_sends}\n\n{hardmsg}", mention_author=False)
