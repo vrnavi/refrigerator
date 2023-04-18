@@ -62,8 +62,10 @@ class Admin(Cog):
 
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def getudata(self, ctx, server: discord.Guild):
+    async def getudata(self, ctx, server: discord.Guild = None):
         """[O] Returns a server's userdata file."""
+        if not server:
+            server = ctx.guild
         try:
             udata = discord.File(f"data/userlogs/{server.id}/userdata.json")
             await ctx.message.reply(
@@ -79,8 +81,10 @@ class Admin(Cog):
 
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def setudata(self, ctx, server: discord.Guild):
+    async def setudata(self, ctx, server: discord.Guild = None):
         """[O] Replaces a server's userdata file. This is destructive behavior!"""
+        if not server:
+            server = ctx.guild
         if not ctx.message.attachments:
             ctx.reply(
                 content="You need to supply the userdata file.", mention_author=False
@@ -113,12 +117,12 @@ class Admin(Cog):
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
             tail = "\n".join(f.read().split("\n")[-10:])
+        os.remove("logs/upload.log")
         tail.replace("```", "\`\`\`")
         await ctx.message.reply(
             content=f"The current tailed log file...\n```{tail}```",
             mention_author=False,
         )
-        os.remove("logs/upload.log")
 
     @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
