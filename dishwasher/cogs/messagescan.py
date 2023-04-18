@@ -179,7 +179,7 @@ class Messagescan(Cog):
                 )
                 embeds.append(embed)
         await message.reply(content=tlinks, embeds=embeds, mention_author=False)
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         await message.edit(suppress=True)
 
     @Cog.listener()
