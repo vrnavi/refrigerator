@@ -93,6 +93,10 @@ guild_configs = {
             "staff_role": 259199371361517569,
             # Staff channel.
             "staff_channel": 256964111626141706,
+            # Rules link.
+            "rules_url": "<#989959323771895880>",
+            # Appeal link.
+            "appeal_url": "https://os.whistler.page/appeal",
             # [cogs.appeal] Ban appeal channel.
             "ban_appeal_channel": 402019542345449472,
             # [cogs.appeal] Ban appeal webhook ID.
@@ -119,6 +123,8 @@ guild_configs = {
             "cotd_role": 534976600454725632,
             # [cogs.cotd] CoTD name.
             "cotd_name": "Fluctuating Phosphor",
+            # [cogs.reply] No Reply Pings role.
+            "noreply_role": 1059460475588448416,
         },
     }
 }
@@ -175,9 +181,6 @@ list_channels = []
 
 # == Only if you want to use cogs.sar ==
 self_assignable_roles = {}
-
-# == Only if you want to use cogs.reply ==
-noreply_role = 1059460475588448416
 
 # == Only if you want to use cogs.mod_oneshot ==
 pingmods_allow = [named_roles["journal"]] + staff_role_ids

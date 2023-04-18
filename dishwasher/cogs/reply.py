@@ -17,14 +17,14 @@ class Reply(Cog):
         self.last_eval_result = None
         self.previous_eval_code = None
 
-    # I don't know! I got this code from the GARBAGE.
     async def handle_message_with_reference(self, message):
         reference_author = message.reference.resolved.author
         if (
             message.author.bot
-            or reference_author.get_role(config.noreply_role) is None
+            or message.guild.id not in config.guild_configs
+            or reference_author.get_role(config.guild_configs[message.guild.id]["misc"]["noreply_role"]) is None
             or reference_author.id is message.author.id
-            or message.author.get_role(config.staff_role_ids[0]) is not None
+            or message.author.get_role(config.guild_configs[message.guild.id]["staff"]["staff_role"]) is not None
         ):
             return
 
@@ -32,7 +32,7 @@ class Reply(Cog):
             await message.add_reaction("🗞️")
             await message.reply(
                 file=discord.File("assets/noreply.png"),
-                delete_after=10,
+                delete_after=15,
                 mention_author=True,
             )
 

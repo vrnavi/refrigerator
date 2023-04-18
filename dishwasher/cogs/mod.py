@@ -240,7 +240,8 @@ class Mod(Cog):
             dm_message = f"**You were banned** from `{ctx.guild.name}`."
             if reason:
                 dm_message += f'\n*The given reason is:* "{reason}".'
-            dm_message += "\n\nThis ban does not expire, but you may appeal it here:\nhttps://os.whistler.page/appeal"
+            appealmsg = f", but you may appeal it here:\n{config.guild_configs['ctx.guild.id']['staff']['appeal_url']}" if config.guild_configs['ctx.guild.id']['staff']['appeal_url'] else "."
+            dm_message += f"\n\nThis ban does not expire{appealmsg}"
             try:
                 await target.send(dm_message)
             except discord.errors.Forbidden:
@@ -764,8 +765,9 @@ class Mod(Cog):
             msg = f"**You were warned** on `{ctx.guild.name}`."
             if reason:
                 msg += "\nThe given reason is: " + reason
+            rulesmsg = f" in {config.guild_configs['ctx.guild.id']['staff']['rules_url']}." if config.guild_configs['ctx.guild.id']['staff']['rules_url'] else "."
             msg += (
-                f"\n\nPlease read the rules in {config.rules_url}. "
+                f"\n\nPlease read the rules{rulesmsg} "
                 f"This is warn #{warn_count}."
             )
             try:
