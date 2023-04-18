@@ -181,8 +181,10 @@ class Messagescan(Cog):
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
         await message.edit(suppress=True)
+
         def check(m):
             return m.id == message.id
+
         try:
             await self.bot.wait_for("message_delete", timeout=600, check=check)
         except:
