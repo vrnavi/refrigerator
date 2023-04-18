@@ -167,7 +167,7 @@ class Dishtimer(Cog):
         try:
             shutil.make_archive("data/userlogs_backup", "zip", "data/userlogs")
             for m in config.bot_managers:
-                self.bot.get_user(m).send(
+                await self.bot.get_user(m).send(
                     content="Daily userlog backups:",
                     file=discord.File("data/userlogs_backup.zip"),
                 )
