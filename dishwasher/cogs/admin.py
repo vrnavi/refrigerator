@@ -114,7 +114,7 @@ class Admin(Cog):
         with open("logs/upload.log", "r+") as f:
             tail = "\n".join(f.read().split("\n")[-20:])
         await ctx.message.reply(
-            content="The current tailed log file...\n```{tail}```",
+            content=f"The current tailed log file...\n```{tail}```",
             mention_author=False,
         )
         os.remove("logs/upload.log")
