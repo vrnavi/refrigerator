@@ -178,8 +178,9 @@ class Messagescan(Cog):
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
                 embeds.append(embed)
-        await message.edit(suppress=True)
         await message.reply(content=tlinks, embeds=embeds, mention_author=False)
+        await asyncio.sleep(3)
+        await message.edit(suppress=True)
 
     @Cog.listener()
     async def on_message_delete(self, message):
