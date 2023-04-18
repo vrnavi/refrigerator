@@ -21,7 +21,8 @@ class ModAppeal(Cog):
         await self.bot.wait_until_ready()
 
         if (
-            message.channel.id
+            message.guild
+            and message.channel.id
             == config.guild_configs[message.guild.id]["staff"]["ban_appeal_channel"]
             and message.author.id
             == config.guild_configs[message.guild.id]["staff"]["ban_appeal_webhook_id"]
