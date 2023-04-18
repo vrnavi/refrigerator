@@ -99,13 +99,15 @@ guild_configs = {
             "unroleban_expiry": 180,
         },
         "anitraid": {
+            # [cogs.mod_antiraid] Announcement channels. Set to "all" for all.
+            "announce_channels": [256926147827335170],
             # [cogs.mod_antiraid] Mention threshold.
             "mention_threshold": 5,
             # [cogs.mod_antiraid] Recent join threshold.
-            "recent_join_threshold": 20,
+            "join_threshold": 20,
         },
         "misc": {
-            # [cogs.mod_locks] "Authorized" roles.
+            # [cogs.mod_locks/cogs.mod_antiraid] "Authorized" roles.
             "authorized_roles": [303555716109565955],
             # [cogs.mod_locks] "Bot" roles.
             "bot_roles": [256985367977263105],
