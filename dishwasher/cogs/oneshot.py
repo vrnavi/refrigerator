@@ -6,7 +6,7 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 
 
-class ModOneShot(Cog):
+class OneShot(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -117,4 +117,4 @@ class ModOneShot(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(ModOneShot(bot))
+    await bot.add_cog(OneShot(bot))

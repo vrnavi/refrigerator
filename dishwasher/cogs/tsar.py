@@ -3,7 +3,7 @@ import datetime
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog
-from helpers.checks import check_if_staff_or_ot, check_if_bot_manager
+from helpers.checks import check_if_bot_manager
 
 
 class tsarList:

@@ -69,8 +69,12 @@ class ModToss(Cog):
 
             roles = []
             role_ids = []
-            toss_role = ctx.guild.get_role(config.toss_roles[0]["role"])
-            toss_channel = ctx.guild.get_channel(config.toss_roles[0]["channel"])
+            toss_role = ctx.guild.get_role(
+                config.guild_configs[member.guild.id]["toss"]["toss_role"]
+            )
+            toss_channel = ctx.guild.get_channel(
+                config.guild_configs[member.guild.id]["toss"]["toss_channel"]
+            )
             for rx in us.roles:
                 if rx.name != "@everyone" and rx != toss_role:
                     roles.append(rx)
@@ -117,7 +121,9 @@ class ModToss(Cog):
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles) > 0:
                     bad_roles_msg = f"\nI was unable to remove the following role(s): **{', '.join(bad_no_good_terrible_roles)}**"
-                await ctx.guild.get_channel(config.staff_channel).send(
+                await ctx.guild.get_channel(
+                    config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
+                ).send(
                     f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
                     f"**ID:** {us.id}\n"
                     f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
@@ -183,9 +189,7 @@ class ModToss(Cog):
         hardmsg = ""
         if (
             ctx.channel.permissions_for(ctx.guild.default_role).read_messages
-            or ctx.channel.permissions_for(
-                ctx.guild.get_role(config.named_roles["journal"])
-            ).read_messages
+            or len(ctx.channel.members) >= 10
         ):
             hardmsg = "Please change the topic. **Discussion of tossed users will lead to warnings.**"
         await ctx.reply(f"{toss_sends}\n\n{hardmsg}", mention_author=False)
@@ -232,7 +236,9 @@ class ModToss(Cog):
                     f"{us.name} is not currently tossed.", mention_author=False
                 )
 
-            toss_role = ctx.guild.get_role(config.toss_roles[0]["role"])
+            toss_role = ctx.guild.get_role(
+                config.guild_configs[member.guild.id]["toss"]["toss_role"]
+            )
             roles_actual = []
             restored = ""
             for r in roles:
@@ -256,7 +262,9 @@ class ModToss(Cog):
                 f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:**{restored}",
                 mention_author=False,
             )
-            await ctx.guild.get_channel(config.staff_channel).send(
+            await ctx.guild.get_channel(
+                config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
+            ).send(
                 f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}"
             )
 

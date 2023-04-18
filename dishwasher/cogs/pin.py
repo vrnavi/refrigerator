@@ -5,8 +5,7 @@ from discord.enums import MessageType
 from discord import Embed
 import aiohttp
 import gidgethub.aiohttp
-from helpers.checks import check_if_collaborator
-from helpers.checks import check_if_pin_channel
+from helpers.checks import check_if_staff
 
 
 class Pin(Cog):
@@ -76,8 +75,7 @@ class Pin(Cog):
 
     @commands.command()
     @commands.guild_only()
-    @commands.check(check_if_collaborator)
-    @commands.check(check_if_pin_channel)
+    @commands.check(check_if_staff)
     async def unpin(self, ctx, idx: int):
         """Unpins a pinned message."""
         if idx <= 50:

@@ -114,9 +114,6 @@ class Dishtimer(Cog):
                 count += len(purge_res)
                 if len(purge_res) != 100:
                     done_cleaning = True
-            await self.bot.log_channel.send(
-                f"Wiped {count} messages from <#{channel.id}> automatically."
-            )
         except:
             # Don't kill cronjobs if something goes wrong.
             await self.bot.log_channel.send(

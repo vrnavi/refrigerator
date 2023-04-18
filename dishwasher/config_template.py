@@ -25,11 +25,10 @@ embed_desc = (
 initial_cogs = [
     "cogs.common",
     "cogs.admin",
-    "cogs.appeal",
     "cogs.cotd",
     "cogs.explains",
     "cogs.mod",
-    "cogs.mod_antiraid",
+    "cogs.mod_appeal",
     "cogs.mod_archive",
     "cogs.mod_locks",
     "cogs.mod_observation",
@@ -52,24 +51,6 @@ initial_cogs = [
 
 # == cogs.prefixes maximum prefixes. ==
 maxprefixes = 6  # !max of 24!
-
-# A mapping of role IDs to names.
-named_roles = {
-    "journal": 303555716109565955,
-}
-
-# Staff role.
-staff_role_ids = [
-    259199371361517569,
-]
-# Ex-Staff role.
-exstaff_role_ids = [
-    491431570251579412,
-]
-# Tossed/Rolebanned role.
-toss_role_id = 257050851611377666
-# Bot role.
-bot_role = 257036973187923968
 
 # Specific server configuration. Some cogs will default to the first in the list.
 guild_configs = {
@@ -105,6 +86,7 @@ guild_configs = {
         },
         "toss": {
             "toss_role": 257050851611377666,
+            "toss_channel": 257049714577506305,
             "toss_channels": [
                 "basement",
                 "abyss",
@@ -130,9 +112,6 @@ guild_configs = {
     }
 }
 
-# Staff channel.
-staff_channel = 256964111626141706
-
 # These channel entries are used to determine which roles will be given
 # access when we unlock them
 general_channels = [
@@ -157,38 +136,15 @@ lockdown_configs = {
 }
 
 # Channels that will be cleaned every minute/hour.
-# This feature isn't very good rn.
-# See https://github.com/reswitched/robocop-ng/issues/23
 minutely_clean_channels = []
 hourly_clean_channels = []
 
-# List of words that will be ignored if they match one of the
-# suspect_words (This is used to remove false positives)
-suspect_ignored_words = []
 # == Only if you want to use cogs.pin ==
 # Used for the pinboard. Leave empty if you don't wish for a gist pinboard.
 github_oauth_token = ""
-
 # Channels and roles where users can pin messages
 allowed_pin_channels = []
 allowed_pin_roles = []
-
-# Channel to upload text files while editing list items. (They are cleaned up.)
-list_files_channel = 0
-
-# == Only if you want to use cogs.lists ==
-# Channels that are lists that are controlled by the lists cog.
-list_channels = []
-
-# == Only if you want to use cogs.sar ==
-self_assignable_roles = {}
-
-# == Only if you want to use cogs.mod_oneshot ==
-pingmods_allow = [named_roles["journal"]] + staff_role_ids
-
-# == Only if you want to use cogs.appeal ==
-ban_appeal_channel = 402019542345449472
-ban_appeal_webhook_id = 402016472878284801
 
 # == Only if you want to use cogs.mod_antiraid ==
 # Auto-mention threshold (Minimum to fire, inclusive) (set to 0 to disable)
@@ -198,33 +154,6 @@ recent_join_threshold = 20
 # Announcement messages for lockdown/unlockdown. Set to `null` if unused.
 lockdown_annoncement = "All public channels are temporarily restricted."
 unlockdown_annoncement = "All public channels are no longer restricted."
-
-
-# == Only if you want to use cogs.mod_toss and cogs.mod_archive ==
-# Example for Toss role.
-#    {
-#        "role": 0,
-#        "channel": 0
-#    }
-toss_role = 257050851611377666
-# Names for the bot to use.
-toss_channels = [
-    "basement",
-    "abyss",
-    "recycle-bin",
-    "out-of-bounds",
-]
-# Where the bot should place overflow channels.
-# If it is a channel id, it will be placed under this channel.
-# If it is a category id, it will be placed at the last spot.
-toss_placement = 263715783782301696
-
-# == Only if you want to use cogs.mod_archive ==
-# == cogs.mod_toss must be configured for this to work!
-# == Make sure to supply service_account.json!
-# The Google Drive folder.
-drive_folder = "folder_goes_here"
-# The toss/roleban expiry timeout.
 
 
 # Used for the bot's random options.

@@ -6,20 +6,12 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.dishtimer import add_job
 from helpers.userlogs import userlog
+from helpers.placeholders import random_self_msg, random_bot_msg
 
 
 class ModTimed(Cog):
     def __init__(self, bot):
         self.bot = bot
-
-    def check_if_target_is_staff(self, target):
-        return any(r.id in config.staff_role_ids for r in target.roles)
-
-    def random_self_msg(self, authorname):
-        return random.choice(config.target_self_messages).format(authorname=authorname)
-
-    def random_bot_msg(self, authorname):
-        return random.choice(config.target_bot_messages).format(authorname=authorname)
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -30,10 +22,10 @@ class ModTimed(Cog):
     ):
         """[S] Bans a user for a specified amount of time."""
         if target == ctx.author:
-            return await ctx.send(self.random_self_msg(ctx.author.name))
+            return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
-            return await ctx.send(self.random_bot_msg(ctx.author.name))
-        elif self.check_if_target_is_staff(target):
+            return await ctx.send(random_bot_msg(ctx.author.name))
+        elif self.bot.check_if_target_is_staff(target):
             return await ctx.send("I cannot ban Staff members.")
 
         expiry_timestamp = self.bot.parse_time(duration)

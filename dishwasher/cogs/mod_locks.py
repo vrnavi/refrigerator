@@ -23,8 +23,12 @@ class ModLocks(Cog):
             pass
 
     async def unlock_for_staff(self, channel: discord.TextChannel, issuer):
-        for role in config.staff_role_ids:
-            await self.set_sendmessage(channel, role, True, issuer)
+        await self.set_sendmessage(
+            channel,
+            config.guild_configs[channel.guild.id]["staff"]["staff_role"],
+            True,
+            issuer,
+        )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
