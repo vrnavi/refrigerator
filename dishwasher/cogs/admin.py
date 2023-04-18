@@ -62,40 +62,40 @@ class Admin(Cog):
 
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def getudata(self, ctx, server: discord.Guild = None):
-        """[O] Returns a server's userdata file."""
+    async def getulog(self, ctx, server: discord.Guild = None):
+        """[O] Returns a server's userlog file."""
         if not server:
             server = ctx.guild
         try:
-            udata = discord.File(f"data/userlogs/{server.id}/userdata.json")
+            udata = discord.File(f"data/userlogs/{server.id}/userlog.json")
             await ctx.message.reply(
-                content=f"{server.name}'s userdata file...",
+                content=f"{server.name}'s userlog file...",
                 file=udata,
                 mention_author=False,
             )
         except FileNotFoundError:
             await ctx.message.reply(
-                content="That server doesn't have a userdata file.",
+                content="That server doesn't have a userlog file.",
                 mention_author=False,
             )
 
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def setudata(self, ctx, server: discord.Guild = None):
-        """[O] Replaces a server's userdata file. This is destructive behavior!"""
+    async def setulog(self, ctx, server: discord.Guild = None):
+        """[O] Replaces a server's userlog file. This is destructive behavior!"""
         if not server:
             server = ctx.guild
         if not ctx.message.attachments:
             ctx.reply(
-                content="You need to supply the userdata file.", mention_author=False
+                content="You need to supply the userlog file.", mention_author=False
             )
             return
         if not os.path.exists(f"data/userlogs/{server.id}"):
             os.makedirs(f"data/userlogs/{server.id}")
         file = ctx.message.attachments[0]
-        await file.save(f"data/userlogs/{server.id}/userdata.json")
+        await file.save(f"data/userlogs/{server.id}/userlog.json")
         await ctx.reply(
-            content=f"{server.name}'s userdata file saved.", mention_author=False
+            content=f"{server.name}'s userlog file saved.", mention_author=False
         )
 
     @commands.check(check_if_bot_manager)
