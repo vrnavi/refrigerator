@@ -45,7 +45,8 @@ class Admin(Cog):
     async def setdata(self, ctx):
         """[O] Replaces data files. This is destructive behavior!"""
         if not ctx.message.attachments:
-            ctx.reply(content="You need to supply the data files.")
+            ctx.reply(content="You need to supply the data files.", mention_author=False)
+            return
         for f in ctx.message.attachments:
             if f"data/{f.filename}" in self.bot.wanted_jsons:
                 await f.save(f"data/{f.filename}")
@@ -56,6 +57,35 @@ class Admin(Cog):
                 await ctx.reply(
                     content=f"{f.filename} is not a data file.", mention_author=False
                 )
+
+    @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def getudata(self, ctx, server: discord.Guild):
+        """[O] Returns a server's userdata file."""
+        try:
+            udata = discord.File(f"data/{server.id}/userdata.json")
+            await ctx.message.reply(
+                content=f"{server.name}'s userdata file...",
+                file=udata,
+                mention_author=False,
+            )
+        except FileNotFoundError:
+            await ctx.message.reply(content="That server doesn't have a userdata file.", mention_author = False)
+
+    @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def setudata(self, ctx, server: discord.Guild):
+        """[O] Replaces a server's userdata file. This is destructive behavior!"""
+        if not ctx.message.attachments:
+            ctx.reply(content="You need to supply the userdata file.", mention_author = False)
+            return
+        if not os.path.exists(f"data/userlogs/{server.id}"):
+            os.makedirs(f"data/userlogs/{server.id}")
+        file = ctx.message.attachments[0]
+        await file.save(f"data/userlogs/{server.id}/userdata.json")
+        await ctx.reply(
+            content=f"{server.name}'s userdata file saved.", mention_author=False
+        )
 
     @commands.check(check_if_bot_manager)
     @commands.command()
@@ -76,12 +106,8 @@ class Admin(Cog):
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
             tail = "\n".join(f.read().split("\n")[-20:])
-            f.seek(0)
-            f.write(tail)
-            f.truncate()
         await ctx.message.reply(
-            content="The current tailed log file...",
-            file=discord.File("logs/upload.log", filename="dishwasher.tail.log"),
+            content="The current tailed log file...\n```{tail}```",
             mention_author=False,
         )
         os.remove("logs/upload.log")
