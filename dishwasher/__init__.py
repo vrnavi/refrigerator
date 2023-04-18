@@ -130,7 +130,7 @@ async def on_command_error(ctx, error):
     )
 
     for m in config.bot_managers:
-        await self.bot.get_user(m).send(embed=err_log_embed)
+        await bot.get_user(m).send(embed=err_log_embed)
 
     if isinstance(error, commands.NoPrivateMessage):
         return await ctx.send("This command doesn't work in DMs.")
