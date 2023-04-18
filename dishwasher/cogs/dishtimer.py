@@ -3,6 +3,8 @@ import time
 import discord
 import traceback
 import random
+import shutil
+import os
 from datetime import datetime, timezone
 from discord.ext import commands, tasks
 from discord.ext.commands import Cog
@@ -163,7 +165,13 @@ class Dishtimer(Cog):
     async def daily(self):
         await self.bot.wait_until_ready()
         try:
-            pass
+            shutil.make_archive("data/userlogs_backup", "zip", "data/userdata")
+            for m in config.bot_managers:
+                self.bot.get_user(m).send(
+                    content="Daily userlog backups:",
+                    file=discord.File("data/userlogs_backup.zip"),
+                )
+            os.remove("data/userlogs_backup.zip")
         except:
             # Don't kill cronjobs if something goes wrong.
             await self.bot.log_channel.send(
