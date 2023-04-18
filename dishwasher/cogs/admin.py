@@ -118,9 +118,8 @@ class Admin(Cog):
         with open("logs/upload.log", "r+") as f:
             tail = "\n".join(f.read().split("\n")[-10:])
         os.remove("logs/upload.log")
-        tail.replace("```", "")
         await ctx.message.reply(
-            content=f"The current tailed log file...\n```{tail}```",
+            content=f"The current tailed log file...\n```{tail.replace('```', '')}```",
             mention_author=False,
         )
 
