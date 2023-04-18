@@ -9,15 +9,17 @@ from helpers.checks import check_if_staff
 class ModObserve(Cog):
     def __init__(self, bot):
         self.bot = bot
-        bot.raidmode = False
+        raidmode = []
 
     @Cog.listener()
     async def on_member_join(self, member):
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
-        if member.created_at >= cutoff_ts or self.bot.raidmode == True:
+        if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
             escaped_name = self.bot.escape_message(member)
-            staff_channel = config.staff_channel
+            staff_channel = config.guild_configs[member.guild.id]["staff"][
+                "staff_channel"
+            ]
             embeds = []
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
@@ -36,7 +38,7 @@ class ModObserve(Cog):
                 inline=True,
             )
             embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
-            if self.bot.raidmode == True:
+            if member.guild.id in self.raidmode:
                 rmstr = "`🟢 ON`"
             else:
                 rmstr = "`🔴 OFF`"
@@ -51,7 +53,7 @@ class ModObserve(Cog):
     @commands.command()
     async def raidmode(self, message, args=""):
         if not args:
-            if self.bot.raidmode:
+            if message.guild.id in self.raidmode:
                 await message.reply(
                     "Raid mode is currently `🟢 ON`.", mention_author=False
                 )
@@ -61,8 +63,8 @@ class ModObserve(Cog):
                 )
             return
         if args == "on":
-            if self.bot.raidmode == False:
-                self.bot.raidmode = True
+            if message.guild.id not in self.raidmode:
+                self.raidmode.append(message.guild.id)
                 await message.reply("Raid mode is now `🟢 ON`.", mention_author=False)
             else:
                 await message.reply(
@@ -70,8 +72,8 @@ class ModObserve(Cog):
                 )
             return
         if args == "off":
-            if self.bot.raidmode:
-                self.bot.raidmode = False
+            if message.guild.id in self.raidmode:
+                self.raidmode.remove(message.guild.id)
                 await message.reply("Raid mode is now `🔴 OFF`.", mention_author=False)
             else:
                 await message.reply(
