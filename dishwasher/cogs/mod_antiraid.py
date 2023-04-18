@@ -237,7 +237,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ml"])
     async def lockdown(self, message, *, args=""):
-        if message.guild.id not in configs.guild_configs:
+        if message.guild.id not in config.guild_configs:
             return
         channel_list = self.parse_channel_list(message.guild, args)
         if not channel_list:
@@ -251,7 +251,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ul"])
     async def unlockdown(self, message, *, args=""):
-        if message.guild.id not in configs.guild_configs:
+        if message.guild.id not in config.guild_configs:
             return
         channel_list = self.parse_channel_list(message.guild, args)
         if not channel_list:
@@ -280,7 +280,7 @@ class ModAntiRaid(Cog):
             or message.author.bot
             or not message.content
             or not message.guild
-            or message.guild.id not in configs.guild_configs
+            or message.guild.id not in config.guild_configs
         ):
             return
 
