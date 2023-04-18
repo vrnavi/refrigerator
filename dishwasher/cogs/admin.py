@@ -61,7 +61,7 @@ class Admin(Cog):
                 )
 
     @commands.check(check_if_bot_manager)
-    @commands.command(alias=["getulogs"])
+    @commands.command(aliases=["getulogs"])
     async def getulog(self, ctx, server: discord.Guild = None):
         """[O] Returns a server's userlog file."""
         if not server:
@@ -80,7 +80,7 @@ class Admin(Cog):
             )
 
     @commands.check(check_if_bot_manager)
-    @commands.command(alias=["setulogs"])
+    @commands.command(aliases=["setulogs"])
     async def setulog(self, ctx, server: discord.Guild = None):
         """[O] Replaces a server's userlog file. This is destructive behavior!"""
         if not server:
