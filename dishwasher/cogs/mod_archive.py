@@ -67,7 +67,7 @@ class ModArchive(Cog):
                 if e.type == "rich":
                     if not blank_content:
                         add += "\n"
-                    add += textify_embed(
+                    add += self.textify_embed(
                         e, limit=40, padding=padding, pad_first_line=not blank_content
                     )
                     blank_content = False
