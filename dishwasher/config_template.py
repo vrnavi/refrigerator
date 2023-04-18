@@ -98,10 +98,17 @@ guild_configs = {
             "drive_folder": "folder_goes_here",
             "unroleban_expiry": 180,
         },
-        "lockdown": {
-            # [cogs.lockdown]
+        "anitraid": {
+            # [cogs.mod_antiraid] Mention threshold.
+            "mention_threshold": 5,
+            # [cogs.mod_antiraid] Recent join threshold.
+            "recent_join_threshold": 20,
         },
         "misc": {
+            # [cogs.mod_locks] "Authorized" roles.
+            "authorized_roles": [303555716109565955],
+            # [cogs.mod_locks] "Bot" roles.
+            "bot_roles": [256985367977263105],
             # [cogs.cotd] CoTD role.
             "cotd_role": 534976600454725632,
             # [cogs.cotd] CoTD name.
@@ -110,29 +117,6 @@ guild_configs = {
             "noreply_role": 1059460475588448416,
         },
     }
-}
-
-# These channel entries are used to determine which roles will be given
-# access when we unlock them
-general_channels = [
-    256926147827335170,
-    256970699581685761,
-    257057492851228674,
-    547150473363456020,
-    270745381061525504,
-    688183601233133650,
-    350855217614553088,
-    631612006826377226,
-    256984616915828738,
-    369934580465139712,
-    256973430702866437,
-    863599748622712872,
-]  # Channels everyone can access
-
-# Controls which roles are blocked during lockdown
-lockdown_configs = {
-    # Used as a default value for channels without a config, defaults to main guild's everyone role.
-    "default": {"channels": general_channels, "roles": [guild_whitelist[0]]},
 }
 
 # Channels that will be cleaned every minute/hour.
@@ -145,15 +129,6 @@ github_oauth_token = ""
 # Channels and roles where users can pin messages
 allowed_pin_channels = []
 allowed_pin_roles = []
-
-# == Only if you want to use cogs.mod_antiraid ==
-# Auto-mention threshold (Minimum to fire, inclusive) (set to 0 to disable)
-mention_threshold = 5
-# Recent join threshold - When reporting auto lockdowns, will also print a list of members who joined in the last n seconds. (set to 0 to disable)
-recent_join_threshold = 20
-# Announcement messages for lockdown/unlockdown. Set to `null` if unused.
-lockdown_annoncement = "All public channels are temporarily restricted."
-unlockdown_annoncement = "All public channels are no longer restricted."
 
 
 # Used for the bot's random options.

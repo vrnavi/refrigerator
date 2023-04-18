@@ -109,7 +109,6 @@ class ModArchive(Cog):
                     return len([r for r in member.roles if not (r.managed)]) == 2
                 return True
 
-
     def textify_embed(self, embed, limit=40, padding=0, pad_first_line=True):
         text_proc = []
         title = ""
@@ -132,7 +131,9 @@ class ModArchive(Cog):
                 f.name
                 + (
                     ":"
-                    if not f.name.endswith(("!", ")", "}", "-", ":", ".", "?", "%", "$"))
+                    if not f.name.endswith(
+                        ("!", ")", "}", "-", ":", ".", "?", "%", "$")
+                    )
                     else ""
                 ),
                 *f.value.split("\n"),

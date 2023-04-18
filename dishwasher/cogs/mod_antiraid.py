@@ -12,8 +12,6 @@ class ModAntiRaid(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.announce_channels = config.general_channels[0]
-        self.lockdown_msg = config.lockdown_announcement
-        self.unlockdown_msg = config.unlockdown_announcement
         self.mention_threshold = config.mention_threshold
         self.join_threshold = config.recent_join_threshold
         self.locked_channels = set()
@@ -113,7 +111,7 @@ class ModAntiRaid(Cog):
             if not c.permissions_for(c.guild.me).send_messages:
                 continue
 
-            message = self.lockdown_msg if lockdown else self.unlockdown_msg
+            message = "All public channels are temporarily restricted." if lockdown else "All public channels are no longer restricted."
 
             if message:
                 msg = await c.send(message)

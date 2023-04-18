@@ -33,7 +33,7 @@ class ModLocks(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def lock(self, ctx, channel: discord.TextChannel = None, soft: bool = False):
+    async def lock(self, ctx, soft: bool = False, channel: discord.TextChannel = None):
         """[S] Prevents people from speaking in a channel.
 
         Defaults to current channel."""
@@ -43,13 +43,19 @@ class ModLocks(Cog):
             config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
         )
 
-        roles = None
-        for key, lockdown_conf in config.lockdown_configs.items():
-            if channel.id in lockdown_conf["channels"]:
-                roles = lockdown_conf["roles"]
-
-        if roles is None:
-            roles = config.lockdown_configs["default"]["roles"]
+        if not channel.permissions_for(ctx.guild.default_role).send_messages:
+            roles = config.guild_configs[ctx.guild.id]["misc"]["authorized_roles"]
+        elif not channel.permissions_for(ctx.guild.default_role).read_messages:
+            roles = []
+            for r in channel.changed_roles:
+                if r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]:
+                    continue
+                if r.id in config.guild_configs[ctx.guild.id]["misc"]["bot_roles"]:
+                    continue
+                if channel.overwrites_for(r).send_messages:
+                    roles.append(r.id)
+        else:
+            roles = [ctx.guild.default_role]
 
         for role in roles:
             await self.set_sendmessage(channel, role, False, ctx.author)
@@ -81,13 +87,19 @@ class ModLocks(Cog):
             config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
         )
 
-        roles = None
-        for key, lockdown_conf in config.lockdown_configs.items():
-            if channel.id in lockdown_conf["channels"]:
-                roles = lockdown_conf["roles"]
-
-        if roles is None:
-            roles = config.lockdown_configs["default"]["roles"]
+        if not channel.permissions_for(ctx.guild.default_role).send_messages:
+            roles = config.guild_configs[ctx.guild.id]["misc"]["authorized_roles"]
+        elif not channel.permissions_for(ctx.guild.default_role).read_messages:
+            roles = []
+            for r in channel.changed_roles:
+                if r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]:
+                    continue
+                if r.id in config.guild_configs[ctx.guild.id]["misc"]["bot_roles"]:
+                    continue
+                if channel.overwrites_for(r).send_messages:
+                    roles.append(r.id)
+        else:
+            roles = [ctx.guild.default_role]
 
         await self.unlock_for_staff(channel, ctx.author)
 
@@ -106,28 +118,42 @@ class ModLocks(Cog):
     @commands.command()
     async def lockout(self, ctx, target: discord.Member):
         if target == ctx.author:
-            return await ctx.send(random_self_msg(ctx.author.name))
+            return await ctx.reply(
+                random_self_msg(ctx.author.name), mention_author=False
+            )
         elif target == self.bot.user:
-            return await ctx.send(random_bot_msg(ctx.author.name))
+            return await ctx.reply(
+                random_bot_msg(ctx.author.name), mention_author=False
+            )
         elif self.bot.check_if_target_is_staff(ctx, target):
-            return await ctx.send("I cannot lockout Staff members.")
+            return await ctx.reply(
+                "I cannot lockout Staff members.", mention_author=False
+            )
 
         await ctx.channel.set_permissions(target, send_messages=False)
-        await ctx.reply(content=f"{target} has been locked out.")
+        await ctx.reply(content=f"{target} has been locked out.", mention_author=False)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def unlockout(self, ctx, target: discord.Member):
         if target == ctx.author:
-            return await ctx.send("**...How?**")
+            return await ctx.reply(
+                random_self_msg(ctx.author.name), mention_author=False
+            )
         elif target == self.bot.user:
-            return await ctx.send(f"Leave me alone, weirdo.")
+            return await ctx.reply(
+                random_bot_msg(ctx.author.name), mention_author=False
+            )
         elif self.bot.check_if_target_is_staff(ctx, target):
-            return await ctx.send("I cannot unlockout Staff members.")
+            return await ctx.reply(
+                "I cannot unlockout Staff members.", mention_author=False
+            )
 
         await ctx.channel.set_permissions(target, overwrite=None)
-        await ctx.reply(content=f"{target} has been unlocked out.")
+        await ctx.reply(
+            content=f"{target} has been unlocked out.", mention_author=False
+        )
 
 
 async def setup(bot):
