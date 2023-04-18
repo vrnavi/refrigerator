@@ -65,7 +65,7 @@ class Admin(Cog):
     async def getudata(self, ctx, server: discord.Guild):
         """[O] Returns a server's userdata file."""
         try:
-            udata = discord.File(f"data/{server.id}/userdata.json")
+            udata = discord.File(f"data/userlogs/{server.id}/userdata.json")
             await ctx.message.reply(
                 content=f"{server.name}'s userdata file...",
                 file=udata,
