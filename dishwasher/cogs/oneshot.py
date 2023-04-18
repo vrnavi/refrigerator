@@ -3,9 +3,10 @@ import discord
 import datetime
 from discord.ext import commands
 from discord.ext.commands import Cog
+from helpers.checks import check_if_staff
 
 
-class BasicOneShot(Cog):
+class ModOneShot(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -71,6 +72,49 @@ class BasicOneShot(Cog):
             )
         await ctx.reply(embed=embed, mention_author=False)
 
+    @commands.guild_only()
+    @commands.command(aliases=["pingmods", "summonmods"])
+    async def pingmod(self, ctx):
+        """[U] Pings mods, only use when there's an emergency."""
+        await ctx.reply(
+            f"<@&{config.guild_configs[ctx.guild.id]['staff']['staff_role']}>, {ctx.author.display_name} is requesting assistance.",
+            mention_author=False,
+        )
+
+    @commands.guild_only()
+    @commands.command(aliases=["togglemod"])
+    async def modtoggle(self, ctx):
+        """[S] Toggles your Staff role.
+
+        If you have Staff, it will replace it with Ex-Staff, and vice versa."""
+        staff_role = ctx.guild.get_role(
+            config.guild_configs[256926147827335170]["staff"]["staff_role"]
+        )
+        exstaff_role = ctx.guild.get_role(
+            config.guild_configs[256926147827335170]["staff"]["exstaff_role"]
+        )
+
+        if staff_role in ctx.author.roles:
+            await ctx.author.remove_roles(
+                staff_role, reason="Staff self-unassigned Staff role"
+            )
+            await ctx.author.add_roles(
+                exstaff_role, reason="Staff self-unassigned Staff role"
+            )
+            await ctx.message.reply(content="`🔴 Staff`", mention_author=False)
+        elif exstaff_role in ctx.author.roles:
+            await ctx.author.add_roles(
+                staff_role, reason="Staff self-assigned Staff role"
+            )
+            await ctx.author.remove_roles(
+                exstaff_role, reason="Staff self-assigned Staff role"
+            )
+            await ctx.message.reply(content="`🟢 Staff`", mention_author=False)
+        else:
+            await ctx.reply(
+                content="You are unable to use this command.", mention_author=False
+            )
+
 
 async def setup(bot):
-    await bot.add_cog(BasicOneShot(bot))
+    await bot.add_cog(ModOneShot(bot))

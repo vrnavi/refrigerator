@@ -32,14 +32,13 @@ initial_cogs = [
     "cogs.mod_antiraid",
     "cogs.mod_archive",
     "cogs.mod_locks",
-    "cogs.mod_oneshot",
     "cogs.mod_observation",
     "cogs.mod_note",
     "cogs.mod_userlog",
     "cogs.mod_timed",
     "cogs.mod_watch",
     "cogs.basic",
-    "cogs.basic_oneshot",
+    "cogs.oneshot",
     "cogs.logs",
     "cogs.remind",
     "cogs.reply",
@@ -91,6 +90,8 @@ guild_configs = {
         "staff": {
             # Staff role.
             "staff_role": 259199371361517569,
+            # Ex-Staff role.
+            "exstaff_role": 491431570251579412,
             # Staff channel.
             "staff_channel": 256964111626141706,
             # Rules link.
