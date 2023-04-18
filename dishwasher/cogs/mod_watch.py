@@ -31,7 +31,7 @@ class ModWatch(Cog):
                 return await ctx.send("I cannot watch Staff members.")
 
         trackerlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
+            config.guild_configs[ctx.guild.id]["staff"]["tracker_channel"]
         )
         trackerthread = await trackerlog.create_thread(name=f"{target.name} Watchlog")
         embed = discord.Embed(
@@ -74,7 +74,7 @@ class ModWatch(Cog):
             )
             await trackerthread.edit(archived=True)
             trackerlog = await self.bot.fetch_channel(
-                config.guild_configs[ctx.guild.id]["logs"]["tracker_channel"]
+                config.guild_configs[ctx.guild.id]["staff"]["tracker_channel"]
             )
             trackermsg = await trackerlog.fetch_message(
                 userlog[str(target.id)]["watch"]["message"]
@@ -103,7 +103,7 @@ class ModWatch(Cog):
                     userlog[str(message.author.id)]["watch"]["thread"]
                 )
                 trackermsg = await self.bot.get_channel(
-                    config.guild_configs[message.guild.id]["logs"]["tracker_channel"]
+                    config.guild_configs[message.guild.id]["staff"]["tracker_channel"]
                 ).fetch_message(userlog[str(message.author.id)]["watch"]["message"])
                 threadembed = discord.Embed(
                     color=message.author.color,
