@@ -1,4 +1,3 @@
-import json
 import re
 import discord
 import datetime
@@ -19,6 +18,8 @@ class Messagescan(Cog):
             re.IGNORECASE,
         )
         self.prevmessages = {}
+        self.prevedit_before = {}
+        self.prevedit_after = {}
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -29,20 +30,102 @@ class Messagescan(Cog):
             # Prepare embed msg
             embed = discord.Embed(
                 color=ctx.author.color,
-                description=f"{lastmsg.content}",
+                description=lastmsg.content,
                 timestamp=lastmsg.created_at,
             )
             embed.set_footer(
-                text=f"Sniped by {ctx.author.name}#{ctx.author.discriminator}"
+                text=f"Sniped by {ctx.author}",
+                icon_url=ctx.author.display_avatar.url,
             )
             embed.set_author(
                 name=f"💬 {lastmsg.author} said in #{lastmsg.channel.name}...",
-                icon_url=f"{lastmsg.author.display_avatar.url}",
+                icon_url=lastmsg.author.display_avatar.url,
             )
             await ctx.reply(embed=embed, mention_author=False)
         else:
             await ctx.reply(
-                content="There is no message in the snipe cache for this channel.",
+                content="There is no message delete in the snipe cache for this channel.",
+                mention_author=False,
+            )
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def snip(self, ctx):
+        if ctx.channel.id in self.prevedit_before:
+            lastbeforemsg = self.prevedit_before[ctx.channel.id]
+            lastaftermsg = self.prevedit_after[ctx.channel.id]
+            # Prepare embed msg
+            embed = discord.Embed(
+                color=ctx.author.color,
+                timestamp=lastaftermsg.created_at,
+            )
+            embed.set_footer(
+                text=f"Sniped by {ctx.author}",
+                icon_url=ctx.author.display_avatar.url,
+            )
+            embed.set_author(
+                name=f"💬 {lastaftermsg.author} said in #{lastaftermsg.channel.name}...",
+                icon_url=f"{lastaftermsg.author.display_avatar.url}",
+                url=lastaftermsg.jump_url
+            )
+            # Split if too long.
+            if len(lastbeforemsg.clean_content) > 1024:
+                split_before_msg = list(
+                    [
+                        lastbeforemsg.clean_content[i : i + 1020]
+                        for i in range(0, len(lastbeforemsg.clean_content), 1020)
+                    ]
+                )
+                embed.add_field(
+                    name=f"❌ Before on <t:{lastbeforemsg.created_at.astimezone().strftime('%s')}:f>",
+                    value=f"**Message was too long to post!** Split into fragments below.",
+                    inline=False,
+                )
+                ctr = 1
+                for p in split_before_msg:
+                    embed.add_field(
+                        name=f"🧩 Fragment {ctr}",
+                        value=f">>> {p}",
+                        inline=True,
+                    )
+                    ctr = ctr + 1
+            else:
+                embed.add_field(
+                    name=f"❌ Before on <t:{lastbeforemsg.created_at.astimezone().strftime('%s')}:f>",
+                    value=f">>> {lastbeforemsg.clean_content}",
+                    inline=False,
+                )
+            if len(lastaftermsg.clean_content) > 1024:
+                split_after_msg = list(
+                    [
+                        lastaftermsg.clean_content[i : i + 1020]
+                        for i in range(0, len(lastaftermsg.clean_content), 1020)
+                    ]
+                )
+                embed.add_field(
+                    name=f"⭕ After on <t:{lastaftermsg.edited_at.astimezone().strftime('%s')}:f>",
+                    value=f"**Message was too long to post!** Split into fragments below.",
+                    inline=False,
+                )
+                ctr = 1
+                for p in split_after_msg:
+                    embed.add_field(
+                        name=f"🧩 Fragment {ctr}",
+                        value=f">>> {p}",
+                        inline=True,
+                    )
+                    ctr = ctr + 1
+            else:
+                embed.add_field(
+                    name=f"⭕ After on <t:{lastaftermsg.edited_at.astimezone().strftime('%s')}:f>",
+                    value=f">>> {lastaftermsg.clean_content}",
+                    inline=False,
+                )
+            await ctx.reply(embed=embed, mention_author=False)
+        else:
+            await ctx.reply(
+                content="There is no message edit in the snipe cache for this channel.",
                 mention_author=False,
             )
 
@@ -95,8 +178,9 @@ class Messagescan(Cog):
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
                 embeds.append(embed)
-        await message.edit(suppress=True)
         await message.reply(content=tlinks, embeds=embeds, mention_author=False)
+        await asyncio.sleep(3)
+        await message.edit(suppress=True)
 
     @Cog.listener()
     async def on_message_delete(self, message):
@@ -105,6 +189,15 @@ class Messagescan(Cog):
             return
 
         self.prevmessages[message.channel.id] = message
+
+    @Cog.listener()
+    async def on_message_edit(self, message_before, message_after):
+        await self.bot.wait_until_ready()
+        if message_after.author.bot:
+            return
+
+        self.prevedit_before[message_after.channel.id] = message_before
+        self.prevedit_after[message_after.channel.id] = message_after
 
 
 async def setup(bot: Bot):

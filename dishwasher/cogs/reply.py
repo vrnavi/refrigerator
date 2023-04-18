@@ -31,14 +31,7 @@ class Reply(Cog):
         if reference_author in message.mentions:
             await message.add_reaction("🗞️")
             await message.reply(
-                "\n".join(
-                    [
-                        f"**{message.author.display_name}, do not reply ping users who don't want to be pinged.**",
-                        "You can turn off reply pings by using the blue `@ ON` button to the right of the message bar.",
-                        "",
-                        "__Ignoring this message repeatedly will lead to a server warning!__",
-                    ]
-                ),
+                file=discord.File("assets/noreply.png"),
                 delete_after=10,
                 mention_author=True,
             )
