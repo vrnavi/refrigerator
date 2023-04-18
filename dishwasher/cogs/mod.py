@@ -15,9 +15,13 @@ import io
 class Mod(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.bot.check_if_target_is_staff = self.check_if_target_is_staff
 
-    def check_if_target_is_staff(self, target):
-        return any(r.id in config.staff_role_ids for r in target.roles)
+    def check_if_target_is_staff(self, ctx, target):
+        return any(
+            r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]
+            for r in target.roles
+        )
 
     @commands.guild_only()
     @commands.check(check_if_bot_manager)

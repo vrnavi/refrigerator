@@ -20,7 +20,6 @@ class Admin(Cog):
         self.last_eval_result = None
         self.previous_eval_code = None
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command(name="exit", aliases=["quit", "bye"])
     async def _exit(self, ctx):
@@ -30,7 +29,6 @@ class Admin(Cog):
         )
         await self.bot.close()
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def getdata(self, ctx):
@@ -42,7 +40,6 @@ class Admin(Cog):
             mention_author=False,
         )
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def setdata(self, ctx):
@@ -60,7 +57,6 @@ class Admin(Cog):
                     content=f"{f.filename} is not a data file.", mention_author=False
                 )
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def getlogs(self, ctx):
@@ -73,7 +69,6 @@ class Admin(Cog):
         )
         os.remove("logs/upload.log")
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def taillogs(self, ctx):
@@ -91,7 +86,6 @@ class Admin(Cog):
         )
         os.remove("logs/upload.log")
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
     async def _eval(self, ctx, *, code: str):
@@ -150,7 +144,6 @@ class Admin(Cog):
         # Used for specific cog actions, tore out the verification cog since don't need it.
         pass
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def pull(self, ctx, auto=False):
@@ -184,7 +177,6 @@ class Admin(Cog):
                     )
                     return
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def load(self, ctx, ext: str):
@@ -203,7 +195,6 @@ class Admin(Cog):
             content=f":white_check_mark: `{ext}` successfully loaded."
         )
 
-    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def unload(self, ctx, ext: str):

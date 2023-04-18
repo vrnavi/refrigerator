@@ -16,7 +16,7 @@ class Basic(Cog):
     async def hello(self, ctx):
         """[U] Says hello!"""
         await ctx.send(
-            f"Hello {ctx.author.mention}! Have you drank your Soylent Green today?"
+            f"Hello {ctx.author.display_name}! Have you drank your Soylent Green today?"
         )
 
     @commands.command(aliases=["yt"])

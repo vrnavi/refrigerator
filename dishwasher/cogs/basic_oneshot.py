@@ -10,15 +10,6 @@ class BasicOneShot(Cog):
         self.bot = bot
 
     @commands.guild_only()
-    @commands.command()
-    async def journalcount(self, ctx):
-        """[O] Prints the Strange Journal count of the server."""
-        community = ctx.guild.get_role(config.named_roles["journal"])
-        await ctx.send(
-            f"{ctx.guild.name} has {len(community.members)} Strange Journal members!"
-        )
-
-    @commands.guild_only()
     @commands.command(hidden=True, aliases=["renavi"])
     async def ren(self, ctx):
         """[U] What does Dishwasher think about ren?"""
@@ -28,7 +19,9 @@ class BasicOneShot(Cog):
     @commands.command()
     async def staff(self, ctx):
         """[U] Shows currently active staff."""
-        staff_role = ctx.guild.get_role(config.staff_role_ids[0])
+        staff_role = ctx.guild.get_role(
+            config.guild_configs[ctx.guild.id]["staff"]["staff_role"]
+        )
         embed = discord.Embed(
             color=staff_role.color,
             title="🛠️ Staff List",

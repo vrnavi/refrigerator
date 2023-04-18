@@ -43,10 +43,10 @@ class Meme(Cog):
         )
 
     @commands.check(check_if_staff_or_ot)
-    @commands.command(hidden=True, aliases=["thank", "reswitchedgold"])
+    @commands.command(hidden=True, aliases=["thank"])
     async def gild(self, ctx, user: discord.Member):
         """Gives a star to a user"""
-        await ctx.send(f"{user.mention} gets a :star:, yay!")
+        await ctx.send(f"{user.display_name} gets a :star:, yay!")
 
     @commands.check(check_if_staff_or_ot)
     @commands.command(hidden=True)
@@ -96,9 +96,7 @@ class Meme(Cog):
     async def bam_member(self, ctx, target: discord.Member):
         """Bams a user owo"""
         if target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.mention}, I'm afraid I can't do that."
-            )
+            return await ctx.send(random_bot_msg(ctx.author.name))
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)

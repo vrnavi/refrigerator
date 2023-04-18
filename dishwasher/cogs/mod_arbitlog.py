@@ -6,7 +6,6 @@ import os
 import httplib2
 import re
 import datetime
-import config
 import asyncio
 import zipfile
 import textwrap

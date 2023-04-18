@@ -19,11 +19,6 @@ class Logs2(Cog):
             r"((discord\.gg|discordapp\.com/" r"+invite)/+[a-zA-Z0-9-]+)", re.IGNORECASE
         )
         self.clean_re = re.compile(r"[^a-zA-Z0-9_ ]+", re.UNICODE)
-        # All lower case, no spaces, nothing non-alphanumeric
-        susp_hellgex = "|".join(
-            [r"\W*".join(list(word)) for word in config.suspect_words]
-        )
-        self.susp_hellgex = re.compile(susp_hellgex, re.IGNORECASE)
 
     @Cog.listener()
     async def on_member_join(self, member):
@@ -372,12 +367,11 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
+        if guild.id not in config.guild_configs:
+            return
         mlog = await self.bot.fetch_channel(
             config.guild_configs[guild.id]["logs"]["mlog_thread"]
         )
-
-        if guild.id not in config.guild_whitelist:
-            return
 
         alog = [
             entry

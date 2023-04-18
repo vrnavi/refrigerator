@@ -96,9 +96,15 @@ class ModArchive(Cog):
         return ret
 
     def is_rolebanned(self, member, hard=True):
-        roleban = [r for r in member.guild.roles if r.id == config.toss_role_id]
+        roleban = [
+            r
+            for r in member.guild.roles
+            if r.id == config.guild_configs[member.guild.id]["toss"]["toss_role"]
+        ]
         if roleban:
-            if config.toss_role_id in [r.id for r in member.roles]:
+            if config.guild_configs[member.guild.id]["toss"]["toss_role"] in [
+                r.id for r in member.roles
+            ]:
                 if hard:
                     return len([r for r in member.roles if not (r.managed)]) == 2
                 return True
@@ -139,7 +145,7 @@ class ModArchive(Cog):
         gauth = GoogleAuth()
         gauth.credentials = credentials
         drive = GoogleDrive(gauth)
-        folder = config.drive_folder
+        folder = config.guild_configs[ctx.guild.id]["archive"]["drive_folder"]
         message = ctx.message
 
         try:
@@ -147,7 +153,10 @@ class ModArchive(Cog):
         except:
             pass
 
-        if message.channel.name in config.toss_channels:
+        if (
+            message.channel.name
+            in config.guild_configs[ctx.guild.id]["archive"]["toss_channels"]
+        ):
             out = await self.log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
@@ -155,11 +164,12 @@ class ModArchive(Cog):
             user = "unspecified (logged by {})".format(message.author.name)
             if (
                 (not args)
-                and LAST_UNROLEBAN.is_set
-                and LAST_UNROLEBAN.diff(message.created_at) < config.unroleban_expiry
+                and LAST_UNROLEBAN.isset(ctx.guild.id)
+                and LAST_UNROLEBAN.diff(ctx.guild.id, message.created_at)
+                < config.guild_configs[ctx.guild.id]["archive"]["unroleban_expiry"]
             ):
-                args = str(LAST_UNROLEBAN.user_id)
-                LAST_UNROLEBAN.unset()
+                args = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
+                LAST_UNROLEBAN.unset(ctx.guild.id)
 
             if args:
                 user = await self.get_members(message, args)
@@ -176,7 +186,9 @@ class ModArchive(Cog):
                 message.created_at, self.bot.user.name, reply
             )
 
-            modch = self.bot.get_channel(config.staff_channel)
+            modch = self.bot.get_channel(
+                config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
+            )
 
             f = drive.CreateFile(
                 {
@@ -257,8 +269,9 @@ class ModArchive(Cog):
 
     @Cog.listener()
     async def on_member_remove(self, member):
-        if member.guild.id == config.guild_whitelist[0] and self.is_rolebanned(member):
+        if member.guild.id in config.guild_configs and self.is_rolebanned(member):
             LAST_UNROLEBAN.set(
+                member.guild.id,
                 member.id,
                 datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
             )
@@ -266,11 +279,12 @@ class ModArchive(Cog):
     @Cog.listener()
     async def on_member_update(self, before, after):
         if (
-            before.guild.id == config.guild_whitelist[0]
+            before.guild.id in config.guild_configs
             and self.is_rolebanned(before)
             and not self.is_rolebanned(after)
         ):
             LAST_UNROLEBAN.set(
+                after.guild.id,
                 after.id,
                 datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
             )

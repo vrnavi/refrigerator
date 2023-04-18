@@ -9,9 +9,6 @@ class ModLocks(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def check_if_target_is_staff(self, target):
-        return any(r.id in config.staff_role_ids for r in target.roles)
-
     async def set_sendmessage(
         self, channel: discord.TextChannel, role, allow_send, issuer
     ):
@@ -105,12 +102,10 @@ class ModLocks(Cog):
     @commands.command()
     async def lockout(self, ctx, target: discord.Member):
         if target == ctx.author:
-            return await ctx.send("Don't hurt yourself like that.")
+            return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
-            return await ctx.send(
-                f"I'm sorry {ctx.author.name}, I'm afraid I can't do that."
-            )
-        elif self.check_if_target_is_staff(target):
+            return await ctx.send(random_bot_msg(ctx.author.name))
+        elif self.bot.check_if_target_is_staff(ctx, target):
             return await ctx.send("I cannot lockout Staff members.")
 
         await ctx.channel.set_permissions(target, send_messages=False)
@@ -124,7 +119,7 @@ class ModLocks(Cog):
             return await ctx.send("**...How?**")
         elif target == self.bot.user:
             return await ctx.send(f"Leave me alone, weirdo.")
-        elif self.check_if_target_is_staff(target):
+        elif self.bot.check_if_target_is_staff(ctx, target):
             return await ctx.send("I cannot unlockout Staff members.")
 
         await ctx.channel.set_permissions(target, overwrite=None)
