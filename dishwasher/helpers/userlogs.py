@@ -1,4 +1,5 @@
 import json
+import os
 import time
 
 userlog_event_types = {
@@ -10,18 +11,28 @@ userlog_event_types = {
 }
 
 
-def get_userlog():
-    with open("data/userlog.json", "r") as f:
+def make_userlog(serverid):
+    os.makedirs(f"data/userlogs/{serverid}")
+    with open(f"data/userlogs/{serverid}/userlog.json", "w") as f:
+        f.write("{}")
+        return json.loads("{}")
+
+
+def get_userlog(serverid):
+    with open(f"data/userlogs/{serverid}/userlog.json", "r") as f:
         return json.load(f)
 
 
-def set_userlog(contents):
-    with open("data/userlog.json", "w") as f:
+def set_userlog(serverid, contents):
+    with open(f"data/userlogs/{serverid}/userlog.json", "w") as f:
         f.write(contents)
 
 
-def fill_userlog(userid, uname):
-    userlogs = get_userlog()
+def fill_userlog(serverid, userid):
+    if os.path.exists(f"data/userlogs/{serverid}"):
+        userlogs = get_userlog(serverid)
+    else:
+        userlogs = make_userlog(serverid)
     uid = str(userid)
     if uid not in userlogs:
         userlogs[uid] = {
@@ -36,8 +47,8 @@ def fill_userlog(userid, uname):
     return userlogs, uid
 
 
-def userlog(uid, issuer, reason, event_type, uname: str = ""):
-    userlogs, uid = fill_userlog(uid, uname)
+def userlog(sid, uid, issuer, reason, event_type):
+    userlogs, uid = fill_userlog(sid, uid)
 
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     log_data = {
@@ -49,19 +60,17 @@ def userlog(uid, issuer, reason, event_type, uname: str = ""):
     if event_type not in userlogs[uid]:
         userlogs[uid][event_type] = []
     userlogs[uid][event_type].append(log_data)
-    set_userlog(json.dumps(userlogs))
+    set_userlog(sid, json.dumps(userlogs))
     return len(userlogs[uid][event_type])
 
 
-def setwatch(
-    uid, issuer, watch_state, uname: str = "", tracker_thread=None, tracker_msg=None
-):
-    userlogs, uid = fill_userlog(uid, uname)
+def setwatch(sid, uid, issuer, watch_state, tracker_thread=None, tracker_msg=None):
+    userlogs, uid = fill_userlog(sid, uid)
 
     userlogs[uid]["watch"] = {
         "state": watch_state,
         "thread": tracker_thread,
         "message": tracker_msg,
     }
-    set_userlog(json.dumps(userlogs))
+    set_userlog(sid, json.dumps(userlogs))
     return

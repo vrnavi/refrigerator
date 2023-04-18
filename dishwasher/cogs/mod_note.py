@@ -14,7 +14,7 @@ class ModNote(Cog):
     @commands.command(aliases=["addnote"])
     async def note(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Adds a note to a user."""
-        userlog(target.id, ctx.author, note, "notes", target.name)
+        userlog(ctx.guild.id, target.id, ctx.author, note, "notes")
         await ctx.send(f"Noted.")
 
 

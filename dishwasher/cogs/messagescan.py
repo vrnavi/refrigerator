@@ -67,7 +67,7 @@ class Messagescan(Cog):
             embed.set_author(
                 name=f"💬 {lastaftermsg.author} said in #{lastaftermsg.channel.name}...",
                 icon_url=f"{lastaftermsg.author.display_avatar.url}",
-                url=lastaftermsg.jump_url
+                url=lastaftermsg.jump_url,
             )
             # Split if too long.
             if len(lastbeforemsg.clean_content) > 1024:

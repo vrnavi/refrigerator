@@ -39,11 +39,11 @@ class ModTimed(Cog):
         expiry_timestamp = self.bot.parse_time(duration)
 
         userlog(
+            ctx.guild.id,
             target.id,
             ctx.author,
             f"{reason} (Timed, expires <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>)",
             "bans",
-            target.name,
         )
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(

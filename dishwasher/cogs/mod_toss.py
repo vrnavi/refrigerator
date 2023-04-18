@@ -126,11 +126,11 @@ class ModToss(Cog):
                     f"{toss_channel.mention}"
                 )
                 userlog(
+                    ctx.guild.id,
                     us.id,
                     ctx.author,
                     f"[Jump]({ctx.message.jump_url}) to toss event.",
                     "tosses",
-                    us.name,
                 )
 
                 embed = discord.Embed(

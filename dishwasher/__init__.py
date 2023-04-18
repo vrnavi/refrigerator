@@ -197,6 +197,9 @@ async def on_message(message):
 if not os.path.exists("data"):
     os.makedirs("data")
 
+if not os.path.exists("data/userlogs"):
+    os.makedirs("data/userlogs")
+
 for wanted_json in wanted_jsons:
     if not os.path.exists(wanted_json):
         with open(wanted_json, "w") as f:

@@ -56,7 +56,7 @@ class Mod(Cog):
         elif self.check_if_target_is_staff(target):
             return await ctx.send("I cannot ban Staff members.")
 
-        userlog(target.id, ctx.author, reason, "kicks", target.name)
+        userlog(ctx.guild.id, target.id, ctx.author, reason, "kicks")
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
@@ -132,14 +132,14 @@ class Mod(Cog):
                 return await ctx.send("I cannot ban Staff members.")
 
         if reason:
-            userlog(target.id, ctx.author, reason, "bans", target.name)
+            userlog(ctx.guild.id, target.id, ctx.author, reason, "bans")
         else:
             userlog(
+                ctx.guild.id,
                 target.id,
                 ctx.author,
                 f"No reason provided. ({ctx.message.jump_url})",
                 "bans",
-                target.name,
             )
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -222,14 +222,14 @@ class Mod(Cog):
             )
 
         if reason:
-            userlog(target.id, ctx.author, reason, "bans", target.name)
+            userlog(ctx.guild.id, target.id, ctx.author, reason, "bans")
         else:
             userlog(
+                ctx.guild.id,
                 target.id,
                 ctx.author,
                 f"No reason provided. ({ctx.message.jump_url})",
                 "bans",
-                target.name,
             )
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -314,11 +314,11 @@ class Mod(Cog):
                 continue
 
             userlog(
+                ctx.guild.id,
                 target,
                 ctx.author,
-                f"Part of a massban. [[Jump]({ctx.message.jump_url})",
+                f"Part of a massban. [[Jump]({ctx.message.jump_url})]",
                 "bans",
-                target_user.name,
             )
 
             safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -428,14 +428,14 @@ class Mod(Cog):
                 return await ctx.send("I cannot ban Staff members.")
 
         if reason:
-            userlog(target.id, ctx.author, reason, "bans", target.name)
+            userlog(ctx.guild.id, target.id, ctx.author, reason, "bans")
         else:
             userlog(
+                ctx.guild.id,
                 target.id,
                 ctx.author,
                 f"No reason provided. ({ctx.message.jump_url})",
                 "bans",
-                target.name,
             )
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(
@@ -715,14 +715,14 @@ class Mod(Cog):
         )
 
         if reason:
-            warn_count = userlog(target.id, ctx.author, reason, "warns", target.name)
+            warn_count = userlog(ctx.guild.id, target.id, ctx.author, reason, "warns")
         else:
             warn_count = userlog(
+                ctx.guild.id,
                 target.id,
                 ctx.author,
                 f"No reason provided. ({ctx.message.jump_url})",
                 "warns",
-                target.name,
             )
 
         safe_name = await commands.clean_content(escape_markdown=True).convert(

@@ -47,7 +47,7 @@ class ModWatch(Cog):
         )
         trackermsg = await trackerlog.send(embed=embed)
         setwatch(
-            target.id, ctx.author, True, target.name, trackerthread.id, trackermsg.id
+            ctx.guild.id, target.id, ctx.author, True, trackerthread.id, trackermsg.id
         )
         await ctx.send(
             f"**User is now on watch.**\nRelay thread available at {trackerthread.mention}."
@@ -80,7 +80,7 @@ class ModWatch(Cog):
                 userlog[str(target.id)]["watch"]["message"]
             )
             await trackermsg.delete()
-            setwatch(target.id, ctx.author, False, target.name, None)
+            setwatch(ctx.guild.id, target.id, ctx.author, False)
             await ctx.reply("User is now not on watch.", mention_author=False)
         else:
             return await ctx.reply(
