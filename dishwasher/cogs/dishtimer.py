@@ -165,7 +165,7 @@ class Dishtimer(Cog):
     async def daily(self):
         await self.bot.wait_until_ready()
         try:
-            shutil.make_archive("data/userlogs_backup", "zip", "data/userdata")
+            shutil.make_archive("data/userlogs_backup", "zip", "data/userlogs")
             for m in config.bot_managers:
                 self.bot.get_user(m).send(
                     content="Daily userlog backups:",

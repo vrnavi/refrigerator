@@ -13,7 +13,7 @@ class ModUserlog(Cog):
         self.bot = bot
 
     def get_userlog_embed_for_id(
-        self, uid: str, name: str, own: bool = False, event=""
+        self, gid: int, uid: str, name: str, own: bool = False, event=""
     ):
         own_note = " Congratulations." if own else ""
         wanted_events = ["warns", "bans", "kicks", "tosses"]
@@ -21,7 +21,7 @@ class ModUserlog(Cog):
             wanted_events = [event]
         embed = discord.Embed(color=discord.Color.dark_red())
         embed.set_author(name=f"Logs for {name}")
-        userlog = get_userlog()
+        userlog = get_userlog(gid)
 
         if uid not in userlog:
             embed.description = f"No records found.{own_note}"
@@ -111,7 +111,7 @@ class ModUserlog(Cog):
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
         embed = self.get_userlog_embed_for_id(
-            str(target.id), str(target.display_name), event=event
+            ctx.guild.id, str(target.id), str(target.display_name), event=event
         )
         await ctx.send(embed=embed)
 
@@ -121,7 +121,7 @@ class ModUserlog(Cog):
     async def notes(self, ctx, target: discord.Member):
         """[S] Lists notes for a user."""
         embed = self.get_userlog_embed_for_id(
-            str(target.id), str(target), event="notes"
+            ctx.guild.id, str(target.id), str(target), event="notes"
         )
         await ctx.send(embed=embed)
 
@@ -134,7 +134,7 @@ class ModUserlog(Cog):
     )
     async def myuserlog(self, ctx):
         """[U] Lists your userlog events (warns, etc)."""
-        embed = self.get_userlog_embed_for_id(str(ctx.author.id), str(ctx.author), True)
+        embed = self.get_userlog_embed_for_id(ctx.guild.id, str(ctx.author.id), str(ctx.author), True)
         await ctx.author.send(embed=embed)
         await ctx.message.add_reaction("📨")
         await ctx.reply(
@@ -299,7 +299,7 @@ class ModUserlog(Cog):
 
         event_types = ["warns", "bans", "kicks", "tosses", "notes"]
         embed = self.get_userlog_embed_for_id(
-            str(target.id), str(target), event=event_types
+            ctx.guild.id, str(target.id), str(target), event=event_types
         )
         embeds.append(embed)
 

@@ -27,7 +27,7 @@ class Basic(Cog):
                 async with session.get(
                     f"https://www.youtube.com/results?search_query={arg}"
                 ) as response:  # seems to be santized by aiohttp
-                    if response.status is not 200:
+                    if response.status != 200:
                         raise ConnectionError
 
                     html = await response.text()

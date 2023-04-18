@@ -67,7 +67,7 @@ class ModWatch(Cog):
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot unwatch Staff members.")
 
-        userlog = get_userlog()
+        userlog = get_userlog(ctx.guild.id)
         if userlog[str(target.id)]["watch"]["state"]:
             trackerthread = await self.bot.fetch_channel(
                 userlog[str(target.id)]["watch"]["thread"]
@@ -96,7 +96,7 @@ class ModWatch(Cog):
             or message.guild.id not in config.guild_configs
         ):
             return
-        userlog = get_userlog()
+        userlog = get_userlog(message.guild.id)
         try:
             if userlog[str(message.author.id)]["watch"]["state"]:
                 trackerthread = await self.bot.fetch_channel(

@@ -59,7 +59,7 @@ class Cotd(Cog):
         cotd_role = ctx.guild.get_role(
             config.guild_configs[ctx.guild.id]["misc"]["cotd_role"]
         )
-        cotd_name = guild_configs[ctx.guild.id]["misc"]["cotd_name"]
+        cotd_name = config.guild_configs[ctx.guild.id]["misc"]["cotd_name"]
         await cotd_role.edit(
             name=f'{cotd_name} - {color["name"]}',
             color=discord.Colour.from_str(f'{color["hex"]}'),
@@ -74,12 +74,12 @@ class Cotd(Cog):
         await self.bot.wait_until_ready()
         colors = json.load(open("assets/colors.json", "r"))
         for g in self.bot.guilds:
-            if g.id not in guild_configs:
+            if g.id not in config.guild_configs:
                 continue
             try:
                 color = random.choice(colors)
-                cotd_id = guild_configs[g.id]["misc"]["cotd_role"]
-                cotd_name = guild_configs[g.id]["misc"]["cotd_name"]
+                cotd_id = config.guild_configs[g.id]["misc"]["cotd_role"]
+                cotd_name = config.guild_configs[g.id]["misc"]["cotd_name"]
                 cotd_role = g.get_role(cotd_id)
                 await cotd_role.edit(
                     name=f'{cotd_name} - {color["name"]}',
