@@ -118,7 +118,7 @@ async def on_command_error(ctx, error):
             f"An error occurred...\n"
             f"**Command:** `{ctx.message.content}`\n"
             f"**User:** {ctx.message.author} ({ctx.message.author.id})\n"
-            f"**Guild:** {ctx.guild.name if ctx.guild else ctx.channel}\n"
+            f"{'**Guild:** {ctx.guild.name}' if ctx.guild else '**User:** {ctx.channel.recipient}'}\n"
             f"```{type(error)}: {error}```"
         ),
         timestamp=datetime.datetime.now(),
@@ -129,7 +129,8 @@ async def on_command_error(ctx, error):
         icon_url=f"{ctx.author.display_avatar.url}",
     )
 
-    await bot.log_channel.send(embed=err_log_embed)
+    for m in config.bot_managers:
+        await self.bot.get_user(m).send(embed=err_log_embed)
 
     if isinstance(error, commands.NoPrivateMessage):
         return await ctx.send("This command doesn't work in DMs.")
