@@ -111,6 +111,7 @@ async def on_command_error(ctx, error):
     )
     log.error(err_log_msg)
 
+    guildmsg = f"**Guild:** {ctx.guild.name}\n" if ctx.guild else ""
     err_log_embed = discord.Embed(
         color=ctx.author.color,
         title="⚠️ Error",
@@ -118,7 +119,7 @@ async def on_command_error(ctx, error):
             f"An error occurred...\n"
             f"**Command:** `{ctx.message.content}`\n"
             f"**User:** {ctx.message.author} ({ctx.message.author.id})\n"
-            f"{f'**Guild:** {ctx.guild.name}\n' if ctx.guild else ''}"
+            f"{guildmsg}"
             f"```{type(error)}: {error}```"
         ),
         timestamp=datetime.datetime.now(),
