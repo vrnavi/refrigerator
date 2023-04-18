@@ -97,6 +97,23 @@ async def on_command(ctx):
 async def on_error(event_method, *args, **kwargs):
     log.error(f"Error on {event_method}: {sys.exc_info()}")
 
+    err_embed = discord.Embed(
+        color=discord.Color.from_str("#FF0000"),
+        title="🔥 Code Error",
+        description=(
+            f"An error occurred...\n" f"```{event_method}: {{sys.exc_info()}}```"
+        ),
+        timestamp=datetime.datetime.now(),
+    )
+    err_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
+    err_embed.set_author(
+        name=f"{bot.escape_message(ctx.author)}",
+        icon_url=f"{ctx.author.display_avatar.url}",
+    )
+
+    for m in config.bot_managers:
+        await bot.get_user(m).send(embed=err_embed)
+
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -104,17 +121,16 @@ async def on_command_error(ctx, error):
     if isinstance(error, commands.CommandNotFound):
         return
 
-    err_log_msg = (
+    log.error(
         f"An error occurred with `{ctx.message.content}` from "
         f"{ctx.message.author} ({ctx.message.author.id}):\n"
         f"{type(error)}: {error}"
     )
-    log.error(err_log_msg)
 
     guildmsg = f"**Guild:** {ctx.guild.name}\n" if ctx.guild else ""
     err_log_embed = discord.Embed(
         color=ctx.author.color,
-        title="⚠️ Error",
+        title="⚠️ Command Error",
         description=(
             f"An error occurred...\n"
             f"**Command:** `{ctx.message.content}`\n"
