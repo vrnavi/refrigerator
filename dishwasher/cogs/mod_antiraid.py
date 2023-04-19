@@ -13,7 +13,7 @@ class ModAntiRaid(Cog):
         self.bot = bot
         self.locked_channels = {}
         self.announce_msg = {}
-        self.in_progress = {}
+        self.in_progress = []
         self.mem_cache = {}
 
     def cull_recent_member_cache(self, guild, ts=None):
@@ -202,7 +202,7 @@ class ModAntiRaid(Cog):
         return ret
 
     async def execute_auto_lockdown(self, message):
-        self.in_progress[message.guild.id] = True
+        self.in_progress.append(message.guild.id)
 
         channel_list = self.get_public_channels(message.guild)
         staff_channel = message.guild.get_channel(
@@ -271,7 +271,7 @@ class ModAntiRaid(Cog):
         async with message.channel.typing():
             ret = await self.perform_lockdown(channel_list, False)
 
-        self.in_progress[message.guild.id] = False
+        self.in_progress.remove(message.guild.id)
         await message.channel.send(ret)
 
     @Cog.listener()
@@ -289,7 +289,7 @@ class ModAntiRaid(Cog):
             # Check auto-lockdown is enabled
             config.guild_configs[message.guild.id]["antiraid"]["mention_threshold"] > 0
             # Check auto-lockdown not already in progress
-            and not self.in_progress[message.guild.id]
+            and not message.guild.id in self.in_progress
             # Check channel is public
             and self.is_public_channel(message.channel)
             # Check for no roles (@everyone counts as a role internally)
@@ -314,7 +314,6 @@ class ModAntiRaid(Cog):
                 self.mem_cache[g.id] = g.members
             self.cull_recent_member_cache(g)
             self.locked_channels[g.id] = []
-            self.in_progress[g.id] = False
 
 
 async def setup(bot):
