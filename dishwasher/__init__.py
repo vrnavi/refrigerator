@@ -101,7 +101,7 @@ async def on_error(event_method, *args, **kwargs):
         color=discord.Color.from_str("#FF0000"),
         title="🔥 Code Error",
         description=(
-            f"An error occurred...\n" f"```{event_method}: {{sys.exc_info()}}```"
+            f"An error occurred...\n" f"```{event_method}: {sys.exc_info()}```"
         ),
         timestamp=datetime.datetime.now(),
     )
