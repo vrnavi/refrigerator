@@ -67,7 +67,7 @@ class ModObserve(Cog):
                 description=f"<@{member.id}> ({member.id})",
                 timestamp=datetime.datetime.now(),
             )
-        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
+            embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
             embed.set_author(
                 name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
             )
