@@ -51,6 +51,9 @@ class ModObserve(Cog):
 
     @Cog.listener()
     async def on_member_join(self, member):
+        await self.bot.wait_until_ready()
+        if member.guild.id not in config.guild_configs:
+            return
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
         if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
