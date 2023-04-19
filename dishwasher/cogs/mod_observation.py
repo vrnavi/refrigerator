@@ -58,7 +58,9 @@ class ModObserve(Cog):
         cutoff_ts = ts - datetime.timedelta(hours=24)
         if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
             escaped_name = self.bot.escape_message(member)
-            staff_channel = config.guild_configs[member.guild.id]["staff"]["staff_channel"]
+            staff_channel = config.guild_configs[member.guild.id]["staff"][
+                "staff_channel"
+            ]
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
                 title="📥 User Joined",
