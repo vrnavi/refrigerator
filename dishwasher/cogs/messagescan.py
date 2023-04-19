@@ -181,9 +181,9 @@ class Messagescan(Cog):
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
         # Discord SUCKS!!
-        await asyncio.sleep(1)
-        while message.embeds:
-            await message.edit(suppress=True)
+        while not message.embeds:
+            asyncio.sleep(0.1)
+        await message.edit(suppress=True)
         def deletecheck(m):
             return m.id == message.id
 
