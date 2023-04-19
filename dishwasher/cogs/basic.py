@@ -49,21 +49,14 @@ class Basic(Cog):
         await ctx.send(f"{the_text} got stuck in the Dishwasher.")
 
     @commands.command()
-    async def avy(self, ctx, target=None):
+    async def avy(self, ctx, target: discord.User =None):
         """[U] Gets an avy."""
         if target is not None:
-            if target == "server":
+            if ctx.guild and target == "server":
                 await ctx.send(content=ctx.guild.icon.url)
                 return
-            # In the case of IDs.
-            try:
-                user = await ctx.guild.fetch_member(int(target))
-            # In the case of mentions.
-            except ValueError:
-                user = await ctx.guild.fetch_member(target[2:-1])
-            # In the case of no user.
-            except discord.NotFound:
-                user = await self.bot.fetch_user(int(target))
+            if ctx.guild and ctx.guild.get_member(target.id):
+                target = ctx.guild.get_member(target.id)
         else:
             user = ctx.author
         await ctx.send(content=user.display_avatar.url)
