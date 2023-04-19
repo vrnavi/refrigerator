@@ -45,7 +45,7 @@ class Logs2(Cog):
         escaped_name = self.bot.escape_message(member)
 
         # Attempt to correlate the user joining with an invite
-        if not os.path.exists("data/userlogs/{member.guild.id}/invites.json"):
+        if not os.path.exists(f"data/userlogs/{member.guild.id}/invites.json"):
             if not os.path.exists(f"data/userlogs/{member.guild.id}"):
                 os.makedirs(f"data/userlogs/{member.guild.id}")
             with open(f"data/userlogs/{member.guild.id}/invites.json", "w") as f:
