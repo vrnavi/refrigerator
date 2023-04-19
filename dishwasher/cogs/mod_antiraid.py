@@ -2,6 +2,7 @@
 # https://github.com/Roadcrosser/discord-mass-lockdown
 from discord.ext import commands
 from discord.ext.commands import Cog
+from collections import defaultdict
 import config
 import discord
 import datetime
@@ -14,7 +15,7 @@ class ModAntiRaid(Cog):
         self.locked_channels = {}
         self.announce_msg = {}
         self.in_progress = []
-        self.mem_cache = {}
+        self.mem_cache = defaultdict(list)
 
     def cull_recent_member_cache(self, guild, ts=None):
         if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
