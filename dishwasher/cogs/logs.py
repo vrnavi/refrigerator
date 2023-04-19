@@ -113,7 +113,7 @@ class Logs2(Cog):
         embeds.append(embed)
 
         # Real hell zone.
-        with open("data/userlog.json", "r") as f:
+        with open(f"data/userlogs/{member.guild.id}/userlog.json", "r") as f:
             warns = json.load(f)
         try:
             if len(warns[str(member.id)]["warns"]) != 0:

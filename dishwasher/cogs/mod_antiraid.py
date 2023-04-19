@@ -302,8 +302,8 @@ class ModAntiRaid(Cog):
 
     @Cog.listener()
     async def on_member_join(self, member):
-        self.mem_cache.append(member)
-        self.cull_recent_member_cache()
+        self.mem_cache[member.guild.id].append(member)
+        self.cull_recent_member_cache(member.guild)
 
     @Cog.listener()
     async def on_ready(self):
