@@ -180,7 +180,7 @@ class Messagescan(Cog):
                 )
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
-        if not ctx.message.embeds:
+        if not message.embeds:
             def embedcheck(m):
                 return m.id == message.id and m.embeds >= 1
             try:
@@ -189,7 +189,7 @@ class Messagescan(Cog):
             except:
                 pass
         def deletecheck(m):
-            return m.id == message.id
+            return m.id == message.id   
         try:
             await self.bot.wait_for("message_delete", timeout=600, check=deletecheck)
             await reply.delete()
