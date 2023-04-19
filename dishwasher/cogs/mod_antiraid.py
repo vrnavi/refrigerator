@@ -292,8 +292,8 @@ class ModAntiRaid(Cog):
             
         # In the event this happens before anyone joins the guild.
         if message.guild.id not in self.mem_cache:
-            self.mem_cache[member.guild.id] = member.guild.members
-            self.cull_recent_member_cache(member.guild)
+            self.mem_cache[message.guild.id] = message.guild.members
+            self.cull_recent_member_cache(message.guild)
 
         if (
             # Check auto-lockdown is enabled
