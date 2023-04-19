@@ -20,7 +20,6 @@ class ModObserve(Cog):
             staff_channel = config.guild_configs[member.guild.id]["staff"][
                 "staff_channel"
             ]
-            embeds = []
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
                 title="📥 User Joined",
@@ -45,8 +44,7 @@ class ModObserve(Cog):
             embed.add_field(
                 name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=False
             )
-            embeds.append(embed)
-            await member.guild.get_channel(staff_channel).send(embeds=embeds)
+            await member.guild.get_channel(staff_channel).send(embed=embed)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
