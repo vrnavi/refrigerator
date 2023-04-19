@@ -28,7 +28,7 @@ class ModAntiRaid(Cog):
             seconds=config.guild_configs[guild.id]["antiraid"]["join_threshold"]
         )
 
-        self.mem_cache = [
+        self.mem_cache[guild.id] = [
             m
             for m in self.mem_cache[guild.id]
             # It's easier to cull members who leave here than on leave
