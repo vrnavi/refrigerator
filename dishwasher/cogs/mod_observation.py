@@ -67,7 +67,7 @@ class ModObserve(Cog):
                 description=f"<@{member.id}> ({member.id})",
                 timestamp=datetime.datetime.now(),
             )
-            embed.set_footer(text="Dishwasher")
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
             embed.set_author(
                 name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
             )
@@ -77,7 +77,6 @@ class ModObserve(Cog):
                 value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
                 inline=True,
             )
-            embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
             if member.guild.id in self.raidmode:
                 rmstr = "`🟢 ON`"
             else:
