@@ -95,16 +95,33 @@ async def on_command(ctx):
 
 @bot.event
 async def on_error(event_method, *args, **kwargs):
-    log.error(f"Error on {event_method}: {sys.exc_info()}")
+    err_info = sys.exc_info()
+    log.error(f"Error on {event_method}: {err_info}")
 
     err_embed = discord.Embed(
         color=discord.Color.from_str("#FF0000"),
         title="🔥 Code Error",
-        description=(
-            f"An error occurred...\n" f"```{event_method}: {sys.exc_info()}```"
-        ),
         timestamp=datetime.datetime.now(),
     )
+
+    if len(err_info) > 1024:
+        split_msg = list(
+            [before.clean_content[i : i + 1020] for i in range(0, len(err_info), 1020)]
+        )
+        err_embed.description = "An error occurred..."
+        ctr = 1
+        for f in split_msg:
+            err_embed.add_field(
+                name=f"🧩 Fragment {ctr}",
+                value=f">>> {f}",
+                inline=False,
+            )
+            ctr += 1
+    else:
+        err_embed.description = (
+            f"An error occurred...\n```{event_method}: {err_info}```"
+        )
+
     err_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
 
     for m in config.bot_managers:

@@ -186,7 +186,7 @@ class Logs2(Cog):
                     value=f">>> {p}",
                     inline=True,
                 )
-                ctr = ctr + 1
+                ctr += 1
         else:
             embed.add_field(
                 name=f"❌ Before on <t:{before.created_at.astimezone().strftime('%s')}:f>",
