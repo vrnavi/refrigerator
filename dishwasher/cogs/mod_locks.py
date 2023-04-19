@@ -125,7 +125,7 @@ class ModLocks(Cog):
             return await ctx.reply(
                 random_bot_msg(ctx.author.name), mention_author=False
             )
-        elif self.bot.check_if_target_is_staff(ctx, target):
+        elif self.bot.check_if_target_is_staff(target):
             return await ctx.reply(
                 "I cannot lockout Staff members.", mention_author=False
             )
@@ -145,7 +145,7 @@ class ModLocks(Cog):
             return await ctx.reply(
                 random_bot_msg(ctx.author.name), mention_author=False
             )
-        elif self.bot.check_if_target_is_staff(ctx, target):
+        elif self.bot.check_if_target_is_staff(target):
             return await ctx.reply(
                 "I cannot unlockout Staff members.", mention_author=False
             )

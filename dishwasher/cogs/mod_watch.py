@@ -13,9 +13,6 @@ class ModWatch(Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    def check_if_target_is_staff(self, target):
-        return any(r.id in config.staff_role_ids for r in target.roles)
-
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
@@ -27,7 +24,7 @@ class ModWatch(Cog):
             return await ctx.send(random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
-            if self.check_if_target_is_staff(target):
+            if self.bot.check_if_target_is_staff(target):
                 return await ctx.send("I cannot watch Staff members.")
 
         trackerlog = await self.bot.fetch_channel(
@@ -64,7 +61,7 @@ class ModWatch(Cog):
             return await ctx.send(random_bot_msg(ctx.author.name))
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
-            if self.check_if_target_is_staff(target):
+            if self.bot.check_if_target_is_staff(target):
                 return await ctx.send("I cannot unwatch Staff members.")
 
         userlog = get_userlog(ctx.guild.id)

@@ -17,9 +17,9 @@ class Mod(Cog):
         self.bot = bot
         self.bot.check_if_target_is_staff = self.check_if_target_is_staff
 
-    def check_if_target_is_staff(self, ctx, target):
+    def check_if_target_is_staff(self, target):
         return any(
-            r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]
+            r.id == config.guild_configs[target.guild.id]["staff"]["staff_role"]
             for r in target.roles
         )
 
@@ -54,7 +54,7 @@ class Mod(Cog):
         elif target == self.bot.user:
             return await ctx.send(random_bot_msg(ctx.author.name))
         elif self.check_if_target_is_staff(target):
-            return await ctx.send("I cannot ban Staff members.")
+            return await ctx.send("I cannot kick Staff members.")
 
         userlog(ctx.guild.id, target.id, ctx.author, reason, "kicks")
 

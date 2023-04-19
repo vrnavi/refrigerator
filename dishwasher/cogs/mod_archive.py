@@ -209,7 +209,7 @@ class ModArchive(Cog):
 
         if (
             message.channel.name
-            in config.guild_configs[ctx.guild.id]["archive"]["toss_channels"]
+            in config.guild_configs[ctx.guild.id]["toss"]["toss_channels"]
         ):
             out = await self.log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]

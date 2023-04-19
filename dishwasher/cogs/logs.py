@@ -47,8 +47,8 @@ class Logs2(Cog):
         # Attempt to correlate the user joining with an invite
         if not os.path.exists("data/userlogs/{member.guild.id}/invites.json"):
             if not os.path.exists(f"data/userlogs/{member.guild.id}"):
-                os.makedirs(f"data/userlogs/{serverid}")
-            with open(f"data/userlogs/{serverid}/invites.json", "w") as f:
+                os.makedirs(f"data/userlogs/{member.guild.id}")
+            with open(f"data/userlogs/{member.guild.id}/invites.json", "w") as f:
                 f.write("{}")
         with open(f"data/userlogs/{member.guild.id}/invites.json", "r") as f:
             invites = json.load(f)
@@ -316,7 +316,7 @@ class Logs2(Cog):
             if alog[0].user.id != self.bot.user.id:
                 userlog(
                     member.id,
-                    alog[0].user,
+                    alog[0].user.id,
                     f"Kicked by external method.",
                     "kicks",
                     member.name,
@@ -394,7 +394,11 @@ class Logs2(Cog):
             return
 
         userlog(
-            member.id, alog[0].user, f"Banned by external method.", "bans", member.name
+            member.id,
+            alog[0].user.id,
+            f"Banned by external method.",
+            "bans",
+            member.name,
         )
         escaped_name = self.bot.escape_message(member)
 
