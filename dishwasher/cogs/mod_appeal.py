@@ -22,6 +22,7 @@ class ModAppeal(Cog):
 
         if (
             message.guild
+            and message.guild.id in config.guild_configs
             and message.channel.id
             == config.guild_configs[message.guild.id]["staff"]["ban_appeal_channel"]
             and message.author.id
