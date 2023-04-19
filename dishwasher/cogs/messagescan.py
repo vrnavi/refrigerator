@@ -195,7 +195,7 @@ class Messagescan(Cog):
     @Cog.listener()
     async def on_message_delete(self, message):
         await self.bot.wait_until_ready()
-        if message.author.bot:
+        if message.author.bot or not message.guild:
             return
 
         self.prevmessages[message.channel.id] = message
@@ -203,7 +203,7 @@ class Messagescan(Cog):
     @Cog.listener()
     async def on_message_edit(self, message_before, message_after):
         await self.bot.wait_until_ready()
-        if message_after.author.bot:
+        if message_after.author.bot or not message_after.guild:
             return
 
         self.prevedit_before[message_after.channel.id] = message_before
