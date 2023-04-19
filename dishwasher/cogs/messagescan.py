@@ -180,6 +180,8 @@ class Messagescan(Cog):
                 )
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
+        # Discord SUCKS!!
+        await asyncio.sleep(5)
         await message.edit(suppress=True)
 
         def check(m):
