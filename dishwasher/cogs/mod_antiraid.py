@@ -15,6 +15,7 @@ class ModAntiRaid(Cog):
         self.announce_msg = {}
         self.in_progress = []
         self.mem_cache = {}
+        
 
     def cull_recent_member_cache(self, guild, ts=None):
         if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
@@ -167,6 +168,8 @@ class ModAntiRaid(Cog):
                 (c.guild.default_role, default_role_override),
                 (c.guild.me, bot_override),
             ]
+            if channel_list[0].guild.id not in self.locked_channels:
+                self.locked_channels[channel_list[0].guild.id] = []
             for r, o in zip(allowed_roles, authorized_role_overrides):
                 overrides.append((r, o))
 
@@ -256,6 +259,8 @@ class ModAntiRaid(Cog):
             return
         channel_list = self.parse_channel_list(message.guild, args)
         if not channel_list:
+            if message.guild.id not in self.locked_channels:
+                self.locked_channels[message.guild.id] = []
             channel_list = [
                 c
                 for c in message.guild.text_channels
@@ -284,6 +289,11 @@ class ModAntiRaid(Cog):
             or message.guild.id not in config.guild_configs
         ):
             return
+            
+        # In the event this happens before anyone joins the guild.
+        if message.guild.id not in self.mem_cache:
+            self.mem_cache[member.guild.id] = member.guild.members
+            self.cull_recent_member_cache(member.guild)
 
         if (
             # Check auto-lockdown is enabled
@@ -304,18 +314,12 @@ class ModAntiRaid(Cog):
     async def on_member_join(self, member):
         if member.guild.id not in config.guild_configs:
             return
-        self.mem_cache[member.guild.id].append(member)
+        # In the event this happens before anyone sends a message.
+        if member.guild.id not in self.mem_cache:
+            self.mem_cache[member.guild.id] = member.guild.members
+        else:
+            self.mem_cache[member.guild.id].append(member)
         self.cull_recent_member_cache(member.guild)
-
-    @Cog.listener()
-    async def on_ready(self):
-        for g in self.bot.guilds:
-            if g.id not in config.guild_configs:
-                continue
-            if config.guild_configs[g.id]["antiraid"]["join_threshold"] > 0:
-                self.mem_cache[g.id] = g.members
-            self.cull_recent_member_cache(g)
-            self.locked_channels[g.id] = []
 
 
 async def setup(bot):
