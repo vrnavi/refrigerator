@@ -70,10 +70,10 @@ class ModToss(Cog):
             roles = []
             role_ids = []
             toss_role = ctx.guild.get_role(
-                config.guild_configs[member.guild.id]["toss"]["toss_role"]
+                config.guild_configs[ctx.guild.id]["toss"]["toss_role"]
             )
             toss_channel = ctx.guild.get_channel(
-                config.guild_configs[member.guild.id]["toss"]["toss_channel"]
+                config.guild_configs[ctx.guild.id]["toss"]["toss_channel"]
             )
             for rx in us.roles:
                 if rx.name != "@everyone" and rx != toss_role:
@@ -237,7 +237,7 @@ class ModToss(Cog):
                 )
 
             toss_role = ctx.guild.get_role(
-                config.guild_configs[member.guild.id]["toss"]["toss_role"]
+                config.guild_configs[ctx.guild.id]["toss"]["toss_role"]
             )
             roles_actual = []
             restored = ""

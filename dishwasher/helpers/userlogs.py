@@ -12,7 +12,8 @@ userlog_event_types = {
 
 
 def make_userlog(serverid):
-    os.makedirs(f"data/userlogs/{serverid}")
+    if not os.path.exists(f"data/userlogs/{serverid}"):
+        os.makedirs(f"data/userlogs/{serverid}")
     with open(f"data/userlogs/{serverid}/userlog.json", "w") as f:
         f.write("{}")
         return json.loads("{}")
@@ -29,7 +30,7 @@ def set_userlog(serverid, contents):
 
 
 def fill_userlog(serverid, userid):
-    if os.path.exists(f"data/userlogs/{serverid}"):
+    if os.path.exists(f"data/userlogs/{serverid}/userlog.json"):
         userlogs = get_userlog(serverid)
     else:
         userlogs = make_userlog(serverid)

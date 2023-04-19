@@ -34,7 +34,6 @@ def get_prefix(bot, message):
 wanted_jsons = [
     "data/dishtimers.json",
     "data/userdata.json",
-    "data/invites.json",
 ]
 
 intents = discord.Intents.all()
