@@ -17,14 +17,14 @@ class ModAntiRaid(Cog):
         self.mem_cache = {}
 
     def cull_recent_member_cache(self, guild, ts=None):
-        if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
+        if config.guild_configs[str(guild.id)]["antiraid"]["join_threshold"] <= 0:
             return
 
         if not ts:
             ts = datetime.datetime.now(datetime.timezone.utc)
 
         cutoff_ts = ts - datetime.timedelta(
-            seconds=config.guild_configs[guild.id]["antiraid"]["join_threshold"]
+            seconds=config.guild_configs[str(guild.id)]["antiraid"]["join_threshold"]
         )
 
         self.mem_cache = [
@@ -95,13 +95,13 @@ class ModAntiRaid(Cog):
     async def announce_lockdown(self, channel_list, lockdown):
         guild = channel_list[0].guild
 
-        if not config.guild_configs[guild.id]["antiraid"]["announce_channels"]:
+        if not config.guild_configs[str(guild.id)]["antiraid"]["announce_channels"]:
             return
 
         to_announce = channel_list
-        if config.guild_configs[guild.id]["antiraid"]["announce_channels"] != "all":
+        if config.guild_configs[str(guild.id)]["antiraid"]["announce_channels"] != "all":
             to_announce = []
-            for c in config.guild_configs[guild.id]["antiraid"]["announce_channels"]:
+            for c in config.guild_configs[str(guild.id)]["antiraid"]["announce_channels"]:
                 to_announce.append(c)
 
         for c in to_announce:
@@ -139,7 +139,7 @@ class ModAntiRaid(Cog):
         try:
             allowed_roles = [
                 r
-                for r in config.guild_configs[channel_list[0].guild.id]["misc"][
+                for r in config.guild_configs[str(channel_list[0].guild.id)]["misc"][
                     "authorized_roles"
                 ]
             ]
@@ -206,7 +206,7 @@ class ModAntiRaid(Cog):
 
         channel_list = self.get_public_channels(message.guild)
         staff_channel = message.guild.get_channel(
-            config.guild_configs[guild.id]["staff"]["staff_channel"]
+            config.guild_configs[str(guild.id)]["staff"]["staff_channel"]
         )
         staff_channel_accessible = staff_channel.permissions_for(
             message.guild.me
@@ -215,10 +215,10 @@ class ModAntiRaid(Cog):
         if staff_channel_accessible:
             staff_announce_msg = f"{message.author.mention} ({message.author.id}) mentioned `{len(message.mentions)}` members in {message.channel.mention}."
 
-            if config.guild_configs[message.guild.id]["antiraid"]["join_threshold"] > 0:
+            if config.guild_configs[str(message.guild.id)]["antiraid"]["join_threshold"] > 0:
                 self.cull_recent_member_cache(message.created_at)
                 staff_announce_msg += (
-                    f"\nMembers who joined in the last {config.guild_configs[message.guild.id]['antiraid']['join_threshold']} seconds: "
+                    f"\nMembers who joined in the last {config.guild_configs[str(message.guild.id)]['antiraid']['join_threshold']} seconds: "
                     + " ".join([m.mention for m in self.mem_cache])
                 )
 
@@ -287,7 +287,7 @@ class ModAntiRaid(Cog):
 
         if (
             # Check auto-lockdown is enabled
-            config.guild_configs[message.guild.id]["antiraid"]["mention_threshold"] > 0
+            config.guild_configs[str(message.guild.id)]["antiraid"]["mention_threshold"] > 0
             # Check auto-lockdown not already in progress
             and not self.in_progress[message.guild.id]
             # Check channel is public
@@ -296,7 +296,7 @@ class ModAntiRaid(Cog):
             and len(message.author.roles) == 1
             # Check that mention count exceeds threshold
             and len(message.mentions)
-            >= config.guild_configs[message.guild.id]["antiraid"]["mention_threshold"]
+            >= config.guild_configs[str(message.guild.id)]["antiraid"]["mention_threshold"]
         ):
             await self.execute_auto_lockdown(message)
 
@@ -310,7 +310,7 @@ class ModAntiRaid(Cog):
         for g in self.bot.guilds:
             if g.id not in config.guild_configs:
                 continue
-            if config.guild_configs[g.id]["antiraid"]["join_threshold"] > 0:
+            if config.guild_configs[str(g.id)]["antiraid"]["join_threshold"] > 0:
                 self.mem_cache[g.id] = g.members
             self.cull_recent_member_cache(g)
             self.locked_channels[g.id] = []
