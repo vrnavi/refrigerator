@@ -225,7 +225,11 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_message_delete(self, message):
         await self.bot.wait_until_ready()
-        if message.guild.id not in config.guild_configs or message.author.bot:
+        if (
+            message.author.bot
+            or not message.guild
+            or message.guild.id not in config.guild_configs
+        ):
             return
         ulog = await self.bot.fetch_channel(
             config.guild_configs[message.guild.id]["logs"]["ulog_thread"]
