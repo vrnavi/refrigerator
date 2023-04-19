@@ -145,9 +145,10 @@ class Logs2(Cog):
     async def on_message_edit(self, before, after):
         await self.bot.wait_until_ready()
         if (
-            after.guild.id not in config.guild_configs
-            or after.author.bot
+            after.author.bot
+            or not after.guild
             or before.clean_content == after.clean_content
+            or after.guild.id not in config.guild_configs
         ):
             return
         ulog = await self.bot.fetch_channel(
