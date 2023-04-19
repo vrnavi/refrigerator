@@ -180,19 +180,21 @@ class Messagescan(Cog):
                 )
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
-        # Discord SUCKS!!
-        await asyncio.sleep(5)
-        await message.edit(suppress=True)
-
-        def check(m):
+        if not ctx.message.embeds:
+            def embedcheck(m):
+                return m.id == message.id and m.embeds >= 1
+            try:
+                await self.bot.wait_for("message_edit", timeout=600, check=embedcheck)
+                await message.edit(suppress=True)
+            except:
+                pass
+        def deletecheck(m):
             return m.id == message.id
-
         try:
-            await self.bot.wait_for("message_delete", timeout=600, check=check)
+            await self.bot.wait_for("message_delete", timeout=600, check=deletecheck)
+            await reply.delete()
         except:
             pass
-        else:
-            await reply.delete()
 
     @Cog.listener()
     async def on_message_delete(self, message):
