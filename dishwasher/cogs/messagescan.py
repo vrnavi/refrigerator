@@ -185,6 +185,7 @@ class Messagescan(Cog):
             while not message.embeds:
                 await asyncio.sleep(0.1)
         await message.edit(suppress=True)
+
         def deletecheck(m):
             return m.id == message.id
 
