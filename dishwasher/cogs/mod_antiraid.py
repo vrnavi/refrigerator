@@ -14,6 +14,7 @@ class ModAntiRaid(Cog):
         self.locked_channels = {}
         self.announce_msg = {}
         self.in_progress = []
+        self.mem_cache = {}
 
     def cull_recent_member_cache(self, guild, ts=None):
         if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
@@ -301,12 +302,13 @@ class ModAntiRaid(Cog):
 
     @Cog.listener()
     async def on_member_join(self, member):
+        if member.guild.id not in config.guild_configs:
+            return
         self.mem_cache[member.guild.id].append(member)
         self.cull_recent_member_cache(member.guild)
 
     @Cog.listener()
     async def on_ready(self):
-        self.mem_cache = {}
         for g in self.bot.guilds:
             if g.id not in config.guild_configs:
                 continue

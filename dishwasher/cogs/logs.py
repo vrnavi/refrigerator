@@ -16,10 +16,6 @@ class Logs2(Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.invite_re = re.compile(
-            r"((discord\.gg|discordapp\.com/" r"+invite)/+[a-zA-Z0-9-]+)", re.IGNORECASE
-        )
-        self.clean_re = re.compile(r"[^a-zA-Z0-9_ ]+", re.UNICODE)
 
     @Cog.listener()
     async def on_member_join(self, member):
@@ -34,7 +30,7 @@ class Logs2(Cog):
         readable = 0
         for b in member.display_name:
             if b.isalnum():
-                readable = readable + 1
+                readable += 1
         if readable < 1:
             await member.edit(
                 nick="Unreadable Name", reason="Automatic Unreadable Name"

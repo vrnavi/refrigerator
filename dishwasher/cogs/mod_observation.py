@@ -9,7 +9,7 @@ from helpers.checks import check_if_staff
 class ModObserve(Cog):
     def __init__(self, bot):
         self.bot = bot
-        raidmode = []
+        self.raidmode = []
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -58,10 +58,7 @@ class ModObserve(Cog):
         cutoff_ts = ts - datetime.timedelta(hours=24)
         if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
             escaped_name = self.bot.escape_message(member)
-            staff_channel = config.guild_configs[member.guild.id]["staff"][
-                "staff_channel"
-            ]
-            embeds = []
+            staff_channel = config.guild_configs[member.guild.id]["staff"]["staff_channel"]
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
                 title="📥 User Joined",
@@ -86,8 +83,7 @@ class ModObserve(Cog):
             embed.add_field(
                 name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=False
             )
-            embeds.append(embed)
-            await member.guild.get_channel(staff_channel).send(embeds=embeds)
+            await member.guild.get_channel(staff_channel).send(embed=embed)
 
 
 async def setup(bot):
