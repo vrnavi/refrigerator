@@ -49,7 +49,7 @@ class Basic(Cog):
         await ctx.send(f"{the_text} got stuck in the Dishwasher.")
 
     @commands.command()
-    async def avy(self, ctx, target: discord.User =None):
+    async def avy(self, ctx, target: discord.User = None):
         """[U] Gets an avy."""
         if target is not None:
             if ctx.guild and target == "server":
@@ -58,8 +58,8 @@ class Basic(Cog):
             if ctx.guild and ctx.guild.get_member(target.id):
                 target = ctx.guild.get_member(target.id)
         else:
-            user = ctx.author
-        await ctx.send(content=user.display_avatar.url)
+            target = ctx.author
+        await ctx.send(content=target.display_avatar.url)
 
     @commands.command()
     async def install(self, ctx):
