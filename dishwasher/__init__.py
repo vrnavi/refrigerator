@@ -231,9 +231,6 @@ async def on_message(message):
     if message.author.bot:
         return
 
-    if message.guild:
-        return
-
     ctx = await bot.get_context(message)
     await bot.invoke(ctx)
 
