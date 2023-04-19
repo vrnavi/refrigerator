@@ -134,8 +134,8 @@ class Messagescan(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         if (
-            message.author.bot
-            or not message.content
+            not message.content
+            or message.author.bot
             or not message.channel.permissions_for(message.author).embed_links
         ):
             return
