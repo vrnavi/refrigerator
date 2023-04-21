@@ -15,7 +15,6 @@ class ModAntiRaid(Cog):
         self.announce_msg = {}
         self.in_progress = []
         self.mem_cache = {}
-        
 
     def cull_recent_member_cache(self, guild, ts=None):
         if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
@@ -289,7 +288,7 @@ class ModAntiRaid(Cog):
             or message.guild.id not in config.guild_configs
         ):
             return
-            
+
         # In the event this happens before anyone joins the guild.
         if message.guild.id not in self.mem_cache:
             self.mem_cache[message.guild.id] = message.guild.members

@@ -179,7 +179,12 @@ class Messagescan(Cog):
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
                 # Use a single image from post for now.
-                if rcvmessage.embeds:
+                if (
+                    rcvmessage.attachments
+                    and rcvmessage.attachments[0].content_type[:6] == "image/"
+                ):
+                    embed.set_image(url=rcvmessage.attachments[0].url)
+                elif rcvmessage.embeds and rcvmessage.embeds.image:
                     embed.set_image(url=rcvmessage.embeds[0].image.url)
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
