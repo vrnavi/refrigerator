@@ -172,7 +172,8 @@ class Messagescan(Cog):
                     timestamp=rcvmessage.created_at,
                 )
                 embed.set_footer(
-                    text=f"Quoted by {message.author.name}#{message.author.discriminator}"
+                    text=f"Quoted by {message.author.name}#{message.author.discriminator}",
+                    icon_url=ctx.author.display_avatar.url,
                 )
                 embed.set_author(
                     name=f"💬 {rcvmessage.author} said in #{rcvmessage.channel.name}...",
