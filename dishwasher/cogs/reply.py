@@ -21,12 +21,13 @@ class Reply(Cog):
         reference_author = message.reference.resolved.author
         if (
             message.author.bot
+            or reference_author.id == message.author.id
+            or not message.guild.get_member(reference_author.id)
             or message.guild.id not in config.guild_configs
             or reference_author.get_role(
                 config.guild_configs[message.guild.id]["misc"]["noreply_role"]
             )
             is None
-            or reference_author.id is message.author.id
             or message.author.get_role(
                 config.guild_configs[message.guild.id]["staff"]["staff_role"]
             )
