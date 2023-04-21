@@ -178,6 +178,9 @@ class Messagescan(Cog):
                     name=f"💬 {rcvmessage.author} said in #{rcvmessage.channel.name}...",
                     icon_url=f"{rcvmessage.author.display_avatar.url}",
                 )
+                # Use a single image from post for now.
+                if rcvmessage.embeds:
+                    embed.set_image(url=rcvmessage.embeds[0].image.url)
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
         # Discord SUCKS!!
