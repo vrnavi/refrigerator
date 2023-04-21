@@ -227,7 +227,7 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_message(message):
-    if message.type != discord.MessageType.default or message.author.bot:
+    if message.author.bot:
         return
 
     ctx = await bot.get_context(message)

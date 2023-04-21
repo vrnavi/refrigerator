@@ -46,7 +46,7 @@ class Reply(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
 
-        if message.reference:
+        if message.reference and message.type == discord.MessageType.reply:
             await self.handle_message_with_reference(message)
 
 
