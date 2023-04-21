@@ -82,7 +82,7 @@ class ModObserve(Cog):
             else:
                 rmstr = "`🔴 OFF`"
             embed.add_field(
-                name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=False
+                name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=True
             )
             await member.guild.get_channel(staff_channel).send(embed=embed)
 
