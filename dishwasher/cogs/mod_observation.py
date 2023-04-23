@@ -86,7 +86,20 @@ class ModObserve(Cog):
             embed.add_field(
                 name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=True
             )
-            await member.guild.get_channel(staff_channel).send(embed=embed)
+            embed.add_field(name="🔍 First message:", value="Not yet.", inline=True)
+            callout = await member.guild.get_channel(staff_channel).send(embed=embed)
+
+            def check(m):
+                return m.author.id == member.id
+
+            msg = await client.wait_for("message", check=check)
+            embed.set_field_at(
+                index=2,
+                name="🔍 First message:",
+                value=f"In {msg.mention}:\n```{msg.clean_content}```\nSent at <t:{msg.created_at.strftime('%s')}:f> (<t:{msg.created_at.strftime('%s')}:R>)",
+                inline=True,
+            )
+            await callout.edit(embed=embed)
 
 
 async def setup(bot):
