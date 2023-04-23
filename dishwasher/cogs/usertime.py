@@ -27,7 +27,7 @@ class usertime(Cog):
 
         if timezone not in available_timezones():
             await ctx.send(
-                "Invalid timezone provided. Please provide a timezone in the `America/Chicago` format.\nIf you don't know what yours is, please check the following list.\nhttps://en.wikipedia.org/wiki/List_of_tz_database_time_zones\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`."
+                "Invalid timezone provided. Please provide a timezone in the `America/Chicago` format.\nIf you don't know what yours is, please check the following list.\n<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>\n\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`. For example, `Etc/GMT+5`."
             )
             return
 
