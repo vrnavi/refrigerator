@@ -63,15 +63,15 @@ class Remind(Cog):
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """[U] Reminds you about something."""
         current_timestamp = time.time()
-        if when.isdigit() and len(when) == 10:
+        if when.isdigit() and len(int(when)) == 10:
             # Timestamp provided, just use that.
             expiry_timestamp = when
         else:
             expiry_timestamp = self.bot.parse_time(when)
 
         if current_timestamp + 59 > expiry_timestamp:
-            msg = await ctx.message.reply(
-                "Either timespan too short (minimum 1 minute) or incorrect format (number then unit of time).\nExample: `remindme 3h Check the dishwasher.`",
+            await ctx.message.reply(
+                "Either timespan too short (minimum 1 minute from now) or incorrect format (number then unit of time, or timestamp).\nExample: `remindme 3h Check the dishwasher.`",
                 mention_author=False,
             )
             return
