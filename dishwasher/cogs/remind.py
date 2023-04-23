@@ -63,7 +63,11 @@ class Remind(Cog):
     async def remind(self, ctx, when: str, *, text: str = "something"):
         """[U] Reminds you about something."""
         current_timestamp = time.time()
-        expiry_timestamp = self.bot.parse_time(when)
+        if when.isdigit() and len(when) == 10:
+            # Timestamp provided, just use that.
+            expiry_timestamp = when
+        else:
+            expiry_timestamp = self.bot.parse_time(when)
 
         if current_timestamp + 59 > expiry_timestamp:
             msg = await ctx.message.reply(
@@ -100,7 +104,7 @@ class Remind(Cog):
             inline=False,
         )
 
-        msg = await ctx.message.reply(
+        await ctx.message.reply(
             embed=embed,
             mention_author=False,
         )

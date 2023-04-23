@@ -62,7 +62,7 @@ class Messagescan(Cog):
                 timestamp=lastaftermsg.created_at,
             )
             embed.set_footer(
-                text=f"Sniped by {ctx.author}",
+                text=f"Snipped by {ctx.author}",
                 icon_url=ctx.author.display_avatar.url,
             )
             embed.set_author(
@@ -126,7 +126,7 @@ class Messagescan(Cog):
             await ctx.reply(embed=embed, mention_author=False)
         else:
             await ctx.reply(
-                content="There is no message edit in the snipe cache for this channel.",
+                content="There is no message edit in the snip cache for this channel.",
                 mention_author=False,
             )
 
@@ -185,7 +185,7 @@ class Messagescan(Cog):
                     and rcvmessage.attachments[0].content_type[:6] == "image/"
                 ):
                     embed.set_image(url=rcvmessage.attachments[0].url)
-                elif rcvmessage.embeds and rcvmessage.embeds.image:
+                elif rcvmessage.embeds and rcvmessage.embeds[0].image:
                     embed.set_image(url=rcvmessage.embeds[0].image.url)
                 embeds.append(embed)
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
