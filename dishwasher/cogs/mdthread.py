@@ -36,7 +36,7 @@ class mdthread(Cog):
         )
 
         try:
-            r, u = await client.wait_for("reaction_add", timeout=60.0, check=check)
+            r, u = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
         except asyncio.TimeoutError:
             self.cancel_message(ctx, confirmation_msg)
         else:

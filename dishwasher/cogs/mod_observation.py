@@ -92,7 +92,7 @@ class ModObserve(Cog):
             def check(m):
                 return m.author.id == member.id
 
-            msg = await client.wait_for("message", check=check)
+            msg = await self.bot.wait_for("message", check=check)
             embed.set_field_at(
                 index=2,
                 name="🔍 First message:",
