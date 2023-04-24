@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog, Context, Bot, BucketType
-from helpers.confirmationbuttonview import ConfirmationButtonView
 
 
 class mdthread(Cog):
