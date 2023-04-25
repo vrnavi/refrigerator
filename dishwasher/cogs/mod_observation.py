@@ -96,7 +96,7 @@ class ModObserve(Cog):
             embed.set_field_at(
                 index=2,
                 name="🔍 First message:",
-                value=f"In {msg.mention}:\n```{msg.clean_content}```\nSent at <t:{msg.created_at.strftime('%s')}:f> (<t:{msg.created_at.strftime('%s')}:R>)",
+                value=f"In {msg.channel.mention}:\n```{msg.clean_content}```\nSent at <t:{msg.created_at.strftime('%s')}:f> (<t:{msg.created_at.strftime('%s')}:R>)",
                 inline=True,
             )
             await callout.edit(embed=embed)
