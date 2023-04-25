@@ -311,11 +311,11 @@ class Logs2(Cog):
         if alog[0].target.id == member.id:
             if alog[0].user.id != self.bot.user.id:
                 userlog(
+                    member.guild.id,
                     member.id,
-                    alog[0].user.id,
+                    alog[0].user,
                     f"Kicked by external method.",
                     "kicks",
-                    member.name,
                 )
                 embed = discord.Embed(
                     color=discord.Colour.from_str("#FFFF00"),
@@ -390,11 +390,11 @@ class Logs2(Cog):
             return
 
         userlog(
+            member.guild.id,
             member.id,
-            alog[0].user.id,
+            alog[0].user,
             f"Banned by external method.",
             "bans",
-            member.name,
         )
         escaped_name = self.bot.escape_message(member)
 
