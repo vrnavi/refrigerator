@@ -12,7 +12,7 @@ class Unroleban:
         self.guild_set[guild_id]["time"] = time
 
     def diff(self, guild_id, time):
-        return (time - self.guild_set[guild_id][time]).total_seconds()
+        return (time - self.guild_set[guild_id]["time"]).total_seconds()
 
     def isset(self, guild_id):
         try:
