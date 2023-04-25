@@ -65,7 +65,7 @@ class ModAntiRaid(Cog):
         return [
             c
             for c in guild.text_channels
-            if c.permissions_for(self.guild.me).manage_channels
+            if c.permissions_for(guild.me).manage_channels
             and self.is_public_channel(c)
         ]
 
