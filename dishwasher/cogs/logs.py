@@ -241,7 +241,7 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Color.dark_gray(),
             title="🗑️ Message Delete",
-            description=f"<@{message.author.id}> ({message.author.id}) [{message.channel.mention}]",
+            description=f"{message.author.mention} ({message.author.id}) [{message.channel.mention}]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
@@ -275,8 +275,13 @@ class Logs2(Cog):
             embed.add_field(
                 name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
                 value=f">>> {message.clean_content}",
-                inline=True,
+                inline=False,
             )
+        embed.add_field(
+            name="🔗 Original URL",
+            value=f"**Message ID:** {message.id}\n```{message.jump_url}```",
+            inline=False,
+        )
         await ulog.send(embed=embed)
 
     @Cog.listener()

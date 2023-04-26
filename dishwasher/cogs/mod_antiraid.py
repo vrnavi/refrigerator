@@ -65,8 +65,7 @@ class ModAntiRaid(Cog):
         return [
             c
             for c in guild.text_channels
-            if c.permissions_for(guild.me).manage_channels
-            and self.is_public_channel(c)
+            if c.permissions_for(guild.me).manage_channels and self.is_public_channel(c)
         ]
 
     def parse_channel_list(self, guild, args):
