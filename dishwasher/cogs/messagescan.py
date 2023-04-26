@@ -67,7 +67,7 @@ class Messagescan(Cog):
             )
             embed.set_author(
                 name=f"💬 {lastaftermsg.author} said in #{lastaftermsg.channel.name}...",
-                icon_url=f"{lastaftermsg.author.display_avatar.url}",
+                icon_url=lastaftermsg.author.display_avatar.url,
                 url=lastaftermsg.jump_url,
             )
             # Split if too long.
@@ -168,16 +168,17 @@ class Messagescan(Cog):
                 # Prepare embed msg
                 embed = discord.Embed(
                     color=rcvmessage.author.color,
-                    description=f"{rcvmessage.content}",
+                    description=f">>> {rcvmessage.clean_content}",
                     timestamp=rcvmessage.created_at,
                 )
                 embed.set_footer(
-                    text=f"Quoted by {message.author.name}#{message.author.discriminator}",
+                    text=f"Quoted by {message.author}",
                     icon_url=rcvmessage.author.display_avatar.url,
                 )
                 embed.set_author(
                     name=f"💬 {rcvmessage.author} said in #{rcvmessage.channel.name}...",
-                    icon_url=f"{rcvmessage.author.display_avatar.url}",
+                    icon_url=rcvmessage.author.display_avatar.url,
+                    url=rcvmessage.jump_url,
                 )
                 # Use a single image from post for now.
                 if (
