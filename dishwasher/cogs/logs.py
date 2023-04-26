@@ -161,13 +161,13 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Color.light_gray(),
             title="📝 Message Edit",
-            description=f"<@{after.author.id}> ({after.author.id}) [{after.channel.mention}] [[Jump]({after.jump_url})]",
+            description=f"{after.author.mention} ({after.author.id}) in {after.channel.mention} [[Jump]({after.jump_url})]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{self.bot.escape_message(after.author)}",
-            icon_url=f"{after.author.display_avatar.url}",
+            name=self.bot.escape_message(after.author),
+            icon_url=after.author.display_avatar.url,
         )
         # Split if too long.
         if len(before.clean_content) > 1024:
@@ -241,13 +241,13 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Color.dark_gray(),
             title="🗑️ Message Delete",
-            description=f"{message.author.mention} ({message.author.id}) [{message.channel.mention}]",
+            description=f"{message.author.mention} ({message.author.id}) in {message.channel.mention}",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{self.bot.escape_message(message.author)}",
-            icon_url=f"{message.author.display_avatar.url}",
+            name=self.bot.escape_message(message.author),
+            icon_url=message.author.display_avatar.url,
         )
 
         # Split if too long.
@@ -332,8 +332,8 @@ class Logs2(Cog):
                     text=self.bot.user.name, icon_url=self.bot.user.display_avatar
                 )
                 embed.set_author(
-                    name=f"{self.bot.escape_message(alog[0].target)}",
-                    icon_url=f"{alog[0].target.display_avatar.url}",
+                    name=self.bot.escape_message(alog[0].target),
+                    icon_url=alog[0].target.display_avatar.url,
                 )
                 embed.add_field(
                     name=f"👤 User",
@@ -355,14 +355,12 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=discord.Color.darker_gray(),
             title="📥 User Left",
-            description=f"<@{member.id}> ({member.id})",
+            description=f"{member.mention} ({member.id})",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
-        embed.set_author(
-            name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
-        )
-        embed.set_thumbnail(url=f"{member.display_avatar.url}")
+        embed.set_author(name=escaped_name, icon_url=member.display_avatar.url)
+        embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(
             name="⏰ Account created:",
             value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
@@ -411,8 +409,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{self.bot.escape_message(alog[0].target)}",
-            icon_url=f"{alog[0].target.display_avatar.url}",
+            name=self.bot.escape_message(alog[0].target),
+            icon_url=alog[0].target.display_avatar.url,
         )
         embed.add_field(
             name=f"👤 User",
@@ -453,8 +451,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{self.bot.escape_message(user)}",
-            icon_url=f"{user.display_avatar.url}",
+            name=self.bot.escape_message(user),
+            icon_url=user.display_avatar.url,
         )
         embed.add_field(
             name=f"👤 User",
@@ -497,13 +495,13 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=member_after.color,
             title="ℹ️ Member Update",
-            description=f"{member_after.mention} ({self.bot.escape_message(member_after.id)})",
+            description=f"{member_after.mention} ({member_after.id})",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{self.bot.escape_message(member_after)}",
-            icon_url=f"{member_after.display_avatar.url}",
+            name=self.bot.escape_message(member_after),
+            icon_url=member_after.display_avatar.url,
         )
 
         if member_before.roles != member_after.roles:
@@ -531,9 +529,7 @@ class Logs2(Cog):
                     if role not in role_removal and role not in role_addition:
                         roles.append(role.name)
                 rolelist = "\n".join(reversed(roles))
-                embed.add_field(
-                    name=f"🎨 Role Change", value=f"{rolelist}", inline=False
-                )
+                embed.add_field(name=f"🎨 Role Change", value=rolelist, inline=False)
 
         if member_before.name != member_after.name:
             updated = True
@@ -551,7 +547,7 @@ class Logs2(Cog):
             else:
                 fname = "🏷 Nickname Changed"
             embed.add_field(
-                name=f"{fname}",
+                name=fname,
                 value=f"❌ {self.bot.escape_message(member_before.nick)}\n⬇️\n⭕ {self.bot.escape_message(member_after.nick)}",
                 inline=False,
             )
@@ -577,8 +573,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{guild_after.name}",
-            icon_url=f"{guild_after.icon.url}",
+            name=guild_after.name,
+            icon_url=guild_after.icon.url,
         )
 
         if guild_before.name != guild_after.name:
@@ -619,8 +615,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{channel.guild.name}",
-            icon_url=f"{channel.guild.icon.url}",
+            name=channel.guild.name,
+            icon_url=channel.guild.icon.url,
         )
         await slog.send(embed=embed)
 
@@ -641,8 +637,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{channel.guild.name}",
-            icon_url=f"{channel.guild.icon.url}",
+            name=channel.guild.name,
+            icon_url=channel.guild.icon.url,
         )
         await slog.send(embed=embed)
 
@@ -665,8 +661,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{channel_after.guild.name}",
-            icon_url=f"{channel_after.guild.icon.url}",
+            name=channel_after.guild.name,
+            icon_url=channel_after.guild.icon.url,
         )
 
         if channel_before.name != channel_after.name:
@@ -697,8 +693,8 @@ class Logs2(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{role.guild.name}",
-            icon_url=f"{role.guild.icon.url}",
+            name=role.guild.name,
+            icon_url=role.guild.icon.url,
         )
         await slog.send(embed=embed)
 
@@ -714,13 +710,13 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=role.color,
             title="🔥 Role Deleted",
-            description=f"{role.name} ({role.id}) [<@&{role.id}>]",
+            description=f"{role} ({role.id}) [{role.mention}]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{role.guild.name}",
-            icon_url=f"{role.guild.icon.url}",
+            name=role.guild.name,
+            icon_url=role.guild.icon.url,
         )
         await slog.send(embed=embed)
 
@@ -738,20 +734,20 @@ class Logs2(Cog):
         embed = discord.Embed(
             color=role_after.color,
             title="🖋️ Role Update",
-            description=f"{role_after.name} ({role_after.id}) [<@&{role_after.id}>]",
+            description=f"{role_after} ({role_after.id}) [{role_after.mention}]",
             timestamp=datetime.datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
-            name=f"{role_after.guild.name}",
-            icon_url=f"{role_after.guild.icon.url}",
+            name=role_after.guild.name,
+            icon_url=role_after.guild.icon.url,
         )
 
         if role_before.name != role_after.name:
             updated = True
             embed.add_field(
                 name=f"📝 Name Change",
-                value=f"❌ {role_before.name}\n⬇️\n⭕ {role_after.name}",
+                value=f"❌ {role_before}\n⬇️\n⭕ {role_after}",
                 inline=False,
             )
 
