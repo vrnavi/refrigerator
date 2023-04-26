@@ -86,7 +86,7 @@ class ModObserve(Cog):
             embed.add_field(
                 name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=True
             )
-            embed.add_field(name="🔍 First message:", value="Not yet.", inline=True)
+            embed.add_field(name="🔍 First message:", value="Not yet.", inline=False)
             callout = await member.guild.get_channel(staff_channel).send(embed=embed)
 
             def check(m):
@@ -96,7 +96,7 @@ class ModObserve(Cog):
             embed.set_field_at(
                 index=2,
                 name="🔍 First message:",
-                value=f"In {msg.channel.mention}:\n```{msg.clean_content}```\nSent at <t:{msg.created_at.strftime('%s')}:f> (<t:{msg.created_at.strftime('%s')}:R>)",
+                value=f"[Sent]({msg.jump_url}) in {msg.channel.mention} on <t:{msg.created_at.astimezone().strftime('%s')}:f> (<t:{msg.created_at.astimezone().strftime('%s')}:R>):\n```{msg.clean_content}```",
                 inline=True,
             )
             await callout.edit(embed=embed)
