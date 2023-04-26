@@ -279,7 +279,7 @@ class Logs2(Cog):
             )
         embed.add_field(
             name="🔗 Original URL",
-            value=f"**Message ID:** {message.id}\n```{message.jump_url}```",
+            value=f"```{message.jump_url}```",
             inline=False,
         )
         await ulog.send(embed=embed)
