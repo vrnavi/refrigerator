@@ -251,7 +251,7 @@ class Basic(Cog):
         poll = await ctx.reply(
             content=f"**{poll_title}**{optionlines}", mention_author=False
         )
-        for n in range(idx):
+        for n in range(len(options)):
             await poll.add_reaction(poll_emoji[n])
 
     @commands.guild_only()
