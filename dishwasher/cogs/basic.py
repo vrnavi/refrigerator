@@ -176,7 +176,7 @@ class Basic(Cog):
         members = sorted(ctx.guild.members, key=lambda v: v.joined_at)
         message = ""
         memberidx = (
-            members[joinscore + 1] if joinscore else members.index(ctx.author) + 1
+            joinscore + 1 if joinscore else members.index(ctx.author) + 1
         )
         for idx, m in enumerate(members):
             if memberidx - 5 <= idx <= memberidx + 5:
