@@ -73,6 +73,13 @@ def config_check(gid, ctype, cid=None):
             and "mention_threshold" in config.guild_configs[gid]["antiraid"]
             and "join_threshold" in config.guild_configs[gid]["antiraid"]
         )
+    elif ctype == "archive":
+        return (
+            gid in config.guild_configs
+            and "archive" in config.guild_configs[gid]
+            and "drive_folder" in config.guild_configs[gid]["archive"]
+            and "unroleban_expiry" in config.guild_configs[gid]["archive"]
+        )
     else:
         return (
             gid in config.guild_configs

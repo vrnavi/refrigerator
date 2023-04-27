@@ -1,8 +1,8 @@
 from discord.ext import commands
 from discord.ext.commands import Cog
-import config
 import discord
 from helpers.checks import check_if_staff
+from helpers.configs import get_staff_config, get_log_config, get_misc_config
 
 
 class ModLocks(Cog):
@@ -25,32 +25,32 @@ class ModLocks(Cog):
     async def unlock_for_staff(self, channel: discord.TextChannel, issuer):
         await self.set_sendmessage(
             channel,
-            config.guild_configs[channel.guild.id]["staff"]["staff_role"],
+            get_staff_config(ctx.guild.id, "staff_role"),
             True,
             issuer,
         )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command()
+    @commands.command(aliases=["lockdown"])
     async def lock(self, ctx, soft: bool = False, channel: discord.TextChannel = None):
         """[S] Prevents people from speaking in a channel.
 
         Defaults to current channel."""
         if not channel:
             channel = ctx.channel
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
+        bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
 
-        if not channel.permissions_for(ctx.guild.default_role).send_messages:
-            roles = config.guild_configs[ctx.guild.id]["misc"]["authorized_roles"]
+        if not channel.permissions_for(ctx.guild.default_role).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
+            roles = get_misc_config(ctx.guild.id, "authorized_roles")
         elif not channel.permissions_for(ctx.guild.default_role).read_messages:
             roles = []
             for r in channel.changed_roles:
-                if r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]:
+                if r.id == staff_role_id:
                     continue
-                if r.id in config.guild_configs[ctx.guild.id]["misc"]["bot_roles"]:
+                if bot_role_ids and r.id in bot_role_ids:
                     continue
                 if channel.overwrites_for(r).send_messages:
                     roles.append(r.id)
@@ -73,8 +73,10 @@ class ModLocks(Cog):
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(ctx.author)
         )
-        msg = f"🔒 **Lockdown**: {ctx.channel.mention} by {safe_name}"
-        await mlog.send(msg)
+        if mlog:
+            msg = f"🔒 **Lockdown**: {ctx.channel.mention} by {safe_name}"
+            mlog = await self.bot.fetch_channel(mlog)
+            await mlog.send(msg)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -83,18 +85,18 @@ class ModLocks(Cog):
         """[S] Unlocks speaking in current channel."""
         if not channel:
             channel = ctx.channel
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
+        bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
 
-        if not channel.permissions_for(ctx.guild.default_role).send_messages:
-            roles = config.guild_configs[ctx.guild.id]["misc"]["authorized_roles"]
+        if not channel.permissions_for(ctx.guild.default_role).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
+            roles = get_misc_config(ctx.guild.id, "authorized_roles")
         elif not channel.permissions_for(ctx.guild.default_role).read_messages:
             roles = []
             for r in channel.changed_roles:
-                if r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]:
+                if r.id == staff_role_id:
                     continue
-                if r.id in config.guild_configs[ctx.guild.id]["misc"]["bot_roles"]:
+                if bot_role_ids and r.id in bot_role_ids:
                     continue
                 if channel.overwrites_for(r).send_messages:
                     roles.append(r.id)
@@ -110,8 +112,10 @@ class ModLocks(Cog):
             ctx, str(ctx.author)
         )
         await ctx.send("🔓 Channel unlocked.")
-        msg = f"🔓 **Unlock**: {ctx.channel.mention} by {safe_name}"
-        await mlog.send(msg)
+        if mlog:
+            msg = f"🔓 **Unlock**: {ctx.channel.mention} by {safe_name}"
+            mlog = await self.bot.fetch_channel(mlog)
+            await mlog.send(msg)
 
     @commands.guild_only()
     @commands.check(check_if_staff)

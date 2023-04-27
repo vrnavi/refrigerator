@@ -290,6 +290,8 @@ class Logs2(Cog):
         await self.bot.wait_until_ready()
         ulog = get_log_config(member.guild.id, "ulog_thread")
         mlog = get_log_config(member.guild.id, "mlog_thread")
+        if not ulog or not mlog:
+            return
 
         escaped_name = self.bot.escape_message(member)
 
@@ -317,66 +319,67 @@ class Logs2(Cog):
                     f"Kicked by external method.",
                     "kicks",
                 )
-                if mlog:
-                    mlog = await self.bot.fetch_channel(mlog)
-                    embed = discord.Embed(
-                        color=discord.Colour.from_str("#FFFF00"),
-                        title="👢 Kick",
-                        description=f"{alog[0].target.mention} was kicked by {alog[0].user.mention} [External Method]",
-                        timestamp=datetime.datetime.now(),
-                    )
-                    embed.set_footer(
-                        text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-                    )
-                    embed.set_author(
-                        name=self.bot.escape_message(alog[0].target),
-                        icon_url=alog[0].target.display_avatar.url,
-                    )
-                    embed.add_field(
-                        name=f"👤 User",
-                        value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
-                        inline=True,
-                    )
-                    embed.add_field(
-                        name=f"🛠️ Staff",
-                        value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
-                        inline=True,
-                    )
-                    embed.add_field(
-                        name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
-                    )
-                    await mlog.send(embed=embed)
+                mlog = await self.bot.fetch_channel(mlog)
+                embed = discord.Embed(
+                    color=discord.Colour.from_str("#FFFF00"),
+                    title="👢 Kick",
+                    description=f"{alog[0].target.mention} was kicked by {alog[0].user.mention} [External Method]",
+                    timestamp=datetime.datetime.now(),
+                )
+                embed.set_footer(
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                )
+                embed.set_author(
+                    name=self.bot.escape_message(alog[0].target),
+                    icon_url=alog[0].target.display_avatar.url,
+                )
+                embed.add_field(
+                    name=f"👤 User",
+                    value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
+                    inline=True,
+                )
+                embed.add_field(
+                    name=f"🛠️ Staff",
+                    value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
+                    inline=True,
+                )
+                embed.add_field(
+                    name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
+                )
+                await mlog.send(embed=embed)
             return
 
-        if ulog:
-            ulog = await self.bot.fetch_channel(ulog)
-            embed = discord.Embed(
-                color=discord.Color.darker_gray(),
-                title="📥 User Left",
-                description=f"{member.mention} ({member.id})",
-                timestamp=datetime.datetime.now(),
-            )
-            embed.set_footer(
-                text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-            )
-            embed.set_author(name=escaped_name, icon_url=member.display_avatar.url)
-            embed.set_thumbnail(url=member.display_avatar.url)
-            embed.add_field(
-                name="⏰ Account created:",
-                value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
-                inline=True,
-            )
-            embed.add_field(
-                name="⏱️ Account joined:",
-                value=f"<t:{member.joined_at.astimezone().strftime('%s')}:f>\n<t:{member.joined_at.astimezone().strftime('%s')}:R>",
-                inline=True,
-            )
-            await ulog.send(embed=embed)
+        ulog = await self.bot.fetch_channel(ulog)
+        embed = discord.Embed(
+            color=discord.Color.darker_gray(),
+            title="📥 User Left",
+            description=f"{member.mention} ({member.id})",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+        )
+        embed.set_author(name=escaped_name, icon_url=member.display_avatar.url)
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.add_field(
+            name="⏰ Account created:",
+            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
+            inline=True,
+        )
+        embed.add_field(
+            name="⏱️ Account joined:",
+            value=f"<t:{member.joined_at.astimezone().strftime('%s')}:f>\n<t:{member.joined_at.astimezone().strftime('%s')}:R>",
+            inline=True,
+        )
+        await ulog.send(embed=embed)
 
     @Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
         mlog = get_log_config(guild.id, "mlog_thread")
+        if not mlog:
+            return
+        mlog = await self.bot.fetch_channel(mlog)
 
         alog = [
             entry
@@ -396,35 +399,33 @@ class Logs2(Cog):
         )
         escaped_name = self.bot.escape_message(member)
 
-        if mlog:
-            mlog = await self.bot.fetch_channel(mlog)
-            embed = discord.Embed(
-                color=discord.Colour.from_str("#FF0000"),
-                title="⛔ Ban",
-                description=f"{alog[0].target.mention} was banned by {alog[0].user.mention} [External Method]",
-                timestamp=datetime.datetime.now(),
-            )
-            embed.set_footer(
-                text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-            )
-            embed.set_author(
-                name=self.bot.escape_message(alog[0].target),
-                icon_url=alog[0].target.display_avatar.url,
-            )
-            embed.add_field(
-                name=f"👤 User",
-                value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
-                inline=True,
-            )
-            embed.add_field(
-                name=f"🛠️ Staff",
-                value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
-                inline=True,
-            )
-            embed.add_field(
-                name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
-            )
-            await mlog.send(embed=embed)
+        embed = discord.Embed(
+            color=discord.Colour.from_str("#FF0000"),
+            title="⛔ Ban",
+            description=f"{alog[0].target.mention} was banned by {alog[0].user.mention} [External Method]",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(
+            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+        )
+        embed.set_author(
+            name=self.bot.escape_message(alog[0].target),
+            icon_url=alog[0].target.display_avatar.url,
+        )
+        embed.add_field(
+            name=f"👤 User",
+            value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
+            inline=True,
+        )
+        embed.add_field(
+            name=f"🛠️ Staff",
+            value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
+            inline=True,
+        )
+        embed.add_field(
+            name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
+        )
+        await mlog.send(embed=embed)
 
     @Cog.listener()
     async def on_member_unban(self, guild, user):
@@ -432,8 +433,8 @@ class Logs2(Cog):
         mlog = get_log_config(guild.id, "mlog_thread")
         if not mlog:
             return
-
         mlog = await self.bot.fetch_channel(mlog)
+        
         alog = [
             entry
             async for entry in guild.audit_logs(
@@ -473,6 +474,7 @@ class Logs2(Cog):
         ulog = get_log_config(member_after.guild.id, "ulog_thread")
         if not ulog:
             return
+        ulog = await self.bot.fetch_channel(ulog)
 
         # Swiftly deal with unreadable names.
         if member_before.display_name != member_after.display_name:
@@ -558,6 +560,7 @@ class Logs2(Cog):
         slog = get_log_config(guild_after.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         updated = False
         # initialize embed
@@ -600,6 +603,7 @@ class Logs2(Cog):
         slog = get_log_config(channel.guild.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         embed = discord.Embed(
             color=discord.Colour.from_str("#00FFFF"),
@@ -620,6 +624,7 @@ class Logs2(Cog):
         slog = get_log_config(channel.guild.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF00FF"),
@@ -640,6 +645,7 @@ class Logs2(Cog):
         slog = get_log_config(channel_after.guild.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         updated = False
         # initialize embed
@@ -672,6 +678,7 @@ class Logs2(Cog):
         slog = get_log_config(role.guild.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         embed = discord.Embed(
             color=role.color,
@@ -692,6 +699,7 @@ class Logs2(Cog):
         slog = get_log_config(role.guild.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         embed = discord.Embed(
             color=role.color,
@@ -712,6 +720,7 @@ class Logs2(Cog):
         slog = get_log_config(role_after.guild.id, "slog_thread")
         if not slog:
             return
+        slog = await self.bot.fetch_channel(slog)
 
         updated = False
         # initialize embed

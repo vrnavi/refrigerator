@@ -20,11 +20,13 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.store import DECISION_EMOTES, LAST_UNROLEBAN
+from helpers.configs import get_archive_config, config_check
 
 
 class ModArchive(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.nocfgmsg = "Archival isn't set up for this server."
 
     async def log_whole_channel(self, channel, zip_files=False):
         st = ""
@@ -192,6 +194,8 @@ class ModArchive(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["archives"])
     async def archive(self, ctx, *, args=""):
+        if not config_check(ctx.guild.id, "archive"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
             "data/service_account.json", "https://www.googleapis.com/auth/drive"
         )
@@ -323,7 +327,7 @@ class ModArchive(Cog):
 
     @Cog.listener()
     async def on_member_remove(self, member):
-        if member.guild.id in config.guild_configs and self.is_rolebanned(member):
+        if config_check(after.guild.id, "archive") and self.is_rolebanned(member):
             LAST_UNROLEBAN.set(
                 member.guild.id,
                 member.id,
@@ -333,7 +337,7 @@ class ModArchive(Cog):
     @Cog.listener()
     async def on_member_update(self, before, after):
         if (
-            before.guild.id in config.guild_configs
+            config_check(after.guild.id, "archive")
             and self.is_rolebanned(before)
             and not self.is_rolebanned(after)
         ):
