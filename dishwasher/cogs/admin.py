@@ -129,8 +129,8 @@ class Admin(Cog):
         """[O] Shows the current guilds I am in."""
         guildmsg = "**I am in the following guilds:**"
         for g in self.bot.guilds:
-            guildmsg = f"{guildmsg}\n- {g.name} with `{g.members}` members.")
-        ctx.reply(content=guildmsg, mention_author=False)
+            guildmsg = f"{guildmsg}\n- {g.name} with `{g.members}` members."
+        await ctx.reply(content=guildmsg, mention_author=False)
 
     @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
