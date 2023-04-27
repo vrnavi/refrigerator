@@ -166,6 +166,7 @@ class Basic(Cog):
                     joincounts.append(rawjoins.count(d))
             plt.plot(joindates, joincounts)
             plt.savefig("testfile.png")
+            plt.close()
         await ctx.reply(file=discord.File("testfile.png"), mention_author=False)
         os.remove("testfile.png")
 
