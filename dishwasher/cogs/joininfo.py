@@ -1,6 +1,7 @@
 import discord
 from discord.ext.commands import Cog
 from discord.ext import commands, tasks
+import asyncio
 import matplotlib.pyplot as plt
 import os
 import shutil
@@ -14,6 +15,7 @@ class Joininfo(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.caching.start()
+        self.loop = asyncio.get_event_loop()
 
     def cog_unload(self):
         self.caching.cancel()
@@ -60,7 +62,7 @@ class Joininfo(Cog):
                 else:
                     joincounts.append(rawjoins.count(d))
             plt.plot(joindates, joincounts)
-            plt.savefig(f"data/joingraphs/{g.id}-joingraph.png", bbox_inches="tight")
+            await loop.run_in_executor(None, plt.savefig, f"data/joingraphs/{g.id}-joingraph.png", bbox_inches="tight")
             plt.close()
 
 
