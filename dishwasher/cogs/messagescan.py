@@ -189,7 +189,6 @@ class Messagescan(Cog):
                 elif rcvmessage.embeds and rcvmessage.embeds[0].image:
                     embed.set_image(url=rcvmessage.embeds[0].image.url)
                 embeds.append(embed)
-        reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
         # Discord SUCKS!!
         if twitterlinks:
             while not message.embeds:
@@ -199,6 +198,11 @@ class Messagescan(Cog):
         def deletecheck(m):
             return m.id == message.id
 
+        reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
+        try:
+            await message.channel.fetch_message(message.id)
+        except NotFound:
+            await reply.delete()
         try:
             await self.bot.wait_for("message_delete", timeout=600, check=deletecheck)
             await reply.delete()
