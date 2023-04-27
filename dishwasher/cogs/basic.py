@@ -179,7 +179,7 @@ class Basic(Cog):
             joinscore + 1 if joinscore else members.index(ctx.author) + 1
         )
         for idx, m in enumerate(members):
-            if memberidx - 5 <= idx <= memberidx + 5:
+            if memberidx - 6 <= idx <= memberidx + 4:
                 message = (
                     f"{message}\n`{idx+1}` **{m}**"
                     if memberidx == idx + 1
