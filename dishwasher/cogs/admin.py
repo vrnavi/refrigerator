@@ -124,6 +124,15 @@ class Admin(Cog):
         )
 
     @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def guilds(self, ctx):
+        """[O] Shows the current guilds I am in."""
+        guildmsg = "**I am in the following guilds:**"
+        for g in self.bot.guilds:
+            guildmsg = f"{guildmsg}\n- {g.name} with `{g.members}` members.")
+        ctx.reply(content=guildmsg, mention_author=False)
+
+    @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
     async def _eval(self, ctx, *, code: str):
         """[O] Evaluates some code."""
@@ -271,7 +280,7 @@ class Admin(Cog):
         msgs = []
         for m in config.bot_managers:
             msg = await self.bot.get_user(m).send(
-                content=f"{self.bot.me.name} joined `{guild}` with `{guild.members}` members.\nCheck the checkmark within an hour to leave."
+                content=f"{self.bot.user.name} joined `{guild}` with `{guild.members}` members.\nCheck the checkmark within an hour to leave."
             )
             await msg.add_reaction("✅")
             msgs.append(msg)
