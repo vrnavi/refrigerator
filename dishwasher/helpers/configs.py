@@ -50,17 +50,17 @@ def get_misc_config(gid, cfg_type):
 
 
 def config_check(gid, ctype, cid=None):
-    match ctype:
-        case "cotd":
-            return (
-                gid in config.guild_configs
-                and "cotd" in config.guild_configs[gid]
-                and "cotd_role" in config.guild_configs[gid][cid]
-                and "cotd_name" in config.guild_configs[gid][cid]
-            )
-        case _:
-            return (
-                gid in config.guild_configs
-                and cid in config.guild_configs[gid]
-                and ctype in config.guild_configs[gid][cid]
-            )
+    # todo: replace with case switch when raspberry pi os upgrades to 3.10 default instead of 3.9
+    if ctype == "cotd":
+        return (
+            gid in config.guild_configs
+            and "cotd" in config.guild_configs[gid]
+            and "cotd_role" in config.guild_configs[gid][cid]
+            and "cotd_name" in config.guild_configs[gid][cid]
+        )
+    else:
+        return (
+            gid in config.guild_configs
+            and cid in config.guild_configs[gid]
+            and ctype in config.guild_configs[gid][cid]
+        )
