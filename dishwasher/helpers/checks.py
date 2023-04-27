@@ -2,6 +2,8 @@ import config
 
 
 def check_if_staff(ctx):
+    if ctx.author.id in config.bot_managers:
+        return True
     if (
         not ctx.guild
         or ctx.guild.id not in config.guild_configs

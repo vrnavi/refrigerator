@@ -103,6 +103,7 @@ config.py
 
 # Prevent data files from being committed
 data/
+arbitlogs/
 
 # macOS and Windows suck
 .DS_Store

@@ -90,14 +90,14 @@ class ModObserve(Cog):
             callout = await member.guild.get_channel(staff_channel).send(embed=embed)
 
             def check(m):
-                return m.author.id == member.id
+                return m.author.id == member.id and m.guild.id == member.guild
 
             msg = await self.bot.wait_for("message", check=check)
             embed.set_field_at(
                 index=2,
                 name="🔍 First message:",
                 value=f"[Sent]({msg.jump_url}) in {msg.channel.mention} on <t:{msg.created_at.astimezone().strftime('%s')}:f> (<t:{msg.created_at.astimezone().strftime('%s')}:R>):\n```{msg.clean_content}```",
-                inline=True,
+                inline=False,
             )
             await callout.edit(embed=embed)
 
