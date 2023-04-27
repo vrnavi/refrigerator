@@ -61,7 +61,7 @@ class Joininfo(Cog):
                     joincounts.append(joincounts[i - 1] + rawjoins.count(d))
                 else:
                     joincounts.append(rawjoins.count(d))
-            plt.plot(joindates, joincounts)
+            await loop.run_in_executor(None, plt.plot, joindates, joincounts)
             await loop.run_in_executor(None, plt.savefig, f"data/joingraphs/{g.id}-joingraph.png", bbox_inches="tight")
             plt.close()
 
