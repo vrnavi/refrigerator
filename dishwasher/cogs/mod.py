@@ -9,6 +9,7 @@ import random
 from helpers.checks import check_if_staff, check_if_bot_manager
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
+from helpers.configs import get_staff_config, get_log_config
 import io
 
 
@@ -19,7 +20,7 @@ class Mod(Cog):
 
     def check_if_target_is_staff(self, target):
         return any(
-            r.id == config.guild_configs[target.guild.id]["staff"]["staff_role"]
+            r.id == get_staff_config(target.guild.id, "staff_role")
             for r in target.roles
         )
 
@@ -32,16 +33,16 @@ class Mod(Cog):
         await ctx.guild.edit(icon=img_bytes, reason=str(ctx.author))
         await ctx.send(f"Done!")
 
-        slog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["slog_thread"]
-        )
-        log_msg = (
-            f"✏️ **Guild Icon Update**: {ctx.author} changed the guild icon."
-            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
-        )
-        img_filename = url.split("/")[-1].split("#")[0]  # hacky
-        img_file = discord.File(io.BytesIO(img_bytes), filename=img_filename)
-        await slog.send(log_msg, file=img_file)
+        slog = get_log_config(ctx.guild.id, "slog_thread")
+        if slog:
+            slog = await self.bot.fetch_channel(slog)
+            log_msg = (
+                f"✏️ **Guild Icon Update**: {ctx.author} changed the guild icon."
+                f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+            )
+            img_filename = url.split("/")[-1].split("#")[0]  # hacky
+            img_file = discord.File(io.BytesIO(img_bytes), filename=img_filename)
+            await slog.send(log_msg, file=img_file)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
@@ -65,10 +66,7 @@ class Mod(Cog):
         dm_message = f"**You were kicked** from `{ctx.guild.name}`."
         if reason:
             dm_message += f'\n*The given reason is:* "{reason}".'
-        dm_message += (
-            "\n\nYou are able to rejoin the server,"
-            " but please be sure to behave when participating again."
-        )
+        dm_message += "\n\nYou are able to rejoin."
 
         try:
             await target.send(dm_message)
@@ -78,8 +76,13 @@ class Mod(Cog):
             pass
 
         await target.kick(reason=f"[ Kick by {ctx.author} ] {reason}")
+        await ctx.send(f"**{target.mention}** was KICKED.")
 
-        # Prepare embed msg
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        mlog = await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFFF00"),
             title="👢 Kick",
@@ -109,12 +112,7 @@ class Mod(Cog):
                 value=f"**No reason was set!**\nPlease use `{config.prefixes[0]}kick <user> [reason]` in the future.\Kick reasons are sent to the user.",
                 inline=False,
             )
-
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         await mlog.send(embed=embed)
-        await ctx.send(f"**{target.mention}** was KICKED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -161,8 +159,13 @@ class Mod(Cog):
         await ctx.guild.ban(
             target, reason=f"[ Ban by {ctx.author} ] {reason}", delete_message_days=0
         )
+        await ctx.send(f"**{target.mention}** is now BANNED.")
 
-        # Prepare embed msg
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
             title="⛔ Ban",
@@ -192,12 +195,7 @@ class Mod(Cog):
                 value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}ban <user> [reason]` in the future.\nBan reasons are sent to the user.",
                 inline=False,
             )
-
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         await mlog.send(embed=embed)
-        await ctx.send(f"**{target.mention}** is now BANNED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -241,8 +239,8 @@ class Mod(Cog):
             if reason:
                 dm_message += f'\n*The given reason is:* "{reason}".'
             appealmsg = (
-                f", but you may appeal it here:\n{config.guild_configs['ctx.guild.id']['staff']['appeal_url']}"
-                if config.guild_configs["ctx.guild.id"]["staff"]["appeal_url"]
+                f", but you may appeal it here:\n{get_staff_config(ctx.guild.id, 'appeal_url')}"
+                if get_staff_config(ctx.guild.id, "appeal_url")
                 else "."
             )
             dm_message += f"\n\nThis ban does not expire{appealmsg}"
@@ -257,8 +255,15 @@ class Mod(Cog):
             reason=f"[ Ban by {ctx.author} ] {reason}",
             delete_message_days=day_count,
         )
+        await ctx.send(
+            f"**{target.mention}** is now BANNED.\n{day_count} days of messages were deleted."
+        )
 
-        # Prepare embed msg
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        mlog = await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
             title="⛔ Ban",
@@ -288,14 +293,7 @@ class Mod(Cog):
                 value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}dban <user> [reason]` in the future.\nBan reasons are sent to the user.",
                 inline=False,
             )
-
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         await mlog.send(embed=embed)
-        await ctx.send(
-            f"**{target.mention}** is now BANNED.\n{day_count} days of messages were deleted."
-        )
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -305,6 +303,9 @@ class Mod(Cog):
         """[S] Bans users with their IDs, doesn't message them."""
         msg = await ctx.send(f"🚨 **MASSBAN IN PROGRESS...** 🚨")
         targets_int = [int(target) for target in targets.strip().split(" ")]
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if mlog:
+            mlog = await self.bot.fetch_channel(mlog)
         for target in targets_int:
             target_user = await self.bot.fetch_user(target)
             target_member = ctx.guild.get_member(target)
@@ -336,7 +337,9 @@ class Mod(Cog):
                 delete_message_days=0,
             )
 
-            # Prepare embed msg
+            if not mlog:
+                continue
+
             embed = discord.Embed(
                 color=discord.Colour.from_str("#FF0000"),
                 title="🚨 Massban",
@@ -360,11 +363,7 @@ class Mod(Cog):
                 value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
                 inline=True,
             )
-
-            mlog = await self.bot.fetch_channel(
-                config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-            )
-            await mlog.send(chan_message)
+            await mlog.send(embed=embed)
         await msg.edit(f"All {len(targets_int)} users are now BANNED.")
 
     @commands.guild_only()
@@ -379,6 +378,12 @@ class Mod(Cog):
         )
 
         await ctx.guild.unban(target_user, reason=f"[ Unban by {ctx.author} ] {reason}")
+        await ctx.send(f"{safe_name} is now UNBANNED.")
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
 
         # Prepare embed msg
         embed = discord.Embed(
@@ -410,12 +415,7 @@ class Mod(Cog):
                 value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}unban <user> [reason]` in the future.",
                 inline=False,
             )
-
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         await mlog.send(embed=embed)
-        await ctx.send(f"{safe_name} is now UNBANNED.")
 
     @commands.guild_only()
     @commands.bot_has_permissions(ban_members=True)
@@ -450,6 +450,12 @@ class Mod(Cog):
         await target.ban(
             reason=f"{ctx.author}, reason: {reason}", delete_message_days=0
         )
+        await ctx.send(f"{safe_name} is now silently BANNED.")
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
 
         # Prepare embed msg
         embed = discord.Embed(
@@ -481,10 +487,6 @@ class Mod(Cog):
                 value=f"**No reason provided!**\nPlease use `{config.prefixes[0]}sban <user> [reason]` in the future.",
                 inline=False,
             )
-
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         await mlog.send(embed=embed)
 
     @commands.guild_only()
@@ -492,12 +494,16 @@ class Mod(Cog):
     @commands.group(invoke_without_command=True, aliases=["clear"])
     async def purge(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
         """[S] Clears a given number of messages."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         if not channel:
             channel = ctx.channel
         deleted = len(await channel.purge(limit=limit))
+        await ctx.send(f"🚮 `{deleted}` messages purged.", delete_after=5)
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
             title="🗑 Purged",
@@ -509,16 +515,12 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
         await mlog.send(embed=embed)
-        await ctx.send(f"🚮 `{deleted}` messages purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @purge.command()
     async def bots(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
         """[S] Clears a given number of bot messages."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         if not channel:
             channel = ctx.channel
 
@@ -526,6 +528,13 @@ class Mod(Cog):
             return m.author.bot
 
         deleted = len(await channel.purge(limit=limit, check=is_bot))
+        await ctx.send(f"🚮 `{deleted}` bot messages purged.", delete_after=5)
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
             title="🗑 Purged",
@@ -537,7 +546,6 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
         await mlog.send(embed=embed)
-        await ctx.send(f"🚮 `{deleted}` bot messages purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -550,9 +558,6 @@ class Mod(Cog):
         channel: discord.abc.GuildChannel = None,
     ):
         """[S] Clears a given number of messages from a user."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         if not channel:
             channel = ctx.channel
 
@@ -560,6 +565,13 @@ class Mod(Cog):
             return target.id == m.author.id
 
         deleted = len(await channel.purge(limit=limit, check=is_mentioned))
+        await ctx.send(f"🚮 `{deleted}` messages from {target} purged.", delete_after=5)
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
             title="🗑 Purged",
@@ -571,16 +583,12 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
         await mlog.send(embed=embed)
-        await ctx.send(f"🚮 `{deleted}` messages from {target} purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @purge.command(aliases=["emoji"])
     async def emotes(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
         """[S] Clears a given number of emotes."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         if not channel:
             channel = ctx.channel
 
@@ -588,6 +596,13 @@ class Mod(Cog):
             return m.clean_content[:2] == "<:" and m.clean_content[-1:] == ">"
 
         deleted = len(await channel.purge(limit=limit, check=has_emote))
+        await ctx.send(f"🚮 `{deleted}` emotes purged.", delete_after=5)
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
             title="🗑 Purged",
@@ -599,16 +614,12 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=ctx.author.display_avatar.url
         )
         await mlog.send(embed=embed)
-        await ctx.send(f"🚮 `{deleted}` emotes purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @purge.command()
     async def embeds(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
         """[S] Clears a given number of embeds."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         if not channel:
             channel = ctx.channel
 
@@ -616,6 +627,13 @@ class Mod(Cog):
             return any((m.embeds, m.attachments, m.stickers))
 
         deleted = len(await channel.purge(limit=limit, check=has_embed))
+        await ctx.send(f"🚮 `{deleted}` embeds purged.", delete_after=5)
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
             title="🗑 Purged",
@@ -627,23 +645,27 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
         await mlog.send(embed=embed)
-        await ctx.send(f"🚮 `{deleted}` embeds purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @purge.command()
     async def reacts(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
         """[S] Clears a given number of reactions."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         if not channel:
             channel = ctx.channel
+
         deleted = 0
         async for msg in channel.history(limit=limit):
             if msg.reactions:
                 deleted += 1
                 await msg.clear_reactions()
+        await ctx.send(f"🚮 `{deleted}` reactions purged.", delete_after=5)
+
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
             title="🗑 Purged",
@@ -655,16 +677,12 @@ class Mod(Cog):
             name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
         )
         await mlog.send(embed=embed)
-        await ctx.send(f"🚮 `{deleted}` reactions purged.", delete_after=5)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @purge.command()
     async def ireacts(self, ctx):
         """[S] Clears reactions interactively."""
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
         deleted = 0
         msg = await ctx.channel.send(
             content="🔎 **Interactive Reactions enabled.** React here when done."
@@ -712,6 +730,15 @@ class Mod(Cog):
             await msg.edit(content=f"Operation timed out.")
         else:
             await asyncio.gather(*tasks)
+            await msg.edit(
+                f"🚮 `{deleted}` reactions interactively purged.", delete_after=5
+            )
+
+            mlog = get_log_config(ctx.guild.id, "mlog_thread")
+            if not mlog:
+                return
+            await self.bot.fetch_channel(mlog)
+
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
                 title="🗑 Purged",
@@ -725,9 +752,6 @@ class Mod(Cog):
                 name=f"{str(ctx.author)}", icon_url=f"{ctx.author.display_avatar.url}"
             )
             await mlog.send(embed=embed)
-            await msg.edit(
-                f"🚮 `{deleted}` reactions interactively purged.", delete_after=5
-            )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -743,10 +767,6 @@ class Mod(Cog):
             if self.check_if_target_is_staff(target):
                 return await ctx.send("I cannot ban Staff members.")
 
-        mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-        )
-
         if reason:
             warn_count = userlog(ctx.guild.id, target.id, ctx.author, reason, "warns")
         else:
@@ -758,11 +778,38 @@ class Mod(Cog):
                 "warns",
             )
 
+        if ctx.guild.get_member(target.id) is not None:
+            msg = f"**You were warned** on `{ctx.guild.name}`."
+            if reason:
+                msg += "\nThe given reason is: " + reason
+            rulesmsg = (
+                f" in {get_staff_config(ctx.guild.id, 'rules_url')}."
+                if get_staff_config(ctx.guild.id, "rules_url")
+                else "."
+            )
+            msg += (
+                f"\n\nPlease read the rules{rulesmsg} " f"This is warn #{warn_count}."
+            )
+            try:
+                await target.send(msg)
+            except discord.errors.Forbidden:
+                # Prevents log issues in cases where user blocked bot
+                # or has DMs disabled
+                pass
+
+        await ctx.send(
+            f"{target.mention} has been warned. This user now has {warn_count} warning(s)."
+        )
+
         safe_name = await commands.clean_content(escape_markdown=True).convert(
             ctx, str(target)
         )
 
-        # Prepare embed msg
+        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        if not mlog:
+            return
+        await self.bot.fetch_channel(mlog)
+
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFFF00"),
             title=f"🗞️ Warn #{warn_count}",
@@ -792,29 +839,6 @@ class Mod(Cog):
                 value=f"**No reason was set!**\nPlease use `{config.prefixes[0]}warn <user> [reason]` in the future.\Warn reasons are sent to the user.",
                 inline=False,
             )
-
-        if ctx.guild.get_member(target.id) is not None:
-            msg = f"**You were warned** on `{ctx.guild.name}`."
-            if reason:
-                msg += "\nThe given reason is: " + reason
-            rulesmsg = (
-                f" in {config.guild_configs['ctx.guild.id']['staff']['rules_url']}."
-                if config.guild_configs["ctx.guild.id"]["staff"]["rules_url"]
-                else "."
-            )
-            msg += (
-                f"\n\nPlease read the rules{rulesmsg} " f"This is warn #{warn_count}."
-            )
-            try:
-                await target.send(msg)
-            except discord.errors.Forbidden:
-                # Prevents log issues in cases where user blocked bot
-                # or has DMs disabled
-                pass
-
-        await ctx.send(
-            f"{target.mention} has been warned. This user now has {warn_count} warning(s)."
-        )
         await mlog.send(embed=embed)
 
     @commands.guild_only()
