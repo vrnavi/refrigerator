@@ -41,6 +41,14 @@ def get_antiraid_config(gid, ctype):
     )
 
 
+def get_surveyr_config(gid, ctype):
+    return (
+        config.guild_configs[gid]["surveyr"][ctype]
+        if config_check(gid, ctype, "surveyr")
+        else None
+    )
+
+
 def get_misc_config(gid, ctype):
     return (
         config.guild_configs[gid]["misc"][ctype]
@@ -72,6 +80,13 @@ def config_check(gid, ctype, cid=None):
             and "announce_channels" in config.guild_configs[gid]["antiraid"]
             and "mention_threshold" in config.guild_configs[gid]["antiraid"]
             and "join_threshold" in config.guild_configs[gid]["antiraid"]
+        )
+    elif ctype == "surveyr":
+        return (
+            gid in config.guild_configs
+            and "surveyr" in config.guild_configs[gid]
+            and "survey_channel" in config.guild_configs[gid]["surveyr"]
+            and "log_types" in config.guild_configs[gid]["surveyr"]
         )
     elif ctype == "archive":
         return (
