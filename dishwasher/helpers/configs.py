@@ -54,7 +54,7 @@ def config_check(gid, ctype, cid=None):
     if ctype == "cotd":
         return (
             gid in config.guild_configs
-            and "cotd" in config.guild_configs[gid]
+            and "misc" in config.guild_configs[gid]
             and "cotd_role" in config.guild_configs[gid][cid]
             and "cotd_name" in config.guild_configs[gid][cid]
         )
