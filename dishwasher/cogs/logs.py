@@ -582,7 +582,7 @@ class Logs2(Cog):
                 inline=False,
             )
 
-        if guild_before.banner.url != guild_after.banner.url:
+        if guild_after.banner and guild_before.banner.url != guild_after.banner.url:
             updated = True
             embed.add_field(
                 name=f"🎨 Banner Change",
