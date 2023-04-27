@@ -106,7 +106,8 @@ class Basic(Cog):
     async def server(self, ctx):
         """[U] Gives an invite to the host server."""
         await ctx.author.send(content="Here is an invite to my host server.\nhttps://discord.gg/"+"p"+"3"+"M"+"v"+"p"+"S"+"v"+"X"+"r"+"m")
-        await ctx.reply(content="As to not be rude, I have DMed the server link to you.", mention_author=False)
+        if not ctx.guild:
+            await ctx.reply(content="As to not be rude, I have DMed the server link to you.", mention_author=False)
 
     @commands.command(aliases=["commands"])
     async def help(self, ctx):
