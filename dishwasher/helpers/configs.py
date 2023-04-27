@@ -87,6 +87,7 @@ def config_check(gid, ctype, cid=None):
             and "surveyr" in config.guild_configs[gid]
             and "survey_channel" in config.guild_configs[gid]["surveyr"]
             and "log_types" in config.guild_configs[gid]["surveyr"]
+            and "start_case" in config.guild_configs[gid]["surveyr"]
         )
     elif ctype == "archive":
         return (

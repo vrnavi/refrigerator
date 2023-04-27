@@ -103,6 +103,14 @@ guild_configs = {
             # [cogs.mod_antiraid] Recent join threshold.
             "join_threshold": 20,
         },
+        "surveyr": {
+            # [cogs.surveyr] Survey channel, where all events are posted.
+            "survey_channel": 260000723398295552,
+            # [cogs.surveyr] What to log.
+            "log_types": ["kick", "ban"],
+            # [cogs.surveyr] What case number to start from.
+            "start_case": 0,
+        },
         "misc": {
             # [cogs.mod_locks/cogs.mod_antiraid] "Authorized" roles.
             "authorized_roles": [303555716109565955],
