@@ -171,7 +171,7 @@ class Basic(Cog):
         os.remove("testfile.png")
 
     @commands.guild_only()
-    @commands.command()
+    @commands.command(aliases=["joinscore"])
     async def joinorder(self, ctx, joinscore: int = None):
         """[U] Shows the joinorder of a user."""
         members = sorted(ctx.guild.members, key=lambda v: v.joined_at)

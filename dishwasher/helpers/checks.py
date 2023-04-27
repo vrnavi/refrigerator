@@ -2,7 +2,12 @@ import config
 
 
 def check_if_staff(ctx):
-    if not ctx.guild or ctx.guild.id not in config.guild_configs:
+    if (
+        not ctx.guild
+        or ctx.guild.id not in config.guild_configs
+        or "staff" not in config.guild_configs[ctx.guild.id]
+        or "staff_role" not in config.guild_configs[ctx.guild.id]["staff"]
+    ):
         return False
     return any(
         r.id == config.guild_configs[ctx.guild.id]["staff"]["staff_role"]

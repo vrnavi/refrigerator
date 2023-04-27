@@ -2,7 +2,6 @@
 import discord
 import json
 import os
-import config
 import asyncio
 import random
 from datetime import datetime, timezone
@@ -56,6 +55,7 @@ class ModToss(Cog):
         toss_pings = ""
         toss_sends = ""
         staff_channel = get_staff_config(ctx.guild.id, "staff_channel")
+        modlog_channel = get_log_config(ctx.guild.id, "mlog_thread")
 
         for us in user_id_list:
             if us.id == ctx.author.id:
@@ -124,6 +124,7 @@ class ModToss(Cog):
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles) > 0:
                     bad_roles_msg = f"\nI was unable to remove the following role(s): **{', '.join(bad_no_good_terrible_roles)}**"
+
                 if staff_channel:
                     await ctx.guild.get_channel(staff_channel).send(
                         f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
@@ -133,6 +134,7 @@ class ModToss(Cog):
                         f"**Previous Roles:**{prev_roles}{bad_roles_msg}\n\n"
                         f"{toss_channel.mention}"
                     )
+
                 userlog(
                     ctx.guild.id,
                     us.id,
@@ -141,43 +143,35 @@ class ModToss(Cog):
                     "tosses",
                 )
 
-                embed = discord.Embed(
-                    color=discord.Colour.from_str("#FF0000"),
-                    title="🚷 Toss",
-                    description=f"{us.mention} was tossed by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
-                    timestamp=datetime.now(),
-                )
-                embed.set_footer(
-                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-                )
-                embed.set_author(
-                    name=f"{self.bot.escape_message(us)}",
-                    icon_url=f"{us.display_avatar.url}",
-                )
-                embed.add_field(
-                    name=f"👤 User",
-                    value=f"**{self.bot.escape_message(us)}**\n{us.mention} ({us.id})",
-                    inline=True,
-                )
-                embed.add_field(
-                    name=f"🛠️ Staff",
-                    value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
-                    inline=True,
-                )
-                mlog = await self.bot.fetch_channel(
-                    config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
-                )
-                await mlog.send(embed=embed)
+                if modlog_channel:
+                    embed = discord.Embed(
+                        color=discord.Colour.from_str("#FF0000"),
+                        title="🚷 Toss",
+                        description=f"{us.mention} was tossed by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
+                        timestamp=datetime.now(),
+                    )
+                    embed.set_footer(
+                        text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                    )
+                    embed.set_author(
+                        name=f"{self.bot.escape_message(us)}",
+                        icon_url=f"{us.display_avatar.url}",
+                    )
+                    embed.add_field(
+                        name=f"👤 User",
+                        value=f"**{self.bot.escape_message(us)}**\n{us.mention} ({us.id})",
+                        inline=True,
+                    )
+                    embed.add_field(
+                        name=f"🛠️ Staff",
+                        value=f"**{str(ctx.author)}**\n{ctx.author.mention} ({ctx.author.id})",
+                        inline=True,
+                    )
+                    mlog = await self.bot.fetch_channel(modlog_channel)
+                    await mlog.send(embed=embed)
 
             except commands.MissingPermissions:
                 invalid_ids.append(us.name)
-
-        await toss_channel.send(
-            f"{toss_pings}\nYou were tossed by {ctx.message.author.name}.\n"
-            f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
-            f"**Do NOT leave the server, or you will be instantly banned.**\n\n"
-            f"⏰ Please respond within `5 minutes`."
-        )
 
         invalid_string = ""
         if len(invalid_ids) > 0:
@@ -195,6 +189,13 @@ class ModToss(Cog):
         ):
             hardmsg = "Please change the topic. **Discussion of tossed users will lead to warnings.**"
         await ctx.reply(f"{toss_sends}\n\n{hardmsg}", mention_author=False)
+
+        await toss_channel.send(
+            f"{toss_pings}\nYou were tossed by {ctx.message.author.name}.\n"
+            f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
+            f"**Do NOT leave the server, or you will be instantly banned.**\n\n"
+            f"⏰ Please respond within `5 minutes`."
+        )
 
         def check(m):
             return m.author in user_id_list and m.channel == toss_channel
