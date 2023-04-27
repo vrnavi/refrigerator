@@ -41,12 +41,8 @@ def get_antiraid_config(gid, cfg_type):
     )
 
 
-def get_misc_config(gid, cfg_type):
-    return (
-        config.guild_configs[gid]["misc"][cfg_type]
-        if config_check(gid, cfg_type, "misc")
-        else None
-    )
+def get_misc_config(gid, ctype):
+    return config.guild_configs[gid]["misc"][ctype]
 
 
 def config_check(gid, ctype, cid=None):
