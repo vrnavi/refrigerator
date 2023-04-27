@@ -1,48 +1,52 @@
 import config
 
 
-def get_log_config(gid, cfg_type):
+def get_log_config(gid, ctype):
     return (
-        config.guild_configs[gid]["logs"][cfg_type]
-        if config_check(gid, cfg_type, "logs")
+        config.guild_configs[gid]["logs"][ctype]
+        if config_check(gid, ctype, "logs")
         else None
     )
 
 
-def get_staff_config(gid, cfg_type):
+def get_staff_config(gid, ctype):
     return (
-        config.guild_configs[gid]["staff"][cfg_type]
-        if config_check(gid, cfg_type, "staff")
+        config.guild_configs[gid]["staff"][ctype]
+        if config_check(gid, ctype, "staff")
         else None
     )
 
 
-def get_toss_config(gid, cfg_type):
+def get_toss_config(gid, ctype):
     return (
-        config.guild_configs[gid]["toss"][cfg_type]
-        if config_check(gid, cfg_type, "toss")
+        config.guild_configs[gid]["toss"][ctype]
+        if config_check(gid, ctype, "toss")
         else None
     )
 
 
-def get_archive_config(gid, cfg_type):
+def get_archive_config(gid, ctype):
     return (
-        config.guild_configs[gid]["archive"][cfg_type]
-        if config_check(gid, cfg_type, "archive")
+        config.guild_configs[gid]["archive"][ctype]
+        if config_check(gid, ctype, "archive")
         else None
     )
 
 
-def get_antiraid_config(gid, cfg_type):
+def get_antiraid_config(gid, ctype):
     return (
-        config.guild_configs[gid]["antiraid"][cfg_type]
-        if config_check(gid, cfg_type, "antiraid")
+        config.guild_configs[gid]["antiraid"][ctype]
+        if config_check(gid, ctype, "antiraid")
         else None
     )
 
 
 def get_misc_config(gid, ctype):
-    return config.guild_configs[gid]["misc"][ctype]
+    return (
+        config.guild_configs[gid]["misc"][ctype]
+        if config_check(gid, ctype, "misc")
+        else None
+    )
 
 
 def config_check(gid, ctype, cid=None):
@@ -53,6 +57,13 @@ def config_check(gid, ctype, cid=None):
             and "misc" in config.guild_configs[gid]
             and "cotd_role" in config.guild_configs[gid]["misc"]
             and "cotd_name" in config.guild_configs[gid]["misc"]
+        )
+    elif ctype == "toss":
+        return (
+            gid in config.guild_configs
+            and "toss" in config.guild_configs[gid]
+            and "toss_role" in config.guild_configs[gid]["toss"]
+            and "toss_channel" in config.guild_configs[gid]["toss"]
         )
     else:
         return (

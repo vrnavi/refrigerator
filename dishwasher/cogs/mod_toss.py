@@ -11,11 +11,13 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
+from helpers.configs import get_toss_config, get_staff_config, config_check
 
 
 class ModToss(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.nocfgmsg = "Tossing isn't enabled for this server."
 
     def get_user_list(self, ctx, user_ids):
         user_id_list = []
@@ -47,10 +49,13 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["roleban"])
     async def toss(self, ctx, *, user_ids):
+        if not config_check(ctx.guild.id, "toss"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
 
         toss_pings = ""
         toss_sends = ""
+        staff_channel = get_staff_config(ctx.guild.id, "staff_channel")
 
         for us in user_id_list:
             if us.id == ctx.author.id:
@@ -69,11 +74,9 @@ class ModToss(Cog):
 
             roles = []
             role_ids = []
-            toss_role = ctx.guild.get_role(
-                config.guild_configs[ctx.guild.id]["toss"]["toss_role"]
-            )
+            toss_role = ctx.guild.get_role(get_toss_config(ctx.guild.id, "toss_role"))
             toss_channel = ctx.guild.get_channel(
-                config.guild_configs[ctx.guild.id]["toss"]["toss_channel"]
+                get_toss_config(ctx.guild.id, "toss_channel")
             )
             for rx in us.roles:
                 if rx.name != "@everyone" and rx != toss_role:
@@ -81,7 +84,7 @@ class ModToss(Cog):
                     role_ids.append(rx.id)
 
             try:
-                with open(rf"data/toss/{us.id}.json", "x") as file:
+                with open(rf"data/toss/{ctx.guild.id}-{us.id}.json", "x") as file:
                     file.write(json.dumps(role_ids))
             except FileExistsError:
                 if toss_role in us.roles:
@@ -90,7 +93,7 @@ class ModToss(Cog):
                     )
                     continue
                 else:
-                    with open(rf"data/toss/{us.id}.json", "w") as file:
+                    with open(rf"data/toss/{ctx.guild.id}-{us.id}.json", "w") as file:
                         file.write(json.dumps(role_ids))
 
             prev_roles = ""
@@ -121,16 +124,15 @@ class ModToss(Cog):
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles) > 0:
                     bad_roles_msg = f"\nI was unable to remove the following role(s): **{', '.join(bad_no_good_terrible_roles)}**"
-                await ctx.guild.get_channel(
-                    config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
-                ).send(
-                    f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
-                    f"**ID:** {us.id}\n"
-                    f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
-                    f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
-                    f"**Previous Roles:**{prev_roles}{bad_roles_msg}\n\n"
-                    f"{toss_channel.mention}"
-                )
+                if staff_channel:
+                    await ctx.guild.get_channel(staff_channel).send(
+                        f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
+                        f"**ID:** {us.id}\n"
+                        f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
+                        f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
+                        f"**Previous Roles:**{prev_roles}{bad_roles_msg}\n\n"
+                        f"{toss_channel.mention}"
+                    )
                 userlog(
                     ctx.guild.id,
                     us.id,
@@ -174,7 +176,7 @@ class ModToss(Cog):
             f"{toss_pings}\nYou were tossed by {ctx.message.author.name}.\n"
             f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
             f"**Do NOT leave the server, or you will be instantly banned.**\n\n"
-            f"⏰ Please respond within `5 minutes`, or you will be kicked from the server."
+            f"⏰ Please respond within `5 minutes`."
         )
 
         invalid_string = ""
@@ -214,7 +216,10 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["unroleban"])
     async def untoss(self, ctx, *, user_ids):
+        if not config_check(ctx.guild.id, "toss"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
+        staff_channel = get_staff_config(ctx.guild.id, "staff_channel")
 
         for us in user_id_list:
             if us.id == self.bot.application_id:
@@ -226,19 +231,17 @@ class ModToss(Cog):
                 continue
 
             try:
-                with open(rf"data/toss/{us.id}.json") as file:
+                with open(rf"data/toss/{ctx.guild.id}-{us.id}.json") as file:
                     raw_d = file.read()
                     roles = json.loads(raw_d)
                     print(roles)
-                os.remove(rf"data/toss/{us.id}.json")
+                os.remove(rf"data/toss/{ctx.guild.id}-{us.id}.json")
             except FileNotFoundError:
                 await ctx.reply(
                     f"{us.name} is not currently tossed.", mention_author=False
                 )
 
-            toss_role = ctx.guild.get_role(
-                config.guild_configs[ctx.guild.id]["toss"]["toss_role"]
-            )
+            toss_role = ctx.guild.get_role(get_toss_config(ctx.guild.id, "toss_role"))
             roles_actual = []
             restored = ""
             for r in roles:
@@ -262,11 +265,12 @@ class ModToss(Cog):
                 f"**{us.name}**#{us.discriminator} has been untossed.\n**Roles Restored:**{restored}",
                 mention_author=False,
             )
-            await ctx.guild.get_channel(
-                config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
-            ).send(
-                f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}"
-            )
+            if staff_channel:
+                await ctx.guild.get_channel(
+                    get_staff_config(ctx.guild.id, "staff_channel")
+                ).send(
+                    f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}"
+                )
 
         invalid_string = ""
 
