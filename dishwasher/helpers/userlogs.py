@@ -32,10 +32,11 @@ def set_userlog(serverid, contents):
 
 
 def fill_userlog(serverid, userid):
-    if os.path.exists(f"data/userlogs/{serverid}/userlog.json"):
-        userlogs = get_userlog(serverid)
-    else:
-        userlogs = make_userlog(serverid)
+    userlogs = (
+        get_userlog(serverid)
+        if os.path.exists(f"data/userlogs/{serverid}/userlog.json")
+        else make_userlog(serverid)
+    )
     uid = str(userid)
     if uid not in userlogs:
         userlogs[uid] = {
