@@ -6,6 +6,7 @@ import config
 import discord
 import datetime
 from helpers.checks import check_if_staff
+from helpers.configs import get_antiraid_config, config_check
 
 
 class ModAntiRaid(Cog):
@@ -284,7 +285,7 @@ class ModAntiRaid(Cog):
             or message.author.bot
             or not message.content
             or not message.guild
-            or message.guild.id not in config.guild_configs
+            or not config_check(message.guild.id, "antiraid")
         ):
             return
 
@@ -310,7 +311,7 @@ class ModAntiRaid(Cog):
 
     @Cog.listener()
     async def on_member_join(self, member):
-        if member.guild.id not in config.guild_configs:
+        if not config_check(message.guild.id, "antiraid")
             return
         # In the event this happens before anyone sends a message.
         if member.guild.id not in self.mem_cache:

@@ -65,6 +65,14 @@ def config_check(gid, ctype, cid=None):
             and "toss_role" in config.guild_configs[gid]["toss"]
             and "toss_channel" in config.guild_configs[gid]["toss"]
         )
+    elif ctype == "antiraid":
+        return (
+            gid in config.guild_configs
+            and "antiraid" in config.guild_configs[gid]
+            and "announce_channels" in config.guild_configs[gid]["antiraid"]
+            and "mention_threshold" in config.guild_configs[gid]["antiraid"]
+            and "join_threshold" in config.guild_configs[gid]["antiraid"]
+        )
     else:
         return (
             gid in config.guild_configs
