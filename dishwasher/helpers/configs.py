@@ -55,8 +55,8 @@ def config_check(gid, ctype, cid=None):
         return (
             gid in config.guild_configs
             and "misc" in config.guild_configs[gid]
-            and "cotd_role" in config.guild_configs[gid][cid]
-            and "cotd_name" in config.guild_configs[gid][cid]
+            and "cotd_role" in config.guild_configs[gid]["misc"]
+            and "cotd_name" in config.guild_configs[gid]["misc"]
         )
     else:
         return (
