@@ -181,7 +181,7 @@ class Basic(Cog):
             if memberidx - 5 <= idx <= memberidx + 5:
                 message = (
                     f"{message}\n`{idx+1}` **{m}**"
-                    if memberidx == idx
+                    if memberidx == idx+1
                     else f"{message}\n`{idx+1}` {m}"
                 )
         await ctx.reply(content=message, mention_author=False)
