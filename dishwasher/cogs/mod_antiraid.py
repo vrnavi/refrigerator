@@ -312,7 +312,7 @@ class ModAntiRaid(Cog):
 
     @Cog.listener()
     async def on_member_join(self, member):
-        if not config_check(message.guild.id, "antiraid"):
+        if not config_check(member.guild.id, "antiraid"):
             return
         # In the event this happens before anyone sends a message.
         if member.guild.id not in self.mem_cache:
