@@ -39,6 +39,48 @@ class Surveyr(Cog):
         await ctx.reply(content="\n".join(msg), mention_author=False)
 
     @Cog.listener()
+    async def on_member_remove(self, member):
+        await self.bot.wait_until_ready()
+        if (
+            not config_check(member.guild.id, "surveyr")
+            or "kicks" not in surveyr_event_types
+        ):
+            return
+        survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
+
+        alog = [
+            entry
+            async for entry in member.guild.audit_logs(
+                limit=1, action=discord.AuditLogAction.kick
+            )
+        ]
+
+        cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+            seconds=5
+        )
+        if alog[0].target.id != member.id or alog[0].created_at >= cutoff_ts:
+            return
+
+        reason = (
+            alog[0].reason
+            if alog[0].reason
+            else f"No reason was given, {alog[0].user.mention}..."
+        )
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
+        caseid, timestamp = new_survey(
+            member.guild.id, member.id, msg.id, alog[0].user, reason, "kicks"
+        )
+
+        await msg.edit(
+            content=(
+                f"`#{caseid}` **KICK** on <t:{timestamp}:f>\n"
+                f"**User:** {member} ({member.id})\n"
+                f"**Staff:** {alog[0].user} ({alog[0].user.id})\n"
+                f"**Reason:** {reason}"
+            )
+        )
+
+    @Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
         if not config_check(guild.id, "surveyr") or "bans" not in surveyr_event_types:

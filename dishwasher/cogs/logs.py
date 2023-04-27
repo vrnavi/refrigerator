@@ -308,7 +308,10 @@ class Logs2(Cog):
                 limit=1, action=discord.AuditLogAction.kick
             )
         ]
-        if alog[0].target.id == member.id:
+        cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+            seconds=5
+        )
+        if alog[0].target.id == member.id and not alog[0].created_at >= cutoff_ts:
             if alog[0].user.id != self.bot.user.id:
                 userlog(
                     member.guild.id,
