@@ -290,7 +290,7 @@ class Logs2(Cog):
         await self.bot.wait_until_ready()
         ulog = get_log_config(member.guild.id, "ulog_thread")
         mlog = get_log_config(member.guild.id, "mlog_thread")
-        if not ulog or not mlog:
+        if not ulog and not mlog:
             return
 
         escaped_name = self.bot.escape_message(member)
@@ -319,6 +319,8 @@ class Logs2(Cog):
                     f"Kicked by external method.",
                     "kicks",
                 )
+                if not mlog:
+                    return
                 mlog = await self.bot.fetch_channel(mlog)
                 embed = discord.Embed(
                     color=discord.Colour.from_str("#FFFF00"),
@@ -349,6 +351,8 @@ class Logs2(Cog):
                 await mlog.send(embed=embed)
             return
 
+        if not ulog:
+            return
         ulog = await self.bot.fetch_channel(ulog)
         embed = discord.Embed(
             color=discord.Color.darker_gray(),
