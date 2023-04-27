@@ -150,7 +150,7 @@ class Basic(Cog):
         self.bot.log.info(message_text)
         await tmp.edit(content=message_text)
 
-    @commands.cooldown(1, 60, commands.BucketType.server)
+    @commands.cooldown(1, 60, commands.BucketType.guild)
     @commands.guild_only()
     @commands.command()
     async def joingraph(self, ctx):
