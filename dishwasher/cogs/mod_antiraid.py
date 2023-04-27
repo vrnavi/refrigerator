@@ -16,6 +16,7 @@ class ModAntiRaid(Cog):
         self.announce_msg = {}
         self.in_progress = []
         self.mem_cache = {}
+        self.nocfgmsg = "Antiraid isn't set up for this server."
 
     def cull_recent_member_cache(self, guild, ts=None):
         if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
@@ -239,44 +240,44 @@ class ModAntiRaid(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["ml"])
-    async def lockdown(self, message, *, args=""):
-        if message.guild.id not in config.guild_configs:
-            return
-        channel_list = self.parse_channel_list(message.guild, args)
+    async def masslock(self, ctx, *, args=""):
+        if not config_check(ctx.guild.id, "antiraid"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
+        channel_list = self.parse_channel_list(ctx.guild, args)
         if not channel_list:
-            channel_list = self.get_public_channels(message.guild)
+            channel_list = self.get_public_channels(ctx.guild)
 
-        async with message.channel.typing():
+        async with ctx.channel.typing():
             ret = await self.perform_lockdown(channel_list, True)
-        await message.channel.send(ret)
+        await ctx.send(ret)
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command(aliases=["ul"])
-    async def unlockdown(self, message, *, args=""):
-        if message.guild.id not in config.guild_configs:
-            return
-        channel_list = self.parse_channel_list(message.guild, args)
+    async def massunlock(self, ctx, *, args=""):
+        if not config_check(ctx.guild.id, "antiraid"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
+        channel_list = self.parse_channel_list(ctx.guild, args)
         if not channel_list:
-            if message.guild.id not in self.locked_channels:
-                self.locked_channels[message.guild.id] = []
+            if ctx.guild.id not in self.locked_channels:
+                self.locked_channels[ctx.guild.id] = []
             channel_list = [
                 c
-                for c in message.guild.text_channels
-                if c.permissions_for(message.guild.me).manage_channels
-                and c.id in self.locked_channels[message.guild.id]
+                for c in ctx.guild.text_channels
+                if c.permissions_for(ctx.guild.me).manage_channels
+                and c.id in self.locked_channels[ctx.guild.id]
             ]
             if not channel_list:
-                await message.channel.send(
+                await ctx.channel.send(
                     "Error: No locked down channels were cached (or had no permissions to modify them).\nPlease specify list of IDs to unlockdown."
                 )
                 return
 
-        async with message.channel.typing():
+        async with ctx.channel.typing():
             ret = await self.perform_lockdown(channel_list, False)
 
-        self.in_progress.remove(message.guild.id)
-        await message.channel.send(ret)
+        self.in_progress.remove(ctx.guild.id)
+        await ctx.channel.send(ret)
 
     @Cog.listener()
     async def on_message(self, message):
