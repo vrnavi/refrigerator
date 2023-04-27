@@ -356,9 +356,7 @@ class Logs2(Cog):
             description=f"{member.mention} ({member.id})",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(
-            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(name=escaped_name, icon_url=member.display_avatar.url)
         embed.set_thumbnail(url=member.display_avatar.url)
         embed.add_field(
@@ -405,9 +403,7 @@ class Logs2(Cog):
             description=f"{alog[0].target.mention} was banned by {alog[0].user.mention} [External Method]",
             timestamp=datetime.datetime.now(),
         )
-        embed.set_footer(
-            text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(
             name=self.bot.escape_message(alog[0].target),
             icon_url=alog[0].target.display_avatar.url,
@@ -422,9 +418,7 @@ class Logs2(Cog):
             value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
             inline=True,
         )
-        embed.add_field(
-            name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
-        )
+        embed.add_field(name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False)
         await mlog.send(embed=embed)
 
     @Cog.listener()
@@ -434,7 +428,7 @@ class Logs2(Cog):
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
-        
+
         alog = [
             entry
             async for entry in guild.audit_logs(

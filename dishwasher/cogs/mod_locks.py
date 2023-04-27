@@ -43,7 +43,9 @@ class ModLocks(Cog):
         staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
         bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
 
-        if not channel.permissions_for(ctx.guild.default_role).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
+        if not channel.permissions_for(
+            ctx.guild.default_role
+        ).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
             roles = get_misc_config(ctx.guild.id, "authorized_roles")
         elif not channel.permissions_for(ctx.guild.default_role).read_messages:
             roles = []
@@ -89,7 +91,9 @@ class ModLocks(Cog):
         staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
         bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
 
-        if not channel.permissions_for(ctx.guild.default_role).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
+        if not channel.permissions_for(
+            ctx.guild.default_role
+        ).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
             roles = get_misc_config(ctx.guild.id, "authorized_roles")
         elif not channel.permissions_for(ctx.guild.default_role).read_messages:
             roles = []
