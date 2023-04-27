@@ -4,6 +4,7 @@ import config
 import discord
 import datetime
 from helpers.checks import check_if_staff
+from helpers.configs import get_staff_config
 
 
 class ModObserve(Cog):
@@ -52,15 +53,12 @@ class ModObserve(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
-        if member.guild.id not in config.guild_configs:
+        if not get_staff_config(member.guild.id, "staff_channel"):
             return
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
         if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
             escaped_name = self.bot.escape_message(member)
-            staff_channel = config.guild_configs[member.guild.id]["staff"][
-                "staff_channel"
-            ]
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
                 title="📥 User Joined",
@@ -87,7 +85,9 @@ class ModObserve(Cog):
                 name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=True
             )
             embed.add_field(name="🔍 First message:", value="Not yet.", inline=False)
-            callout = await member.guild.get_channel(staff_channel).send(embed=embed)
+            callout = await member.guild.get_channel(
+                get_staff_config(member.guild.id, "staff_channel")
+            ).send(embed=embed)
 
             def check(m):
                 return m.author.id == member.id and m.guild.id == member.guild

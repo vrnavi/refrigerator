@@ -220,6 +220,7 @@ class Basic(Cog):
         for n in range(len(options)):
             await poll.add_reaction(poll_emoji[n])
 
+    @commands.cooldown(1, 5, type=commands.BucketType.default)
     @commands.guild_only()
     @commands.command()
     async def joingraph(self, ctx):

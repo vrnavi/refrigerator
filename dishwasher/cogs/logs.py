@@ -6,7 +6,7 @@ import config
 import datetime
 import os
 from helpers.checks import check_if_staff
-from helpers.userlogs import userlog
+from helpers.userlogs import userlog, get_userlog
 from helpers.configs import get_log_config
 
 
@@ -115,9 +115,7 @@ class Logs2(Cog):
         embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
         embeds.append(embed)
 
-        # Real hell zone.
-        with open(f"data/userlogs/{member.guild.id}/userlog.json", "r") as f:
-            warns = json.load(f)
+        warns = get_userlog(member.guild.id)
         try:
             if len(warns[str(member.id)]["warns"]) != 0:
                 embed = discord.Embed(
