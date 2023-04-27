@@ -184,7 +184,7 @@ class Basic(Cog):
                     if memberidx == idx
                     else f"{message}\n`{idx+1}` {m}"
                 )
-        ctx.reply(content=message, mention_author=False)
+        await ctx.reply(content=message, mention_author=False)
 
     @commands.guild_only()
     @commands.command()
