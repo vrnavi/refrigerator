@@ -65,4 +65,4 @@ class Joininfo(Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(Reply(bot))
+    await bot.add_cog(Joininfo(bot))
