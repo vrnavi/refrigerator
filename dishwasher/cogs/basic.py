@@ -14,7 +14,7 @@ import re as ren
 class Basic(Cog):
     def __init__(self, bot):
         self.bot = bot
-        matplotlib.use('agg')
+        matplotlib.use("agg")
 
     @commands.command()
     async def hello(self, ctx):
@@ -236,7 +236,9 @@ class Basic(Cog):
             plt.plot(joindates, joincounts)
             plt.savefig(f"{ctx.guild.id}-joingraph.png", bbox_inches="tight")
             plt.close()
-        await ctx.reply(file=discord.File(f"{ctx.guild.id}-joingraph.png"), mention_author=False)
+        await ctx.reply(
+            file=discord.File(f"{ctx.guild.id}-joingraph.png"), mention_author=False
+        )
         os.remove(f"{ctx.guild.id}-joingraph.png")
 
     @commands.guild_only()
@@ -268,7 +270,7 @@ class Basic(Cog):
 
         embed = discord.Embed(
             color=target.color,
-            title=f"Statistics for {'user' if ctx.guild.get_member(target.id) else ''} @{target}{' [BOT]' if target.bot else ''}",
+            title=f"Info for {'user' if ctx.guild.get_member(target.id) else ''} @{target}{' [BOT]' if target.bot else ''}",
             description=f"**ID:** `{target.id}`{nickname}",
             timestamp=datetime.now(),
         )
@@ -327,12 +329,12 @@ class Basic(Cog):
 
         embed = discord.Embed(
             color=role.color,
-            title=f"Statistics for role @{role}{' [MANAGED]' if role.managed else ''}",
+            title=f"Info for role @{role}{' [MANAGED]' if role.managed else ''}",
             description=f"**ID:** `{role.id}`\n**Color:** `{str(role.color)}`",
             timestamp=datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
-        embed.set_author(name=f"{role.guild.name}", icon_url=f"{role.guild.icon.url}")
+        embed.set_author(name=role.guild.name, icon_url=role.guild.icon.url)
         embed.set_thumbnail(url=(role.icon.url if role.icon else None))
         embed.add_field(
             name="⏰ Role created:",
@@ -349,6 +351,42 @@ class Basic(Cog):
             value=f"**Hoisted:** {str(role.hoist)}\n**Mentionable:** {str(role.mentionable)}",
             inline=True,
         )
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @info.command(aliases=["guild"])
+    async def server(self, ctx, server: discord.Guild = None):
+        """[S] Gets full server info."""
+        if server == None:
+            server = ctx.guild
+
+        embed = discord.Embed(
+            color=server.me.color,
+            title=f"Info for server {server}",
+            description=f"*{server.description if server.description else ''}*\n**ID:** `{server.id}`\n**Owner:** {server.owner.mention}",
+            timestamp=datetime.now(),
+        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
+        embed.set_author(name=server.name, icon_url=server.icon.url)
+        embed.set_thumbnail(url=(server.icon.url if server.icon else None))
+        embed.add_field(
+            name="⏰ Server created:",
+            value=f"<t:{server.created_at.astimezone().strftime('%s')}:f>\n<t:{server.created_at.astimezone().strftime('%s')}:R>",
+            inline=True,
+        )
+        embed.add_field(
+            name="👥 Server members:",
+            value=f"`{server.member_count}`",
+            inline=True,
+        )
+        embed.add_field(
+            name="#️⃣ Counters:",
+            value=f"**Text Channels:** {len(server.text_channels)}\n**Voice Channels:** {len(server.voice_channels)}\n**Forum Channels:** {len(server.forums)}\n**Roles:** {len(server.roles)}\n**Emoji:** {len(server.emojis)}\n**Stickers:** {len(server.stickers)}\n**Boosters:** {len(server.premium_subscribers)}",
+            inline=False,
+        )
+
+        if server.banner:
+            embed.set_image(url=server.banner.url)
+
         await ctx.reply(embed=embed, mention_author=False)
 
 
