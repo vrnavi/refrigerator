@@ -189,11 +189,13 @@ class Messagescan(Cog):
                 elif rcvmessage.embeds and rcvmessage.embeds[0].image:
                     embed.set_image(url=rcvmessage.embeds[0].image.url)
                 embeds.append(embed)
-        # Discord SUCKS!!
-        if twitterlinks:
-            while not message.embeds:
-                await asyncio.sleep(0.1)
-        await message.edit(suppress=True)
+
+        if message.channel.permissions_for(self.bot.user).manage_messages:
+            # Discord SUCKS!!
+            if twitterlinks:
+                while not message.embeds:
+                    await asyncio.sleep(0.1)
+            await message.edit(suppress=True)
 
         def deletecheck(m):
             return m.id == message.id
