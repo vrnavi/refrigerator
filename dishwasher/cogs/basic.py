@@ -1,6 +1,8 @@
 import time
 import config
 import discord
+import matplotlib.pyplot as plt
+import io
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
@@ -68,14 +70,12 @@ class Basic(Cog):
             f"Here's how to install a dishwasher:\n<https://www.whirlpool.com/blog/kitchen/how-to-install-a-dishwasher.html>\n\nWhile you're at it, consider protecting your dishwasher:\n<https://www.2-10.com/homeowners-warranty/dishwasher/>\n\nRemember, the more time you spend with your dishwasher instead of the kitchen sink, __the better__."
         )
 
-    @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="hex")
     async def _hex(self, ctx, num: int):
         """[U] Converts base 10 to 16."""
         hex_val = hex(num).upper().replace("0X", "0x")
         await ctx.send(f"{ctx.author.mention}: {hex_val}")
 
-    @commands.cooldown(1, 10, type=commands.BucketType.user)
     @commands.command(name="dec")
     async def _dec(self, ctx, num):
         """[U] Converts base 16 to 10."""
@@ -149,6 +149,42 @@ class Basic(Cog):
         message_text = f":ping_pong:\nrtt: `{rtt_ms:.1f}ms`\ngw: `{gw_ms:.1f}ms`"
         self.bot.log.info(message_text)
         await tmp.edit(content=message_text)
+
+    @commands.guild_only()
+    @commands.command()
+    async def joingraph(self, ctx):
+        """[U] Shows the graph of users that joined."""
+        async with ctx.channel.typing():
+            rawjoins = [m.joined_at.date() for m in ctx.guild.members]
+            joindates = sorted(list(dict.fromkeys(rawjoins)))
+            joincounts = []
+            for i, d in enumerate(joindates):
+                if i != 0:
+                    joincounts.append(joincounts[i - 1] + rawjoins.count(d))
+                else:
+                    joincounts.append(rawjoins.count(d))
+            plt.plot(joindates, joincounts)
+            b = io.BytesIO()
+            plt.savefig(b, format="png")
+        await ctx.reply(file=discord.File(b))
+
+    @commands.guild_only()
+    @commands.command()
+    async def joinorder(self, ctx, joinscore: int = None):
+        """[U] Shows the joinorder of a user."""
+        members = sorted(ctx.guild.members, key=lambda v: v.joined_at)
+        message = ""
+        memberidx = (
+            members[joinscore + 1] if joinscore else members.index(ctx.author) + 1
+        )
+        for idx, m in enumerate(members):
+            if memberidx - 5 <= idx <= memberidx + 5:
+                message = (
+                    f"{message}\n`{idx+1}` **{m}**"
+                    if memberidx == idx
+                    else f"{message}\n`{idx+1}` {m}"
+                )
+        ctx.reply(content=message, mention_author=False)
 
     @commands.guild_only()
     @commands.command()

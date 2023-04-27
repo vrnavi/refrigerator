@@ -575,6 +575,34 @@ class Mod(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
+    @purge.command(aliases=["emoji"])
+    async def emotes(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
+        """[S] Clears a given number of emotes."""
+        mlog = await self.bot.fetch_channel(
+            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+        )
+        if not channel:
+            channel = ctx.channel
+
+        def has_emote(m):
+            return m.clean_content[:1] == ":" and m.clean_content[-1:] == ":"
+
+        deleted = len(await channel.purge(limit=limit, check=has_emote))
+        embed = discord.Embed(
+            color=discord.Color.lighter_gray(),
+            title="🗑 Purged",
+            description=f"{str(ctx.author)} purged {deleted} emotes in {channel.mention}.",
+            timestamp=datetime.datetime.now(),
+        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
+        embed.set_author(
+            name=f"{str(ctx.author)}", icon_url=ctx.author.display_avatar.url
+        )
+        await mlog.send(embed=embed)
+        await ctx.send(f"🚮 `{deleted}` emotes purged.", delete_after=5)
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
     @purge.command()
     async def embeds(self, ctx, limit=50, channel: discord.abc.GuildChannel = None):
         """[S] Clears a given number of embeds."""
