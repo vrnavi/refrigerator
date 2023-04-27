@@ -6,6 +6,7 @@ import config
 from datetime import datetime
 from datetime import timezone
 from helpers.checks import check_if_staff
+from helpers.configs import get_staff_config
 
 
 class ModAppeal(Cog):
@@ -22,7 +23,8 @@ class ModAppeal(Cog):
 
         if (
             message.guild
-            and message.guild.id in config.guild_configs
+            and get_staff_config(message.guild.id, "ban_appeal_channel")
+            and get_staff_config(message.guild.id, "ban_appeal_webhook_id")
             and message.channel.id
             == config.guild_configs[message.guild.id]["staff"]["ban_appeal_channel"]
             and message.author.id
