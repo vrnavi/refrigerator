@@ -206,7 +206,7 @@ class Messagescan(Cog):
         reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
         try:
             await message.channel.fetch_message(message.id)
-        except NotFound:
+        except discord.NotFound:
             await reply.delete()
         try:
             await self.bot.wait_for("message_delete", timeout=600, check=deletecheck)

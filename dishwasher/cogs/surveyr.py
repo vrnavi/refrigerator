@@ -5,7 +5,7 @@ import config
 import datetime
 from helpers.checks import check_if_staff
 from helpers.configs import get_surveyr_config, config_check
-from helpers.surveyr import surveyr_event_types, new_survey, get_surveys
+from helpers.surveyr import surveyr_event_types, new_survey, edit_survey, get_surveys
 
 
 class Surveyr(Cog):
@@ -69,6 +69,17 @@ class Surveyr(Cog):
                 f"**Reason:** {reason}"
             )
         )
+
+        await asyncio.sleep(2)
+        try:
+            await ctx.guild.get_ban(user)
+        except discord.NotFound:
+            reason = get_surveys(ctx.guild.id)[cid]["reason"]
+            edit_survey(guild.id, caseid, alog[0].user, reason, "softbans")
+            msg = await guild.get_channel(survey_channel).fetch_message(msg.id)
+            content = msg.content.split("\n")
+            content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>\n"
+            await msg.edit(content=content)
 
 
 async def setup(bot):
