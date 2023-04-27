@@ -94,7 +94,7 @@ class Basic(Cog):
     async def about(self, ctx):
         """[U] Shows a quick embed with bot info."""
         embed = discord.Embed(
-            title="Dishwasher",
+            title=self.bot.user.name,
             url=config.source_url,
             description=config.embed_desc,
             color=ctx.guild.me.color,

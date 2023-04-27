@@ -10,7 +10,6 @@ bot_logchannel = 1006820351134683186
 
 # If you forked Dishwasher, put your repo here
 source_url = "https://github.com/vrnavi/dishwasher"
-rules_url = "<#989959323771895880>"
 
 # The bot description to be used in the about command.
 embed_desc = (

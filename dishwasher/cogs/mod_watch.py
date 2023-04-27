@@ -7,6 +7,7 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import setwatch, get_userlog
 from helpers.placeholders import random_self_msg, random_bot_msg, create_log_embed
+from helpers.configs import get_staff_config, get_log_config, config_check
 
 
 class ModWatch(Cog):
@@ -90,7 +91,7 @@ class ModWatch(Cog):
         if (
             not message.content
             or not message.guild
-            or message.guild.id not in config.guild_configs
+            or not get_staff_config(message.guild.id, "tracker_channel")
         ):
             return
         userlog = get_userlog(message.guild.id)
@@ -100,7 +101,7 @@ class ModWatch(Cog):
                     userlog[str(message.author.id)]["watch"]["thread"]
                 )
                 trackermsg = await self.bot.get_channel(
-                    config.guild_configs[message.guild.id]["staff"]["tracker_channel"]
+                    get_staff_config(message.guild.id, "tracker_channel")
                 ).fetch_message(userlog[str(message.author.id)]["watch"]["message"])
                 threadembed = discord.Embed(
                     color=message.author.color,

@@ -20,6 +20,8 @@ def make_userlog(serverid):
 
 
 def get_userlog(serverid):
+    if not os.path.exists(f"data/userlogs/{serverid}/userlog.json"):
+        userlogs = make_userlog(serverid)
     with open(f"data/userlogs/{serverid}/userlog.json", "r") as f:
         return json.load(f)
 
