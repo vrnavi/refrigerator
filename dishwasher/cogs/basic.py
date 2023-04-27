@@ -166,7 +166,7 @@ class Basic(Cog):
             plt.plot(joindates, joincounts)
             b = io.BytesIO()
             plt.savefig(b, format="png")
-        await ctx.reply(file=discord.File(b))
+        await ctx.reply(file=discord.File(b), mention_author=False)
 
     @commands.guild_only()
     @commands.command()
@@ -181,7 +181,7 @@ class Basic(Cog):
             if memberidx - 5 <= idx <= memberidx + 5:
                 message = (
                     f"{message}\n`{idx+1}` **{m}**"
-                    if memberidx == idx+1
+                    if memberidx == idx + 1
                     else f"{message}\n`{idx+1}` {m}"
                 )
         await ctx.reply(content=message, mention_author=False)

@@ -585,7 +585,7 @@ class Mod(Cog):
             channel = ctx.channel
 
         def has_emote(m):
-            return m.clean_content[:1] == ":" and m.clean_content[-1:] == ":"
+            return m.clean_content[:2] == "<:" and m.clean_content[-1:] == ">"
 
         deleted = len(await channel.purge(limit=limit, check=has_emote))
         embed = discord.Embed(
