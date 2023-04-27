@@ -266,6 +266,32 @@ class Admin(Cog):
             content=f":white_check_mark: `{ext}` successfully reloaded."
         )
 
+    @Cog.listener()
+    async def on_guild_join(self, guild):
+        msgs = []
+        for m in config.bot_managers:
+            msg = await self.bot.get_user(m).send(
+                content=f"{self.bot.me.name} joined `{guild}` with `{guild.members}` members.\nCheck the checkmark within an hour to leave."
+            )
+            await msg.add_reaction("✅")
+            msgs.append(msg)
+
+        def check(r, u):
+            return (
+                u.id in config.bot_managers
+                and str(r.emoji) == "✅"
+                and type(r.message.channel) == discord.channel.DMChannel
+            )
+
+        try:
+            r, u = await self.bot.wait_for("reaction_add", timeout=600.0, check=check)
+        except asyncio.TimeoutError:
+            pass
+        else:
+            await guild.leave()
+            for m in msgs:
+                await m.edit(content=f"{m.content}\n\nI have left this guild.")
+
 
 async def setup(bot):
     await bot.add_cog(Admin(bot))

@@ -23,12 +23,10 @@ class ModAppeal(Cog):
 
         if (
             message.guild
-            and get_staff_config(message.guild.id, "ban_appeal_channel")
-            and get_staff_config(message.guild.id, "ban_appeal_webhook_id")
             and message.channel.id
-            == config.guild_configs[message.guild.id]["staff"]["ban_appeal_channel"]
+            == get_staff_config(message.guild.id, "ban_appeal_channel")
             and message.author.id
-            == config.guild_configs[message.guild.id]["staff"]["ban_appeal_webhook_id"]
+            == get_staff_config(message.guild.id, "ban_appeal_webhook_id")
             and message.embeds[0].fields[1].value is not None
         ):
             await message.add_reaction("✅")

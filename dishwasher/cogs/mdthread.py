@@ -33,6 +33,7 @@ class mdthread(Cog):
             content=f"You're about to mention {len(mentions)} member{'' if len(mentions) == 1 else 's'}. Are you sure you want to do this?",
             mention_author=False,
         )
+        await confirmmsg.add_reaction("✅")
 
         try:
             r, u = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
