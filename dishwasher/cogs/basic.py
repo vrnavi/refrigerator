@@ -165,7 +165,7 @@ class Basic(Cog):
                 else:
                     joincounts.append(rawjoins.count(d))
             plt.plot(joindates, joincounts)
-            plt.savefig("testfile.png", bbox_inches='tight')
+            plt.savefig("testfile.png", bbox_inches="tight")
             plt.close()
         await ctx.reply(file=discord.File("testfile.png"), mention_author=False)
         os.remove("testfile.png")
@@ -176,9 +176,7 @@ class Basic(Cog):
         """[U] Shows the joinorder of a user."""
         members = sorted(ctx.guild.members, key=lambda v: v.joined_at)
         message = ""
-        memberidx = (
-            joinscore if joinscore else members.index(ctx.author) + 1
-        )
+        memberidx = joinscore if joinscore else members.index(ctx.author) + 1
         for idx, m in enumerate(members):
             if memberidx - 6 <= idx <= memberidx + 4:
                 message = (
@@ -204,21 +202,18 @@ class Basic(Cog):
             "🔟",
         ]
         optionlines = ""
-        idx = 0
         if not options:
             await ctx.reply(
                 content="**No options specified.** Add some and try again.",
-                mention_author=True,
+                mention_author=False,
             )
             return
-        for l in options:
-            idx += 1
-            if idx == 11:
-                await ctx.reply(
-                    content="**Too many options.** Remove some and try again.",
-                    mention_author=False,
-                )
-                return
+        elif len(options) > 10:
+            await ctx.reply(
+                content="**Too many options.** Remove some and try again.",
+                mention_author=False,
+            )
+        for i, l in enumerate(options):
             if l[-1:] == '"' and l[:1] == '"':
                 optionlines = f"{optionlines}\n`#{idx}:` {l[1:-1]}"
             elif (l[-1:] == '"' or l[:1] == '"') and not (
@@ -226,11 +221,11 @@ class Basic(Cog):
             ):
                 await ctx.reply(
                     content="**Malformed poll options.** Check your quotes.",
-                    mention_author=True,
+                    mention_author=False,
                 )
                 return
             else:
-                optionlines = f"{optionlines}\n`#{idx}:` {l}"
+                optionlines = f"{optionlines}\n`#{i+1}:` {l}"
         poll = await ctx.reply(
             content=f"**{poll_title}**{optionlines}", mention_author=False
         )
