@@ -2,7 +2,7 @@ import time
 import config
 import discord
 import matplotlib.pyplot as plt
-import io
+import os
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
@@ -164,9 +164,9 @@ class Basic(Cog):
                 else:
                     joincounts.append(rawjoins.count(d))
             plt.plot(joindates, joincounts)
-            b = io.BytesIO()
-            plt.savefig(b, format="png")
-        await ctx.reply(file=discord.File(b), mention_author=False)
+            plt.savefig("testfile.png")
+        await ctx.reply(file=discord.File("testfile.png"), mention_author=False)
+        os.remove("testfile.png")
 
     @commands.guild_only()
     @commands.command()
