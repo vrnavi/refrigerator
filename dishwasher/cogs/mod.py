@@ -164,7 +164,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Colour.from_str("#FF0000"),
@@ -383,7 +383,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         # Prepare embed msg
         embed = discord.Embed(
@@ -455,7 +455,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         # Prepare embed msg
         embed = discord.Embed(
@@ -502,7 +502,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -533,7 +533,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -570,7 +570,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -601,7 +601,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -632,7 +632,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -664,7 +664,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Color.lighter_gray(),
@@ -737,7 +737,7 @@ class Mod(Cog):
             mlog = get_log_config(ctx.guild.id, "mlog_thread")
             if not mlog:
                 return
-            await self.bot.fetch_channel(mlog)
+            mlog = await self.bot.fetch_channel(mlog)
 
             embed = discord.Embed(
                 color=discord.Color.lighter_gray(),
@@ -808,7 +808,7 @@ class Mod(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         if not mlog:
             return
-        await self.bot.fetch_channel(mlog)
+        mlog = await self.bot.fetch_channel(mlog)
 
         embed = discord.Embed(
             color=discord.Colour.from_str("#FFFF00"),
