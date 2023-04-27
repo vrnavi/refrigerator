@@ -327,7 +327,7 @@ class ModArchive(Cog):
 
     @Cog.listener()
     async def on_member_remove(self, member):
-        if config_check(after.guild.id, "archive") and self.is_rolebanned(member):
+        if config_check(member.guild.id, "archive") and self.is_rolebanned(member):
             LAST_UNROLEBAN.set(
                 member.guild.id,
                 member.id,

@@ -237,7 +237,7 @@ class Basic(Cog):
             )
         for i, l in enumerate(options):
             if l[-1:] == '"' and l[:1] == '"':
-                optionlines = f"{optionlines}\n`#{idx}:` {l[1:-1]}"
+                optionlines = f"{optionlines}\n`#{i+1}:` {l[1:-1]}"
             elif (l[-1:] == '"' or l[:1] == '"') and not (
                 l[-1:] == '"' and l[:1] == '"'
             ):
