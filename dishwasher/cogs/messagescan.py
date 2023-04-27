@@ -190,7 +190,10 @@ class Messagescan(Cog):
                     embed.set_image(url=rcvmessage.embeds[0].image.url)
                 embeds.append(embed)
 
-        if message.guild and message.channel.permissions_for(message.guild.me).manage_messages:
+        if (
+            message.guild
+            and message.channel.permissions_for(message.guild.me).manage_messages
+        ):
             # Discord SUCKS!!
             if twitterlinks:
                 while not message.embeds:

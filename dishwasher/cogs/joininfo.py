@@ -2,6 +2,7 @@ import discord
 from discord.ext.commands import Cog
 import matplotlib.pyplot as plt
 import os
+import shutil
 
 
 class Joininfo(Cog):
@@ -11,26 +12,20 @@ class Joininfo(Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.caching.start()
 
-    @commands.cooldown(1, 60, commands.BucketType.guild)
+    def cog_unload(self):
+        self.caching.cancel()
+        shutil.rmtree("data/joingraphs")
+
     @commands.guild_only()
     @commands.command()
     async def joingraph(self, ctx):
         """[U] Shows the graph of users that joined."""
-        async with ctx.channel.typing():
-            rawjoins = [m.joined_at.date() for m in ctx.guild.members]
-            joindates = sorted(list(dict.fromkeys(rawjoins)))
-            joincounts = []
-            for i, d in enumerate(joindates):
-                if i != 0:
-                    joincounts.append(joincounts[i - 1] + rawjoins.count(d))
-                else:
-                    joincounts.append(rawjoins.count(d))
-            plt.plot(joindates, joincounts)
-            plt.savefig("testfile.png", bbox_inches="tight")
-            plt.close()
-        await ctx.reply(file=discord.File("testfile.png"), mention_author=False)
-        os.remove("testfile.png")
+        await ctx.reply(
+            file=discord.File(f"data/joingraphs/{ctx.guild.id}-joingraph.png"),
+            mention_author=False,
+        )
 
     @commands.guild_only()
     @commands.command(aliases=["joinscore"])
@@ -47,6 +42,25 @@ class Joininfo(Cog):
                     else f"{message}\n`{idx+1}` {m}"
                 )
         await ctx.reply(content=message, mention_author=False)
+
+    @tasks.loop(hours=1)
+    async def caching(self):
+        await self.bot.wait_until_ready()
+        if not os.path.exists("data/joingraphs"):
+            os.makedirs("data/joingraphs")
+
+        for g in self.bot.guilds:
+            rawjoins = [m.joined_at.date() for m in g.members]
+            joindates = sorted(list(dict.fromkeys(rawjoins)))
+            joincounts = []
+            for i, d in enumerate(joindates):
+                if i != 0:
+                    joincounts.append(joincounts[i - 1] + rawjoins.count(d))
+                else:
+                    joincounts.append(rawjoins.count(d))
+            plt.plot(joindates, joincounts)
+            plt.savefig(f"data/joingraphs/{g.id}-joingraph.png", bbox_inches="tight")
+            plt.close()
 
 
 async def setup(bot):
