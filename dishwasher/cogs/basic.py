@@ -359,10 +359,11 @@ class Basic(Cog):
         if server == None:
             server = ctx.guild
 
+        serverdesc = "*" + server.description + "*" if server.description else ""
         embed = discord.Embed(
             color=server.me.color,
             title=f"Info for server {server}",
-            description=f"*{server.description if server.description else ''}*\n**ID:** `{server.id}`\n**Owner:** {server.owner.mention}",
+            description=f"{serverdesc}\n**ID:** `{server.id}`\n**Owner:** {server.owner.mention}",
             timestamp=datetime.now(),
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
