@@ -1,6 +1,7 @@
 import json
 import os
-import time
+import datetime
+import config
 
 surveyr_event_types = {
     "bans": "Ban",
@@ -17,6 +18,8 @@ def make_surveys(serverid):
 
 
 def get_surveys(serverid):
+    if not os.path.exists(f"data/userlogs/{serverid}/userlog.json"):
+        userlogs = make_userlog(serverid)
     with open(f"data/userlogs/{serverid}/surveys.json", "r") as f:
         return json.load(f)
 
@@ -33,9 +36,13 @@ def new_survey(sid, uid, mid, issuer, reason, event):
         else make_surveys(sid)
     )
 
-    cid = int(dict.keys()[-1]) + 1
+    cid = (
+        config.guild_configs[sid]["surveyr"]["start_case"]
+        if len(surveys.keys()) == 0
+        else int(surveys.keys()[-1]) + 1
+    )
 
-    timestamp = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    timestamp = int(datetime.datetime.now().timestamp())
     sv_data = {
         "type": event,
         "reason": reason,
@@ -46,7 +53,7 @@ def new_survey(sid, uid, mid, issuer, reason, event):
     }
     surveys[str(cid)] = sv_data
     set_surveys(sid, json.dumps(surveys))
-    return len(surveys)
+    return cid, timestamp
 
 
 def edit_survey(sid, cid, issuer, reason, event):
@@ -60,4 +67,4 @@ def edit_survey(sid, cid, issuer, reason, event):
     for k, v in sv_data:
         surveys[str(cid)][k] = log_data[v]
     set_surveys(sid, json.dumps(surveys))
-    return len(surveys)
+    return cid
