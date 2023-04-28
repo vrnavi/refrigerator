@@ -30,7 +30,7 @@ class Surveyr(Cog):
             try:
                 if len(cases.split("-")) != 2:
                     return None
-                return range(int(cases.split("-")[0]), int(cases.split("-")[1] + 1))
+                return range(int(cases.split("-")[0]), int(cases.split("-")[1]) + 1)
             except:
                 return None
 
