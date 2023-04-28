@@ -186,7 +186,7 @@ class Logs2(Cog):
                 embed.add_field(
                     name=f"🧩 Fragment {ctr}",
                     value=f">>> {p}",
-                    inline=True,
+                    inline=False,
                 )
                 ctr += 1
         else:
@@ -212,9 +212,9 @@ class Logs2(Cog):
                 embed.add_field(
                     name=f"🧩 Fragment {ctr}",
                     value=f">>> {p}",
-                    inline=True,
+                    inline=False,
                 )
-                ctr = ctr + 1
+                ctr += 1
         else:
             embed.add_field(
                 name=f"⭕ After on <t:{after.edited_at.astimezone().strftime('%s')}:f>",
@@ -267,9 +267,9 @@ class Logs2(Cog):
                 embed.add_field(
                     name=f"🧩 Fragment {ctr}",
                     value=f">>> {p}",
-                    inline=True,
+                    inline=False,
                 )
-                ctr = ctr + 1
+                ctr += 1
         else:
             embed.add_field(
                 name=f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:",
