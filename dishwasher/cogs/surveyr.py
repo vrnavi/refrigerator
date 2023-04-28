@@ -80,9 +80,9 @@ class Surveyr(Cog):
         cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
             seconds=5
         )
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
         if alog[0].target.id != member.id or alog[0].created_at >= cutoff_ts:
             return
+        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
 
         reason = (
             alog[0].reason
