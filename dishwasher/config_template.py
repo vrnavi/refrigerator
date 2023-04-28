@@ -42,6 +42,7 @@ initial_cogs = [
     "cogs.reply",
     "cogs.dishtimer",
     "cogs.meme",
+    "cogs.surveyr",
     "cogs.usertime",
     "cogs.prefixes",
     "cogs.messagescan",
