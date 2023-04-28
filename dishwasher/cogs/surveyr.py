@@ -69,7 +69,6 @@ class Surveyr(Cog):
         ):
             return
         survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
 
         alog = [
             entry
@@ -77,6 +76,7 @@ class Surveyr(Cog):
                 limit=1, action=discord.AuditLogAction.kick
             )
         ]
+        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
 
         cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
             seconds=5
