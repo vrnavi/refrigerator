@@ -111,7 +111,7 @@ async def on_error(event_method, *args, **kwargs):
             [before.clean_content[i : i + 1020] for i in range(0, len(err_info), 1020)]
         )
         err_embed.description = (
-            f"An error occurred...\n{args}\n{kwargs}\n```{event_method}: {err_info}```"
+            f"An error occurred...\n{format_args}\n{format_kwargs}\n```{event_method}: {err_info}```"
         )
         ctr = 1
         for f in split_msg:
@@ -123,7 +123,7 @@ async def on_error(event_method, *args, **kwargs):
             ctr += 1
     else:
         err_embed.description = (
-            f"An error occurred...\n{args}\n{kwargs}\n```{event_method}: {err_info}```"
+            f"An error occurred...\n{format_args}\n{format_kwargs}\n```{event_method}: {err_info}```"
         )
 
     err_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
