@@ -104,8 +104,8 @@ class Basic(Cog):
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
 
-    @commands.command()
-    async def server(self, ctx):
+    @commands.command(name="server", aliases=["invite"])
+    async def hostserver(self, ctx):
         """[U] Gives an invite to the host server."""
         await ctx.author.send(
             content="Here is an invite to my host server.\nhttps://discord.gg/"
