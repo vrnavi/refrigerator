@@ -88,7 +88,7 @@ class Surveyr(Cog):
             if alog[0].reason
             else f"No reason was given, {alog[0].user.mention}..."
         )
-        msg = await guild.get_channel(survey_channel).send(content="⌛")
+        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
             member.guild.id, member.id, msg.id, alog[0].user.id, reason, "kicks"
         )
