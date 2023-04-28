@@ -78,7 +78,7 @@ class Surveyr(Cog):
             get_surveyr_config(ctx.guild.id, "survey_channel")
         ).fetch_message(survey["post_id"])
         content = msg.content.split("\n")
-        content[1] = f"**User:** {censored_member} ({member.id})\n"
+        content[1] = f"**User:** {censored_member} ({member.id})"
         await msg.edit(content="\n".join(content))
         await ctx.reply(content=f"Edited `#{caseid}`.")
 
