@@ -74,6 +74,9 @@ class Mod(Cog):
             # Prevents kick issues in cases where user blocked bot
             # or has DMs disabled
             pass
+        except discord.HTTPException:
+            # Prevents kick issues on bots
+            pass
 
         await target.kick(reason=f"[ Kick by {ctx.author} ] {reason}")
         await ctx.send(f"**{target.mention}** was KICKED.")
@@ -154,6 +157,9 @@ class Mod(Cog):
             except discord.errors.Forbidden:
                 # Prevents ban issues in cases where user blocked bot
                 # or has DMs disabled
+                pass
+            except discord.HTTPException:
+                # Prevents ban issues on bots
                 pass
 
         await ctx.guild.ban(
@@ -249,6 +255,9 @@ class Mod(Cog):
             except discord.errors.Forbidden:
                 # Prevents ban issues in cases where user blocked bot
                 # or has DMs disabled
+                pass
+            except discord.HTTPException:
+                # Prevents ban issues on bots
                 pass
 
         await target.ban(
@@ -793,8 +802,11 @@ class Mod(Cog):
             try:
                 await target.send(msg)
             except discord.errors.Forbidden:
-                # Prevents log issues in cases where user blocked bot
+                # Prevents warn issues in cases where user blocked bot
                 # or has DMs disabled
+                pass
+            except discord.HTTPException:
+                # Prevents warn issues on bots
                 pass
 
         await ctx.send(
