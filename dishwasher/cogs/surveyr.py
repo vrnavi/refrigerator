@@ -69,6 +69,7 @@ class Surveyr(Cog):
         ):
             return
         survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
+        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
 
         alog = [
             entry
@@ -83,7 +84,6 @@ class Surveyr(Cog):
         if alog[0].target.id != member.id or alog[0].created_at >= cutoff_ts:
             return
 
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
         reason = (
             alog[0].reason
             if alog[0].reason
