@@ -102,7 +102,7 @@ class Surveyr(Cog):
             except KeyError:
                 await ctx.reply(content="You sent cases that exceed the actual case list.\nThese cases have been ignored.", mention_author=False)
                 break
-        edited = cases if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
+        edited = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Edited `{edited}`.", mention_author=False)
 
     @survey.command(aliases=["c"])
@@ -143,7 +143,7 @@ class Surveyr(Cog):
             except KeyError:
                 await ctx.reply(content="You sent cases that exceed the actual case list.\nThese cases have been ignored.", mention_author=False)
                 break
-        censored = cases if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
+        censored = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Censored `{censored}`.", mention_author=False)
 
     @survey.command(aliases=["d"])
