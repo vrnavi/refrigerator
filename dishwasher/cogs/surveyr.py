@@ -68,14 +68,17 @@ class Surveyr(Cog):
         if not cases:
             return await ctx.reply(content="Malformed cases.", mention_author=False)
         if len(cases) > 20:
-            warningmsg = await ctx.reply(f"You are trying to update `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.", mention_author=False)
+            warningmsg = await ctx.reply(
+                f"You are trying to update `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.",
+                mention_author=False,
+            )
             await warningmsg.add_reaction("✅")
 
             def check(r, u):
-                return u.id == ctx.author.id and str(r.emoji) == '✅'
-            
+                return u.id == ctx.author.id and str(r.emoji) == "✅"
+
             try:
-                await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+                await self.bot.wait_for("reaction_add", timeout=10.0, check=check)
             except asyncio.TimeoutError:
                 await warningmsg.edit(content="Operation timed out.", delete_after=5)
                 return
@@ -109,12 +112,15 @@ class Surveyr(Cog):
         if not cases:
             return await ctx.reply(content="Malformed cases.", mention_author=False)
         if len(cases) > 20:
-            warningmsg = await ctx.reply(f"You are trying to censor `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.", mention_author=False)
+            warningmsg = await ctx.reply(
+                f"You are trying to censor `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.",
+                mention_author=False,
+            )
             await warningmsg.add_reaction("✅")
 
             def check(r, u):
                 return u.id == ctx.author.id and str(r.emoji) == "✅"
-            
+
             try:
                 await self.bot.wait_for("reaction_add", timeout=10.0, check=check)
             except asyncio.TimeoutError:
@@ -147,7 +153,7 @@ class Surveyr(Cog):
         for case in cases:
             survey = get_surveys(ctx.guild.id)[str(case)]
             if survey["type"] == "bans":
-                userids.append(survey["target_id"])
+                userids.append(str(survey["target_id"]))
         with open("iddump.txt", "w") as f:
             f.write("\n".join(userids))
         await ctx.reply(file=discord.File("iddump.txt"), mention_author=False)
