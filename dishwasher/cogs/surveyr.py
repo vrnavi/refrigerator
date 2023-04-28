@@ -76,8 +76,8 @@ class Surveyr(Cog):
             return
         survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
 
-        asyncio.sleep(1)
-        async for entry in ctx.guild.audit_logs(action=discord.AuditLogAction.kick):
+        await asyncio.sleep(1)
+        async for entry in member.guild.audit_logs(action=discord.AuditLogAction.kick):
             cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
                 seconds=5
             )
