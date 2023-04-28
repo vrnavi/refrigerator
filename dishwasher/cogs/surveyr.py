@@ -5,7 +5,6 @@ import json
 import config
 import datetime
 import asyncio
-import typing
 import os
 from helpers.checks import check_if_staff
 from helpers.configs import get_surveyr_config, config_check
@@ -23,18 +22,17 @@ class Surveyr(Cog):
         self.bancooldown = {}
 
     def case_handler(self, cases, surveys):
-        if type(cases) == int:
+        if cases.isdigit():
             return [cases]
-        elif type(cases) == str:
-            if cases == "l":
-                return [list(reversed(surveys))[0]]
-            else:
-                try:
-                    if len(cases.split("-")) != 2:
-                        return None
-                    return range(cases.split("-")[0], cases.split("-")[1] + 1)
-                except:
+        elif cases == "l":
+            return [list(reversed(surveys))[0]]
+        else:
+            try:
+                if len(cases.split("-")) != 2:
                     return None
+                return range(cases.split("-")[0], cases.split("-")[1] + 1)
+            except:
+                return None
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -60,7 +58,7 @@ class Surveyr(Cog):
         )
 
     @survey.command(aliases=["r"])
-    async def reason(self, ctx, caseids: typing.Union[int, str], *, reason: str):
+    async def reason(self, ctx, caseids: str, *, reason: str):
         """[S] Edits case reasons."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
@@ -104,7 +102,7 @@ class Surveyr(Cog):
         await ctx.reply(content=f"Edited `{edited}`.", mention_author=False)
 
     @survey.command(aliases=["c"])
-    async def censor(self, ctx, caseids: typing.Union[int, str]):
+    async def censor(self, ctx, caseids: str:
         """[S] Censors cases."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
@@ -141,7 +139,7 @@ class Surveyr(Cog):
         await ctx.reply(content=f"Censored `{censored}`.", mention_author=False)
 
     @survey.command(aliases=["d"])
-    async def dump(self, ctx, caseids: typing.Union[int, str]):
+    async def dump(self, ctx, caseids: str):
         """[S] Dumps userids from cases."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
