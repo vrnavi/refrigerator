@@ -102,7 +102,7 @@ class Surveyr(Cog):
         await ctx.reply(content=f"Edited `{edited}`.", mention_author=False)
 
     @survey.command(aliases=["c"])
-    async def censor(self, ctx, caseids: str:
+    async def censor(self, ctx, caseids: str):
         """[S] Censors cases."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
