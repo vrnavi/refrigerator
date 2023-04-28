@@ -165,7 +165,7 @@ class Surveyr(Cog):
                 content = msg.content.split("\n")
                 content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>"
                 await msg.edit(content="\n".join(content))
-                self.bancooldown.remove(guild.id)
+                del self.bancooldown[guild.id]
 
             return
 
