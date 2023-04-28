@@ -105,7 +105,7 @@ class Basic(Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.command()
-    async def server(self, ctx):
+    async def invite(self, ctx):
         """[U] Gives an invite to the host server."""
         await ctx.author.send(
             content="Here is an invite to my host server.\nhttps://discord.gg/"
