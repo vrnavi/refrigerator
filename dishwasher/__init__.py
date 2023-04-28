@@ -96,8 +96,8 @@ async def on_command(ctx):
 @bot.event
 async def on_error(event_method, *args, **kwargs):
     err_info = sys.exc_info()
-    format_args = "\n".join(args) if args else ""
-    format_kwargs = "\n".join(kwargs) if kwargs else ""
+    format_args = "\n".join(repr(args)) if args else ""
+    format_kwargs = "\n".join(repr(kwargs)) if kwargs else ""
     log.error(f"Error on {event_method}: {err_info}")
 
     err_embed = discord.Embed(
@@ -105,25 +105,35 @@ async def on_error(event_method, *args, **kwargs):
         title="🔥 Code Error",
         timestamp=datetime.datetime.now(),
     )
+    err_embed.add_field(
+        name=f"Given args:",
+        value=f"```{format_args}```",
+        inline=False,
+    )
+    err_embed.add_field(
+        name=f"Given kwargs:",
+        value=f"```{format_kwargs}```",
+        inline=False,
+    )
 
     if len(err_info) > 1024:
         split_msg = list(
-            [before.clean_content[i : i + 1020] for i in range(0, len(err_info), 1020)]
+            [err_info[i : i + 1020] for i in range(0, len(err_info), 1020)]
         )
         err_embed.description = (
-            f"An error occurred...\n{format_args}\n{format_kwargs}\n```{event_method}: {err_info}```"
+            f"An error occurred...\n```{event_method}```"
         )
         ctr = 1
         for f in split_msg:
             err_embed.add_field(
                 name=f"🧩 Fragment {ctr}",
-                value=f">>> {f}",
+                value=f"```{f}```",
                 inline=False,
             )
             ctr += 1
     else:
         err_embed.description = (
-            f"An error occurred...\n{format_args}\n{format_kwargs}\n```{event_method}: {err_info}```"
+            f"An error occurred...\n```{event_method}: {err_info}```"
         )
 
     err_embed.set_footer(text=bot.user.name, icon_url=bot.user.display_avatar)
