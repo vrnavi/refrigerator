@@ -71,7 +71,7 @@ class Surveyr(Cog):
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         survey = get_surveys(ctx.guild.id)[str(caseid)]
-        member = await self.bot.get_user(survey["target_id"])
+        member = await self.bot.fetch_user(survey["target_id"])
         censored_member = "`" + " " * len(member.name) + "`#" + member.discriminator
 
         msg = await ctx.guild.get_channel(
