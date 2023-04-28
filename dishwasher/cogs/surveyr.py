@@ -83,12 +83,12 @@ class Surveyr(Cog):
         if alog[0].target.id != member.id or alog[0].created_at >= cutoff_ts:
             return
 
+        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
         reason = (
             alog[0].reason
             if alog[0].reason
             else f"No reason was given, {alog[0].user.mention}..."
         )
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
             member.guild.id, member.id, msg.id, alog[0].user.id, reason, "kicks"
         )
