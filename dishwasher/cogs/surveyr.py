@@ -258,7 +258,7 @@ class Surveyr(Cog):
             ) - datetime.timedelta(seconds=5)
             if entry.target.id != member.id or entry.created_at <= cutoff_ts:
                 return
-            if self.bancooldown[guild.id] and self.bancooldown[guild.id] == member.id:
+            if guild.id in self.bancooldown and self.bancooldown[guild.id] == member.id:
                 return
             msg = await guild.get_channel(survey_channel).send(content="⌛")
 
