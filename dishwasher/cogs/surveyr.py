@@ -18,6 +18,7 @@ class Surveyr(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.nocfgmsg = "Surveyr isn't set up for this server."
+        self.bancooldown = {}
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -143,6 +144,7 @@ class Surveyr(Cog):
             caseid, timestamp = new_survey(
                 guild.id, member.id, msg.id, entry.user.id, reason, "bans"
             )
+            self.bancooldown[guild.id] = member.id
 
             await msg.edit(
                 content=(
@@ -161,8 +163,9 @@ class Surveyr(Cog):
                 edit_survey(guild.id, caseid, entry.user.id, reason, "softbans")
                 msg = await guild.get_channel(survey_channel).fetch_message(msg.id)
                 content = msg.content.split("\n")
-                content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>\n"
+                content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>"
                 await msg.edit(content="\n".join(content))
+                self.bancooldown.remove(guild.id)
 
             return
 
@@ -178,6 +181,8 @@ class Surveyr(Cog):
                 datetime.timezone.utc
             ) - datetime.timedelta(seconds=5)
             if entry.target.id != member.id or entry.created_at <= cutoff_ts:
+                return
+            if self.bancooldown[guild.id] and self.bancooldown[guild.id] == member.id:
                 return
             msg = await guild.get_channel(survey_channel).send(content="⌛")
 
