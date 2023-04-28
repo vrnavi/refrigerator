@@ -5,6 +5,8 @@ import json
 import config
 import datetime
 import asyncio
+import typing
+import os
 from helpers.checks import check_if_staff
 from helpers.configs import get_surveyr_config, config_check
 from helpers.surveyr import surveyr_event_types, new_survey, edit_survey, get_surveys
@@ -19,6 +21,20 @@ class Surveyr(Cog):
         self.bot = bot
         self.nocfgmsg = "Surveyr isn't set up for this server."
         self.bancooldown = {}
+
+    def case_handler(self, cases, surveys):
+        if type(cases) == int:
+            return [cases]
+        elif type(cases) == str:
+            if cases == "l":
+                return [list(reversed(surveys))[0]]
+            else:
+                try:
+                    if len(cases.split("-")) != 2:
+                        return None
+                    return range(cases.split("-")[0], cases.split("-")[1] + 1)
+                except:
+                    return None
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -44,44 +60,98 @@ class Surveyr(Cog):
         )
 
     @survey.command(aliases=["r"])
-    async def reason(self, ctx, caseid: int, *, reason: str):
-        """[S] Edits a case reason."""
+    async def reason(self, ctx, caseids: typing.Union[int, str], *, reason: str):
+        """[S] Edits case reasons."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
-        survey = get_surveys(ctx.guild.id)[str(caseid)]
-        msg = await ctx.guild.get_channel(
-            get_surveyr_config(ctx.guild.id, "survey_channel")
-        ).fetch_message(survey["post_id"])
+        cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
+        if not cases:
+            return await ctx.reply(content="Malformed cases.", mention_author=False)
+        if len(cases) > 20:
+            warningmsg = await ctx.reply(f"You are trying to update `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.", mention_author=False)
+            await warningmsg.add_reaction("✅")
 
-        edit_survey(
-            ctx.guild.id,
-            caseid,
-            survey["issuer_id"],
-            reason,
-            survey["type"],
-        )
-        content = msg.content.split("\n")
-        content[2] = f"**Staff:** {ctx.author} ({ctx.author.id})"
-        content[3] = f"**Reason:** {reason}"
-        await msg.edit(content="\n".join(content))
-        await ctx.reply(content=f"Edited `#{caseid}`.")
+            def check(r, u):
+                return u.id == ctx.author.id and str(r.emoji) == '✅'
+            
+            try:
+                await self.bot.wait_for('reaction_add', timeout=10.0, check=check)
+            except asyncio.TimeoutError:
+                await warningmsg.edit(content="Operation timed out.", delete_after=5)
+                return
+        msg = []
+        for case in cases:
+            survey = get_surveys(ctx.guild.id)[str(case)]
+            msg = await ctx.guild.get_channel(
+                get_surveyr_config(ctx.guild.id, "survey_channel")
+            ).fetch_message(survey["post_id"])
+
+            edit_survey(
+                ctx.guild.id,
+                case,
+                survey["issuer_id"],
+                reason,
+                survey["type"],
+            )
+            content = msg.content.split("\n")
+            content[2] = f"**Staff:** {ctx.author} ({ctx.author.id})"
+            content[3] = f"**Reason:** {reason}"
+            await msg.edit(content="\n".join(content))
+        edited = cases if len(cases) != 1 else f"{cases[0]}-{cases[-1]}"
+        await ctx.reply(content=f"Edited `{edited}`.", mention_author=False)
 
     @survey.command(aliases=["c"])
-    async def censor(self, ctx, caseid: int):
-        """[S] Censors a case."""
+    async def censor(self, ctx, caseids: typing.Union[int, str]):
+        """[S] Censors cases."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
-        survey = get_surveys(ctx.guild.id)[str(caseid)]
-        member = await self.bot.fetch_user(survey["target_id"])
-        censored_member = "`" + " " * len(member.name) + "`#" + member.discriminator
+        cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
+        if not cases:
+            return await ctx.reply(content="Malformed cases.", mention_author=False)
+        if len(cases) > 20:
+            warningmsg = await ctx.reply(f"You are trying to censor `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.", mention_author=False)
+            await warningmsg.add_reaction("✅")
 
-        msg = await ctx.guild.get_channel(
-            get_surveyr_config(ctx.guild.id, "survey_channel")
-        ).fetch_message(survey["post_id"])
-        content = msg.content.split("\n")
-        content[1] = f"**User:** {censored_member} ({member.id})"
-        await msg.edit(content="\n".join(content))
-        await ctx.reply(content=f"Edited `#{caseid}`.")
+            def check(r, u):
+                return u.id == ctx.author.id and str(r.emoji) == "✅"
+            
+            try:
+                await self.bot.wait_for("reaction_add", timeout=10.0, check=check)
+            except asyncio.TimeoutError:
+                await warningmsg.edit(content="Operation timed out.", delete_after=5)
+                return
+
+        for case in cases:
+            survey = get_surveys(ctx.guild.id)[str(case)]
+            member = await self.bot.fetch_user(survey["target_id"])
+            censored_member = "`" + " " * len(member.name) + "`#" + member.discriminator
+            msg = await ctx.guild.get_channel(
+                get_surveyr_config(ctx.guild.id, "survey_channel")
+            ).fetch_message(survey["post_id"])
+            content = msg.content.split("\n")
+            content[1] = f"**User:** {censored_member} ({member.id})"
+            await msg.edit(content="\n".join(content))
+        censored = cases if len(cases) != 1 else f"{cases[0]}-{cases[-1]}"
+        await ctx.reply(content=f"Censored `{censored}`.", mention_author=False)
+
+    @survey.command(aliases=["d"])
+    async def dump(self, ctx, caseids: typing.Union[int, str]):
+        """[S] Dumps userids from cases."""
+        if not config_check(ctx.guild.id, "surveyr"):
+            return await ctx.reply(content=self.nocfgmsg, mention_author=False)
+        cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
+        if not cases:
+            return await ctx.reply(content="Malformed cases.", mention_author=False)
+
+        userids = []
+        for case in cases:
+            survey = get_surveys(ctx.guild.id)[str(case)]
+            if survey["type"] == "bans":
+                userids.append(survey["target_id"])
+        with open("iddump.txt", "w") as f:
+            f.write("\n".join(userids))
+        await ctx.reply(file=discord.File("iddump.txt"), mention_author=False)
+        os.remove("iddump.txt")
 
     @Cog.listener()
     async def on_member_remove(self, member):
