@@ -82,22 +82,26 @@ class Surveyr(Cog):
                 return
         msg = []
         for case in cases:
-            survey = get_surveys(ctx.guild.id)[str(case)]
-            msg = await ctx.guild.get_channel(
-                get_surveyr_config(ctx.guild.id, "survey_channel")
-            ).fetch_message(survey["post_id"])
+            try:
+                survey = get_surveys(ctx.guild.id)[str(case)]
+                msg = await ctx.guild.get_channel(
+                    get_surveyr_config(ctx.guild.id, "survey_channel")
+                ).fetch_message(survey["post_id"])
 
-            edit_survey(
-                ctx.guild.id,
-                case,
-                survey["issuer_id"],
-                reason,
-                survey["type"],
-            )
-            content = msg.content.split("\n")
-            content[2] = f"**Staff:** {ctx.author} ({ctx.author.id})"
-            content[3] = f"**Reason:** {reason}"
-            await msg.edit(content="\n".join(content))
+                edit_survey(
+                    ctx.guild.id,
+                    case,
+                    survey["issuer_id"],
+                    reason,
+                    survey["type"],
+                )
+                content = msg.content.split("\n")
+                content[2] = f"**Staff:** {ctx.author} ({ctx.author.id})"
+                content[3] = f"**Reason:** {reason}"
+                await msg.edit(content="\n".join(content))
+            except KeyError:
+                await ctx.reply(content="You sent cases that exceed the actual case list.\nThese cases have been ignored.", mention_author=False)
+                break
         edited = cases if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Edited `{edited}`.", mention_author=False)
 
@@ -126,15 +130,19 @@ class Surveyr(Cog):
                 return
 
         for case in cases:
-            survey = get_surveys(ctx.guild.id)[str(case)]
-            member = await self.bot.fetch_user(survey["target_id"])
-            censored_member = "`" + " " * len(member.name) + "`#" + member.discriminator
-            msg = await ctx.guild.get_channel(
-                get_surveyr_config(ctx.guild.id, "survey_channel")
-            ).fetch_message(survey["post_id"])
-            content = msg.content.split("\n")
-            content[1] = f"**User:** {censored_member} ({member.id})"
-            await msg.edit(content="\n".join(content))
+            try:
+                survey = get_surveys(ctx.guild.id)[str(case)]
+                member = await self.bot.fetch_user(survey["target_id"])
+                censored_member = "`" + " " * len(member.name) + "`#" + member.discriminator
+                msg = await ctx.guild.get_channel(
+                    get_surveyr_config(ctx.guild.id, "survey_channel")
+                ).fetch_message(survey["post_id"])
+                content = msg.content.split("\n")
+                content[1] = f"**User:** {censored_member} ({member.id})"
+                await msg.edit(content="\n".join(content))
+            except KeyError:
+                await ctx.reply(content="You sent cases that exceed the actual case list.\nThese cases have been ignored.", mention_author=False)
+                break
         censored = cases if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Censored `{censored}`.", mention_author=False)
 
@@ -149,9 +157,13 @@ class Surveyr(Cog):
 
         userids = []
         for case in cases:
-            survey = get_surveys(ctx.guild.id)[str(case)]
-            if survey["type"] == "bans":
-                userids.append(str(survey["target_id"]))
+            try:
+                survey = get_surveys(ctx.guild.id)[str(case)]
+                if survey["type"] == "bans":
+                    userids.append(str(survey["target_id"]))
+            except KeyError:
+                await ctx.reply(content="You sent cases that exceed the actual case list.\nThese cases have been ignored.", mention_author=False)
+                break
         userids = list(dict.fromkeys(userids))
         with open("iddump.txt", "w") as f:
             f.write("\n".join(userids))
