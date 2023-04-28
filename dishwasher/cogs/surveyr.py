@@ -65,6 +65,23 @@ class Surveyr(Cog):
         await msg.edit(content="\n".join(content))
         await ctx.reply(content=f"Edited `#{caseid}`.")
 
+    @survey.command(aliases=["c"])
+    async def censor(self, ctx, caseid: int):
+        """[S] Censors a case."""
+        if not config_check(ctx.guild.id, "surveyr"):
+            return await ctx.reply(content=self.nocfgmsg, mention_author=False)
+        survey = get_surveys(ctx.guild.id)[str(caseid)]
+        member = await self.bot.get_user(survey["target_id"])
+        censored_member = "`" + " " * len(member.name) + "`#" + member.discriminator
+
+        msg = await ctx.guild.get_channel(
+            get_surveyr_config(ctx.guild.id, "survey_channel")
+        ).fetch_message(survey["post_id"])
+        content = msg.content.split("\n")
+        content[1] = f"**User:** {censored_member} ({member.id})\n"
+        await msg.edit(content="\n".join(content))
+        await ctx.reply(content=f"Edited `#{caseid}`.")
+
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_ready()
