@@ -152,6 +152,7 @@ class Surveyr(Cog):
             survey = get_surveys(ctx.guild.id)[str(case)]
             if survey["type"] == "bans":
                 userids.append(str(survey["target_id"]))
+        userids = list(dict.fromkeys(userids))
         with open("iddump.txt", "w") as f:
             f.write("\n".join(userids))
         await ctx.reply(file=discord.File("iddump.txt"), mention_author=False)
