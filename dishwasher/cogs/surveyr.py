@@ -4,6 +4,7 @@ from discord.ext.commands import Cog
 import json
 import config
 import datetime
+import asyncio
 from helpers.checks import check_if_staff
 from helpers.configs import get_surveyr_config, config_check
 from helpers.surveyr import surveyr_event_types, new_survey, edit_survey, get_surveys
@@ -17,6 +18,11 @@ class Surveyr(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.nocfgmsg = "Surveyr isn't set up for this server."
+        
+    @commands.command()
+    async def rtest(self, ctx):
+        async for entry in ctx.guild.audit_logs(action=discord.AuditLogAction.kick):
+            await ctx.send(f'{entry.user} kick {entry.target}')
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -70,37 +76,34 @@ class Surveyr(Cog):
             return
         survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
 
-        alog = [
-            entry
-            async for entry in member.guild.audit_logs(
-                limit=1, action=discord.AuditLogAction.kick
+        asyncio.sleep(1)
+        async for entry in ctx.guild.audit_logs(action=discord.AuditLogAction.kick):
+            cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+                seconds=5
             )
-        ]
+            if entry.target.id != member.id or entry.created_at >= cutoff_ts:
+                return
+            msg = await member.guild.get_channel(survey_channel).send(content="⌛")
 
-        cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
-            seconds=5
-        )
-        if alog[0].target.id != member.id or alog[0].created_at >= cutoff_ts:
+            reason = (
+                entry.reason
+                if entry.reason
+                else f"No reason was given, {entry.user.mention}..."
+            )
+            caseid, timestamp = new_survey(
+                member.guild.id, member.id, msg.id, alog[0].user.id, reason, "kicks"
+            )
+
+            await msg.edit(
+                content=(
+                    f"`#{caseid}` **KICK** on <t:{timestamp}:f>\n"
+                    f"**User:** {member} ({member.id})\n"
+                    f"**Staff:** {alog[0].user} ({alog[0].user.id})\n"
+                    f"**Reason:** {reason}"
+                )
+            )
+            
             return
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
-
-        reason = (
-            alog[0].reason
-            if alog[0].reason
-            else f"No reason was given, {alog[0].user.mention}..."
-        )
-        caseid, timestamp = new_survey(
-            member.guild.id, member.id, msg.id, alog[0].user.id, reason, "kicks"
-        )
-
-        await msg.edit(
-            content=(
-                f"`#{caseid}` **KICK** on <t:{timestamp}:f>\n"
-                f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {alog[0].user} ({alog[0].user.id})\n"
-                f"**Reason:** {reason}"
-            )
-        )
 
     @Cog.listener()
     async def on_member_ban(self, guild, member):
