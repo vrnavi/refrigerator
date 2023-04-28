@@ -292,6 +292,9 @@ class Logs2(Cog):
             return
 
         escaped_name = self.bot.escape_message(member)
+        cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
+            seconds=5
+        )
 
         alog = [
             entry
@@ -299,7 +302,7 @@ class Logs2(Cog):
                 limit=1, action=discord.AuditLogAction.ban
             )
         ]
-        if alog[0].target.id == member.id:
+        if alog and alog[0].created_at >= cutoff_ts and alog[0].target.id == member.id:
             return
 
         alog = [
@@ -308,49 +311,47 @@ class Logs2(Cog):
                 limit=1, action=discord.AuditLogAction.kick
             )
         ]
-        cutoff_ts = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
-            seconds=5
-        )
-        if alog[0].target.id == member.id and not alog[0].created_at >= cutoff_ts:
-            if alog[0].user.id != self.bot.user.id:
-                userlog(
-                    member.guild.id,
-                    member.id,
-                    alog[0].user,
-                    f"Kicked by external method.",
-                    "kicks",
-                )
-                if not mlog:
-                    return
-                mlog = await self.bot.fetch_channel(mlog)
-                embed = discord.Embed(
-                    color=discord.Colour.from_str("#FFFF00"),
-                    title="👢 Kick",
-                    description=f"{alog[0].target.mention} was kicked by {alog[0].user.mention} [External Method]",
-                    timestamp=datetime.datetime.now(),
-                )
-                embed.set_footer(
-                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-                )
-                embed.set_author(
-                    name=self.bot.escape_message(alog[0].target),
-                    icon_url=alog[0].target.display_avatar.url,
-                )
-                embed.add_field(
-                    name=f"👤 User",
-                    value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
-                    inline=True,
-                )
-                embed.add_field(
-                    name=f"🛠️ Staff",
-                    value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
-                    inline=True,
-                )
-                embed.add_field(
-                    name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
-                )
-                await mlog.send(embed=embed)
-            return
+        if alog and alog[0].target.id == member.id:
+            if not alog[0].created_at <= cutoff_ts:
+                if alog[0].user.id != self.bot.user.id:
+                    userlog(
+                        member.guild.id,
+                        member.id,
+                        alog[0].user,
+                        f"Kicked by external method.",
+                        "kicks",
+                    )
+                    if not mlog:
+                        return
+                    mlog = await self.bot.fetch_channel(mlog)
+                    embed = discord.Embed(
+                        color=discord.Colour.from_str("#FFFF00"),
+                        title="👢 Kick",
+                        description=f"{alog[0].target.mention} was kicked by {alog[0].user.mention} [External Method]",
+                        timestamp=datetime.datetime.now(),
+                    )
+                    embed.set_footer(
+                        text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                    )
+                    embed.set_author(
+                        name=self.bot.escape_message(alog[0].target),
+                        icon_url=alog[0].target.display_avatar.url,
+                    )
+                    embed.add_field(
+                        name=f"👤 User",
+                        value=f"**{escaped_name}**\n{alog[0].target.mention} ({alog[0].target.id})",
+                        inline=True,
+                    )
+                    embed.add_field(
+                        name=f"🛠️ Staff",
+                        value=f"**{str(alog[0].user)}**\n{alog[0].user.mention} ({alog[0].user.id})",
+                        inline=True,
+                    )
+                    embed.add_field(
+                        name=f"📝 Reason", value=f"{str(alog[0].reason)}", inline=False
+                    )
+                    await mlog.send(embed=embed)
+                return
 
         if not ulog:
             return

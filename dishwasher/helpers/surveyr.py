@@ -40,7 +40,7 @@ def new_survey(sid, uid, mid, iid, reason, event):
     cid = (
         config.guild_configs[sid]["surveyr"]["start_case"]
         if len(surveys.keys()) == 0
-        else int(surveys.keys()[-1]) + 1
+        else int(list(surveys)[-1]) + 1
     )
 
     timestamp = int(datetime.datetime.now().timestamp())
@@ -58,14 +58,14 @@ def new_survey(sid, uid, mid, iid, reason, event):
 
 
 def edit_survey(sid, cid, iid, reason, event):
-    survey = get_surveys(sid)[str(cid)]
+    survey = get_surveys(sid)
 
     sv_data = {
         "type": event,
         "reason": reason,
         "issuer_id": iid,
     }
-    for k, v in sv_data:
-        surveys[str(cid)][k] = log_data[v]
-    set_surveys(sid, json.dumps(surveys))
+    for k, v in sv_data.items():
+        survey[str(cid)][k] = v
+    set_surveys(sid, json.dumps(survey))
     return cid

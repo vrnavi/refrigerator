@@ -8,6 +8,7 @@ import config
 import random
 import discord
 import datetime
+import traceback
 from discord.ext import commands
 from helpers.userdata import get_userprefix
 
