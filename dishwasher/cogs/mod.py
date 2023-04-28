@@ -386,7 +386,7 @@ class Mod(Cog):
             ctx, str(target)
         )
 
-        await ctx.guild.unban(target_user, reason=f"[ Unban by {ctx.author} ] {reason}")
+        await ctx.guild.unban(target, reason=f"[ Unban by {ctx.author} ] {reason}")
         await ctx.send(f"{safe_name} is now UNBANNED.")
 
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
