@@ -21,7 +21,7 @@ class Surveyr(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.group(invoke_without_command=True, aliases=["s"])
-    async def survey(self, ctx, caseid: int = None):
+    async def survey(self, ctx):
         """[S] Invokes Surveyr."""
         if not config_check(ctx.guild.id, "surveyr"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
@@ -37,6 +37,28 @@ class Surveyr(Cog):
             issuer = self.bot.fetch_user(surveys[k]["issuer_id"])
             msg.append(f"`#{k}` **{event_type.upper()}** of {target} by {issuer}")
         await ctx.reply(content="\n".join(msg), mention_author=False)
+
+    @survey.command(aliases=["r"])
+    async def reason(self, ctx, caseid: int, *, reason: str):
+        """[S] Edits a case reason."""
+        if not config_check(ctx.guild.id, "surveyr"):
+            return await ctx.reply(content=self.nocfgmsg, mention_author=False)
+        survey = get_surveys(ctx.guild.id)[caseid]
+        msg = await guild.get_channel(
+            get_surveyr_config(member.guild.id, "survey_channel")
+        ).fetch_message(survey["post_id"])
+
+        edit_survey(
+            ctx.guild.id,
+            caseid,
+            survey["issuer_id"],
+            reason,
+            survey["type"],
+        )
+        content = msg.content.split("\n")
+        content[2] = f"**Staff:** {ctx.author} ({ctx.author.id})\n"
+        content[3] = f"**Reason:** {reason}"
+        await msg.edit(content=content)
 
     @Cog.listener()
     async def on_member_remove(self, member):
@@ -68,7 +90,7 @@ class Surveyr(Cog):
         )
         msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            member.guild.id, member.id, msg.id, alog[0].user, reason, "kicks"
+            member.guild.id, member.id, msg.id, alog[0].user.id, reason, "kicks"
         )
 
         await msg.edit(
@@ -101,7 +123,7 @@ class Surveyr(Cog):
         )
         msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            guild.id, member.id, msg.id, alog[0].user, reason, "bans"
+            guild.id, member.id, msg.id, alog[0].user.id, reason, "bans"
         )
 
         await msg.edit(
@@ -118,7 +140,7 @@ class Surveyr(Cog):
             await ctx.guild.get_ban(user)
         except discord.NotFound:
             reason = get_surveys(ctx.guild.id)[cid]["reason"]
-            edit_survey(guild.id, caseid, alog[0].user, reason, "softbans")
+            edit_survey(guild.id, caseid, alog[0].user.id, reason, "softbans")
             msg = await guild.get_channel(survey_channel).fetch_message(msg.id)
             content = msg.content.split("\n")
             content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>\n"

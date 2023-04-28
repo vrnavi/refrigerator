@@ -30,7 +30,7 @@ def set_surveys(serverid, contents):
         f.write(contents)
 
 
-def new_survey(sid, uid, mid, issuer, reason, event):
+def new_survey(sid, uid, mid, iid, reason, event):
     surveys = (
         get_surveys(sid)
         if os.path.exists(f"data/userlogs/{sid}/surveys.json")
@@ -49,7 +49,7 @@ def new_survey(sid, uid, mid, issuer, reason, event):
         "reason": reason,
         "timestamp": timestamp,
         "target_id": uid,
-        "issuer_id": issuer.id,
+        "issuer_id": iid,
         "post_id": mid,
     }
     surveys[str(cid)] = sv_data
@@ -57,13 +57,13 @@ def new_survey(sid, uid, mid, issuer, reason, event):
     return cid, timestamp
 
 
-def edit_survey(sid, cid, issuer, reason, event):
+def edit_survey(sid, cid, iid, reason, event):
     survey = get_surveys(sid)[str(cid)]
 
     sv_data = {
         "type": event,
         "reason": reason,
-        "issuer_id": issuer.id,
+        "issuer_id": iid,
     }
     for k, v in sv_data:
         surveys[str(cid)][k] = log_data[v]
