@@ -96,8 +96,8 @@ async def on_command(ctx):
 @bot.event
 async def on_error(event_method, *args, **kwargs):
     err_info = sys.exc_info()
-    format_args = "\n".join(repr(args)) if args else ""
-    format_kwargs = "\n".join(repr(kwargs)) if kwargs else ""
+    format_args = repr(args) if args else " "
+    format_kwargs = repr(kwargs) if kwargs else " "
     log.error(f"Error on {event_method}: {err_info}")
 
     err_embed = discord.Embed(
