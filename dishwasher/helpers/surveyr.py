@@ -5,6 +5,7 @@ import config
 
 surveyr_event_types = {
     "bans": "Ban",
+    "unban": "Unban",
     "kicks": "Kick",
     "softbans": "Softban",
 }

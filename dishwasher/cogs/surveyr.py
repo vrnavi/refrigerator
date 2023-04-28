@@ -155,7 +155,7 @@ class Surveyr(Cog):
 
             await asyncio.sleep(2)
             try:
-                await guild.get_ban(user)
+                await guild.fetch_ban(user)
             except discord.NotFound:
                 reason = get_surveys(guild.id)[cid]["reason"]
                 edit_survey(guild.id, caseid, alog[0].user.id, reason, "softbans")
@@ -163,6 +163,41 @@ class Surveyr(Cog):
                 content = msg.content.split("\n")
                 content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>\n"
                 await msg.edit(content="\n".join(content))
+
+            return
+
+    @Cog.listener()
+    async def on_member_unban(self, guild, member):
+        await self.bot.wait_until_ready()
+        if not config_check(guild.id, "surveyr") or "unbans" not in surveyr_event_types:
+            return
+        survey_channel = get_surveyr_config(guild.id, "survey_channel")
+
+        async for entry in guild.audit_logs(action=discord.AuditLogAction.unban):
+            cutoff_ts = datetime.datetime.now(
+                datetime.timezone.utc
+            ) - datetime.timedelta(seconds=5)
+            if entry.target.id != member.id or entry.created_at <= cutoff_ts:
+                return
+            msg = await guild.get_channel(survey_channel).send(content="⌛")
+
+            reason = (
+                entry.reason
+                if entry.reason
+                else f"No reason was given, {entry.user.mention}..."
+            )
+            caseid, timestamp = new_survey(
+                guild.id, member.id, msg.id, entry.user.id, reason, "unbans"
+            )
+
+            await msg.edit(
+                content=(
+                    f"`#{caseid}` **UNBAN** on <t:{timestamp}:f>\n"
+                    f"**User:** {member} ({member.id})\n"
+                    f"**Staff:** {entry.user} ({entry.user.id})\n"
+                    f"**Reason:** {reason}"
+                )
+            )
 
             return
 
