@@ -155,7 +155,7 @@ class Surveyr(Cog):
 
             await asyncio.sleep(2)
             try:
-                await guild.fetch_ban(user)
+                await guild.fetch_ban(member)
             except discord.NotFound:
                 reason = get_surveys(guild.id)[cid]["reason"]
                 edit_survey(guild.id, caseid, entry.user.id, reason, "softbans")
