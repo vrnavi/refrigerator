@@ -157,7 +157,7 @@ class Surveyr(Cog):
             try:
                 await guild.fetch_ban(member)
             except discord.NotFound:
-                reason = get_surveys(guild.id)[caseid]["reason"]
+                reason = get_surveys(guild.id)[str(caseid)]["reason"]
                 edit_survey(guild.id, caseid, entry.user.id, reason, "softbans")
                 msg = await guild.get_channel(survey_channel).fetch_message(msg.id)
                 content = msg.content.split("\n")
