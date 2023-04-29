@@ -168,9 +168,10 @@ class Messagescan(Cog):
                 # Prepare embed msg
                 embed = discord.Embed(
                     color=rcvmessage.author.color,
-                    description=f">>> {rcvmessage.clean_content}",
                     timestamp=rcvmessage.created_at,
                 )
+                if rcvmessage.clean_content:
+                    embed.description = f">>> {rcvmessage.clean_content}"
                 embed.set_footer(
                     text=f"Quoted by {message.author}",
                     icon_url=message.author.display_avatar.url,
