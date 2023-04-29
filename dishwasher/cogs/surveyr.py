@@ -206,7 +206,6 @@ class Surveyr(Cog):
         await ctx.reply(content=f"Uncensored `{uncensored}`.", mention_author=False)
 
     @commands.guild_only()
-    @commands.check(check_if_staff)
     @commands.command(aliases=["d"])
     async def dump(self, ctx, caseids: str):
         """[S] Dumps userids from cases."""
