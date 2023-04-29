@@ -260,7 +260,7 @@ class Basic(Cog):
 
     @commands.guild_only()
     @commands.group(invoke_without_command=True)
-    async def info(self, ctx, target: discord.User = None):
+    async def info(self, ctx, *, target: discord.User = None):
         """[S] Gets full user info."""
         if target == None:
             target = ctx.author
@@ -326,7 +326,7 @@ class Basic(Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @info.command()
-    async def role(self, ctx, role: discord.Role = None):
+    async def role(self, ctx, *, role: discord.Role = None):
         """[S] Gets full role info."""
         if role == None:
             role = ctx.guild.default_role
@@ -358,7 +358,7 @@ class Basic(Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @info.command(aliases=["guild"])
-    async def server(self, ctx, server: discord.Guild = None):
+    async def server(self, ctx, *, server: discord.Guild = None):
         """[S] Gets full server info."""
         if server == None:
             server = ctx.guild
