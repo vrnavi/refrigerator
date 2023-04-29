@@ -38,7 +38,7 @@ class Surveyr(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.group(invoke_without_command=True, aliases=["s"])
+    @commands.command(invoke_without_command=True, aliases=["s"])
     async def survey(self, ctx):
         """[S] Invokes Surveyr."""
         if not config_check(ctx.guild.id, "surveyr"):
@@ -59,7 +59,9 @@ class Surveyr(Cog):
             mention_author=False,
         )
 
-    @survey.command(aliases=["r"])
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command(aliases=["r"])
     async def reason(self, ctx, caseids: str, *, reason: str):
         """[S] Edits case reasons."""
         if not config_check(ctx.guild.id, "surveyr"):
@@ -110,7 +112,9 @@ class Surveyr(Cog):
         edited = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Edited `{edited}`.", mention_author=False)
 
-    @survey.command(aliases=["c"])
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command(aliases=["c"])
     async def censor(self, ctx, caseids: str):
         """[S] Censors cases."""
         if not config_check(ctx.guild.id, "surveyr"):
@@ -156,7 +160,9 @@ class Surveyr(Cog):
         censored = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Censored `{censored}`.", mention_author=False)
 
-    @survey.command(aliases=["u"])
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command(aliases=["u"])
     async def uncensor(self, ctx, caseids: str):
         """[S] Uncensors cases."""
         if not config_check(ctx.guild.id, "surveyr"):
@@ -199,7 +205,9 @@ class Surveyr(Cog):
         uncensored = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Uncensored `{uncensored}`.", mention_author=False)
 
-    @survey.command(aliases=["d"])
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command(aliases=["d"])
     async def dump(self, ctx, caseids: str):
         """[S] Dumps userids from cases."""
         if not config_check(ctx.guild.id, "surveyr"):
