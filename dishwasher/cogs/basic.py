@@ -303,26 +303,25 @@ class Basic(Cog):
             except:
                 emoji = ""
             try:
-                if target.activity.details is not None:
-                    details = (
-                        f"\n{target.activity.details}"
-                        if target.activity.details is not None
-                        else ""
-                    )
+                details = (
+                    f"\n{target.activity.details}"
+                    if target.activity.details is not None
+                    else ""
+                )
             except:
                 details = ""
             try:
-                if target.activity.name is not None:
-                    name = (
-                        f"{target.activity.name}"
-                        if target.activity.name is not None
-                        else ""
-                    )
+                name = (
+                    f"{target.activity.name}"
+                    if target.activity.name is not None
+                    else ""
+                )
             except:
                 name = ""
-            embed.add_field(
-                name="💭 Status:", value=f"{emoji}{name}{details}", inline=False
-            )
+            if emoji or name or details:
+                embed.add_field(
+                    name="💭 Status:", value=f"{emoji}{name}{details}", inline=False
+                )
             roles = []
             if target.roles:
                 for index, role in enumerate(target.roles):
