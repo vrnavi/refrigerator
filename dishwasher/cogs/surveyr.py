@@ -31,7 +31,7 @@ class Surveyr(Cog):
                 if len(cases.split("-")) != 2:
                     return None
                 elif cases.split("-")[1] == "l":
-                    return range(int(cases.split("-")[0]), int(reversed(surveys)[0]))
+                    return range(int(cases.split("-")[0]), int(list(reversed(surveys))[0]))
                 return range(int(cases.split("-")[0]), int(cases.split("-")[1]) + 1)
             except:
                 return None
