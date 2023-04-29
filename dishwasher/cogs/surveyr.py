@@ -23,15 +23,15 @@ class Surveyr(Cog):
 
     def case_handler(self, cases, surveys):
         if cases.isdigit():
-            return [cases]
+            return [int(cases)]
         elif cases == "l":
-            return [list(reversed(surveys))[0]]
+            return [int(list(surveys)[-1])]
         else:
             try:
                 if len(cases.split("-")) != 2:
                     return None
                 elif cases.split("-")[1] == "l":
-                    return range(int(cases.split("-")[0]), int(list(reversed(surveys))[0]))
+                    return range(int(cases.split("-")[0]), int(list(surveys)[-1]) + 1)
                 return range(int(cases.split("-")[0]), int(cases.split("-")[1]) + 1)
             except:
                 return None
