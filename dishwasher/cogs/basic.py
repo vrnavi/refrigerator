@@ -295,18 +295,29 @@ class Basic(Cog):
                 inline=True,
             )
             try:
-                if target.activity.emoji is not None:
-                    emoji = f"{target.activity.emoji} "
+                emoji = (
+                    f"{target.activity.emoji} "
+                    if target.activity.emoji is not None
+                    else ""
+                )
             except:
                 emoji = ""
             try:
                 if target.activity.details is not None:
-                    details = f"\n{target.activity.details}"
+                    details = (
+                        f"\n{target.activity.details}"
+                        if target.activity.details is not None
+                        else ""
+                    )
             except:
                 details = ""
             try:
                 if target.activity.name is not None:
-                    name = f"{target.activity.name}"
+                    name = (
+                        f"{target.activity.name}"
+                        if target.activity.name is not None
+                        else ""
+                    )
             except:
                 name = ""
             embed.add_field(
