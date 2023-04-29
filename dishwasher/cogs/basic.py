@@ -313,11 +313,14 @@ class Basic(Cog):
                 name="💭 Status:", value=f"{emoji}{name}{details}", inline=False
             )
             roles = []
-            for index, role in enumerate(target.roles):
-                if role.name == "@everyone":
-                    continue
-                roles.append("<@&" + str(role.id) + ">")
-                rolelist = ",".join(reversed(roles))
+            if target.roles:
+                for index, role in enumerate(target.roles):
+                    if role.name == "@everyone":
+                        continue
+                    roles.append("<@&" + str(role.id) + ">")
+                    rolelist = ",".join(reversed(roles))
+            else:
+                rolelist = "None"
             embed.add_field(name=f"🎨 Roles:", value=f"{rolelist}", inline=False)
 
         await ctx.reply(embed=embed, mention_author=False)

@@ -120,9 +120,7 @@ async def on_error(event_method, *args, **kwargs):
         split_msg = list(
             [err_info[i : i + 1020] for i in range(0, len(err_info), 1020)]
         )
-        err_embed.description = (
-            f"An error occurred...\n```{event_method}```"
-        )
+        err_embed.description = f"An error occurred...\n```{event_method}```"
         ctr = 1
         for f in split_msg:
             err_embed.add_field(
