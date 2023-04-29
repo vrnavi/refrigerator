@@ -30,6 +30,8 @@ class Surveyr(Cog):
             try:
                 if len(cases.split("-")) != 2:
                     return None
+                elif cases.split("-")[1] == "l":
+                    return range(int(cases.split("-")[0]), int((reversed(surveys))[0]))
                 return range(int(cases.split("-")[0]), int(cases.split("-")[1]) + 1)
             except:
                 return None
@@ -153,6 +155,49 @@ class Surveyr(Cog):
                 break
         censored = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
         await ctx.reply(content=f"Censored `{censored}`.", mention_author=False)
+
+    @survey.command(aliases=["u"])
+    async def uncensor(self, ctx, caseids: str):
+        """[S] Uncensors cases."""
+        if not config_check(ctx.guild.id, "surveyr"):
+            return await ctx.reply(content=self.nocfgmsg, mention_author=False)
+        cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
+        if not cases:
+            return await ctx.reply(content="Malformed cases.", mention_author=False)
+        if len(cases) > 20:
+            warningmsg = await ctx.reply(
+                f"You are trying to uncensor `{len(cases)}` cases. **That's more than `20`.**\nIf you're sure about that, please tick the box within ten seconds to proceed.",
+                mention_author=False,
+            )
+            await warningmsg.add_reaction("✅")
+
+            def check(r, u):
+                return u.id == ctx.author.id and str(r.emoji) == "✅"
+
+            try:
+                await self.bot.wait_for("reaction_add", timeout=10.0, check=check)
+            except asyncio.TimeoutError:
+                await warningmsg.edit(content="Operation timed out.", delete_after=5)
+                return
+
+        for case in cases:
+            try:
+                survey = get_surveys(ctx.guild.id)[str(case)]
+                member = await self.bot.fetch_user(survey["target_id"])
+                msg = await ctx.guild.get_channel(
+                    get_surveyr_config(ctx.guild.id, "survey_channel")
+                ).fetch_message(survey["post_id"])
+                content = msg.content.split("\n")
+                content[1] = f"**User:** {member} ({member.id})"
+                await msg.edit(content="\n".join(content))
+            except KeyError:
+                await ctx.reply(
+                    content="You sent cases that exceed the actual case list.\nThese cases have been ignored.",
+                    mention_author=False,
+                )
+                break
+        uncensored = int(cases[0]) if len(cases) == 1 else f"{cases[0]}-{cases[-1]}"
+        await ctx.reply(content=f"Uncensored `{uncensored}`.", mention_author=False)
 
     @survey.command(aliases=["d"])
     async def dump(self, ctx, caseids: str):
