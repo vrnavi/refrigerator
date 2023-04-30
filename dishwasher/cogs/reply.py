@@ -19,7 +19,9 @@ class Reply(Cog):
         self.previous_eval_code = None
 
     async def handle_message_with_reference(self, message):
-        reference_message = await message.channel.fetch_message(message.reference.message_id)
+        reference_message = await message.channel.fetch_message(
+            message.reference.message_id
+        )
         reference_author = reference_message.author
         if (
             message.author.bot
