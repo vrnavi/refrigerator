@@ -3,6 +3,7 @@ from typing import Dict
 import discord
 import config
 from discord.ext import commands
+from helpers.configs import get_misc_config
 
 
 class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
@@ -28,8 +29,8 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         if not burst or not guild_id:
             return
 
-        # Ignore not whitelisted guilds
-        if int(guild_id) not in config.guild_configs:
+        # Ignore not configured guilds
+        if not get_misc_config(guild_id, "burstreacts_enable"):
             return
 
         guild = self.bot.get_guild(int(guild_id))

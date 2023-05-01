@@ -294,7 +294,7 @@ class Messagescan(Cog):
             out_name = "English"
         elif output.detected_source_lang == "PT":
             out_flag = "🇵🇹"
-            out_name= "Portuguese"
+            out_name = "Portuguese"
         else:
             for v in self.langs:
                 if self.langs[v]["code"] == output.detected_source_lang:
