@@ -289,10 +289,17 @@ class Messagescan(Cog):
             reaction.message.clean_content,
             target_lang=self.langs[str(reaction)]["code"],
         )
-        for v in self.langs:
-            if self.langs[v]["code"] == output.detected_source_lang:
-                out_flag = v
-                out_name = self.langs[v]["name"]
+        if output.detected_source_lang == "EN":
+            out_flag = "🇺🇸"
+            out_name = "English"
+        elif output.detected_source_lang == "PT":
+            out_flag = "🇵🇹"
+            out_name= "Portuguese"
+        else:
+            for v in self.langs:
+                if self.langs[v]["code"] == output.detected_source_lang:
+                    out_flag = v
+                    out_name = self.langs[v]["name"]
 
         embed = discord.Embed(
             color=reaction.message.author.color,
