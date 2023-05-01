@@ -274,13 +274,12 @@ class Messagescan(Cog):
         await self.bot.wait_until_ready()
         if (
             user.bot
-            or reaction.is_custom_emoji
             or str(reaction) not in self.langs
             or not get_misc_config(reaction.message.guild.id, "translate_enable")
         ):
             return
         
-        translation = deepl.Translator(config.deepl_key)
+        translation = deepl.Translator(config.deepl_key, send_platform_info=False)
         if translation.get_usage().any_limit_reached:
             await reaction.message.channel.send(
                 content="Unable to translate message: monthly limit reached."
