@@ -1,10 +1,13 @@
 import re
+import config
 import discord
 import datetime
 import asyncio
+import deepl
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
 from helpers.checks import check_if_staff, check_if_bot_manager
+from helpers.configs import get_misc_config
 
 
 class Messagescan(Cog):
@@ -21,6 +24,39 @@ class Messagescan(Cog):
         self.prevmessages = {}
         self.prevedit_before = {}
         self.prevedit_after = {}
+        self.langs = {
+            "🇧🇬": {"name": "Bulgarian", "code": "BG"},
+            "🇨🇿": {"name": "Czech", "code": "CS"},
+            "🇩🇰": {"name": "Danish", "code": "DA"},
+            "🇩🇪": {"name": "German", "code": "DE"},
+            "🇬🇷": {"name": "Greek", "code": "EL"},
+            "🇬🇧": {"name": "British English", "code": "EN-GB"},
+            "🇺🇸": {"name": "American English", "code": "EN-US"},
+            "🇪🇸": {"name": "Spanish", "code": "ES"},
+            "🇪🇪": {"name": "Estonian", "code": "ET"},
+            "🇫🇮": {"name": "Finnish", "code": "FI"},
+            "🇫🇷": {"name": "French", "code": "FR"},
+            "🇭🇺": {"name": "Hungarian", "code": "HU"},
+            "🇮🇩": {"name": "Indonesian", "code": "ID"},
+            "🇮🇹": {"name": "Italian", "code": "IT"},
+            "🇯🇵": {"name": "Japanese", "code": "JA"},
+            "🇰🇷": {"name": "Korean", "code": "KO"},
+            "🇱🇹": {"name": "Lithuanian", "code": "LT"},
+            "🇱🇻": {"name": "Latvian", "code": "LV"},
+            "🇳🇴": {"name": "Norwegian", "code": "NB"},
+            "🇳🇱": {"name": "Dutch", "code": "NL"},
+            "🇵🇱": {"name": "Polish", "code": "PL"},
+            "🇧🇷": {"name": "Brazilian Portugese", "code": "PT-BR"},
+            "🇵🇹": {"name": "Portugese", "code": "PT-PT"},
+            "🇷🇴": {"name": "Romanian", "code": "RO"},
+            "🇷🇺": {"name": "Russian", "code": "RU"},
+            "🇸🇰": {"name": "Slovak", "code": "SK"},
+            "🇸🇮": {"name": "Slovenian", "code": "SL"},
+            "🇸🇪": {"name": "Swedish", "code": "SV"},
+            "🇹🇷": {"name": "Turkish", "code": "TR"},
+            "🇺🇦": {"name": "Ukrainian", "code": "UK"},
+            "🇨🇳": {"name": "Simplified Chinese", "code": "ZH"},
+        }
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -137,6 +173,7 @@ class Messagescan(Cog):
             not message.content
             or message.author.bot
             or not message.channel.permissions_for(message.author).embed_links
+            or not get_misc_config(message.guild.id, "embed_enable")
         ):
             return
 
@@ -231,6 +268,55 @@ class Messagescan(Cog):
 
         self.prevedit_before[message_after.channel.id] = message_before
         self.prevedit_after[message_after.channel.id] = message_after
+
+    @Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        await self.bot.wait_until_ready()
+        if (
+            user.bot
+            or reaction.is_custom_emoji
+            or not get_misc_config(reaction.message.guild.id, "translate_enable")
+        ):
+            return
+        if reaction.emoji in self.langs:
+            translation = deepl.Translator(config.deepl_key)
+            if translation.get_usage().any_limit_reached:
+                await reaction.message.channel.send(
+                    content="Unable to translate message: monthly limit reached."
+                )
+                return
+            output = translation.translate_text(
+                reaction.message.clean_content,
+                target_lang=self.langs[reaction.emoji]["code"],
+            )
+            for v in self.langs:
+                if self.langs[v]["code"] == output.detected_source_lang:
+                    out_flag = v
+                    out_name = self.langs[v]["name"]
+
+            embed = discord.Embed(
+                color=reaction.message.author.color,
+                descrption=output.text,
+                timestamp=reaction.message.created_at,
+            )
+            embed.set_footer(
+                text=f"Translated from {out_flag} {out_name} by {user}",
+                icon_url=user.display_avatar.url,
+            )
+            embed.set_author(
+                name=f"💬 {reaction.message.author} said in #{reaction.message.channel.name}...",
+                icon_url=reaction.message.author.display_avatar.url,
+                url=reaction.message.jump_url,
+            )
+            # Use a single image from post for now.
+            if (
+                reaction.message.attachments
+                and reaction.message.attachments[0].content_type[:6] == "image/"
+            ):
+                embed.set_image(url=reaction.message.attachments[0].url)
+            elif reaction.message.embeds and reaction.message.embeds[0].image:
+                embed.set_image(url=reaction.message.embeds[0].image.url)
+            await reaction.message.channel.send(embed=embed)
 
 
 async def setup(bot: Bot):

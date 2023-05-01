@@ -253,7 +253,7 @@ class Basic(Cog):
         elif type(target) == discord.Member:
             memberidx = members.index(target) + 1
         else:
-            memberidx = joinscore
+            memberidx = target
         message = ""
         for idx, m in enumerate(members):
             if memberidx - 6 <= idx <= memberidx + 4:

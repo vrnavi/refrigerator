@@ -128,8 +128,10 @@ guild_configs = {
             "cotd_name": "Fluctuating Phosphor",
             # [cogs.reply] No Reply Pings role.
             "noreply_role": 1059460475588448416,
-            # [cogs.messagescan] Messagescan enabled?
-            "messagescan_enable": True,
+            # [cogs.messagescan] Embedding fixes enabled?
+            "embed_enable": True,
+            # [cogs.messagescan] Translation enabled?
+            "translate_enable": True,
             # [cogs.burstreacts] Burstreacts enabled?
             "burstreacts_enable": True,
         },
