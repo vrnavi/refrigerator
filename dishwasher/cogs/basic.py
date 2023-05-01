@@ -245,7 +245,7 @@ class Basic(Cog):
 
     @commands.guild_only()
     @commands.command(aliases=["joinscore"])
-    async def joinorder(self, ctx, target: typing[discord.Member, int] = None):
+    async def joinorder(self, ctx, target: typing.Union[discord.Member, int] = None):
         """[U] Shows the joinorder of a user."""
         members = sorted(ctx.guild.members, key=lambda v: v.joined_at)
         if not target:
