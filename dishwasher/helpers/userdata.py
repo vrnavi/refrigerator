@@ -26,6 +26,6 @@ def fill_userdata(userid):
     if uid not in userdata:
         userdata[uid] = {
             "prefixes": [],
-            "timezone": False,
+            "timezone": None,
         }
     return userdata, uid

@@ -18,32 +18,37 @@ class usertime(Cog):
         Timezones must be supplied the IANA tzdb (i.e. America/Chicago) format.
         """
 
+        userdata, uid = fill_userdata(ctx.author.id)
         if timezone == None:
             await ctx.reply(
-                content="You need to enter a timezone. Don't know what yours is? Check this list.\nhttps://en.wikipedia.org/wiki/List_of_tz_database_time_zones\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`.",
+                content=f"Your timezone is `{'not set' if not userdata[uid]['timezone'] else userdata[uid]['timezone']}`.\n"
+                "To change this, enter a timezone. Check the list below if you don't know what yours is.\n"
+                "<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>\n"
+                "You can also use your GMT offset with the following format: `Etc/GMT<offset>`. For example, `Etc/GMT+5`.",
                 mention_author=False,
             )
             return
-
-        if timezone not in available_timezones():
-            await ctx.send(
-                "Invalid timezone provided. Please provide a timezone in the `America/Chicago` format.\nIf you don't know what yours is, please check the following list.\n<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>\n\nYou can also use your GMT offset with the following format: `Etc/GMT<offset>`. For example, `Etc/GMT+5`."
+        elif timezone not in available_timezones():
+            await ctx.reply(
+                content="Invalid timezone provided. Please provide a timezone in the `America/Chicago` format.\n"
+                "If you don't know what yours is, please check the following list.\n"
+                "<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>\n"
+                "You can also use your GMT offset with the following format: `Etc/GMT<offset>`. For example, `Etc/GMT+5`.",
+                mention_author=False,
             )
             return
-
-        userdata, uid = fill_userdata(ctx.author.id)
-        userdata[uid]["timezone"] = timezone
-
-        set_userdata(json.dumps(userdata))
-        await ctx.reply(
-            f"Your timezone has been set to `{timezone}`.", mention_author=False
-        )
+        else:
+            userdata[uid]["timezone"] = timezone
+            set_userdata(json.dumps(userdata))
+            await ctx.reply(
+                f"Your timezone has been set to `{timezone}`.", mention_author=False
+            )
 
     @commands.command(aliases=["tf"])
     async def timefor(self, ctx: Context, target: Member = None):
         """Send the current time in the invoker's (or mentioned user's) time zone."""
         userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
-        if userdata[uid]["timezone"] is False:
+        if not userdata[uid]["timezone"]:
             await ctx.send(
                 "I have no idea what time it is for you. You can set your timezone with `timezone`."
                 if not target
