@@ -278,7 +278,7 @@ class Messagescan(Cog):
             or not get_misc_config(reaction.message.guild.id, "translate_enable")
         ):
             return
-        
+
         translation = deepl.Translator(config.deepl_key, send_platform_info=False)
         if translation.get_usage().any_limit_reached:
             await reaction.message.channel.send(
@@ -296,7 +296,7 @@ class Messagescan(Cog):
 
         embed = discord.Embed(
             color=reaction.message.author.color,
-            descrption=output.text,
+            description=output.text,
             timestamp=reaction.message.created_at,
         )
         embed.set_footer(
