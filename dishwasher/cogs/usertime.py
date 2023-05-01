@@ -42,20 +42,18 @@ class usertime(Cog):
     @commands.command(aliases=["tf"])
     async def timefor(self, ctx: Context, target: Member = None):
         """Send the current time in the invoker's (or mentioned user's) time zone."""
-        target_is_invoker = target is None
-
-        userdata, uid = fill_userdata(ctx.author.id if target_is_invoker else target.id)
+        userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
         if userdata[uid]["timezone"] is False:
             await ctx.send(
                 "I have no idea what time it is for you. You can set your timezone with `timezone`."
-                if target_is_invoker
+                if not target
                 else f"I don't know what time it is for {target.display_name}."
             )
             return
 
         now = datetime.now(ZoneInfo(userdata[uid]["timezone"]))
         await ctx.send(
-            f"{'Your' if target_is_invoker else 'Their'} current time is `{now.strftime('%H:%M, %Y-%m-%d')}`"
+            f"{'Your' if not target else 'Their'} current time is `{now.strftime('%H:%M, %Y-%m-%d')}`"
         )
 
 
