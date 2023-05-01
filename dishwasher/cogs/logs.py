@@ -42,12 +42,14 @@ class Logs2(Cog):
         escaped_name = self.bot.escape_message(member)
 
         # Attempt to correlate the user joining with an invite
-        if not os.path.exists(f"data/userlogs/{member.guild.id}/invites.json"):
-            if not os.path.exists(f"data/userlogs/{member.guild.id}"):
-                os.makedirs(f"data/userlogs/{member.guild.id}")
-            with open(f"data/userlogs/{member.guild.id}/invites.json", "w") as f:
+        if not os.path.exists(f"{self.bot.server_data}/{member.guild.id}/invites.json"):
+            if not os.path.exists(f"{self.bot.server_data}/{member.guild.id}"):
+                os.makedirs(f"{self.bot.server_data}/{member.guild.id}")
+            with open(
+                f"{self.bot.server_data}/{member.guild.id}/invites.json", "w"
+            ) as f:
                 f.write("{}")
-        with open(f"data/userlogs/{member.guild.id}/invites.json", "r") as f:
+        with open(f"{self.bot.server_data}/{member.guild.id}/invites.json", "r") as f:
             invites = json.load(f)
 
         real_invites = await member.guild.invites()
@@ -82,7 +84,7 @@ class Logs2(Cog):
             del invites[id]
 
         # Save invites data.
-        with open(f"data/userlogs/{member.guild.id}/invites.json", "w") as f:
+        with open(f"{self.bot.server_data}/{member.guild.id}/invites.json", "w") as f:
             f.write(json.dumps(invites))
 
         # Prepare the invite correlation message

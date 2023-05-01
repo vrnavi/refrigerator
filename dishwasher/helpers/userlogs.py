@@ -9,32 +9,33 @@ userlog_event_types = {
     "tosses": "Toss",
     "notes": "Note",
 }
+server_data = "data/servers"
 
 
 def make_userlog(serverid):
-    if not os.path.exists(f"data/userlogs/{serverid}"):
-        os.makedirs(f"data/userlogs/{serverid}")
-    with open(f"data/userlogs/{serverid}/userlog.json", "w") as f:
+    if not os.path.exists(f"{server_data}/{serverid}"):
+        os.makedirs(f"{server_data}/{serverid}")
+    with open(f"{server_data}/{serverid}/userlog.json", "w") as f:
         f.write("{}")
         return json.loads("{}")
 
 
 def get_userlog(serverid):
-    if not os.path.exists(f"data/userlogs/{serverid}/userlog.json"):
+    if not os.path.exists(f"{server_data}/{serverid}/userlog.json"):
         userlogs = make_userlog(serverid)
-    with open(f"data/userlogs/{serverid}/userlog.json", "r") as f:
+    with open(f"{server_data}/{serverid}/userlog.json", "r") as f:
         return json.load(f)
 
 
 def set_userlog(serverid, contents):
-    with open(f"data/userlogs/{serverid}/userlog.json", "w") as f:
+    with open(f"{server_data}/{serverid}/userlog.json", "w") as f:
         f.write(contents)
 
 
 def fill_userlog(serverid, userid):
     userlogs = (
         get_userlog(serverid)
-        if os.path.exists(f"data/userlogs/{serverid}/userlog.json")
+        if os.path.exists(f"{server_data}/{serverid}/userlog.json")
         else make_userlog(serverid)
     )
     uid = str(userid)

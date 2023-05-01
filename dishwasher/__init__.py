@@ -36,6 +36,7 @@ wanted_jsons = [
     "data/dishtimers.json",
     "data/userdata.json",
 ]
+server_data = "data/servers"
 
 intents = discord.Intents.all()
 intents.typing = False
@@ -50,6 +51,7 @@ bot.help_command = None
 bot.log = log
 bot.config = config
 bot.wanted_jsons = wanted_jsons
+bot.server_data = server_data
 
 
 @bot.event
@@ -250,8 +252,8 @@ async def on_message(message):
 if not os.path.exists("data"):
     os.makedirs("data")
 
-if not os.path.exists("data/userlogs"):
-    os.makedirs("data/userlogs")
+if not os.path.exists(server_data):
+    os.makedirs(server_data)
 
 for wanted_json in wanted_jsons:
     if not os.path.exists(wanted_json):

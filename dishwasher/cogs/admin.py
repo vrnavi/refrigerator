@@ -67,7 +67,7 @@ class Admin(Cog):
         if not server:
             server = ctx.guild
         try:
-            udata = discord.File(f"data/userlogs/{server.id}/userlog.json")
+            udata = discord.File(f"{self.bot.server_data}/{server.id}/userlog.json")
             await ctx.message.reply(
                 content=f"{server.name}'s userlog file...",
                 file=udata,
@@ -90,10 +90,10 @@ class Admin(Cog):
                 content="You need to supply the userlog file.", mention_author=False
             )
             return
-        if not os.path.exists(f"data/userlogs/{server.id}"):
-            os.makedirs(f"data/userlogs/{server.id}")
+        if not os.path.exists(f"{self.bot.server_data}/{server.id}"):
+            os.makedirs(f"{self.bot.server_data}/{server.id}")
         file = ctx.message.attachments[0]
-        await file.save(f"data/userlogs/{server.id}/userlog.json")
+        await file.save(f"{self.bot.server_data}/{server.id}/userlog.json")
         await ctx.reply(
             content=f"{server.name}'s userlog file saved.", mention_author=False
         )

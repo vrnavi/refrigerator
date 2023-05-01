@@ -9,32 +9,33 @@ surveyr_event_types = {
     "kicks": "Kick",
     "softbans": "Softban",
 }
+server_data = "data/servers"
 
 
 def make_surveys(serverid):
-    if not os.path.exists(f"data/userlogs/{serverid}"):
-        os.makedirs(f"data/userlogs/{serverid}")
-    with open(f"data/userlogs/{serverid}/surveys.json", "w") as f:
+    if not os.path.exists(f"{server_data}/{serverid}"):
+        os.makedirs(f"{server_data}/{serverid}")
+    with open(f"{server_data}/{serverid}/surveys.json", "w") as f:
         f.write("{}")
     return json.loads("{}")
 
 
 def get_surveys(serverid):
-    if not os.path.exists(f"data/userlogs/{serverid}/userlog.json"):
-        userlogs = make_userlog(serverid)
-    with open(f"data/userlogs/{serverid}/surveys.json", "r") as f:
+    if not os.path.exists(f"{server_data}/{serverid}/surveys.json"):
+        make_surveys(serverid)
+    with open(f"{server_data}/{serverid}/surveys.json", "r") as f:
         return json.load(f)
 
 
 def set_surveys(serverid, contents):
-    with open(f"data/userlogs/{serverid}/surveys.json", "w") as f:
+    with open(f"{server_data}/{serverid}/surveys.json", "w") as f:
         f.write(contents)
 
 
 def new_survey(sid, uid, mid, iid, reason, event):
     surveys = (
         get_surveys(sid)
-        if os.path.exists(f"data/userlogs/{sid}/surveys.json")
+        if os.path.exists(f"{server_data}/{sid}/surveys.json")
         else make_surveys(sid)
     )
 
