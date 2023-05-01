@@ -421,7 +421,7 @@ class Logs2(Cog):
             nick_changed = True
 
         if name_changed or nick_changed or role_changed:
-            make_embed(
+            embed = make_embed(
                 self.bot,
                 "mem_update",
                 member_before=member_before,
