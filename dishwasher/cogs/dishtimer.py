@@ -174,7 +174,7 @@ class Dishtimer(Cog):
             shutil.make_archive("data/serverdata_backup", "zip", self.bot.server_data)
             for m in config.bot_managers:
                 await self.bot.get_user(m).send(
-                    content="Daily userlog backups:",
+                    content="Daily serverdata backups:",
                     file=discord.File("data/serverdata_backup.zip"),
                 )
             os.remove("data/serverdata_backup.zip")
