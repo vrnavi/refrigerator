@@ -4,11 +4,19 @@ import datetime
 
 header_types = {
     "msg_delete": "🗑️ Message Delete",
+    "mem_join": "📥 User Joined",
     "mem_remove": "📥 User Left",
     "mem_ban": "⛔ Ban",
     "mem_unban": "🎁 Unban",
     "mem_update": "ℹ️ Member Update",
     "mem_kick": "👢 Kick",
+    "serv_update": "🏡 Server Update",
+    "channel_create": "🏠 Channel Created",
+    "channel_delete": "🏚️ Channel Deleted",
+    "channel_update": "🏘️ Channel Update",
+    "role_create": "🏷️ Role Created",
+    "role_delete": "🔥 Role Deleted",
+    "role_update": "🖋️ Role Update",
 }
 
 
@@ -74,6 +82,22 @@ def make_embed(bot, kind, **kwargs):
             value=f"```{message.jump_url}```",
             inline=False,
         )
+    elif kind == "mem_join":
+        member = kwargs.get("member", None)
+        inv_used = kwargs.get("invite", None)
+        embed.color = discord.Color.lighter_gray()
+        embed.description = f"{member.mention} ({member.id})"
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_author(
+            name=member,
+            icon_url=member.display_avatar.url,
+        )
+        embed.add_field(
+            name="⏰ Account created:",
+            value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
+            inline=True,
+        )
+        embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
     elif kind == "mem_remove":
         member = kwargs.get("member", None)
         embed.color = discord.Color.darker_gray()
