@@ -18,6 +18,10 @@ embed_desc = (
     "[robocop-ng](https://github.com/reswitched/robocop-ng)."
 )
 
+# [cogs.prefixes] The maximum number of prefixes allowed.
+# MUST be 24 or under.
+maxprefixes = 6
+
 # The cogs the bot will load on startup.
 initial_cogs = [
     "cogs.common",
@@ -49,8 +53,9 @@ initial_cogs = [
     "cogs.burstreacts",
 ]
 
-# == cogs.prefixes maximum prefixes. ==
-maxprefixes = 6  # !max of 24!
+# This section is for various API keys.
+# [cogs.messagescan] DeepL Translator API key.
+deepl_key = "key_goes_here"
 
 # Specific server configuration.
 guild_configs = {

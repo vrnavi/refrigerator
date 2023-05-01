@@ -4,6 +4,7 @@ import discord
 import os
 import matplotlib
 import matplotlib.pyplot as plt
+import typing
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
@@ -244,11 +245,16 @@ class Basic(Cog):
 
     @commands.guild_only()
     @commands.command(aliases=["joinscore"])
-    async def joinorder(self, ctx, joinscore: int = None):
+    async def joinorder(self, ctx, target: typing[discord.Member, int] = None):
         """[U] Shows the joinorder of a user."""
         members = sorted(ctx.guild.members, key=lambda v: v.joined_at)
+        if not target:
+            memberidx = members.index(ctx.author) + 1
+        elif type(target) == discord.Member:
+            memberidx = members.index(target) + 1
+        else:
+            memberidx = joinscore
         message = ""
-        memberidx = joinscore if joinscore else members.index(ctx.author) + 1
         for idx, m in enumerate(members):
             if memberidx - 6 <= idx <= memberidx + 4:
                 message = (
