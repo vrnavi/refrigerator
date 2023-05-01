@@ -275,48 +275,49 @@ class Messagescan(Cog):
         if (
             user.bot
             or reaction.is_custom_emoji
+            or str(reaction) not in self.langs
             or not get_misc_config(reaction.message.guild.id, "translate_enable")
         ):
             return
-        if str(reaction) in self.langs:
-            translation = deepl.Translator(config.deepl_key)
-            if translation.get_usage().any_limit_reached:
-                await reaction.message.channel.send(
-                    content="Unable to translate message: monthly limit reached."
-                )
-                return
-            output = translation.translate_text(
-                reaction.message.clean_content,
-                target_lang=self.langs[str(reaction)]["code"],
+        
+        translation = deepl.Translator(config.deepl_key)
+        if translation.get_usage().any_limit_reached:
+            await reaction.message.channel.send(
+                content="Unable to translate message: monthly limit reached."
             )
-            for v in self.langs:
-                if self.langs[v]["code"] == output.detected_source_lang:
-                    out_flag = v
-                    out_name = self.langs[v]["name"]
+            return
+        output = translation.translate_text(
+            reaction.message.clean_content,
+            target_lang=self.langs[str(reaction)]["code"],
+        )
+        for v in self.langs:
+            if self.langs[v]["code"] == output.detected_source_lang:
+                out_flag = v
+                out_name = self.langs[v]["name"]
 
-            embed = discord.Embed(
-                color=reaction.message.author.color,
-                descrption=output.text,
-                timestamp=reaction.message.created_at,
-            )
-            embed.set_footer(
-                text=f"Translated from {out_flag} {out_name} by {user}",
-                icon_url=user.display_avatar.url,
-            )
-            embed.set_author(
-                name=f"💬 {reaction.message.author} said in #{reaction.message.channel.name}...",
-                icon_url=reaction.message.author.display_avatar.url,
-                url=reaction.message.jump_url,
-            )
-            # Use a single image from post for now.
-            if (
-                reaction.message.attachments
-                and reaction.message.attachments[0].content_type[:6] == "image/"
-            ):
-                embed.set_image(url=reaction.message.attachments[0].url)
-            elif reaction.message.embeds and reaction.message.embeds[0].image:
-                embed.set_image(url=reaction.message.embeds[0].image.url)
-            await reaction.message.channel.send(embed=embed)
+        embed = discord.Embed(
+            color=reaction.message.author.color,
+            descrption=output.text,
+            timestamp=reaction.message.created_at,
+        )
+        embed.set_footer(
+            text=f"Translated from {out_flag} {out_name} by {user}",
+            icon_url=user.display_avatar.url,
+        )
+        embed.set_author(
+            name=f"💬 {reaction.message.author} said in #{reaction.message.channel.name}...",
+            icon_url=reaction.message.author.display_avatar.url,
+            url=reaction.message.jump_url,
+        )
+        # Use a single image from post for now.
+        if (
+            reaction.message.attachments
+            and reaction.message.attachments[0].content_type[:6] == "image/"
+        ):
+            embed.set_image(url=reaction.message.attachments[0].url)
+        elif reaction.message.embeds and reaction.message.embeds[0].image:
+            embed.set_image(url=reaction.message.embeds[0].image.url)
+        await reaction.message.channel.send(embed=embed)
 
 
 async def setup(bot: Bot):
