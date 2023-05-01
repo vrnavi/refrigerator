@@ -172,6 +172,7 @@ class Messagescan(Cog):
         if (
             not message.content
             or message.author.bot
+            or not message.guild
             or not message.channel.permissions_for(message.author).embed_links
             or not get_misc_config(message.guild.id, "embed_enable")
         ):
