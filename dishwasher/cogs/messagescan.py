@@ -278,7 +278,7 @@ class Messagescan(Cog):
             or not get_misc_config(reaction.message.guild.id, "translate_enable")
         ):
             return
-        if reaction.emoji in self.langs:
+        if str(reaction) in self.langs:
             translation = deepl.Translator(config.deepl_key)
             if translation.get_usage().any_limit_reached:
                 await reaction.message.channel.send(
@@ -287,7 +287,7 @@ class Messagescan(Cog):
                 return
             output = translation.translate_text(
                 reaction.message.clean_content,
-                target_lang=self.langs[reaction.emoji]["code"],
+                target_lang=self.langs[str(reaction)]["code"],
             )
             for v in self.langs:
                 if self.langs[v]["code"] == output.detected_source_lang:
