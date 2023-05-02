@@ -97,7 +97,7 @@ def make_embed(bot, kind, **kwargs):
             value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
             inline=True,
         )
-        embed.add_field(name="📨 Invite used:", value=f"{invite_used}", inline=True)
+        embed.add_field(name="📨 Invite used:", value=f"{inv_used}", inline=True)
     elif kind == "mem_remove":
         member = kwargs.get("member", None)
         embed.color = discord.Color.darker_gray()
