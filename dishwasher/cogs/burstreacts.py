@@ -30,7 +30,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
             return
 
         # Ignore not configured guilds
-        if not get_misc_config(guild_id, "burstreacts_enable"):
+        if not get_misc_config(int(guild_id), "burstreacts_enable"):
             return
 
         guild = self.bot.get_guild(int(guild_id))
