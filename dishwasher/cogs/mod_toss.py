@@ -10,7 +10,12 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
-from helpers.configs import get_toss_config, get_staff_config, get_log_config, config_check
+from helpers.configs import (
+    get_toss_config,
+    get_staff_config,
+    get_log_config,
+    config_check,
+)
 
 
 class ModToss(Cog):
