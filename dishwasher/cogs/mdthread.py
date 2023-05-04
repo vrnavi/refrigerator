@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog, Context, Bot, BucketType
+import asyncio
 
 
 class mdthread(Cog):
@@ -38,11 +39,13 @@ class mdthread(Cog):
         try:
             r, u = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
         except asyncio.TimeoutError:
-            self.cancel_message(ctx, confirmation_msg)
+            self.cancel_message(ctx, confirmmsg)
         else:
-            self.send_message(ctx, f"{' '.join(mentions)} {content}", confirmation_msg)
+            self.send_message(ctx, f"{' '.join(mentions)} {content}", confirmmsg)
 
-    async def send_message(self, ctx: Context, content: str, confirmation_msg):
+    async def send_message(
+        self, ctx: Context, content: str, confirmsg: discord.Message
+    ):
         webhooks = await ctx.guild.webhooks()
         webhook_results = [
             element
@@ -56,7 +59,7 @@ class mdthread(Cog):
             if len(webhook_results) == 0
             else webhook_results[0]
         )
-        await confirmation_message.delete()
+        await confirmsg.delete()
         await ctx.message.delete()
 
         await webhook.send(
@@ -69,7 +72,7 @@ class mdthread(Cog):
             thread=ctx.channel,
         )
 
-    async def cancel_message(self, ctx: Context, confirmation_msg):
+    async def cancel_message(self, ctx: Context, confirmmsg: discord.Message):
         await confirmmsg.edit(
             content="Your message has been cancelled.",
             delete_after=5,
