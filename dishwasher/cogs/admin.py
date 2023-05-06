@@ -136,7 +136,7 @@ class Admin(Cog):
     @commands.command()
     async def threadlock(self, ctx, channel: discord.TextChannel):
         """[O] Locks all threads in a given channel.."""
-        msg = ctx.reply(content="Locking threads...", mention_author=False)
+        msg = await ctx.reply(content="Locking threads...", mention_author=False)
         # Pull old archvied threads from the grave.
         async for t in channel.archived_threads(private=True, joined=True):
             await t.edit(archived=False)
