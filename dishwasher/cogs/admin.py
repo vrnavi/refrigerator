@@ -141,7 +141,7 @@ class Admin(Cog):
         async for t in channel.archived_threads(private=True, joined=True):
             await t.edit(archived=False)
         # Unsure if needed, but here anyway.
-        channel = ctx.guild.fetch_channel(channel.id)
+        channel = await ctx.guild.fetch_channel(channel.id)
         # Lock all threads.
         for t in channel.threads:
             await t.edit(locked=True)
