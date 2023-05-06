@@ -133,6 +133,21 @@ class Admin(Cog):
         await ctx.reply(content=guildmsg, mention_author=False)
 
     @commands.check(check_if_bot_manager)
+    @commands.command()
+    async def threadlock(self, ctx, channel: discord.TextChannel):
+        """[O] Locks all threads in a given channel.."""
+        msg = ctx.reply(content="Locking threads...", mention_author=False)
+        # Pull old archvied threads from the grave.
+        async for t in channel.archived_threads(private=True, joined=True):
+            await t.edit(archived=False)
+        # Unsure if needed, but here anyway.
+        channel = ctx.guild.fetch_channel(channel.id)
+        # Lock all threads.
+        for t in channel.threads:
+            await t.edit(locked=True)
+        await msg.edit(content="Done.", mention_author=False)
+
+    @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
     async def _eval(self, ctx, *, code: str):
         """[O] Evaluates some code."""
