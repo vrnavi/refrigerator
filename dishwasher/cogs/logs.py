@@ -531,6 +531,14 @@ class Logs2(Cog):
                 inline=False,
             )
 
+        if channel_after.topic and channel_before.topic != channel_after.topic:
+            updated = True
+            embed.add_field(
+                name=f"✍️ Topic Change",
+                value=f"❌ {channel_before.topic}\n⬇️\n⭕ {channel_after.topic}",
+                inline=False,
+            )
+
         if updated:
             await slog.send(embed=embed)
 
