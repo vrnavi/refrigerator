@@ -138,6 +138,8 @@ class Admin(Cog):
         """[O] Locks all threads in a given channel.."""
         msg = await ctx.reply(content="Locking threads...", mention_author=False)
         # Pull old archvied threads from the grave.
+        async for t in channel.archived_threads():
+            await t.edit(archived=False)
         async for t in channel.archived_threads(private=True, joined=True):
             await t.edit(archived=False)
         # Unsure if needed, but here anyway.
