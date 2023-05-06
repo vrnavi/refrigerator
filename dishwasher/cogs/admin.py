@@ -145,7 +145,7 @@ class Admin(Cog):
         # Lock all threads.
         for t in channel.threads:
             await t.edit(locked=True)
-        await msg.edit(content="Done.", mention_author=False)
+        await msg.edit(content="Done.")
 
     @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
