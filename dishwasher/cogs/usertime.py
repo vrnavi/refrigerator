@@ -106,7 +106,7 @@ class usertime(Cog):
                     fdigit
                     + ":"
                     + time.split(":")[1]
-                    + (" PM" if int(time.split(":")) >= 12 else " AM")
+                    + (" PM" if int(time.split(":")[0]) >= 12 else " AM")
                 )
             else:
                 await ctx.reply(
