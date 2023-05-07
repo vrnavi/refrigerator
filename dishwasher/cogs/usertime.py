@@ -119,11 +119,11 @@ class usertime(Cog):
 
             giventime = (
                 datetime.strptime(time, "%I:%M %p")
-                .replace(tzinfo=ZoneInfo(suserdata[suid]["timezone"]))
-                .astimezone(tz=ZoneInfo(tuserdata[tuid]["timezone"]))
+                .replace(tzinfo=ZoneInfo(tuserdata[tuid]["timezone"]))
+                .astimezone(tz=ZoneInfo(suserdata[suid]["timezone"]))
             )
             await ctx.reply(
-                content=f"`{time}` for you is {giventime.strftime('%I:%M %p')} for them.",
+                content=f"`{time}` for them is `{giventime.strftime('%I:%M %p')}` for you.",
                 mention_author=False,
             )
             return
