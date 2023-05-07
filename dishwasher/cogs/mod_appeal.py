@@ -36,7 +36,7 @@ class ModAppeal(Cog):
                 name=f"{message.embeds[0].fields[1].value[:-5]}'s Appeal",
                 reason="Automatic Appeal Thread Generating by Dishwasher.",
             )
-            staff_role = ctx.guild.get_role(
+            staff_role = message.guild.get_role(
                 config.guild_configs[member.guild.id]["staff"]["staff_role"]
             )
             await appealthread.send(
