@@ -12,7 +12,7 @@ class usertime(Cog):
         self.bot = bot
 
     @commands.command()
-    async def timezone(self, ctx: Context, *, timezone: str = None):
+    async def timezone(self, ctx, *, timezone: str = None):
         """
         Sets your timezone for use with the 'tf' command.
         Timezones must be supplied the IANA tzdb (i.e. America/Chicago) format.
@@ -45,21 +45,104 @@ class usertime(Cog):
             )
 
     @commands.command(aliases=["tf"])
-    async def timefor(self, ctx: Context, target: Member = None):
+    async def timefor(self, ctx, target: Member = None, *, time: str = None):
         """Send the current time in the invoker's (or mentioned user's) time zone."""
-        userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
-        if not userdata[uid]["timezone"]:
-            await ctx.send(
-                "I have no idea what time it is for you. You can set your timezone with `timezone`."
-                if not target
-                else f"I don't know what time it is for {target.display_name}."
+        if time and target.id != ctx.author.id:
+            # check both *have* timezones
+            suserdata, suid = fill_userdata(ctx.author.id)
+            tuserdata, tuid = fill_userdata(target.id)
+            if not suserdata[suid]["timezone"]:
+                await ctx.reply(
+                    content="I have no idea what time it is for you. You can set your timezone with `timezone`.",
+                    mention_author=False,
+                )
+                return
+            elif not tuserdata[tuid]["timezone"]:
+                await ctx.reply(
+                    content="I don't know what time it is for {target.display_name}.",
+                    mention_author=False,
+                )
+                return
+
+            # horrendous time processing code
+            # 12 hour time handler.
+            if time[-2:].upper() == "AM" or time[-2:].upper() == "PM":
+                # turn 12am into 12 AM if needed
+                time = time[:-2] + (" " if " " not in time else "") + time[-2:].upper()
+                # make sure we're not being jipped
+                if not time.split()[0].isnumeric() or int(time.split()[0]) > 12:
+                    await ctx.reply(
+                        content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
+                        mention_author=False,
+                    )
+                    return
+                # turn 12 AM into 12:00 AM if needed
+                # also turns 7 AM into 07:00 AM
+                time = (
+                    (
+                        time.split()[0]
+                        if len(time.split()[0]) == 2
+                        else "0" + time.split()[0]
+                    )
+                    + (":00 " if ":" not in time else " ")
+                    + time.split()[1]
+                )
+            # 24 hour time handler.
+            elif (
+                ":" in time
+                and len(time.split(":")) == 2
+                and all(t.isnumeric() and len(t) <= 2 for t in time.split(":"))
+                and int(time.split(":")[0]) <= 23
+                and int(time.split(":")[1]) <= 59
+            ):
+                # turn 12:00 into 12:00 PM
+                if int(time.split(":")[0]) > 12:
+                    fdigit = str(int(time.split(":")[0]) - 12)
+                    if len(fdigit) == 1:
+                        fdigit = "0" + fdigit
+                else:
+                    fdigit = time.split(":")[0]
+                time = (
+                    fdigit
+                    + ":"
+                    + time.split(":")[1]
+                    + (" PM" if int(time.split(":")) >= 12 else " AM")
+                )
+            else:
+                await ctx.reply(
+                    content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
+                    mention_author=False,
+                )
+                return
+
+            giventime = (
+                datetime.strptime(time, "%I:%M %p")
+                .replace(tzinfo=ZoneInfo(suserdata[suid]["timezone"]))
+                .astimezone(tz=ZoneInfo(tuserdata[tuid]["timezone"]))
+            )
+            await ctx.reply(
+                content=f"`{time}` for you is {giventime.strftime('%I:%M %p')} for them.",
+                mention_author=False,
             )
             return
-
-        now = datetime.now(ZoneInfo(userdata[uid]["timezone"]))
-        await ctx.send(
-            f"{'Your' if not target else 'Their'} current time is `{now.strftime('%H:%M, %Y-%m-%d')}`"
-        )
+        else:
+            userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
+            if not userdata[uid]["timezone"]:
+                await ctx.reply(
+                    content=(
+                        "I have no idea what time it is for you. You can set your timezone with `timezone`."
+                        if not target
+                        else f"I don't know what time it is for {target.display_name}."
+                    ),
+                    mention_author=False,
+                )
+                return
+            now = datetime.now(ZoneInfo(userdata[uid]["timezone"]))
+            await ctx.reply(
+                content=f"{'Your' if not target else 'Their'} current time is `{now.strftime('%H:%M, %Y-%m-%d')}`",
+                mention_author=False,
+            )
+            return
 
 
 async def setup(bot: Bot):
