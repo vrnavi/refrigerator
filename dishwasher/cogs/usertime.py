@@ -97,11 +97,12 @@ class usertime(Cog):
             ):
                 # turn 12:00 into 12:00 PM
                 if int(time.split(":")[0]) > 12:
+                    
                     fdigit = str(int(time.split(":")[0]) - 12)
                     if len(fdigit) == 1:
                         fdigit = "0" + fdigit
                 else:
-                    fdigit = time.split(":")[0]
+                    fdigit = time.split(":")[0] if int(time.split(":")[0]) != 0 else "12"
                 time = (
                     fdigit
                     + ":"
