@@ -69,13 +69,6 @@ class usertime(Cog):
             if time[-2:].upper() == "AM" or time[-2:].upper() == "PM":
                 # turn 12am into 12 AM if needed
                 time = time[:-2] + (" " if " " not in time else "") + time[-2:].upper()
-                # make sure we're not being jipped
-                if not time.split()[0].isnumeric() or int(time.split()[0]) > 12:
-                    await ctx.reply(
-                        content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
-                        mention_author=False,
-                    )
-                    return
                 # turn 12 AM into 12:00 AM if needed
                 # also turns 7 AM into 07:00 AM
                 time = (
@@ -87,6 +80,13 @@ class usertime(Cog):
                     + (":00 " if ":" not in time else " ")
                     + time.split()[1]
                 )
+                # make sure we're not being jipped
+                if not time.split(":")[0].isnumeric() or int(time.split(":")[0]) > 12:
+                    await ctx.reply(
+                        content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
+                        mention_author=False,
+                    )
+                    return
             # 24 hour time handler.
             elif (
                 ":" in time
