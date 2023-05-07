@@ -74,7 +74,7 @@ class usertime(Cog):
                 time = (
                     (
                         time.split()[0]
-                        if len(time.split()[0]) == 2
+                        if len(time.split()[0].split(":")[0]) == 2
                         else "0" + time.split()[0]
                     )
                     + (":00 " if ":" not in time else " ")
