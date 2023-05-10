@@ -89,7 +89,7 @@ class usertime(Cog):
             userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
             if not userdata[uid]["timezone"]:
                 await ctx.reply(
-                    content = (
+                    content=(
                         "I have no idea what time it is for you. You can set your timezone with `timezone`."
                         if not target
                         else f"I don't know what time it is for {target.display_name}."
