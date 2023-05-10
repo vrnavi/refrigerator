@@ -371,6 +371,7 @@ class Logs2(Cog):
         # WIP
 
         role_changed = False
+        rolelist = None
         if member_before.roles != member_after.roles:
             # role removal code
             role_removal = []
@@ -413,6 +414,7 @@ class Logs2(Cog):
                 name_changed=name_changed,
                 nick_changed=nick_changed,
                 role_changed=role_changed,
+                rolelist = rolelist,
             )
             await ulog.send(embed=embed)
 
