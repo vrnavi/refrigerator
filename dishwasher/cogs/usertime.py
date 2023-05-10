@@ -45,7 +45,7 @@ class usertime(Cog):
             )
 
     @commands.command(aliases=["tf"])
-    async def timefor(self, ctx: Context, target: Member = None, *, time: str = None):
+    async def timefor(self, ctx, target: Member = None, *, time: str = None):
         """Send the current time in the invoker's (or mentioned user's) time zone."""
         if time and target.id != ctx.author.id:
             # check both *have* timezones
