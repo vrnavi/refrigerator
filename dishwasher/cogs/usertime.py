@@ -45,7 +45,7 @@ class usertime(Cog):
             )
 
     @commands.command(aliases=["tf"])
-    async def timefor(self, ctx, target: Member = None, *, time: str = None):
+    async def timefor(self, ctx: Context, target: Member = None, *, time: str = None):
         """Send the current time in the invoker's (or mentioned user's) time zone."""
         if time and target.id != ctx.author.id:
             # check both *have* timezones
@@ -64,74 +64,32 @@ class usertime(Cog):
                 )
                 return
 
-            # horrendous time processing code
-            # 12 hour time handler.
-            if time[-2:].upper() == "AM" or time[-2:].upper() == "PM":
-                # turn 12am into 12 AM if needed
-                time = time[:-2] + (" " if " " not in time else "") + time[-2:].upper()
-                # turn 12 AM into 12:00 AM if needed
-                # also turns 7 AM into 07:00 AM
-                time = (
-                    (
-                        time.split()[0]
-                        if len(time.split()[0].split(":")[0]) == 2
-                        else "0" + time.split()[0]
-                    )
-                    + (":00 " if ":" not in time else " ")
-                    + time.split()[1]
-                )
-                # make sure we're not being jipped
-                if not time.split(":")[0].isnumeric() or int(time.split(":")[0]) > 12:
-                    await ctx.reply(
-                        content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
-                        mention_author=False,
-                    )
-                    return
-            # 24 hour time handler.
-            elif (
-                ":" in time
-                and len(time.split(":")) == 2
-                and all(t.isnumeric() and len(t) <= 2 for t in time.split(":"))
-                and int(time.split(":")[0]) <= 23
-                and int(time.split(":")[1]) <= 59
-            ):
-                # turn 12:00 into 12:00 PM
-                if int(time.split(":")[0]) > 12:
-                    fdigit = str(int(time.split(":")[0]) - 12)
-                    if len(fdigit) == 1:
-                        fdigit = "0" + fdigit
-                else:
-                    fdigit = (
-                        time.split(":")[0] if int(time.split(":")[0]) != 0 else "12"
-                    )
-                time = (
-                    fdigit
-                    + ":"
-                    + time.split(":")[1]
-                    + (" PM" if int(time.split(":")[0]) >= 12 else " AM")
-                )
-            else:
+            parsed_time = self.parse_time(time)
+
+            if not parsed_time:
                 await ctx.reply(
                     content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
                     mention_author=False,
                 )
                 return
 
-            giventime = (
-                datetime.strptime(time, "%I:%M %p")
-                .replace(tzinfo=ZoneInfo(tuserdata[tuid]["timezone"]))
-                .astimezone(tz=ZoneInfo(suserdata[suid]["timezone"]))
+            suser_timezone = ZoneInfo(suserdata[suid]["timezone"])
+            tuser_timezone = ZoneInfo(tuserdata[tuid]["timezone"])
+
+            parsed_time = datetime.combine(
+                datetime.now(), parsed_time, tzinfo=tuser_timezone
             )
+            parsed_time = parsed_time.astimezone(suser_timezone)
+
             await ctx.reply(
-                content=f"`{time}` for them is `{giventime.strftime('%I:%M %p')}` for you.",
+                content=f"`{time}` for them is `{parsed_time.strftime('%I:%M %p')}` for you.",
                 mention_author=False,
             )
-            return
         else:
             userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
             if not userdata[uid]["timezone"]:
                 await ctx.reply(
-                    content=(
+                    content = (
                         "I have no idea what time it is for you. You can set your timezone with `timezone`."
                         if not target
                         else f"I don't know what time it is for {target.display_name}."
@@ -145,6 +103,14 @@ class usertime(Cog):
                 mention_author=False,
             )
             return
+
+    def parse_time(self, time_str: str):
+        for fmt in ("%I %p", "%I%p", "%I:%M %p", "%H:%M"):
+            try:
+                return datetime.strptime(time_str, fmt).time()
+            except ValueError:
+                pass
+        return None
 
 
 async def setup(bot: Bot):
