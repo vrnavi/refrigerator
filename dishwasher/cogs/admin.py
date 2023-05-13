@@ -61,42 +61,44 @@ class Admin(Cog):
                 )
 
     @commands.check(check_if_bot_manager)
-    @commands.command(aliases=["getulogs"])
-    async def getulog(self, ctx, server: discord.Guild = None):
-        """[O] Returns a server's userlog file."""
+    @commands.command(aliases=["getserverdata"])
+    async def getsdata(self, ctx, server: discord.Guild = None):
+        """[O] Returns server data."""
         if not server:
             server = ctx.guild
         try:
-            udata = discord.File(f"{self.bot.server_data}/{server.id}/userlog.json")
+            shutil.make_archive(
+                f"data/{server.id}", "zip", f"{self.bot.server_data}/{server.id}"
+            )
+            sdata = discord.File(f"data/{server.id}.zip")
             await ctx.message.reply(
-                content=f"{server.name}'s userlog file...",
-                file=udata,
+                content=f"{server.name}'s data...",
+                file=sdata,
                 mention_author=False,
             )
+            os.remove(f"data/{server.id}.zip")
         except FileNotFoundError:
             await ctx.message.reply(
-                content="That server doesn't have a userlog file.",
+                content="That server doesn't have any data.",
                 mention_author=False,
             )
 
     @commands.check(check_if_bot_manager)
-    @commands.command(aliases=["setulogs"])
-    async def setulog(self, ctx, server: discord.Guild = None):
-        """[O] Replaces a server's userlog file. This is destructive behavior!"""
+    @commands.command(aliases=["setserverdata"])
+    async def setsdata(self, ctx, server: discord.Guild = None):
+        """[O] Replaces server data files. This is destructive behavior!"""
         if not server:
             server = ctx.guild
         if not ctx.message.attachments:
-            ctx.reply(
-                content="You need to supply the userlog file.", mention_author=False
-            )
+            ctx.reply(content="You need to supply the data file.", mention_author=False)
             return
-        if not os.path.exists(f"{self.bot.server_data}/{server.id}"):
-            os.makedirs(f"{self.bot.server_data}/{server.id}")
-        file = ctx.message.attachments[0]
-        await file.save(f"{self.bot.server_data}/{server.id}/userlog.json")
-        await ctx.reply(
-            content=f"{server.name}'s userlog file saved.", mention_author=False
+        await ctx.message.attachments[0].save(f"data/{server.id}.zip")
+        if os.path.exists(f"{self.bot.server_data}/{server.id}"):
+            shutil.rmtree(f"{self.bot.server_data}/{server.id}")
+        shutil.unpack_archive(
+            f"data/{server.id}.zip", f"{self.bot.server_data}/{server.id}"
         )
+        await ctx.reply(content=f"{server.name}'s data saved.", mention_author=False)
 
     @commands.check(check_if_bot_manager)
     @commands.command()
