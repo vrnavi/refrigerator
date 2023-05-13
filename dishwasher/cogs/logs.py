@@ -414,7 +414,7 @@ class Logs2(Cog):
                 name_changed=name_changed,
                 nick_changed=nick_changed,
                 role_changed=role_changed,
-                rolelist = rolelist,
+                rolelist=rolelist,
             )
             await ulog.send(embed=embed)
 

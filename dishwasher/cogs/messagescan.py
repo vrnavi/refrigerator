@@ -56,6 +56,7 @@ class Messagescan(Cog):
             "🇹🇷": {"name": "Turkish", "code": "TR"},
             "🇺🇦": {"name": "Ukrainian", "code": "UK"},
             "🇨🇳": {"name": "Simplified Chinese", "code": "ZH"},
+            "🏳️": {"name": "Placeholder", "code": "HD"},
         }
 
     @commands.guild_only()
@@ -227,6 +228,8 @@ class Messagescan(Cog):
                     embed.set_image(url=rcvmessage.attachments[0].url)
                 elif rcvmessage.embeds and rcvmessage.embeds[0].image:
                     embed.set_image(url=rcvmessage.embeds[0].image.url)
+                elif rcvmessage.stickers:
+                    embed.set_image(url=rcvmessage.stickers[0].url)
                 embeds.append(embed)
 
         if (
@@ -276,12 +279,20 @@ class Messagescan(Cog):
         if (
             user.bot
             or str(reaction) not in self.langs
+            or reaction.count != 1
             or not get_misc_config(reaction.message.guild.id, "translate_enable")
         ):
             return
 
         translation = deepl.Translator(config.deepl_key, send_platform_info=False)
-        if translation.get_usage().any_limit_reached:
+        usage = translation.get_usage()
+
+        if str(reaction) == "🏳️":
+            await reaction.message.channel.send(
+                content=f"**DeepL limit counter:**\n**Characters:** `{usage.character.count}/{usage.character.limit}`\n**Documents:** `{usage.document.count}/{usage.document.limit}`"
+            )
+            return
+        if usage.any_limit_reached:
             await reaction.message.channel.send(
                 content="Unable to translate message: monthly limit reached."
             )
