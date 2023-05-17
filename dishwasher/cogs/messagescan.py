@@ -56,7 +56,6 @@ class Messagescan(Cog):
             "🇹🇷": {"name": "Turkish", "code": "TR"},
             "🇺🇦": {"name": "Ukrainian", "code": "UK"},
             "🇨🇳": {"name": "Simplified Chinese", "code": "ZH"},
-            "🏳️": {"name": "Placeholder", "code": "HD"},
         }
 
     @commands.guild_only()
@@ -297,7 +296,7 @@ class Messagescan(Cog):
         usage = translation.get_usage()
 
         if usage.any_limit_reached:
-            await reaction.message.channel.reply(
+            await reaction.message.reply(
                 content="Unable to translate message: monthly limit reached.",
                 mention_author=False,
             )
@@ -340,7 +339,7 @@ class Messagescan(Cog):
             embed.set_image(url=reaction.message.attachments[0].url)
         elif reaction.message.embeds and reaction.message.embeds[0].image:
             embed.set_image(url=reaction.message.embeds[0].image.url)
-        await reaction.message.channel.reply(embed=embed, mention_author=False)
+        await reaction.message.reply(embed=embed, mention_author=False)
 
 
 async def setup(bot: Bot):
