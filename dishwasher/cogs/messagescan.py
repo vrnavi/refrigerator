@@ -167,6 +167,15 @@ class Messagescan(Cog):
                 mention_author=False,
             )
 
+    @commands.command()
+    async def usage(self, ctx):
+        translation = deepl.Translator(config.deepl_key, send_platform_info=False)
+        usage = translation.get_usage()
+
+        await reaction.message.channel.send(
+            content=f"**DeepL limit counter:**\n**Characters:** `{usage.character.count}/{usage.character.limit}`\n**Documents:** `{usage.document.count}/{usage.document.limit}`"
+        )
+
     @Cog.listener()
     async def on_message(self, message):
         await self.bot.wait_until_ready()
@@ -287,11 +296,6 @@ class Messagescan(Cog):
         translation = deepl.Translator(config.deepl_key, send_platform_info=False)
         usage = translation.get_usage()
 
-        if str(reaction) == "🏳️":
-            await reaction.message.channel.send(
-                content=f"**DeepL limit counter:**\n**Characters:** `{usage.character.count}/{usage.character.limit}`\n**Documents:** `{usage.document.count}/{usage.document.limit}`"
-            )
-            return
         if usage.any_limit_reached:
             await reaction.message.channel.reply(
                 content="Unable to translate message: monthly limit reached.",
