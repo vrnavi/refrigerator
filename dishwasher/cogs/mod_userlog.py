@@ -43,9 +43,9 @@ class ModUserlog(Cog):
                         event["timestamp"], "%Y-%m-%d %H:%M:%S"
                     ).strftime("%s")
                     contents += (
-                        f"\n{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)\n"
+                        f"\n`{event_name} {idx + 1}` <t:{timestamp}:R> on <t:{timestamp}:f>\n"
                         + issuer
-                        + f"__Reason:__ {event['reason']}"
+                        + f"__Reason:__ {event['reason']}\n"
                     )
                 if len(contents) != 0:
                     embed.add_field(
