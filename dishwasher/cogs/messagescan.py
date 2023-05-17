@@ -293,8 +293,9 @@ class Messagescan(Cog):
             )
             return
         if usage.any_limit_reached:
-            await reaction.message.channel.send(
-                content="Unable to translate message: monthly limit reached."
+            await reaction.message.channel.reply(
+                content="Unable to translate message: monthly limit reached.",
+                mention_author=False,
             )
             return
         output = translation.translate_text(
@@ -335,7 +336,7 @@ class Messagescan(Cog):
             embed.set_image(url=reaction.message.attachments[0].url)
         elif reaction.message.embeds and reaction.message.embeds[0].image:
             embed.set_image(url=reaction.message.embeds[0].image.url)
-        await reaction.message.channel.send(embed=embed)
+        await reaction.message.channel.reply(embed=embed, mention_author=False)
 
 
 async def setup(bot: Bot):

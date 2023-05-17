@@ -136,6 +136,15 @@ class Admin(Cog):
 
     @commands.check(check_if_bot_manager)
     @commands.command()
+    async def permcheck(
+        self,
+        ctx,
+    ):
+        """[O] Shows the permissions."""
+        pass
+
+    @commands.check(check_if_bot_manager)
+    @commands.command()
     async def threadlock(self, ctx, channel: discord.TextChannel):
         """[O] Locks all threads in a given channel.."""
         msg = await ctx.reply(content="Locking threads...", mention_author=False)

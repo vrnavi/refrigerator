@@ -27,6 +27,15 @@ class Explains(Cog):
             '**How do I post embeds/use emoji/stickers/reactions?**\nTo do any of the following:\n- Post embeds.\n- React to messages.\n- Post emoji.\n- Post stickers.\n- Speak in voice channels.\n\nYou need the Strange Journal role. <#256926147827335170>, alternatively, requires the Camera role.\nTo learn how to get these roles, read <#989959374900449380> thoroughly.\n\n**Do __not__ "spoonfeed" any user the command for them (e.g. "just use X command!)". Doing so may result in a warning.**'
         )
 
+    @commands.command(
+        hidden=True, aliases=["readcontrols", "beforeask"]
+    )
+    async def controls(self, ctx):
+        """Tells someone to read controls."""
+        await ctx.send(
+            '**Whatever your question is, READ <#989959374900449380> FIRST!**\nYou are asking a question that is already answered in the information channel.\nYour question will not be answered until you read the information channel and attempt to find the answer for yourself.\nIf you are still having trouble, only then you may ask on where to find the answer.'
+        )
+
     @commands.command(hidden=True, aliases=["nogifs"])
     async def tenor(self, ctx):
         """Explains why Tenor is banned."""
