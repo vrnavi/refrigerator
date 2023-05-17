@@ -31,6 +31,7 @@ class ModUserlog(Cog):
         for event_type in wanted_events:
             if event_type in userlog[uid] and userlog[uid][event_type]:
                 event_name = userlog_event_types[event_type]
+                contents = ""
                 for idx, event in enumerate(userlog[uid][event_type]):
                     issuer = (
                         ""
@@ -41,9 +42,11 @@ class ModUserlog(Cog):
                     timestamp = datetime.strptime(
                         event["timestamp"], "%Y-%m-%d %H:%M:%S"
                     ).strftime("%s")
+                    contents += f"\n{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)\n" + issuer + f"__Reason:__ {event['reason']}"
+                if len(contents) != 0:
                     embed.add_field(
-                        name=f"{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)",
-                        value=issuer + f"__Reason:__ {event['reason']}",
+                        name=event_type.capitalize(),
+                        value=contents,
                         inline=False,
                     )
 
