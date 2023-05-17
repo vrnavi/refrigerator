@@ -102,7 +102,7 @@ class ModLocks(Cog):
                 if channel.overwrites_for(r).send_messages:
                     roles.append(r.id)
         else:
-            roles = [ctx.guild.default_role]
+            roles = [ctx.guild.default_role.id]
 
         await self.unlock_for_staff(channel, ctx.author)
 
