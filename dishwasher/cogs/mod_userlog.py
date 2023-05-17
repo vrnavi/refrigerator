@@ -16,7 +16,7 @@ class ModUserlog(Cog):
         self, gid: int, uid: str, name: str, own: bool = False, event=""
     ):
         own_note = " Congratulations." if own else ""
-        wanted_events = ["warns", "bans", "kicks", "tosses"]
+        wanted_events = ["tosses", "warns", "kicks", "bans"]
         if event and not isinstance(event, list):
             wanted_events = [event]
         embed = discord.Embed(color=discord.Color.dark_red())
@@ -42,7 +42,11 @@ class ModUserlog(Cog):
                     timestamp = datetime.strptime(
                         event["timestamp"], "%Y-%m-%d %H:%M:%S"
                     ).strftime("%s")
-                    contents += f"\n{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)\n" + issuer + f"__Reason:__ {event['reason']}"
+                    contents += (
+                        f"\n{event_name} {idx + 1}: <t:{timestamp}:f> (<t:{timestamp}:R>)\n"
+                        + issuer
+                        + f"__Reason:__ {event['reason']}"
+                    )
                 if len(contents) != 0:
                     embed.add_field(
                         name=event_type.capitalize(),
