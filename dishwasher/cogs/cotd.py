@@ -122,8 +122,9 @@ class Cotd(Cog):
                 if g.id not in self.voteskip:
                     self.voteskip[g.id] = []
                 if self.voteskip[g.id] and self.precedence_check(g):
+                    self.voteskip[g.id] = []
                     await self.roll_colors(g)
-                elif int(datetime.datetime.now().strftime("%H")) == 0:
+                elif int(datetime.datetime.now().strftime("%H%M")) == 0000:
                     if g.id in self.voteskip_cooldown:
                         self.voteskip_cooldown.remove(g.id)
                     await self.roll_colors(g)
