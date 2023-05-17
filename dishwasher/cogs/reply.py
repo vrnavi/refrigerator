@@ -61,7 +61,7 @@ class Reply(Cog):
                 return
 
             await message.add_reaction("🗞️")
-            await message.reply(
+            nagmsg = await message.reply(
                 content=f"This is violation number `{self.usercounts[message.author.id]}`. Do not exceed `10` violations today.",
                 file=discord.File("assets/noreply.png"),
                 delete_after=15,

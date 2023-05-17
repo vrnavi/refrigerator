@@ -72,11 +72,8 @@ class ModLocks(Cog):
             )
 
         await ctx.send(public_msg)
-        safe_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, str(ctx.author)
-        )
         if mlog:
-            msg = f"🔒 **Lockdown**: {ctx.channel.mention} by {safe_name}"
+            msg = f"🔒 **Lockdown**: {ctx.channel.mention} by {ctx.author}"
             mlog = await self.bot.fetch_channel(mlog)
             await mlog.send(msg)
 
@@ -111,13 +108,9 @@ class ModLocks(Cog):
 
         for role in roles:
             await self.set_sendmessage(channel, role, True, ctx.author)
-
-        safe_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, str(ctx.author)
-        )
         await ctx.send("🔓 Channel unlocked.")
         if mlog:
-            msg = f"🔓 **Unlock**: {ctx.channel.mention} by {safe_name}"
+            msg = f"🔓 **Unlock**: {ctx.channel.mention} by {ctx.author}"
             mlog = await self.bot.fetch_channel(mlog)
             await mlog.send(msg)
 
