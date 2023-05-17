@@ -82,7 +82,7 @@ class Cotd(Cog):
             )
 
         if ctx.guild.id not in self.voteskip:
-            self.voteskip[g.id] = []
+            self.voteskip[ctx.guild.id] = []
             
         if ctx.author.id in self.voteskip[ctx.guild.id]:
             return await ctx.reply(
