@@ -38,7 +38,7 @@ class Cotd(Cog):
 
     def precedence_check(self, guild):
         return datetime.datetime.now() > datetime.datetime.now().replace(
-            hour=0 + len(self.voteskip[guild.id]), minute=0, second=0
+            hour=24 - len(self.voteskip[guild.id]), minute=0, second=0
         )
 
     @commands.guild_only()
@@ -83,10 +83,15 @@ class Cotd(Cog):
 
         if ctx.guild.id not in self.voteskip:
             self.voteskip[ctx.guild.id] = []
-            
+
         if ctx.author.id in self.voteskip[ctx.guild.id]:
+            timestamp = (
+                datetime.datetime.now()
+                .replace(hour=24 - len(self.voteskip[ctx.guild.id]), minute=0, second=0)
+                .strftime("%s")
+            )
             return await ctx.reply(
-                content=f"You have already voted to skip this CoTD.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier.",
+                content=f"You have already voted to skip this CoTD.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier on <t:{timestamp}:t>, or <t:{timestamp}:R>.",
                 mention_author=False,
             )
 
