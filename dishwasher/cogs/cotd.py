@@ -126,7 +126,8 @@ class Cotd(Cog):
                 elif int(datetime.datetime.now().strftime("%H")) == 0:
                     if g.id in self.voteskip_cooldown:
                         self.voteskip_cooldown.remove(g.id)
-                    await self.roll_colors(g)
+                    else:
+                        await self.roll_colors(g)
 
 
 async def setup(bot):
