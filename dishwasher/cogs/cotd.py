@@ -38,7 +38,7 @@ class Cotd(Cog):
 
     def precedence_check(self, guild):
         return datetime.datetime.now() > datetime.datetime.now().replace(
-            hour=24 - len(self.voteskip[guild.id]), minute=0, second=0
+            hour=0 + len(self.voteskip[guild.id]), minute=0, second=0
         )
 
     @commands.guild_only()
@@ -81,15 +81,13 @@ class Cotd(Cog):
                 mention_author=False,
             )
 
-        if ctx.guild.id not in self.voteskip:
-            self.voteskip[ctx.guild.id] = [ctx.author.id]
-        elif ctx.author.id in self.voteskip[ctx.guild.id]:
+        if ctx.author.id in self.voteskip[ctx.guild.id]:
             return await ctx.reply(
                 content=f"You have already voted to skip this CoTD.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier.",
                 mention_author=False,
             )
-        else:
-            self.voteskip[ctx.guild.id].append(ctx.author.id)
+
+        self.voteskip[ctx.guild.id].append(ctx.author.id)
 
         if self.precedence_check(ctx.guild):
             self.voteskip[ctx.guild.id] = []
@@ -121,14 +119,14 @@ class Cotd(Cog):
         await self.bot.wait_until_ready()
         for g in self.bot.guilds:
             if config_check(g.id, "cotd"):
-                if g.id in self.voteskip:
-                    if self.precedence_check(g):
-                        self.voteskip[g.id] = []
-                        await self.roll_colors(g)
-                elif int(datetime.datetime.now().strftime("%H")) == 0:
+                if g.id not in self.voteskip:
+                    self.voteskip[g.id] = []
+                if self.voteskip[g.id] and self.precedence_check(g):
                     await self.roll_colors(g)
+                elif int(datetime.datetime.now().strftime("%H")) == 0:
                     if g.id in self.voteskip_cooldown:
                         self.voteskip_cooldown.remove(g.id)
+                    await self.roll_colors(g)
 
 
 async def setup(bot):
