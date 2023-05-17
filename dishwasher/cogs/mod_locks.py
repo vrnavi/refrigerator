@@ -25,7 +25,7 @@ class ModLocks(Cog):
     async def unlock_for_staff(self, channel: discord.TextChannel, issuer):
         await self.set_sendmessage(
             channel,
-            get_staff_config(ctx.guild.id, "staff_role"),
+            get_staff_config(channel.guild.id, "staff_role"),
             True,
             issuer,
         )
