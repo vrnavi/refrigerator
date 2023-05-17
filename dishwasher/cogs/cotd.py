@@ -81,6 +81,9 @@ class Cotd(Cog):
                 mention_author=False,
             )
 
+        if ctx.guild.id not in self.voteskip:
+            self.voteskip[g.id] = []
+            
         if ctx.author.id in self.voteskip[ctx.guild.id]:
             return await ctx.reply(
                 content=f"You have already voted to skip this CoTD.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier.",
