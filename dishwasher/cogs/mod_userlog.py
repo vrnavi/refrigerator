@@ -16,7 +16,9 @@ class ModUserlog(Cog):
         self, gid: int, uid: str, name: str, own: bool = False, event=""
     ):
         own_note = " Congratulations." if own else ""
-        wanted_events = ["tosses", "warns", "kicks", "bans"]
+        wanted_events = ["warns", "kicks", "bans"]
+        if not own:
+            wanted_events = ["tosses"] + wanted_events
         if event and not isinstance(event, list):
             wanted_events = [event]
         embed = discord.Embed(color=discord.Color.dark_red())
@@ -118,7 +120,7 @@ class ModUserlog(Cog):
         if ctx.guild.get_member(target.id):
             target = ctx.guild.get_member(target.id)
         embed = self.get_userlog_embed_for_id(
-            ctx.guild.id, str(target.id), str(target.display_name), event=event
+            ctx.guild.id, str(target.id), str(target), event=event
         )
         await ctx.send(embed=embed)
 
