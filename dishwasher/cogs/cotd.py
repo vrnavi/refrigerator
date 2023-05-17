@@ -107,7 +107,7 @@ class Cotd(Cog):
             )
         else:
             await ctx.reply(
-                content=f"Your vote to skip has been recorded.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier.",
+                content=f"Your vote to skip has been recorded.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier on <t:{timestamp}:t>, or <t:{timestamp}:R>.",
                 mention_author=False,
             )
 
