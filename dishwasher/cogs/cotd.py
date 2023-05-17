@@ -17,11 +17,28 @@ class Cotd(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.colortimer.start()
+        self.voteskip = {}
         self.nocfgmsg = "CoTD isn't set up for this server."
         self.colors = json.load(open("assets/colors.json", "r"))
 
     def cog_unload(self):
         self.colortimer.cancel()
+
+    async def roll_colors(self, guild):
+        color = random.choice(self.colors)
+        cotd_name = get_misc_config(guild.id, "cotd_name")
+        cotd_role = guild.get_role(get_misc_config(guild.id, "cotd_role"))
+        await cotd_role.edit(
+            name=f'{cotd_name} - {color["name"]}',
+            color=discord.Colour.from_str(color["hex"]),
+            reason=f'Color of The Day: {color["name"]}',
+        )
+        return color
+
+    async def precedence_check(self, guild):
+        return datetime.datetime.now() > datetime.datetime.now().replace(
+            hour=24 - len(self.voteskip[guild.id]), minute=0, second=0
+        )
 
     @commands.guild_only()
     @commands.command()
@@ -52,36 +69,56 @@ class Cotd(Cog):
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.guild_only()
+    @commands.command()
+    async def voteskip(self, ctx):
+        if not config_check(ctx.guild.id, "cotd"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
+
+        if ctx.guild.id not in self.voteskip:
+            self.voteskip[ctx.guild.id] = [ctx.author.id]
+        elif ctx.author.id in self.voteskip[ctx.guild.id]:
+            return await ctx.reply(
+                content=f"You have already voted to skip this CoTD.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier.",
+                mention_author=False,
+            )
+        else:
+            self.voteskip[ctx.guild.id].append(ctx.author.id)
+
+        if self.precedence_check(ctx.guild):
+            self.voteskip[ctx.guild.id] = []
+            color = await self.roll_colors(ctx.guild)
+            await ctx.reply(
+                content=f"Vote to skip the current CoTD has passed.\nThe CoTD has been changed to **{color['name']}** *{color['hex']}*.",
+                mention_author=False,
+            )
+        else:
+            await ctx.reply(
+                content=f"Your vote to skip has been recorded.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier.",
+                mention_author=False,
+            )
+
+    @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def reroll(self, ctx):
         if not config_check(ctx.guild.id, "cotd"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
-        color = random.choice(self.colors)
-        cotd_role = ctx.guild.get_role(get_misc_config(ctx.guild.id, "cotd_role"))
-        cotd_name = get_misc_config(ctx.guild.id, "cotd_name")
-        await cotd_role.edit(
-            name=f'{cotd_name} - {color["name"]}',
-            color=discord.Colour.from_str(f'{color["hex"]}'),
-            reason=f'Color of The Day: {color["name"]}',
-        )
+        color = await self.roll_colors(ctx.guild)
         await ctx.reply(
             content=f"The CoTD has been changed to **{color['name']}** *{color['hex']}*."
         )
 
-    @tasks.loop(time=datetime.time(hour=5, tzinfo=datetime.timezone.utc))
+    @tasks.loop(time=[datetime.time(hour=x) for x in range(0, 23)])
     async def colortimer(self):
         await self.bot.wait_until_ready()
         for g in self.bot.guilds:
             if config_check(g.id, "cotd"):
-                color = random.choice(self.colors)
-                cotd_name = get_misc_config(g.id, "cotd_name")
-                cotd_role = g.get_role(get_misc_config(g.id, "cotd_role"))
-                await cotd_role.edit(
-                    name=f'{cotd_name} - {color["name"]}',
-                    color=discord.Colour.from_str(color["hex"]),
-                    reason=f'Color of The Day: {color["name"]}',
-                )
+                if g.id in self.voteskip:
+                    if self.precedence_check(g):
+                        self.voteskip[g.id] = []
+                        await self.roll_colors(g)
+                elif int(datetime.datetime.now().strftime("%H")) == 0:
+                    await self.roll_colors(g)
 
 
 async def setup(bot):

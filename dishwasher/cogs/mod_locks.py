@@ -87,7 +87,7 @@ class ModLocks(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
         bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
-        
+
         roles = [ctx.guild.default_role.id]
 
         await self.unlock_for_staff(channel, ctx.author)
