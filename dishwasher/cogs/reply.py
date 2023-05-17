@@ -15,8 +15,13 @@ class Reply(Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.usercounts = {}
+        self.counttimer.start()
         self.last_eval_result = None
         self.previous_eval_code = None
+
+    def cog_unload(self):
+        self.counttimer.cancel()
 
     async def handle_message_with_reference(self, message):
         reference_message = await message.channel.fetch_message(
@@ -41,12 +46,27 @@ class Reply(Cog):
             return
 
         if reference_author in message.mentions:
+            if message.author.id not in self.usercounts:
+                self.usercounts[message.author.id] = 1
+            else:
+                self.usercounts[message.author.id] += 1
+
+            if self.usercounts[message.author.id] == 10:
+                await message.reply(
+                    content=f"{message.guild.get_role(staff_role).mention} | {message.author.mention} reached `10` reply ping violations.",
+                    mention_author=False,
+                )
+                self.usercounts[message.author.id] = 0
+                return
+
             await message.add_reaction("🗞️")
             await message.reply(
+                content=f"This is violation number `{self.usercounts[message.author.id]}`. Do not exceed `10` violations today.",
                 file=discord.File("assets/noreply.png"),
                 delete_after=15,
                 mention_author=True,
             )
+            return
 
     @Cog.listener()
     async def on_message(self, message):
@@ -54,6 +74,11 @@ class Reply(Cog):
 
         if message.reference and message.type == discord.MessageType.reply:
             await self.handle_message_with_reference(message)
+
+    @tasks.loop(hours=24)
+    async def counttimer(self):
+        await self.bot.wait_until_ready()
+        self.usercounts = {}
 
 
 async def setup(bot):
