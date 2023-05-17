@@ -106,6 +106,11 @@ class Cotd(Cog):
                 mention_author=False,
             )
         else:
+            timestamp = (
+                datetime.datetime.now()
+                .replace(hour=24 - len(self.voteskip[ctx.guild.id]), minute=0, second=0)
+                .strftime("%s")
+            )
             await ctx.reply(
                 content=f"Your vote to skip has been recorded.\nRerolling will occur `{len(self.voteskip[ctx.guild.id])}` hours earlier on <t:{timestamp}:t>, or <t:{timestamp}:R>.",
                 mention_author=False,
