@@ -57,7 +57,7 @@ class ModLocks(Cog):
                 if channel.overwrites_for(r).send_messages:
                     roles.append(r.id)
         else:
-            roles = [ctx.guild.default_role]
+            roles = [ctx.guild.default_role.id]
 
         for role in roles:
             await self.set_sendmessage(channel, role, False, ctx.author)
