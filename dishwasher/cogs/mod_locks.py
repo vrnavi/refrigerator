@@ -87,27 +87,13 @@ class ModLocks(Cog):
         mlog = get_log_config(ctx.guild.id, "mlog_thread")
         staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
         bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
-
-        if not channel.permissions_for(
-            ctx.guild.default_role
-        ).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
-            roles = get_misc_config(ctx.guild.id, "authorized_roles")
-        elif not channel.permissions_for(ctx.guild.default_role).read_messages:
-            roles = []
-            for r in channel.changed_roles:
-                if r.id == staff_role_id:
-                    continue
-                if bot_role_ids and r.id in bot_role_ids:
-                    continue
-                if channel.overwrites_for(r).send_messages:
-                    roles.append(r.id)
-        else:
-            roles = [ctx.guild.default_role.id]
+        
+        roles = [ctx.guild.default_role.id]
 
         await self.unlock_for_staff(channel, ctx.author)
 
         for role in roles:
-            await self.set_sendmessage(channel, role, True, ctx.author)
+            await self.set_sendmessage(channel, role, None, ctx.author)
         await ctx.send("🔓 Channel unlocked.")
         if mlog:
             msg = f"🔓 **Unlock**: {ctx.channel.mention} by {ctx.author}"
