@@ -172,7 +172,7 @@ class Messagescan(Cog):
         translation = deepl.Translator(config.deepl_key, send_platform_info=False)
         usage = translation.get_usage()
 
-        await reaction.message.channel.send(
+        await ctx.send(
             content=f"**DeepL limit counter:**\n**Characters:** `{usage.character.count}/{usage.character.limit}`\n**Documents:** `{usage.document.count}/{usage.document.limit}`"
         )
 
