@@ -18,6 +18,7 @@ class Cotd(Cog):
         self.bot = bot
         self.colortimer.start()
         self.voteskip = {}
+        self.voteskip_cooldown = []
         self.nocfgmsg = "CoTD isn't set up for this server."
         self.colors = json.load(open("assets/colors.json", "r"))
 
@@ -35,7 +36,7 @@ class Cotd(Cog):
         )
         return color
 
-    async def precedence_check(self, guild):
+    def precedence_check(self, guild):
         return datetime.datetime.now() > datetime.datetime.now().replace(
             hour=24 - len(self.voteskip[guild.id]), minute=0, second=0
         )
@@ -74,6 +75,12 @@ class Cotd(Cog):
         if not config_check(ctx.guild.id, "cotd"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
 
+        if ctx.guild.id in self.voteskip_cooldown:
+            return await ctx.reply(
+                content=f"Sorry, CoTD skipping is on cooldown. Please try again tomorrow.",
+                mention_author=False,
+            )
+
         if ctx.guild.id not in self.voteskip:
             self.voteskip[ctx.guild.id] = [ctx.author.id]
         elif ctx.author.id in self.voteskip[ctx.guild.id]:
@@ -86,6 +93,7 @@ class Cotd(Cog):
 
         if self.precedence_check(ctx.guild):
             self.voteskip[ctx.guild.id] = []
+            self.voteskip_cooldown.append(ctx.guild.id)
             color = await self.roll_colors(ctx.guild)
             await ctx.reply(
                 content=f"Vote to skip the current CoTD has passed.\nThe CoTD has been changed to **{color['name']}** *{color['hex']}*.",
@@ -119,6 +127,8 @@ class Cotd(Cog):
                         await self.roll_colors(g)
                 elif int(datetime.datetime.now().strftime("%H")) == 0:
                     await self.roll_colors(g)
+                    if g.id in self.voteskip_cooldown:
+                        self.voteskip_cooldown.remove(g.id)
 
 
 async def setup(bot):
