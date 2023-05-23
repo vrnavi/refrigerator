@@ -1,7 +1,6 @@
 aiohttp==3.8.4
-config==0.5.1
 deepl==1.14.0
-discord.py==2.2.2
+discord.py==2.2.3
 gidgethub==5.2.1
 httplib2==0.22.0
 matplotlib==3.7.1
