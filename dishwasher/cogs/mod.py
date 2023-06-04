@@ -17,6 +17,7 @@ class Mod(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.check_if_target_is_staff = self.check_if_target_is_staff
+        self.bot.modqueue = {}
 
     def check_if_target_is_staff(self, target):
         return any(
