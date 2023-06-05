@@ -193,6 +193,7 @@ class Messagescan(Cog):
             return
         tlinks = None
         embeds = None
+        failed = False
 
         if twitterlinks:
             tlinks = []
@@ -208,9 +209,13 @@ class Messagescan(Cog):
                 channelid = int(components[5])
                 msgid = int(components[6])
 
-                rcvguild = self.bot.get_guild(guildid)
-                rcvchannel = rcvguild.get_channel_or_thread(channelid)
-                rcvmessage = await rcvchannel.fetch_message(msgid)
+                try:
+                    rcvguild = self.bot.get_guild(guildid)
+                    rcvchannel = rcvguild.get_channel_or_thread(channelid)
+                    rcvmessage = await rcvchannel.fetch_message(msgid)
+                except:
+                    failed = True
+                    break
 
                 # Prepare embed msg
                 embed = discord.Embed(
@@ -239,6 +244,9 @@ class Messagescan(Cog):
                 elif rcvmessage.stickers:
                     embed.set_image(url=rcvmessage.stickers[0].url)
                 embeds.append(embed)
+        
+        if failed:
+            await message.reply(content="Unable to quote a link you posted.\nI am either not in that guild, or I don't have permissions to view it.", mention_author=False)
 
         if (
             message.guild
