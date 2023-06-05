@@ -246,7 +246,7 @@ class Surveyr(Cog):
 
         # Waiting for Discord's mistimed audit log entry.
         for x in range(60):
-            if x == 60:
+            if x == 59:
                 # Give up.
                 await msg.delete()
                 return
@@ -290,7 +290,7 @@ class Surveyr(Cog):
 
         # Waiting for Discord's mistimed audit log entry.
         for x in range(60):
-            if x == 60:
+            if x == 59:
                 await msg.delete()
                 return
             async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
@@ -344,7 +344,7 @@ class Surveyr(Cog):
 
         # Waiting for Discord's mistimed audit log entry.
         for x in range(60):
-            if x == 60:
+            if x == 59:
                 # Give up.
                 await msg.delete()
                 return
