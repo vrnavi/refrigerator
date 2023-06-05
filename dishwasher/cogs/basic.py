@@ -223,6 +223,37 @@ class Basic(Cog):
 
     @commands.cooldown(1, 5, type=commands.BucketType.default)
     @commands.guild_only()
+    @commands.command(aliases=["loadingbar"])
+    async def progressbar(self, ctx):
+        """[U] Creates a progress bar of the current year."""
+        async with ctx.channel.typing():
+            start = datetime.datetime(datetime.datetime.now().year, 1, 1)
+            end = datetime.datetime(datetime.datetime.now().year + 1, 1, 1)
+            total = end - start
+            current = datetime.datetime.now() - start
+            percentage = (current / total) * 100
+
+            plt.figure().set_figheight(0.5)
+
+            plt.barh(0, percentage, color="#43b581")
+            plt.barh(0, 100 - percentage, left=percentage, color="#747f8d")
+
+            plt.margins(x=0, y=0)
+            plt.tight_layout(pad=0)
+            plt.axis("off")
+
+            plt.savefig(f"{ctx.guild.id}-progressbar.png")
+
+            plt.close()
+        await ctx.reply(
+            content=f"**{datetime.datetime.now().year}** is **{percentage}**% complete.",
+            file=discord.File(f"{ctx.guild.id}-progressbar.png"),
+            mention_author=False,
+        )
+        os.remove(f"{ctx.guild.id}-progressbar.png")
+
+    @commands.cooldown(1, 5, type=commands.BucketType.default)
+    @commands.guild_only()
     @commands.command()
     async def joingraph(self, ctx):
         """[U] Shows the graph of users that joined."""
