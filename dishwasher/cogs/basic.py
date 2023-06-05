@@ -234,6 +234,9 @@ class Basic(Cog):
             percentage = (current / total) * 100
 
             plt.figure().set_figheight(0.5)
+            plt.margins(x=0, y=0)
+            plt.tight_layout(pad=0)
+            plt.axis("off")
 
             plt.barh(0, percentage, color="#43b581")
             plt.barh(0, 100 - percentage, left=percentage, color="#747f8d")
