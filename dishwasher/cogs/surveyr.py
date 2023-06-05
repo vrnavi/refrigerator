@@ -250,7 +250,9 @@ class Surveyr(Cog):
                 # Give up.
                 await msg.delete()
                 return
-            async for entry in guild.audit_logs(action=discord.AuditLogAction.kick):
+            async for entry in member.guild.audit_logs(
+                action=discord.AuditLogAction.kick
+            ):
                 cutoff_ts = datetime.datetime.now(
                     datetime.timezone.utc
                 ) - datetime.timedelta(seconds=10)
