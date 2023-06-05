@@ -227,10 +227,10 @@ class Basic(Cog):
     async def progressbar(self, ctx):
         """[U] Creates a progress bar of the current year."""
         async with ctx.channel.typing():
-            start = datetime.datetime(datetime.datetime.now().year, 1, 1)
-            end = datetime.datetime(datetime.datetime.now().year + 1, 1, 1)
+            start = datetime(datetime.now().year, 1, 1)
+            end = datetime(datetime.now().year + 1, 1, 1)
             total = end - start
-            current = datetime.datetime.now() - start
+            current = datetime.now() - start
             percentage = (current / total) * 100
 
             plt.figure().set_figheight(0.5)
@@ -246,7 +246,7 @@ class Basic(Cog):
 
             plt.close()
         await ctx.reply(
-            content=f"**{datetime.datetime.now().year}** is **{percentage}**% complete.",
+            content=f"**{datetime.now().year}** is **{percentage}**% complete.",
             file=discord.File(f"{ctx.guild.id}-progressbar.png"),
             mention_author=False,
         )
