@@ -244,9 +244,12 @@ class Messagescan(Cog):
                 elif rcvmessage.stickers:
                     embed.set_image(url=rcvmessage.stickers[0].url)
                 embeds.append(embed)
-        
+
         if failed:
-            await message.reply(content="Unable to quote a link you posted.\nI am either not in that guild, or I don't have permissions to view it.", mention_author=False)
+            await message.reply(
+                content="Unable to quote a link you posted.\nI am either not in that guild, or I don't have permissions to view it.",
+                mention_author=False,
+            )
 
         if (
             message.guild
@@ -261,16 +264,21 @@ class Messagescan(Cog):
         def deletecheck(m):
             return m.id == message.id
 
-        reply = await message.reply(content=tlinks, embeds=embeds, mention_author=False)
-        try:
-            await message.channel.fetch_message(message.id)
-        except discord.NotFound:
-            await reply.delete()
-        try:
-            await self.bot.wait_for("message_delete", timeout=600, check=deletecheck)
-            await reply.delete()
-        except:
-            pass
+        if tlinks or embeds:
+            reply = await message.reply(
+                content=tlinks, embeds=embeds, mention_author=False
+            )
+            try:
+                await message.channel.fetch_message(message.id)
+            except discord.NotFound:
+                await reply.delete()
+            try:
+                await self.bot.wait_for(
+                    "message_delete", timeout=600, check=deletecheck
+                )
+                await reply.delete()
+            except:
+                pass
 
     @Cog.listener()
     async def on_message_delete(self, message):
