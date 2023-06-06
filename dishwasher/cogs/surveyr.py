@@ -247,7 +247,6 @@ class Surveyr(Cog):
         for x in range(60):
             if x == 59:
                 # Give up.
-                await msg.delete()
                 return
             async for entry in member.guild.audit_logs(
                 action=discord.AuditLogAction.kick
@@ -287,12 +286,10 @@ class Surveyr(Cog):
         if not config_check(guild.id, "surveyr") or "bans" not in surveyr_event_types:
             return
         survey_channel = get_surveyr_config(guild.id, "survey_channel")
-        msg = await guild.get_channel(survey_channel).send(content="⌛")
 
         # Waiting for Discord's mistimed audit log entry.
         for x in range(60):
             if x == 59:
-                await msg.delete()
                 return
             async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
                 cutoff_ts = datetime.datetime.now(
@@ -302,6 +299,8 @@ class Surveyr(Cog):
                     await asyncio.sleep(1)
                     continue
                 break
+
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
 
         reason = (
             entry.reason
@@ -341,13 +340,11 @@ class Surveyr(Cog):
         if not config_check(guild.id, "surveyr") or "unbans" not in surveyr_event_types:
             return
         survey_channel = get_surveyr_config(guild.id, "survey_channel")
-        msg = await guild.get_channel(survey_channel).send(content="⌛")
 
         # Waiting for Discord's mistimed audit log entry.
         for x in range(60):
             if x == 59:
                 # Give up.
-                await msg.delete()
                 return
             async for entry in guild.audit_logs(action=discord.AuditLogAction.unban):
                 cutoff_ts = datetime.datetime.now(
@@ -357,6 +354,8 @@ class Surveyr(Cog):
                     await asyncio.sleep(1)
                     continue
                 break
+
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
 
         reason = (
             entry.reason
