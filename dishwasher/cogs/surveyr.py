@@ -241,14 +241,15 @@ class Surveyr(Cog):
             or "kicks" not in surveyr_event_types
         ):
             return
-        survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
+        guild = member.guild
+        survey_channel = get_surveyr_config(guild.id, "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
         entry = None
         for x in range(60):
             if x == 59:
                 return
-            async for log in member.guild.audit_logs(
+            async for log in guild.audit_logs(
                 before=datetime.datetime.now() + datetime.timedelta(0, 10),
                 action=discord.AuditLogAction.kick,
             ):
@@ -262,7 +263,7 @@ class Surveyr(Cog):
 
         if entry.user.id == self.bot.user.id:
             # Recognize audit log reason formats by Dishwasher
-            user = member.guild.get_member_named(entry.reason.split()[2])
+            user = guild.get_member_named(entry.reason.split()[2])
             reason = (
                 entry.reason.split("]")[1][1:]
                 if entry.reason.split("]")[1][1:]
@@ -276,9 +277,9 @@ class Surveyr(Cog):
                 else f"No reason was given, {user.mention}..."
             )
 
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            member.guild.id, member.id, msg.id, user.id, reason, "kicks"
+            guild.id, member.id, msg.id, user.id, reason, "kicks"
         )
 
         await msg.edit(
@@ -317,7 +318,7 @@ class Surveyr(Cog):
 
         if entry.user.id == self.bot.user.id:
             # Recognize audit log reason formats by Dishwasher
-            user = member.guild.get_member_named(entry.reason.split()[2])
+            user = guild.get_member_named(entry.reason.split()[2])
             reason = (
                 entry.reason.split("]")[1][1:]
                 if entry.reason.split("]")[1][1:]
@@ -385,7 +386,7 @@ class Surveyr(Cog):
 
         if entry.user.id == self.bot.user.id:
             # Recognize audit log reason formats by Dishwasher
-            user = member.guild.get_member_named(entry.reason.split()[2])
+            user = guild.get_member_named(entry.reason.split()[2])
             reason = (
                 entry.reason.split("]")[1][1:]
                 if entry.reason.split("]")[1][1:]
