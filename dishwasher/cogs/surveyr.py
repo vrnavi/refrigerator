@@ -244,20 +244,21 @@ class Surveyr(Cog):
         survey_channel = get_surveyr_config(member.guild.id, "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
+        entry = None
         for x in range(60):
             if x == 59:
-                # Give up.
                 return
-            async for entry in member.guild.audit_logs(
-                action=discord.AuditLogAction.kick
+            async for log in member.guild.audit_logs(
+                before=datetime.datetime.now() + datetime.timedelta(0, 10),
+                action=discord.AuditLogAction.kick,
             ):
-                cutoff_ts = datetime.datetime.now(
-                    datetime.timezone.utc
-                ) - datetime.timedelta(seconds=10)
-                if entry.target.id != member.id or entry.created_at <= cutoff_ts:
-                    await asyncio.sleep(1)
-                    continue
+                if log.target.id == member.id:
+                    entry = e
+                    break
+            if entry:
                 break
+            else:
+                await asyncio.sleep(1)
 
         msg = await member.guild.get_channel(survey_channel).send(content="⌛")
 
@@ -288,17 +289,21 @@ class Surveyr(Cog):
         survey_channel = get_surveyr_config(guild.id, "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
+        entry = None
         for x in range(60):
             if x == 59:
                 return
-            async for entry in guild.audit_logs(action=discord.AuditLogAction.ban):
-                cutoff_ts = datetime.datetime.now(
-                    datetime.timezone.utc
-                ) - datetime.timedelta(seconds=10)
-                if entry.target.id != member.id or entry.created_at <= cutoff_ts:
-                    await asyncio.sleep(1)
-                    continue
+            async for log in guild.audit_logs(
+                before=datetime.datetime.now() + datetime.timedelta(0, 10),
+                action=discord.AuditLogAction.ban,
+            ):
+                if log.target.id == member.id:
+                    entry = e
+                    break
+            if entry:
                 break
+            else:
+                await asyncio.sleep(1)
 
         msg = await guild.get_channel(survey_channel).send(content="⌛")
 
@@ -342,18 +347,21 @@ class Surveyr(Cog):
         survey_channel = get_surveyr_config(guild.id, "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
+        entry = None
         for x in range(60):
             if x == 59:
-                # Give up.
                 return
-            async for entry in guild.audit_logs(action=discord.AuditLogAction.unban):
-                cutoff_ts = datetime.datetime.now(
-                    datetime.timezone.utc
-                ) - datetime.timedelta(seconds=10)
-                if entry.target.id != member.id or entry.created_at <= cutoff_ts:
-                    await asyncio.sleep(1)
-                    continue
+            async for log in guild.audit_logs(
+                before=datetime.datetime.now() + datetime.timedelta(0, 10),
+                action=discord.AuditLogAction.unban,
+            ):
+                if log.target.id == member.id:
+                    entry = e
+                    break
+            if entry:
                 break
+            else:
+                await asyncio.sleep(1)
 
         msg = await guild.get_channel(survey_channel).send(content="⌛")
 
