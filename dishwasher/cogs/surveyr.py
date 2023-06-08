@@ -260,22 +260,32 @@ class Surveyr(Cog):
             else:
                 await asyncio.sleep(1)
 
-        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
+        if entry.user.id == self.bot.user.id:
+            # Recognize audit log reason formats by Dishwasher
+            user = member.guild.get_member_named(entry.reason.split()[2])
+            reason = (
+                entry.reason.split("]")[1][1:]
+                if entry.reason.split("]")[1][1:]
+                else f"No reason was given, {user.mention}..."
+            )
+        else:
+            user = entry.user
+            reason = (
+                entry.reason
+                if entry.reason
+                else f"No reason was given, {user.mention}..."
+            )
 
-        reason = (
-            entry.reason
-            if entry.reason
-            else f"No reason was given, {entry.user.mention}..."
-        )
+        msg = await member.guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            member.guild.id, member.id, msg.id, entry.user.id, reason, "kicks"
+            member.guild.id, member.id, msg.id, user.id, reason, "kicks"
         )
 
         await msg.edit(
             content=(
                 f"`#{caseid}` **KICK** on <t:{timestamp}:f>\n"
                 f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {entry.user} ({entry.user.id})\n"
+                f"**Staff:** {user} ({user.id})\n"
                 f"**Reason:** {reason}"
             )
         )
@@ -305,15 +315,25 @@ class Surveyr(Cog):
             else:
                 await asyncio.sleep(1)
 
-        msg = await guild.get_channel(survey_channel).send(content="⌛")
+        if entry.user.id == self.bot.user.id:
+            # Recognize audit log reason formats by Dishwasher
+            user = member.guild.get_member_named(entry.reason.split()[2])
+            reason = (
+                entry.reason.split("]")[1][1:]
+                if entry.reason.split("]")[1][1:]
+                else f"No reason was given, {user.mention}..."
+            )
+        else:
+            user = entry.user
+            reason = (
+                entry.reason
+                if entry.reason
+                else f"No reason was given, {user.mention}..."
+            )
 
-        reason = (
-            entry.reason
-            if entry.reason
-            else f"No reason was given, {entry.user.mention}..."
-        )
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            guild.id, member.id, msg.id, entry.user.id, reason, "bans"
+            guild.id, member.id, msg.id, user.id, reason, "bans"
         )
         self.bancooldown[guild.id] = member.id
 
@@ -321,7 +341,7 @@ class Surveyr(Cog):
             content=(
                 f"`#{caseid}` **BAN** on <t:{timestamp}:f>\n"
                 f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {entry.user} ({entry.user.id})\n"
+                f"**Staff:** {user} ({user.id})\n"
                 f"**Reason:** {reason}"
             )
         )
@@ -363,22 +383,32 @@ class Surveyr(Cog):
             else:
                 await asyncio.sleep(1)
 
-        msg = await guild.get_channel(survey_channel).send(content="⌛")
+        if entry.user.id == self.bot.user.id:
+            # Recognize audit log reason formats by Dishwasher
+            user = member.guild.get_member_named(entry.reason.split()[2])
+            reason = (
+                entry.reason.split("]")[1][1:]
+                if entry.reason.split("]")[1][1:]
+                else f"No reason was given, {user.mention}..."
+            )
+        else:
+            user = entry.user
+            reason = (
+                entry.reason
+                if entry.reason
+                else f"No reason was given, {user.mention}..."
+            )
 
-        reason = (
-            entry.reason
-            if entry.reason
-            else f"No reason was given, {entry.user.mention}..."
-        )
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            guild.id, member.id, msg.id, entry.user.id, reason, "unbans"
+            guild.id, member.id, msg.id, user.id, reason, "unbans"
         )
 
         await msg.edit(
             content=(
                 f"`#{caseid}` **UNBAN** on <t:{timestamp}:f>\n"
                 f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {entry.user} ({entry.user.id})\n"
+                f"**Staff:** {user} ({user.id})\n"
                 f"**Reason:** {reason}"
             )
         )
