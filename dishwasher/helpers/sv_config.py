@@ -48,6 +48,10 @@ stock_configs = {
         "cotd_role": 0,
         "cotd_name": "",
     },
+    "noreply": {
+        "enable": False,
+        "noreply_role": 0,
+    },
     "misc": {
         "authorized_roles": [],
         "bot_roles": [],
