@@ -33,6 +33,8 @@ class sv_config(Cog):
             for k, v in s.items():
                 if k in friendly_names:
                     k = friendly_names[k]
+                if not v:
+                    v = f"Not Configured ({type(v).__name__})"
                 lines += f"\n{k}: {v}"
             embed.add_field(
                 name=p.title(),
