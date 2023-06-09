@@ -238,7 +238,7 @@ class Surveyr(Cog):
         await self.bot.wait_until_ready()
         if (
             not get_config(member.guild.id, "surveyr", "enable")
-            or "kicks" not in get_config(member.guild.id, "surveyr", "log_types")
+            or "kick" not in get_config(member.guild.id, "surveyr", "log_types")
         ):
             return
         guild = member.guild
@@ -297,7 +297,7 @@ class Surveyr(Cog):
         await self.bot.wait_until_ready()
         if (
             not get_config(guild.id, "surveyr", "enable")
-            or "bans" not in get_config(guild.id, "surveyr", "log_types")
+            or "ban" not in get_config(guild.id, "surveyr", "log_types")
         ):
             return
         survey_channel = get_config(guild.id, "surveyr", "survey_channel")
@@ -371,7 +371,7 @@ class Surveyr(Cog):
         await self.bot.wait_until_ready()
         if (
             not get_config(guild.id, "surveyr", "enable")
-            or "unbans" not in get_config(guild.id, "surveyr", "log_types")
+            or "unban" not in get_config(guild.id, "surveyr", "log_types")
             or member.id in self.bancooldown[guild.id]
         ):
             return
