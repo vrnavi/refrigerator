@@ -5,7 +5,7 @@ import config
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
-from helpers.sv_config import fill_config
+from helpers.sv_config import fill_config, friendly_names
 
 
 class sv_config(Cog):
@@ -31,6 +31,8 @@ class sv_config(Cog):
         for p, s in configs.items():
             lines = ""
             for k, v in s.items():
+                if k in friendly_names:
+                    k = friendly_names[k]
                 lines += f"\n{k}: {v}"
             embed.add_field(
                 name=p.title(),

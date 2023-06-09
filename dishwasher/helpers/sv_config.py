@@ -56,6 +56,19 @@ stock_configs = {
         "burstreacts_enable": False,
     },
 }
+friendly_names = {
+    "mlog_thread": "Mod Log",
+    "slog_thread": "Server Log",
+    "ulog_thread": "User Log",
+    "staff_role": "Staff Role ID",
+    "exstaff_role": "Ex-Staff Role ID",
+    "staff_channel": "Staff Channel ID",
+    "rules_url": "Rules URL",
+    "appeal_url": "Appeal URL",
+    "ban_appeal_channel": "Ban Appeal Channel ID",
+    "ban_appeal_webhook_id": "Ban Appeal Webhook ID",
+    "tracker_channel": "Tracker Channel ID",
+}
 server_data = "data/servers"
 
 
