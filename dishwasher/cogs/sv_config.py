@@ -4,7 +4,7 @@ import datetime
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
-from helpers.sv_configs import fill_config
+from helpers.sv_config import fill_config
 
 
 class config(Cog):

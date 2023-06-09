@@ -63,8 +63,8 @@ def make_config(sid):
     if not os.path.exists(f"{server_data}/{sid}"):
         os.makedirs(f"{server_data}/{sid}")
     with open(f"{server_data}/{sid}/config.json", "w") as f:
-        f.write(stock_configs)
-        return json.loads(stock_configs)
+        f.write(str(stock_configs))
+        return stock_configs
 
 
 def get_raw_config(sid):
