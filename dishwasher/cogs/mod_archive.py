@@ -259,7 +259,7 @@ class ModArchive(Cog):
 
             embed = discord.Embed(
                 title="📁 Toss Channel Archived",
-                description=f"{message.channel} was archived by {ctx.author.mention} ({ctx.author.id})",
+                description=f"{message.channel.mention}'s session was archived by {ctx.author.mention} ({ctx.author.id})",
                 color=ctx.author.color,
                 timestamp=datetime.datetime.now(),
             )

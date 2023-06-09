@@ -5,7 +5,13 @@ import config
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
-from helpers.sv_config import fill_config, make_config, set_config, friendly_names
+from helpers.sv_config import (
+    fill_config,
+    make_config,
+    set_config,
+    stock_configs,
+    friendly_names,
+)
 
 
 class sv_config(Cog):
@@ -31,13 +37,12 @@ class sv_config(Cog):
         for p, s in configs.items():
             lines = ""
             for k, v in s.items():
-                if k in friendly_names:
-                    k = friendly_names[k]
+                f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
                 if not v and str(v) != "False":
                     v = f"Not Configured ({type(v).__name__})"
                 if str(v) == "None":
                     v = "Forcibly Disabled"
-                lines += f"\n**{k}**\n{v}"
+                lines += f"\n{f}`{k}`\n{v}"
             embed.add_field(
                 name=p.title(),
                 value=lines,
@@ -52,26 +57,110 @@ class sv_config(Cog):
         if not guild:
             guild = ctx.guild
         make_configs(guild.id)
-        await ctx.reply(content=f"The configuration for **{guild}** has been reset.", mention_author=False)
+        await ctx.reply(
+            content=f"The configuration for **{guild}** has been reset.",
+            mention_author=False,
+        )
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @configs.command()
-    async def set(self, ctx, category, setting, *, value):
+    async def set(self, ctx, category, setting, *, value=None):
         """[S] Sets the configuration for a guild."""
         configs = fill_config(ctx.guild.id)
         category = category.lower()
         setting = setting.lower()
-        if category not in configs or setting not in configs[category] and :
-            return await ctx.reply(content="You specified an invalid category or setting.", mention_author=False)
-        if type(configs[category][setting]).__name__ == "str":
-            configs[category][setting] = value
-        
-        
-        await ctx.reply(content=f"The configuration for **{guild}** has been reset.", mention_author=False)
-        
-        
-        
+        if category not in configs or setting not in configs[category]:
+            if category not in stock_configs or setting not in stock_configs[category]:
+                return await ctx.reply(
+                    content="You specified an invalid category or setting.",
+                    mention_author=False,
+                )
+            else:
+                configs = set_config(
+                    ctx.guild.id, category, setting, stock_configs[category][setting]
+                )
+        settingtype = type(configs[category][setting]).__name__
+        if settingtype == "str":
+            if not value:
+                value = ""
+            set_config(ctx.guild.id, category, setting, value)
+        elif settingtype == "int":
+            if not value:
+                value = 0
+            try:
+                set_config(ctx.guild.id, category, setting, int(value))
+            except ValueError:
+                return await ctx.reply(
+                    content="This setting requires an `int` to be given.\nYou can supply numbers only.",
+                    mention_author=False,
+                )
+        elif settingtype == "list":
+            pre_cfg = configs[category][setting]
+            if value:
+                if value.split()[0] == "add":
+                    set_config(
+                        ctx.guild.id, category, setting, pre_cfg + value.split()[1:]
+                    )
+                    return await ctx.reply(
+                        content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{pre_cfg + value.split()[1:]}`.",
+                        mention_author=False,
+                    )
+                elif value.split()[0] == "remove":
+                    if not pre_cfg:
+                        return await ctx.reply(
+                            content="There is nothing to remove.", mention_author=False
+                        )
+                    for v in value.split()[1:]:
+                        if v not in pre_cfg:
+                            await ctx.reply(
+                                content=f"{v} is not present in this setting, skipping.",
+                                mention_author=False,
+                            )
+                            continue
+                        pre_cfg.remove(v)
+                        set_config(ctx.guild.id, category, setting, pre_cfg)
+                    return await ctx.reply(
+                        content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{pre_cfg}`.",
+                        mention_author=False,
+                    )
+                elif value == "clear":
+                    if not pre_cfg:
+                        return await ctx.reply(
+                            content="There is nothing to clear.", mention_author=False
+                        )
+                    set_config(ctx.guild.id, category, setting, [])
+                    return await ctx.reply(
+                        content=f"**{category.title()}/**{setting.title()} has been cleared.",
+                        mention_author=False,
+                    )
+                else:
+                    set_config(ctx.guild.id, category, setting, value.split())
+                    return await ctx.reply(
+                        content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{value.split()}`.",
+                        mention_author=False,
+                    )
+            else:
+                return await ctx.reply(
+                    content=f"To set this directly, simply supply a list of values separated by spaces.\nYou can add or remove specific items by prefixing your given list with `add` or `remove`.\nYou can also clear the list by supplying a value of `clear`.",
+                    mention_author=False,
+                )
+        elif settingtype == "bool":
+            if value.title() not in ("True", "False"):
+                return await ctx.reply(
+                    content="This setting requires a `bool` to be given.\nYou can supply `true` or `false`.",
+                    mention_author=False,
+                )
+            set_config(
+                ctx.guild.id,
+                category,
+                setting,
+                True if value.title() == "True" else False,
+            )
+            return await ctx.reply(
+                content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{value}`.",
+                mention_author=False,
+            )
 
 
 async def setup(bot: Bot):
