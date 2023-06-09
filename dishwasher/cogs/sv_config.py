@@ -56,7 +56,7 @@ class sv_config(Cog):
         """[O] Resets the configuration for a guild."""
         if not guild:
             guild = ctx.guild
-        make_configs(guild.id)
+        make_config(guild.id)
         await ctx.reply(
             content=f"The configuration for **{guild}** has been reset.",
             mention_author=False,
