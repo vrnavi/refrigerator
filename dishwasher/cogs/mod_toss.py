@@ -59,6 +59,7 @@ class ModToss(Cog):
 
         toss_pings = ""
         toss_sends = ""
+        online = False
         staff_channel = get_staff_config(ctx.guild.id, "staff_channel")
         modlog_channel = get_log_config(ctx.guild.id, "mlog_thread")
 
@@ -123,22 +124,10 @@ class ModToss(Cog):
                     )
 
                 toss_pings = f"{toss_pings} {us.mention}"
-                toss_sends = (
-                    f"{toss_sends}\n**{us.name}**#{us.discriminator} has been tossed."
-                )
+                toss_sends = f"{toss_sends}\n**{us}** has been tossed."
                 bad_roles_msg = ""
                 if len(bad_no_good_terrible_roles) > 0:
                     bad_roles_msg = f"\nI was unable to remove the following role(s): **{', '.join(bad_no_good_terrible_roles)}**"
-
-                if staff_channel:
-                    await ctx.guild.get_channel(staff_channel).send(
-                        f"**{us.name}**#{us.discriminator} has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
-                        f"**ID:** {us.id}\n"
-                        f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
-                        f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
-                        f"**Previous Roles:**{prev_roles}{bad_roles_msg}\n\n"
-                        f"{toss_channel.mention}"
-                    )
 
                 userlog(
                     ctx.guild.id,
@@ -147,6 +136,19 @@ class ModToss(Cog):
                     f"[Jump]({ctx.message.jump_url}) to toss event.",
                     "tosses",
                 )
+
+                if us.raw_status != "offline":
+                    online = True
+
+                if staff_channel:
+                    await ctx.guild.get_channel(staff_channel).send(
+                        f"**{us}** has been tossed in {ctx.channel.mention} by {ctx.message.author.name}. {us.mention}\n"
+                        f"**ID:** {us.id}\n"
+                        f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
+                        f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
+                        f"**Previous Roles:**{prev_roles}{bad_roles_msg}\n\n"
+                        f"{toss_channel.mention}"
+                    )
 
                 if modlog_channel:
                     embed = discord.Embed(
@@ -198,24 +200,26 @@ class ModToss(Cog):
         await toss_channel.send(
             f"{toss_pings}\nYou were tossed by {ctx.message.author.name}.\n"
             f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
-            f"**Do NOT leave the server, or you will be instantly banned.**\n\n"
-            f"⏰ Please respond within `5 minutes`."
+            f"**Do NOT leave the server, or you will be instantly banned.**"
         )
 
-        def check(m):
-            return m.author in user_id_list and m.channel == toss_channel
+        if online:
+            await toss_channel.send(f"⏰ Please respond within `5 minutes`.")
 
-        try:
-            msg = await self.bot.wait_for("message", timeout=60 * 5, check=check)
-        except asyncio.TimeoutError:
-            pokemsg = await toss_channel.send(f"{ctx.author.mention}")
-            await pokemsg.edit(content="⏰", delete_after=5)
-        else:
-            pokemsg = await toss_channel.send(f"{ctx.author.mention}")
-            await pokemsg.edit(
-                content="⏰🔨 Tossed user sent a message. Timer destroyed.",
-                delete_after=5,
-            )
+            def check(m):
+                return m.author in user_id_list and m.channel == toss_channel
+
+            try:
+                msg = await self.bot.wait_for("message", timeout=60 * 5, check=check)
+            except asyncio.TimeoutError:
+                pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+                await pokemsg.edit(content="⏰", delete_after=5)
+            else:
+                pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+                await pokemsg.edit(
+                    content="⏰🔨 Tossed user sent a message. Timer destroyed.",
+                    delete_after=5,
+                )
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
