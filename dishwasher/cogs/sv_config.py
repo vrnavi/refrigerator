@@ -177,6 +177,7 @@ class sv_config(Cog):
     @configs.command()
     async def disable(self, ctx, guild: discord.Guild, category, setting):
         """[O] Forcibly disables a setting for a guild."""
+        configs = fill_config(ctx.guild.id)
         if category not in configs or setting not in configs[category]:
             configs = set_config(
                 ctx.guild.id, category, setting, stock_configs[category][setting]
@@ -191,6 +192,7 @@ class sv_config(Cog):
     @configs.command()
     async def enable(self, ctx, guild: discord.Guild, category, setting):
         """[O] Forcibly enables a setting for a guild."""
+        configs = fill_config(ctx.guild.id)
         if category not in configs or setting not in configs[category]:
             configs = set_config(
                 ctx.guild.id, category, setting, stock_configs[category][setting]
