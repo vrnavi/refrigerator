@@ -203,7 +203,7 @@ class sv_config(Cog):
             "int": 0,
             "list": [],
         }
-        set_config(ctx.guild.id, category, setting, defaults[type(configs[category][setting]).__name__])
+        set_config(ctx.guild.id, category, setting, defaults[type(stock_configs[category][setting]).__name__])
         return await ctx.reply(
             content=f"{guild}'s **{category.title()}/**`{setting}` has been ENABLED.",
             mention_author=False,
