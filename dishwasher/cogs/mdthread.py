@@ -39,9 +39,9 @@ class mdthread(Cog):
         try:
             r, u = await self.bot.wait_for("reaction_add", timeout=60.0, check=check)
         except asyncio.TimeoutError:
-            self.cancel_message(ctx, confirmmsg)
+            await self.cancel_message(ctx, confirmmsg)
         else:
-            self.send_message(ctx, f"{' '.join(mentions)} {content}", confirmmsg)
+            await self.send_message(ctx, f"{' '.join(mentions)} {content}", confirmmsg)
 
     async def send_message(
         self, ctx: Context, content: str, confirmsg: discord.Message
