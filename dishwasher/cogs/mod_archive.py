@@ -238,14 +238,8 @@ class ModArchive(Cog):
 
             fn = "{:%Y-%m-%d} {}".format(message.created_at, user)
 
-            reply = "📕 Archived as: `{}.txt`".format(fn)
-
             out += "{:%Y-%m-%d %H:%M} {}: {}".format(
                 message.created_at, self.bot.user.name, reply
-            )
-
-            modch = self.bot.get_channel(
-                config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
             )
 
             f = drive.CreateFile(
@@ -257,8 +251,24 @@ class ModArchive(Cog):
             f.SetContentString(out)
             f.Upload()
 
-            ret_string = "{} archive saved as [`{}.txt`](https://drive.google.com/file/d/{})".format(
-                message.channel.mention, fn, f["id"]
+            modch = self.bot.get_channel(
+                config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
+            )
+
+            embed = discord.Embed(
+                title="📁 Toss Channel Archived",
+                description=f"{message.channel} was archived by {ctx.author.mention} ({ctx.author.id})",
+                color=ctx.author.color,
+                timestamp=datetime.datetime.now(),
+            )
+            embed.set_footer(
+                text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+            )
+            embed.set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
+            embed.add_field(
+                name="🔗 Text",
+                value=f"[{fn}.txt](https://drive.google.com/file/d/{f['id']})",
+                inline=True,
             )
 
             if zipped_files:
@@ -272,16 +282,14 @@ class ModArchive(Cog):
                 f_zip["mimeType"] = "application/zip"
                 f_zip.Upload()
 
-                ret_string += "\nFiles saved as [`{} (files).zip`](https://drive.google.com/file/d/{})".format(
-                    fn, f_zip["id"]
+                embed.add_field(
+                    name="📦 Files",
+                    value=f"[{fn} (files).zip](https://drive.google.com/file/d/{f_zip['id']})",
+                    inline=True,
                 )
 
-            await message.channel.send(reply)
-            await modch.send(
-                embed=discord.Embed(
-                    description=ret_string, color=message.guild.me.color
-                )
-            )
+            await message.channel.send(content=f"📕 Archived\n`{fn}.txt`")
+            await modch.send(embed=embed)
 
             return True
         else:
