@@ -21,7 +21,7 @@ class config(Cog):
         configs = fill_config(guild.id)
         embed = discord.Embed(
             title=f"⚙️ Configuration for {guild}",
-            description="Tweak a setting with `configs set {section} {setting} {new value}",
+            description=f"Tweak a setting with `{config.prefixes[0]}configs set <category> <setting> <value>`.",
             color=ctx.author.color,
             timestamp=datetime.datetime.now(),
         )
@@ -34,7 +34,7 @@ class config(Cog):
             embed.add_field(
                 name=p.title(),
                 value=lines,
-                inline=False,
+                inline=True,
             )
         await ctx.reply(embed=embed)
 
