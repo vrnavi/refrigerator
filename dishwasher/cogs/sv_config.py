@@ -1,13 +1,14 @@
 import json
 import discord
 import datetime
+import config
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
 from helpers.sv_config import fill_config
 
 
-class config(Cog):
+class sv_config(Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -40,4 +41,4 @@ class config(Cog):
 
 
 async def setup(bot: Bot):
-    await bot.add_cog(config(bot))
+    await bot.add_cog(sv_config(bot))
