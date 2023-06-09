@@ -27,9 +27,9 @@ class config(Cog):
         )
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
-        for p, s in configs:
+        for p, s in configs.items():
             lines = ""
-            for k, v in s:
+            for k, v in s.items():
                 lines += f"\n{k}: {v}"
             embed.add_field(
                 name=p.title(),
