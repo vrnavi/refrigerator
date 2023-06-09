@@ -97,20 +97,6 @@ class ModArchive(Cog):
 
         return ret
 
-    def is_rolebanned(self, member, hard=True):
-        roleban = [
-            r
-            for r in member.guild.roles
-            if r.id == get_config(member.guild.id, "toss", "toss_role")
-        ]
-        if roleban:
-            if get_config(member.guild.id, "toss", "toss_role") in [
-                r.id for r in member.roles
-            ]:
-                if hard:
-                    return len([r for r in member.roles if not (r.managed)]) == 2
-                return True
-
     def textify_embed(self, embed, limit=40, padding=0, pad_first_line=True):
         text_proc = []
         title = ""
@@ -331,30 +317,6 @@ class ModArchive(Cog):
             )
 
         return True
-
-    @Cog.listener()
-    async def on_member_remove(self, member):
-        if get_config(member.guild.id, "archive", "enable") and self.is_rolebanned(
-            member
-        ):
-            LAST_UNROLEBAN.set(
-                member.guild.id,
-                member.id,
-                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
-            )
-
-    @Cog.listener()
-    async def on_member_update(self, before, after):
-        if (
-            get_config(after.guild.id, "archive", "enable")
-            and self.is_rolebanned(before)
-            and not self.is_rolebanned(after)
-        ):
-            LAST_UNROLEBAN.set(
-                after.guild.id,
-                after.id,
-                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
-            )
 
 
 async def setup(bot):

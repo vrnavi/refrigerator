@@ -44,6 +44,20 @@ class ModToss(Cog):
 
         return user_id_list, invalid_ids
 
+    def is_rolebanned(self, member, hard=True):
+        roleban = [
+            r
+            for r in member.guild.roles
+            if r.id == get_config(member.guild.id, "toss", "toss_role")
+        ]
+        if roleban:
+            if get_config(member.guild.id, "toss", "toss_role") in [
+                r.id for r in member.roles
+            ]:
+                if hard:
+                    return len([r for r in member.roles if not (r.managed)]) == 2
+                return True
+
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
@@ -229,15 +243,16 @@ class ModToss(Cog):
 
         if (
             not user_ids
-            and get_config(ctx.guild.id, "archive", "enable")
             and LAST_UNROLEBAN.isset(ctx.guild.id)
             and LAST_UNROLEBAN.diff(ctx.guild.id, ctx.message.created_at)
             < get_config(ctx.guild.id, "archive", "unroleban_expiry")
         ):
             user_ids = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
+            if not get_config(ctx.guild.id, "archive", "enable"):
+                LAST_UNROLEBAN.unset(ctx.guild.id)
         else:
             return await ctx.reply(
-                content="There's nobody in the roleban cache, or `archive` is not enabled..\nYou'll need to untoss with a ping or ID.",
+                content="There's nobody in the roleban cache.\nYou'll need to untoss with a ping or ID.",
                 mention_author=False,
             )
 
@@ -291,9 +306,7 @@ class ModToss(Cog):
                 mention_author=False,
             )
             if staff_channel:
-                await ctx.guild.get_channel(
-                    get_config(ctx.guild.id, "staff", "staff_channel")
-                ).send(
+                await ctx.guild.get_channel(staff_channel).send(
                     f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}"
                 )
 
@@ -308,6 +321,30 @@ class ModToss(Cog):
 
         if len(invalid_string) > 0:
             await ctx.reply(invalid_string, mention_author=False)
+
+    @Cog.listener()
+    async def on_member_remove(self, member):
+        if self.is_rolebanned(member):
+            staff_channel = get_config(member.guild.id, "staff", "staff_channel")
+            if staff_channel:
+                await member.guild.get_channel(staff_channel).send(
+                    f"**{us}** left while tossed.\nLaugh at this user!"
+                )
+
+            LAST_UNROLEBAN.set(
+                member.guild.id,
+                member.id,
+                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
+            )
+
+    @Cog.listener()
+    async def on_member_update(self, before, after):
+        if self.is_rolebanned(before) and not self.is_rolebanned(after):
+            LAST_UNROLEBAN.set(
+                after.guild.id,
+                after.id,
+                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
+            )
 
 
 async def setup(bot):
