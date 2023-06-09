@@ -8,6 +8,7 @@ from helpers.sv_config import get_config
 class ModLocks(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.snapshots = {}
 
     async def set_sendmessage(
         self, channel: discord.TextChannel, role, allow_send, issuer
@@ -43,21 +44,30 @@ class ModLocks(Cog):
         staff_role_id = get_config(ctx.guild.id, "staff", "staff_role")
         bot_role_ids = get_config(ctx.guild.id, "misc", "bot_roles")
 
-        if not channel.permissions_for(
-            ctx.guild.default_role
-        ).send_messages and get_config(ctx.guild.id, "misc", "authorized_roles"):
-            roles = get_config(ctx.guild.id, "misc", "authorized_roles")
-        elif not channel.permissions_for(ctx.guild.default_role).read_messages:
-            roles = []
-            for r in channel.changed_roles:
-                if r.id == staff_role_id:
-                    continue
-                if bot_role_ids and r.id in bot_role_ids:
-                    continue
-                if channel.overwrites_for(r).send_messages:
-                    roles.append(r.id)
+        # Take a snapshot of current channel state before making any changes
+        if ctx.guild.id not in self.snapshots:
+            self.snapshots[ctx.guild.id] = {}
+        self.snapshots[ctx.guild.id][channel.id] = channel.overwrites
+
+        roles = []
+        if (
+            not channel.permissions_for(ctx.guild.default_role).read_messages
+            or not channel.permissions_for(ctx.guild.default_role).send_messages
+        ):
+            ids = [y.id for y in list(channel.overwrites.keys())]
+            for x in get_config(ctx.guild.id, "misc", "authorized_roles"):
+                if x in ids and channel.permissions_for(ctx.guild.get_role(x)).send_messages:
+                    roles.append(x)
+            if not roles:
+                for r in channel.changed_roles:
+                    if r.id == staff_role_id:
+                        continue
+                    if bot_role_ids and r.id in bot_role_ids:
+                        continue
+                    if channel.permissions_for(r).send_messages:
+                        roles.append(r.id)
         else:
-            roles = [ctx.guild.default_role.id]
+            roles.append(ctx.guild.default_role.id)
 
         for role in roles:
             await self.set_sendmessage(channel, role, False, ctx.author)
@@ -85,15 +95,15 @@ class ModLocks(Cog):
         if not channel:
             channel = ctx.channel
         mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
-        staff_role_id = get_config(ctx.guild.id, "staff", "staff_role")
-        bot_role_ids = get_config(ctx.guild.id, "misc", "bot_roles")
 
-        roles = [ctx.guild.default_role.id]
+        # Restore from snapshot state.
+        overwrites = self.snapshots[ctx.guild.id][channel.id]
+        for o, p in overwrites.items():
+            try:
+                await channel.set_permissions(o, overwrite=p)
+            except:
+                continue
 
-        await self.unlock_for_staff(channel, ctx.author)
-
-        for role in roles:
-            await self.set_sendmessage(channel, role, None, ctx.author)
         await ctx.send("🔓 Channel unlocked.")
         if mlog:
             msg = f"🔓 **Unlock**: {ctx.channel.mention} by {ctx.author}"
