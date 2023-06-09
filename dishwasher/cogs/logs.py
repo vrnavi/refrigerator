@@ -300,7 +300,7 @@ class Logs2(Cog):
             return
 
         userlog(
-            member.guild.id,
+            guild.id,
             member.id,
             alog[0].user,
             f"Banned by external method.",
