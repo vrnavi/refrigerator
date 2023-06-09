@@ -39,6 +39,7 @@ initial_cogs = [
     "cogs.mod_timed",
     "cogs.mod_toss",
     "cogs.mod_watch",
+    "cogs.sv_configs",
     "cogs.basic",
     "cogs.oneshot",
     "cogs.logs",
@@ -56,87 +57,6 @@ initial_cogs = [
 # This section is for various API keys.
 # [cogs.messagescan] DeepL Translator API key.
 deepl_key = "key_goes_here"
-
-# Specific server configuration.
-guild_configs = {
-    # OneShot Discord
-    256926147827335170: {
-        "logs": {
-            # Thread for moderation logs.
-            "mlog_thread": 1095159750674624583,
-            # Thread for server logs.
-            "slog_thread": 1095159988814626966,
-            # Thread for user logs.
-            "ulog_thread": 1095160504470736987,
-        },
-        "staff": {
-            # Staff role.
-            "staff_role": 259199371361517569,
-            # Ex-Staff role.
-            "exstaff_role": 491431570251579412,
-            # Staff channel.
-            "staff_channel": 256964111626141706,
-            # Rules link.
-            "rules_url": "<#989959323771895880>",
-            # Appeal link.
-            "appeal_url": "https://os.whistler.page/appeal",
-            # [cogs.appeal] Ban appeal channel.
-            "ban_appeal_channel": 402019542345449472,
-            # [cogs.appeal] Ban appeal webhook ID.
-            "ban_appeal_webhook_id": 402016472878284801,
-            # [cogs.mod_watch] Channel for tracking watched users.
-            "tracker_channel": 1095559009152536626,
-        },
-        "toss": {
-            "toss_role": 257050851611377666,
-            "toss_channel": 257049714577506305,
-            "toss_channels": [
-                "basement",
-                "abyss",
-                "recycle-bin",
-                "out-of-bounds",
-            ],
-        },
-        "archive": {
-            "drive_folder": "folder_goes_here",
-            "unroleban_expiry": 180,
-        },
-        "antiraid": {
-            # [cogs.mod_antiraid] Announcement channels. Set to "all" for all.
-            "announce_channels": [256926147827335170],
-            # [cogs.mod_antiraid] Mention threshold.
-            "mention_threshold": 5,
-            # [cogs.mod_antiraid] Recent join threshold.
-            "join_threshold": 20,
-        },
-        "surveyr": {
-            # [cogs.surveyr] Survey channel, where all events are posted.
-            "survey_channel": 260000723398295552,
-            # [cogs.surveyr] What to log.
-            "log_types": ["kick", "ban"],
-            # [cogs.surveyr] What case number to start from.
-            "start_case": 0,
-        },
-        "misc": {
-            # [cogs.mod_locks/cogs.mod_antiraid] "Authorized" roles.
-            "authorized_roles": [303555716109565955],
-            # [cogs.mod_locks] "Bot" roles.
-            "bot_roles": [256985367977263105],
-            # [cogs.cotd] CoTD role.
-            "cotd_role": 534976600454725632,
-            # [cogs.cotd] CoTD name.
-            "cotd_name": "Fluctuating Phosphor",
-            # [cogs.reply] No Reply Pings role.
-            "noreply_role": 1059460475588448416,
-            # [cogs.messagescan] Embedding fixes enabled?
-            "embed_enable": True,
-            # [cogs.messagescan] Translation enabled?
-            "translate_enable": True,
-            # [cogs.burstreacts] Burstreacts enabled?
-            "burstreacts_enable": True,
-        },
-    }
-}
 
 # Channels that will be cleaned every minute/hour.
 minutely_clean_channels = []
