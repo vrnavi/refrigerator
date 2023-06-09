@@ -38,7 +38,7 @@ class sv_config(Cog):
             lines = ""
             for k, v in s.items():
                 f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
-                if not v and str(v) != "False":
+                if not v and str(v) != "False" and str(v) != "None":
                     v = f"Not Configured ({type(v).__name__})"
                 if str(v) == "None":
                     v = "Forcibly Disabled"
