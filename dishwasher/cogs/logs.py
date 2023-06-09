@@ -399,7 +399,7 @@ class Logs2(Cog):
                 role_changed = True
 
         name_changed = False
-        if member_before != member_after:
+        if str(member_before) != str(member_after):
             name_changed = True
         nick_changed = False
         if member_before.nick != member_after.nick:
