@@ -1,5 +1,5 @@
 import config
-from sv_config import get_config
+from helpers.sv_config import get_config
 
 
 def check_if_staff(ctx):
