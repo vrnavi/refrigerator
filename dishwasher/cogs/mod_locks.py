@@ -56,7 +56,10 @@ class ModLocks(Cog):
         ):
             ids = [y.id for y in list(channel.overwrites.keys())]
             for x in get_config(ctx.guild.id, "misc", "authorized_roles"):
-                if x in ids and channel.permissions_for(ctx.guild.get_role(x)).send_messages:
+                if (
+                    x in ids
+                    and channel.permissions_for(ctx.guild.get_role(x)).send_messages
+                ):
                     roles.append(x)
             if not roles:
                 for r in channel.changed_roles:
@@ -81,7 +84,7 @@ class ModLocks(Cog):
                 '**Do not** bring the topic to other channels or risk action taken. This includes "What happened?" messages.'
             )
 
-        await ctx.send(public_msg)
+        await ctx.reply(public_msg, mention_author=False)
         if mlog:
             msg = f"🔒 **Lockdown**: {ctx.channel.mention} by {ctx.author}"
             mlog = await self.bot.fetch_channel(mlog)
@@ -104,7 +107,7 @@ class ModLocks(Cog):
             except:
                 continue
 
-        await ctx.send("🔓 Channel unlocked.")
+        await ctx.reply("🔓 Channel unlocked.", mention_author=False)
         if mlog:
             msg = f"🔓 **Unlock**: {ctx.channel.mention} by {ctx.author}"
             mlog = await self.bot.fetch_channel(mlog)
