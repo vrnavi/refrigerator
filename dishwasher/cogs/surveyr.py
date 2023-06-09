@@ -254,7 +254,7 @@ class Surveyr(Cog):
                 action=discord.AuditLogAction.kick,
             ):
                 if log.target.id == member.id:
-                    entry = e
+                    entry = log
                     break
             if entry:
                 break
@@ -312,7 +312,7 @@ class Surveyr(Cog):
                 action=discord.AuditLogAction.ban,
             ):
                 if log.target.id == member.id:
-                    entry = e
+                    entry = log
                     break
             if entry:
                 break
@@ -383,7 +383,7 @@ class Surveyr(Cog):
                 action=discord.AuditLogAction.unban,
             ):
                 if log.target.id == member.id:
-                    entry = e
+                    entry = log
                     break
             if entry:
                 break
