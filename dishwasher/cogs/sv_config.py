@@ -91,7 +91,7 @@ class sv_config(Cog):
                 value = ""
             set_config(ctx.guild.id, category, setting, value)
             return await ctx.reply(
-                content=f"**{category.title()}/**{setting} has been updated with a new value of `{value}`.",
+                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
                 mention_author=False,
             )
         elif settingtype == "int":
@@ -100,7 +100,7 @@ class sv_config(Cog):
             try:
                 set_config(ctx.guild.id, category, setting, int(value))
                 return await ctx.reply(
-                    content=f"**{category.title()}/**{setting} has been updated with a new value of `{value}`.",
+                    content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
                     mention_author=False,
                 )
             except ValueError:
@@ -116,7 +116,7 @@ class sv_config(Cog):
                         ctx.guild.id, category, setting, pre_cfg + value.split()[1:]
                     )
                     return await ctx.reply(
-                        content=f"**{category.title()}/**{setting} has been updated with a new value of `{pre_cfg + value.split()[1:]}`.",
+                        content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{pre_cfg + value.split()[1:]}`.",
                         mention_author=False,
                     )
                 elif value.split()[0] == "remove":
@@ -134,19 +134,19 @@ class sv_config(Cog):
                         pre_cfg.remove(v)
                         set_config(ctx.guild.id, category, setting, pre_cfg)
                     return await ctx.reply(
-                        content=f"**{category.title()}/**{setting} has been updated with a new value of `{pre_cfg}`.",
+                        content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{pre_cfg}`.",
                         mention_author=False,
                     )
                 else:
                     set_config(ctx.guild.id, category, setting, value.split())
                     return await ctx.reply(
-                        content=f"**{category.title()}/**{setting} has been updated with a new value of `{value.split()}`.",
+                        content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value.split()}`.",
                         mention_author=False,
                     )
             else:
                 set_config(ctx.guild.id, category, setting, [])
                 return await ctx.reply(
-                    content=f"**{category.title()}/**{setting} has been updated with a new value of `[]`.",
+                    content=f"**{category.title()}/**`{setting}` has been updated with a new value of `[]`.",
                     mention_author=False,
                 )
         elif settingtype == "bool":
@@ -155,6 +155,13 @@ class sv_config(Cog):
                     content="This setting requires a `bool` to be given.\nYou can supply `true` or `false`.",
                     mention_author=False,
                 )
+            if setting == "enable":
+                for k, v in configs[category].items():
+                    if not v:
+                        return await ctx.reply(
+                            content="This feature cannot be enabled unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
+                            mention_author=False,
+                        )
             set_config(
                 ctx.guild.id,
                 category,
@@ -162,7 +169,7 @@ class sv_config(Cog):
                 True if value.title() == "True" else False,
             )
             return await ctx.reply(
-                content=f"**{category.title()}/**{setting} has been updated with a new value of `{value}`.",
+                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
                 mention_author=False,
             )
 
