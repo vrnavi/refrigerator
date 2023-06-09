@@ -1,5 +1,5 @@
 import json
-from discord import Member
+import discord
 import datetime
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
