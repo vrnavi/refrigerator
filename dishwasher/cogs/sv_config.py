@@ -53,7 +53,7 @@ class sv_config(Cog):
     @commands.check(check_if_bot_manager)
     @configs.command()
     async def reset(self, ctx, guild: discord.Guild = None):
-        """[S] Resets the configuration for a guild."""
+        """[O] Resets the configuration for a guild."""
         if not guild:
             guild = ctx.guild
         make_configs(guild.id)
@@ -65,7 +65,7 @@ class sv_config(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @configs.command()
-    async def set(self, ctx, category, setting, *, value=None):
+    async def set(self, ctx, category, setting, *, value = None):
         """[S] Sets the configuration for a guild."""
         configs = fill_config(ctx.guild.id)
         category = category.lower()
@@ -172,6 +172,45 @@ class sv_config(Cog):
                 content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
                 mention_author=False,
             )
+            
+    @commands.check(check_if_bot_manager)
+    @configs.command()
+    async def disable(self, ctx, guild: discord.Guild, category, setting):
+        """[O] Forcibly disables a setting for a guild."""
+        if category not in configs or setting not in configs[category]:
+            configs = set_config(
+                ctx.guild.id, category, setting, stock_configs[category][setting]
+            )
+        set_config(ctx.guild.id, category, setting, None)
+        return await ctx.reply(
+            content=f"{guild}'s **{category.title()}/**`{setting}` has been DISABLED.",
+            mention_author=False,
+        )
+            
+    @commands.check(check_if_bot_manager)
+    @configs.command()
+    async def enable(self, ctx, guild: discord.Guild, category, setting):
+        """[O] Forcibly enables a setting for a guild."""
+        if category not in configs or setting not in configs[category]:
+            configs = set_config(
+                ctx.guild.id, category, setting, stock_configs[category][setting]
+            )
+        defaults = {
+            "str": "",
+            "bool": False,
+            "int": 0,
+            "list": [],
+        }
+        set_config(ctx.guild.id, category, setting, defaults[type(configs[category][setting]).__name__])
+        return await ctx.reply(
+            content=f"{guild}'s **{category.title()}/**`{setting}` has been ENABLED.",
+            mention_author=False,
+        )
+        
+        
+            
+        
+        
 
 
 async def setup(bot: Bot):
