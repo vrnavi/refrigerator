@@ -80,16 +80,29 @@ class sv_config(Cog):
                 configs = set_config(
                     ctx.guild.id, category, setting, stock_configs[category][setting]
                 )
+        if configs[category][setting] == None:
+            return await ctx.reply(
+                content="This setting has been administratively disabled by the bot owner.",
+                mention_author=True,
+            )
         settingtype = type(configs[category][setting]).__name__
         if settingtype == "str":
             if not value:
                 value = ""
             set_config(ctx.guild.id, category, setting, value)
+            return await ctx.reply(
+                content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{value}`.",
+                mention_author=False,
+            )
         elif settingtype == "int":
             if not value:
                 value = 0
             try:
                 set_config(ctx.guild.id, category, setting, int(value))
+                return await ctx.reply(
+                    content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{value}`.",
+                    mention_author=False,
+                )
             except ValueError:
                 return await ctx.reply(
                     content="This setting requires an `int` to be given.\nYou can supply numbers only.",
@@ -124,16 +137,6 @@ class sv_config(Cog):
                         content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `{pre_cfg}`.",
                         mention_author=False,
                     )
-                elif value == "clear":
-                    if not pre_cfg:
-                        return await ctx.reply(
-                            content="There is nothing to clear.", mention_author=False
-                        )
-                    set_config(ctx.guild.id, category, setting, [])
-                    return await ctx.reply(
-                        content=f"**{category.title()}/**{setting.title()} has been cleared.",
-                        mention_author=False,
-                    )
                 else:
                     set_config(ctx.guild.id, category, setting, value.split())
                     return await ctx.reply(
@@ -141,8 +144,9 @@ class sv_config(Cog):
                         mention_author=False,
                     )
             else:
+                set_config(ctx.guild.id, category, setting, [])
                 return await ctx.reply(
-                    content=f"To set this directly, simply supply a list of values separated by spaces.\nYou can add or remove specific items by prefixing your given list with `add` or `remove`.\nYou can also clear the list by supplying a value of `clear`.",
+                    content=f"**{category.title()}/**{setting.title()} has been updated with a new value of `[]`.",
                     mention_author=False,
                 )
         elif settingtype == "bool":
