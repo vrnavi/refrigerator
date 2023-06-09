@@ -1,7 +1,7 @@
 import json
 import os
 import datetime
-import config
+from helpers.sv_config import get_config
 
 surveyr_event_types = {
     "bans": "Ban",
@@ -40,7 +40,7 @@ def new_survey(sid, uid, mid, iid, reason, event):
     )
 
     cid = (
-        config.guild_configs[sid]["surveyr"]["start_case"]
+        get_config(sid, "surveyr", "start_case")
         if len(surveys.keys()) == 0
         else int(list(surveys)[-1]) + 1
     )

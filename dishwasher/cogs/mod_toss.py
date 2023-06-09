@@ -334,7 +334,7 @@ class ModToss(Cog):
             LAST_UNROLEBAN.set(
                 member.guild.id,
                 member.id,
-                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
+                datetime.utcnow().replace(tzinfo=timezone.utc),
             )
 
     @Cog.listener()
@@ -343,7 +343,7 @@ class ModToss(Cog):
             LAST_UNROLEBAN.set(
                 after.guild.id,
                 after.id,
-                datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc),
+                datetime.utcnow().replace(tzinfo=timezone.utc),
             )
 
 
