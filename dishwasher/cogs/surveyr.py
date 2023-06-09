@@ -236,10 +236,9 @@ class Surveyr(Cog):
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_ready()
-        if (
-            not get_config(member.guild.id, "surveyr", "enable")
-            or "kick" not in get_config(member.guild.id, "surveyr", "log_types")
-        ):
+        if not get_config(
+            member.guild.id, "surveyr", "enable"
+        ) or "kick" not in get_config(member.guild.id, "surveyr", "log_types"):
             return
         guild = member.guild
         survey_channel = get_config(member.guild.id, "surveyr", "survey_channel")
@@ -295,9 +294,8 @@ class Surveyr(Cog):
     @Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
-        if (
-            not get_config(guild.id, "surveyr", "enable")
-            or "ban" not in get_config(guild.id, "surveyr", "log_types")
+        if not get_config(guild.id, "surveyr", "enable") or "ban" not in get_config(
+            guild.id, "surveyr", "log_types"
         ):
             return
         survey_channel = get_config(guild.id, "surveyr", "survey_channel")

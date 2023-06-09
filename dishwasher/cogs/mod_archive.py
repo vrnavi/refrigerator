@@ -180,7 +180,7 @@ class ModArchive(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["archives"])
     async def archive(self, ctx, *, args=""):
-        if not get_config(ctx.guild.id, "archive", "enabled"):
+        if not get_config(ctx.guild.id, "archive", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
             "data/service_account.json", "https://www.googleapis.com/auth/drive"
