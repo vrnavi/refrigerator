@@ -101,9 +101,12 @@ class ModLocks(Cog):
 
         # Restore from snapshot state.
         overwrites = self.snapshots[ctx.guild.id][channel.id]
-        for o, p in overwrites.items():
+        for o, p in channel.overwrites.items():
             try:
-                await channel.set_permissions(o, overwrite=p)
+                if o in overwrites:
+                    await channel.set_permissions(o, overwrite=overwrites[o])
+                else:
+                    await channel.set_permissions(o, overwrite=None)
             except:
                 continue
 
