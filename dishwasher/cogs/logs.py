@@ -7,7 +7,7 @@ import datetime
 import os
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog, get_userlog
-from helpers.configs import get_log_config
+from helpers.sv_config import get_config
 from helpers.embeds import make_embed
 
 
@@ -22,10 +22,10 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
-        if not get_log_config(member.guild.id, "ulog_thread"):
+        if not get_config(member.guild.id, "logs", "ulog_thread"):
             return
         ulog = await self.bot.fetch_channel(
-            get_log_config(member.guild.id, "ulog_thread")
+            get_config(member.guild.id, "logs", "ulog_thread")
         )
 
         # Deal with unreadable names before anything.
@@ -136,11 +136,11 @@ class Logs2(Cog):
             after.author.bot
             or not after.guild
             or before.clean_content == after.clean_content
-            or not get_log_config(after.guild.id, "ulog_thread")
+            or not get_config(after.guild.id, "logs", "ulog_thread")
         ):
             return
         ulog = await self.bot.fetch_channel(
-            get_log_config(after.guild.id, "ulog_thread")
+            get_config(after.guild.id, "logs", "ulog_thread")
         )
 
         # Prepare embed msg
@@ -216,11 +216,11 @@ class Logs2(Cog):
         if (
             message.author.bot
             or not message.guild
-            or not get_log_config(message.guild.id, "ulog_thread")
+            or not get_config(message.guild.id, "logs", "ulog_thread")
         ):
             return
         ulog = await self.bot.fetch_channel(
-            get_log_config(message.guild.id, "ulog_thread")
+            get_config(message.guild.id, "logs", "ulog_thread")
         )
 
         embed = make_embed(self.bot, "msg_delete", message=message)
@@ -229,8 +229,8 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_ready()
-        ulog = get_log_config(member.guild.id, "ulog_thread")
-        mlog = get_log_config(member.guild.id, "mlog_thread")
+        ulog = get_config(member.guild.id, "logs", "ulog_thread")
+        mlog = get_config(member.guild.id, "logs", "mlog_thread")
         if not ulog and not mlog:
             return
 
@@ -307,7 +307,7 @@ class Logs2(Cog):
             "bans",
         )
 
-        mlog = get_log_config(guild.id, "mlog_thread")
+        mlog = get_config(guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -325,7 +325,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_member_unban(self, guild, user):
         await self.bot.wait_until_ready()
-        mlog = get_log_config(guild.id, "mlog_thread")
+        mlog = get_config(guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -351,7 +351,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_member_update(self, member_before, member_after):
         await self.bot.wait_until_ready()
-        ulog = get_log_config(member_after.guild.id, "ulog_thread")
+        ulog = get_config(member_after.guild.id, "logs", "ulog_thread")
         if not ulog:
             return
         ulog = await self.bot.fetch_channel(ulog)
@@ -399,7 +399,7 @@ class Logs2(Cog):
                 role_changed = True
 
         name_changed = False
-        if member_before.name != member_after.name:
+        if member_before != member_after:
             name_changed = True
         nick_changed = False
         if member_before.nick != member_after.nick:
@@ -421,7 +421,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_update(self, guild_before, guild_after):
         await self.bot.wait_until_ready()
-        slog = get_log_config(guild_after.id, "slog_thread")
+        slog = get_config(guild_after.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)
@@ -464,7 +464,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_channel_create(self, channel):
         await self.bot.wait_until_ready()
-        slog = get_log_config(channel.guild.id, "slog_thread")
+        slog = get_config(channel.guild.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)
@@ -485,7 +485,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_channel_delete(self, channel):
         await self.bot.wait_until_ready()
-        slog = get_log_config(channel.guild.id, "slog_thread")
+        slog = get_config(channel.guild.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)
@@ -506,7 +506,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_channel_update(self, channel_before, channel_after):
         await self.bot.wait_until_ready()
-        slog = get_log_config(channel_after.guild.id, "slog_thread")
+        slog = get_config(channel_after.guild.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)
@@ -550,7 +550,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_role_create(self, role):
         await self.bot.wait_until_ready()
-        slog = get_log_config(role.guild.id, "slog_thread")
+        slog = get_config(role.guild.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)
@@ -571,7 +571,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_role_delete(self, role):
         await self.bot.wait_until_ready()
-        slog = get_log_config(role.guild.id, "slog_thread")
+        slog = get_config(role.guild.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)
@@ -592,7 +592,7 @@ class Logs2(Cog):
     @Cog.listener()
     async def on_guild_role_update(self, role_before, role_after):
         await self.bot.wait_until_ready()
-        slog = get_log_config(role_after.guild.id, "slog_thread")
+        slog = get_config(role_after.guild.id, "logs", "slog_thread")
         if not slog:
             return
         slog = await self.bot.fetch_channel(slog)

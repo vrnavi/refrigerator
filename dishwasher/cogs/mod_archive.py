@@ -20,7 +20,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.store import DECISION_EMOTES, LAST_UNROLEBAN
-from helpers.configs import get_archive_config, config_check
+from helpers.sv_config import get_config
 
 
 class ModArchive(Cog):
@@ -101,10 +101,10 @@ class ModArchive(Cog):
         roleban = [
             r
             for r in member.guild.roles
-            if r.id == config.guild_configs[member.guild.id]["toss"]["toss_role"]
+            if r.id == get_config(member.guild.id, "toss", "toss_role")
         ]
         if roleban:
-            if config.guild_configs[member.guild.id]["toss"]["toss_role"] in [
+            if get_config(member.guild.id, "toss", "toss_role") in [
                 r.id for r in member.roles
             ]:
                 if hard:
@@ -194,7 +194,7 @@ class ModArchive(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["archives"])
     async def archive(self, ctx, *, args=""):
-        if not config_check(ctx.guild.id, "archive"):
+        if not get_config(ctx.guild.id, "archive", "enabled"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         credentials = ServiceAccountCredentials.from_json_keyfile_name(
             "data/service_account.json", "https://www.googleapis.com/auth/drive"
@@ -203,7 +203,7 @@ class ModArchive(Cog):
         gauth = GoogleAuth()
         gauth.credentials = credentials
         drive = GoogleDrive(gauth)
-        folder = config.guild_configs[ctx.guild.id]["archive"]["drive_folder"]
+        folder = get_config(ctx.guild.id, "archive", "drive_folder")
         message = ctx.message
 
         try:
@@ -211,10 +211,7 @@ class ModArchive(Cog):
         except:
             pass
 
-        if (
-            message.channel.name
-            in config.guild_configs[ctx.guild.id]["toss"]["toss_channels"]
-        ):
+        if message.channel.name in get_config(ctx.guild.id, "toss", "toss_channels"):
             out = await self.log_whole_channel(message.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
@@ -224,7 +221,7 @@ class ModArchive(Cog):
                 (not args)
                 and LAST_UNROLEBAN.isset(ctx.guild.id)
                 and LAST_UNROLEBAN.diff(ctx.guild.id, message.created_at)
-                < config.guild_configs[ctx.guild.id]["archive"]["unroleban_expiry"]
+                < get_config(ctx.guild.id, "archive", "unroleban_expiry")
             ):
                 args = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
                 LAST_UNROLEBAN.unset(ctx.guild.id)
@@ -254,7 +251,7 @@ class ModArchive(Cog):
             f.Upload()
 
             modch = self.bot.get_channel(
-                config.guild_configs[ctx.guild.id]["staff"]["staff_channel"]
+                get_config(message.guild.id, "staff", "staff_channel")
             )
 
             embed = discord.Embed(
@@ -337,7 +334,9 @@ class ModArchive(Cog):
 
     @Cog.listener()
     async def on_member_remove(self, member):
-        if config_check(member.guild.id, "archive") and self.is_rolebanned(member):
+        if get_config(member.guild.id, "archive", "enable") and self.is_rolebanned(
+            member
+        ):
             LAST_UNROLEBAN.set(
                 member.guild.id,
                 member.id,
@@ -347,7 +346,7 @@ class ModArchive(Cog):
     @Cog.listener()
     async def on_member_update(self, before, after):
         if (
-            config_check(after.guild.id, "archive")
+            get_config(after.guild.id, "archive", "enable")
             and self.is_rolebanned(before)
             and not self.is_rolebanned(after)
         ):

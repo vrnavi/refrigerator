@@ -10,12 +10,7 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
-from helpers.configs import (
-    get_toss_config,
-    get_staff_config,
-    get_log_config,
-    config_check,
-)
+from helpers.sv_config import get_config
 
 
 class ModToss(Cog):
@@ -53,15 +48,15 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["roleban"])
     async def toss(self, ctx, *, user_ids):
-        if not config_check(ctx.guild.id, "toss"):
+        if not get_config(ctx.guild.id, "toss", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
 
         toss_pings = ""
         toss_sends = ""
         online = False
-        staff_channel = get_staff_config(ctx.guild.id, "staff_channel")
-        modlog_channel = get_log_config(ctx.guild.id, "mlog_thread")
+        staff_channel = get_config(ctx.guild.id, "staff", "staff_channel")
+        modlog_channel = get_config(ctx.guild.id, "logs", "mlog_thread")
 
         for us in user_id_list:
             if us.id == ctx.author.id:
@@ -80,9 +75,11 @@ class ModToss(Cog):
 
             roles = []
             role_ids = []
-            toss_role = ctx.guild.get_role(get_toss_config(ctx.guild.id, "toss_role"))
+            toss_role = ctx.guild.get_role(
+                get_config(ctx.guild.id, "toss", "toss_role")
+            )
             toss_channel = ctx.guild.get_channel(
-                get_toss_config(ctx.guild.id, "toss_channel")
+                get_config(ctx.guild.id, "toss", "toss_channel")
             )
             for rx in us.roles:
                 if rx.name != "@everyone" and rx != toss_role:
@@ -226,10 +223,10 @@ class ModToss(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["unroleban"])
     async def untoss(self, ctx, *, user_ids):
-        if not config_check(ctx.guild.id, "toss"):
+        if not get_config(ctx.guild.id, "toss", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
-        staff_channel = get_staff_config(ctx.guild.id, "staff_channel")
+        staff_channel = get_config(ctx.guild.id, "staff", "staff_channel")
 
         for us in user_id_list:
             if us.id == self.bot.application_id:
@@ -251,7 +248,9 @@ class ModToss(Cog):
                     f"{us.name} is not currently tossed.", mention_author=False
                 )
 
-            toss_role = ctx.guild.get_role(get_toss_config(ctx.guild.id, "toss_role"))
+            toss_role = ctx.guild.get_role(
+                get_config(ctx.guild.id, "toss", "toss_role")
+            )
             roles_actual = []
             restored = ""
             for r in roles:
@@ -277,7 +276,7 @@ class ModToss(Cog):
             )
             if staff_channel:
                 await ctx.guild.get_channel(
-                    get_staff_config(ctx.guild.id, "staff_channel")
+                    get_config(ctx.guild.id, "staff", "staff_channel")
                 ).send(
                     f"**{us.name}**#{us.discriminator} has been untossed in {ctx.channel.mention} by {ctx.author.name}.\n**Roles Restored:** {restored}"
                 )

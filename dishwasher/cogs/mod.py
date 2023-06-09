@@ -9,7 +9,7 @@ import random
 from helpers.checks import check_if_staff, check_if_bot_manager
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
-from helpers.configs import get_staff_config, get_log_config
+from helpers.sv_config import get_config
 import io
 
 
@@ -21,7 +21,7 @@ class Mod(Cog):
 
     def check_if_target_is_staff(self, target):
         return any(
-            r.id == get_staff_config(target.guild.id, "staff_role")
+            r.id == get_config(target.guild.id, "staff", "staff_role")
             for r in target.roles
         )
 
@@ -34,7 +34,7 @@ class Mod(Cog):
         await ctx.guild.edit(icon=img_bytes, reason=str(ctx.author))
         await ctx.send(f"Done!")
 
-        slog = get_log_config(ctx.guild.id, "slog_thread")
+        slog = get_config(ctx.guild.id, "logs", "slog_thread")
         if slog:
             slog = await self.bot.fetch_channel(slog)
             log_msg = (
@@ -82,7 +82,7 @@ class Mod(Cog):
         await target.kick(reason=f"[ Kick by {ctx.author} ] {reason}")
         await ctx.send(f"**{target.mention}** was KICKED.")
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -168,7 +168,7 @@ class Mod(Cog):
         )
         await ctx.send(f"**{target.mention}** is now BANNED.")
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -246,8 +246,8 @@ class Mod(Cog):
             if reason:
                 dm_message += f'\n*The given reason is:* "{reason}".'
             appealmsg = (
-                f", but you may appeal it here:\n{get_staff_config(ctx.guild.id, 'appeal_url')}"
-                if get_staff_config(ctx.guild.id, "appeal_url")
+                f", but you may appeal it here:\n{get_config(ctx.guild.id, 'appeal', 'appeal_url')}"
+                if get_config(ctx.guild.id, "appeal", "appeal_url")
                 else "."
             )
             dm_message += f"\n\nThis ban does not expire{appealmsg}"
@@ -269,7 +269,7 @@ class Mod(Cog):
             f"**{target.mention}** is now BANNED.\n{day_count} days of messages were deleted."
         )
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -313,7 +313,7 @@ class Mod(Cog):
         """[S] Bans users with their IDs, doesn't message them."""
         msg = await ctx.send(f"🚨 **MASSBAN IN PROGRESS...** 🚨")
         targets_int = [int(target) for target in targets.strip().split(" ")]
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if mlog:
             mlog = await self.bot.fetch_channel(mlog)
         for target in targets_int:
@@ -390,7 +390,7 @@ class Mod(Cog):
         await ctx.guild.unban(target, reason=f"[ Unban by {ctx.author} ] {reason}")
         await ctx.send(f"{safe_name} is now UNBANNED.")
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -462,7 +462,7 @@ class Mod(Cog):
         )
         await ctx.send(f"{safe_name} is now silently BANNED.")
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -509,7 +509,7 @@ class Mod(Cog):
         deleted = len(await channel.purge(limit=limit))
         await ctx.send(f"🚮 `{deleted}` messages purged.", delete_after=5)
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -540,7 +540,7 @@ class Mod(Cog):
         deleted = len(await channel.purge(limit=limit, check=is_bot))
         await ctx.send(f"🚮 `{deleted}` bot messages purged.", delete_after=5)
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -577,7 +577,7 @@ class Mod(Cog):
         deleted = len(await channel.purge(limit=limit, check=is_mentioned))
         await ctx.send(f"🚮 `{deleted}` messages from {target} purged.", delete_after=5)
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -608,7 +608,7 @@ class Mod(Cog):
         deleted = len(await channel.purge(limit=limit, check=has_emote))
         await ctx.send(f"🚮 `{deleted}` emotes purged.", delete_after=5)
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -639,7 +639,7 @@ class Mod(Cog):
         deleted = len(await channel.purge(limit=limit, check=has_embed))
         await ctx.send(f"🚮 `{deleted}` embeds purged.", delete_after=5)
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -671,7 +671,7 @@ class Mod(Cog):
                 await msg.clear_reactions()
         await ctx.send(f"🚮 `{deleted}` reactions purged.", delete_after=5)
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)
@@ -744,7 +744,7 @@ class Mod(Cog):
                 f"🚮 `{deleted}` reactions interactively purged.", delete_after=5
             )
 
-            mlog = get_log_config(ctx.guild.id, "mlog_thread")
+            mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
             if not mlog:
                 return
             mlog = await self.bot.fetch_channel(mlog)
@@ -793,8 +793,8 @@ class Mod(Cog):
             if reason:
                 msg += "\nThe given reason is: " + reason
             rulesmsg = (
-                f" in {get_staff_config(ctx.guild.id, 'rules_url')}."
-                if get_staff_config(ctx.guild.id, "rules_url")
+                f" in {get_config(ctx.guild.id, 'staff', 'rules_url')}."
+                if get_config(ctx.guild.id, "staff", "rules_url")
                 else "."
             )
             msg += (
@@ -818,7 +818,7 @@ class Mod(Cog):
             ctx, str(target)
         )
 
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
         if not mlog:
             return
         mlog = await self.bot.fetch_channel(mlog)

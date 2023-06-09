@@ -7,18 +7,21 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import setwatch, get_userlog
 from helpers.placeholders import random_self_msg, random_bot_msg, create_log_embed
-from helpers.configs import get_staff_config, get_log_config, config_check
+from helpers.sv_config import get_config
 
 
 class ModWatch(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.nocfgmsg = "Watching isn't set up for this server."
 
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
     async def watch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Puts a user under watch."""
+        if not get_config(ctx.guild.id, "staff", "tracker_channel"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
         if target == ctx.author:
             return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
@@ -29,7 +32,7 @@ class ModWatch(Cog):
                 return await ctx.send("I cannot watch Staff members.")
 
         trackerlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["staff"]["tracker_channel"]
+            get_config(ctx.guild.id, "staff", "tracker_channel")
         )
         trackerthread = await trackerlog.create_thread(name=f"{target.name} Watchlog")
         embed = discord.Embed(
@@ -56,6 +59,8 @@ class ModWatch(Cog):
     @commands.command()
     async def unwatch(self, ctx, target: discord.User, *, note: str = ""):
         """[S] Removes a user from watch."""
+        if not get_config(ctx.guild.id, "staff", "tracker_channel"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
         if target == ctx.author:
             return await ctx.send(random_self_msg(ctx.author.name))
         elif target == self.bot.user:
@@ -72,7 +77,7 @@ class ModWatch(Cog):
             )
             await trackerthread.edit(archived=True)
             trackerlog = await self.bot.fetch_channel(
-                config.guild_configs[ctx.guild.id]["staff"]["tracker_channel"]
+                get_config(ctx.guild.id, "staff", "tracker_channel")
             )
             trackermsg = await trackerlog.fetch_message(
                 userlog[str(target.id)]["watch"]["message"]
@@ -91,7 +96,7 @@ class ModWatch(Cog):
         if (
             not message.content
             or not message.guild
-            or not get_staff_config(message.guild.id, "tracker_channel")
+            or not get_config(message.guild.id, "staff", "tracker_channel")
         ):
             return
         userlog = get_userlog(message.guild.id)
@@ -101,7 +106,7 @@ class ModWatch(Cog):
                     userlog[str(message.author.id)]["watch"]["thread"]
                 )
                 trackermsg = await self.bot.get_channel(
-                    get_staff_config(message.guild.id, "tracker_channel")
+                    get_config(message.guild.id, "staff", "tracker_channel")
                 ).fetch_message(userlog[str(message.author.id)]["watch"]["message"])
                 threadembed = discord.Embed(
                     color=message.author.color,

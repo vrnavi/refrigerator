@@ -6,7 +6,7 @@ import re
 import datetime
 import random
 from helpers.checks import check_if_staff
-from helpers.configs import get_misc_config, config_check
+from helpers.sv_config import get_config
 
 
 class Cotd(Cog):
@@ -27,8 +27,8 @@ class Cotd(Cog):
 
     async def roll_colors(self, guild):
         color = random.choice(self.colors)
-        cotd_name = get_misc_config(guild.id, "cotd_name")
-        cotd_role = guild.get_role(get_misc_config(guild.id, "cotd_role"))
+        cotd_name = get_config(guild.id, "cotd", "cotd_name")
+        cotd_role = guild.get_role(get_config(guild.id, "cotd", "cotd_role"))
         await cotd_role.edit(
             name=f'{cotd_name} - {color["name"]}',
             color=discord.Colour.from_str(color["hex"]),
@@ -44,9 +44,9 @@ class Cotd(Cog):
     @commands.guild_only()
     @commands.command()
     async def cotd(self, ctx):
-        if not config_check(ctx.guild.id, "cotd"):
+        if not get_config(ctx.guild.id, "cotd", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
-        cotd_role = ctx.guild.get_role(get_misc_config(ctx.guild.id, "cotd_role"))
+        cotd_role = ctx.guild.get_role(get_config(ctx.guild.id, "cotd", "cotd_role"))
         inlist = False
         cotdlist = ""
         for i in self.colors:
@@ -72,7 +72,7 @@ class Cotd(Cog):
     @commands.guild_only()
     @commands.command()
     async def voteskip(self, ctx):
-        if not config_check(ctx.guild.id, "cotd"):
+        if not get_config(ctx.guild.id, "cotd", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
 
         if ctx.guild.id in self.voteskip_cooldown:
@@ -120,18 +120,18 @@ class Cotd(Cog):
     @commands.check(check_if_staff)
     @commands.command()
     async def reroll(self, ctx):
-        if not config_check(ctx.guild.id, "cotd"):
+        if not get_config(ctx.guild.id, "cotd", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         color = await self.roll_colors(ctx.guild)
         await ctx.reply(
             content=f"The CoTD has been changed to **{color['name']}** *{color['hex']}*."
         )
 
-    @tasks.loop(time=[datetime.time(hour=x) for x in range(0, 23)])
+    @tasks.loop(time=[datetime.time(hour=x) for x in range(0, 24)])
     async def colortimer(self):
         await self.bot.wait_until_ready()
         for g in self.bot.guilds:
-            if config_check(g.id, "cotd"):
+            if get_config(g.id, "cotd", "enable"):
                 if g.id not in self.voteskip:
                     self.voteskip[g.id] = []
                 if self.voteskip[g.id] and self.precedence_check(g):

@@ -7,7 +7,7 @@ import datetime
 import asyncio
 import os
 from helpers.checks import check_if_staff
-from helpers.configs import get_surveyr_config, config_check
+from helpers.sv_config import get_config
 from helpers.surveyr import surveyr_event_types, new_survey, edit_survey, get_surveys
 
 
@@ -41,7 +41,7 @@ class Surveyr(Cog):
     @commands.command(invoke_without_command=True, aliases=["s"])
     async def survey(self, ctx):
         """[S] Invokes Surveyr."""
-        if not config_check(ctx.guild.id, "surveyr"):
+        if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         surveys = get_surveys(ctx.guild.id)
         if not surveys:
@@ -64,7 +64,7 @@ class Surveyr(Cog):
     @commands.command(aliases=["r"])
     async def reason(self, ctx, caseids: str, *, reason: str):
         """[S] Edits case reasons."""
-        if not config_check(ctx.guild.id, "surveyr"):
+        if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
         if not cases:
@@ -89,7 +89,7 @@ class Surveyr(Cog):
             try:
                 survey = get_surveys(ctx.guild.id)[str(case)]
                 msg = await ctx.guild.get_channel(
-                    get_surveyr_config(ctx.guild.id, "survey_channel")
+                    get_config(ctx.guild.id, "surveyr", "survey_channel")
                 ).fetch_message(survey["post_id"])
 
                 edit_survey(
@@ -117,7 +117,7 @@ class Surveyr(Cog):
     @commands.command(aliases=["c"])
     async def censor(self, ctx, caseids: str):
         """[S] Censors cases."""
-        if not config_check(ctx.guild.id, "surveyr"):
+        if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
         if not cases:
@@ -146,7 +146,7 @@ class Surveyr(Cog):
                     "`" + " " * len(member.name) + "`#" + member.discriminator
                 )
                 msg = await ctx.guild.get_channel(
-                    get_surveyr_config(ctx.guild.id, "survey_channel")
+                    get_config(ctx.guild.id, "surveyr", "survey_channel")
                 ).fetch_message(survey["post_id"])
                 content = msg.content.split("\n")
                 content[1] = f"**User:** {censored_member} ({member.id})"
@@ -165,7 +165,7 @@ class Surveyr(Cog):
     @commands.command(aliases=["u"])
     async def uncensor(self, ctx, caseids: str):
         """[S] Uncensors cases."""
-        if not config_check(ctx.guild.id, "surveyr"):
+        if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
         if not cases:
@@ -191,7 +191,7 @@ class Surveyr(Cog):
                 survey = get_surveys(ctx.guild.id)[str(case)]
                 member = await self.bot.fetch_user(survey["target_id"])
                 msg = await ctx.guild.get_channel(
-                    get_surveyr_config(ctx.guild.id, "survey_channel")
+                    get_config(ctx.guild.id, "surveyr", "survey_channel")
                 ).fetch_message(survey["post_id"])
                 content = msg.content.split("\n")
                 content[1] = f"**User:** {member} ({member.id})"
@@ -209,7 +209,7 @@ class Surveyr(Cog):
     @commands.command(aliases=["d"])
     async def dump(self, ctx, caseids: str):
         """[S] Dumps userids from cases."""
-        if not config_check(ctx.guild.id, "surveyr"):
+        if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         cases = self.case_handler(caseids, get_surveys(ctx.guild.id))
         if not cases:
@@ -237,12 +237,12 @@ class Surveyr(Cog):
     async def on_member_remove(self, member):
         await self.bot.wait_until_ready()
         if (
-            not config_check(member.guild.id, "surveyr")
+            not get_config(member.guild.id, "surveyr", "enable")
             or "kicks" not in surveyr_event_types
         ):
             return
         guild = member.guild
-        survey_channel = get_surveyr_config(guild.id, "survey_channel")
+        survey_channel = get_config(member.guild.id, "surveyr", "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
         entry = None
@@ -295,9 +295,12 @@ class Surveyr(Cog):
     @Cog.listener()
     async def on_member_ban(self, guild, member):
         await self.bot.wait_until_ready()
-        if not config_check(guild.id, "surveyr") or "bans" not in surveyr_event_types:
+        if (
+            not get_config(guild.id, "surveyr", "enable")
+            or "bans" not in surveyr_event_types
+        ):
             return
-        survey_channel = get_surveyr_config(guild.id, "survey_channel")
+        survey_channel = get_config(guild.id, "surveyr", "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
         entry = None
@@ -363,9 +366,12 @@ class Surveyr(Cog):
     @Cog.listener()
     async def on_member_unban(self, guild, member):
         await self.bot.wait_until_ready()
-        if not config_check(guild.id, "surveyr") or "unbans" not in surveyr_event_types:
+        if (
+            not get_config(guild.id, "surveyr", "enable")
+            or "unbans" not in surveyr_event_types
+        ):
             return
-        survey_channel = get_surveyr_config(guild.id, "survey_channel")
+        survey_channel = get_config(guild.id, "surveyr", "survey_channel")
 
         # Waiting for Discord's mistimed audit log entry.
         entry = None

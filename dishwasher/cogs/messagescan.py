@@ -7,7 +7,7 @@ import deepl
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
 from helpers.checks import check_if_staff, check_if_bot_manager
-from helpers.configs import get_misc_config
+from helpers.sv_config import get_config
 
 
 class Messagescan(Cog):
@@ -183,7 +183,7 @@ class Messagescan(Cog):
             or message.author.bot
             or not message.guild
             or not message.channel.permissions_for(message.author).embed_links
-            or not get_misc_config(message.guild.id, "embed_enable")
+            or not get_config(message.guild.id, "misc", "embed_enable")
         ):
             return
 
@@ -304,7 +304,7 @@ class Messagescan(Cog):
             user.bot
             or str(reaction) not in self.langs
             or reaction.count != 1
-            or not get_misc_config(reaction.message.guild.id, "translate_enable")
+            or not get_config(reaction.message.guild.id, "misc", "translate_enable")
         ):
             return
 

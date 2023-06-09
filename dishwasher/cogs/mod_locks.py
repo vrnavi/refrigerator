@@ -2,7 +2,7 @@ from discord.ext import commands
 from discord.ext.commands import Cog
 import discord
 from helpers.checks import check_if_staff
-from helpers.configs import get_staff_config, get_log_config, get_misc_config
+from helpers.sv_config import get_config
 
 
 class ModLocks(Cog):
@@ -25,7 +25,7 @@ class ModLocks(Cog):
     async def unlock_for_staff(self, channel: discord.TextChannel, issuer):
         await self.set_sendmessage(
             channel,
-            get_staff_config(channel.guild.id, "staff_role"),
+            get_config(channel.guild.id, "staff", "staff_role"),
             True,
             issuer,
         )
@@ -39,14 +39,14 @@ class ModLocks(Cog):
         Defaults to current channel."""
         if not channel:
             channel = ctx.channel
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
-        staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
-        bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
+        staff_role_id = get_config(ctx.guild.id, "staff", "staff_role")
+        bot_role_ids = get_config(ctx.guild.id, "misc", "bot_roles")
 
         if not channel.permissions_for(
             ctx.guild.default_role
-        ).send_messages and get_misc_config(ctx.guild.id, "authorized_roles"):
-            roles = get_misc_config(ctx.guild.id, "authorized_roles")
+        ).send_messages and get_config(ctx.guild.id, "misc", "authorized_roles"):
+            roles = get_config(ctx.guild.id, "misc", "authorized_roles")
         elif not channel.permissions_for(ctx.guild.default_role).read_messages:
             roles = []
             for r in channel.changed_roles:
@@ -84,9 +84,9 @@ class ModLocks(Cog):
         """[S] Unlocks speaking in current channel."""
         if not channel:
             channel = ctx.channel
-        mlog = get_log_config(ctx.guild.id, "mlog_thread")
-        staff_role_id = get_staff_config(ctx.guild.id, "staff_role")
-        bot_role_ids = get_misc_config(ctx.guild.id, "bot_roles")
+        mlog = get_config(ctx.guild.id, "logs", "mlog_thread")
+        staff_role_id = get_config(ctx.guild.id, "staff", "staff_role")
+        bot_role_ids = get_config(ctx.guild.id, "misc", "bot_roles")
 
         roles = [ctx.guild.default_role.id]
 

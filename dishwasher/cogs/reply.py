@@ -6,7 +6,7 @@ import re
 import config
 import datetime
 from helpers.checks import check_if_staff
-from helpers.configs import get_misc_config, get_staff_config
+from helpers.sv_config import get_config
 
 
 class Reply(Cog):
@@ -34,15 +34,15 @@ class Reply(Cog):
             or not message.guild
             or not message.guild.get_member(reference_author.id)
             or reference_author.id == message.author.id
-            or not get_misc_config(message.guild.id, "noreply_role")
+            or not get_config(message.guild.id, "noreply", "enable")
             or reference_author.get_role(
-                get_misc_config(message.guild.id, "noreply_role")
+                get_config(message.guild.id, "noreply", "noreply_role")
             )
             is None
         ):
             return
 
-        staff_role = get_staff_config(message.guild.id, "staff_role")
+        staff_role = get_config(message.guild.id, "staff", "staff_role")
         if staff_role and message.author.get_role(staff_role):
             return
 

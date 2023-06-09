@@ -6,7 +6,7 @@ import config
 import discord
 import datetime
 from helpers.checks import check_if_staff
-from helpers.configs import get_antiraid_config, config_check
+from helpers.sv_config import get_config
 
 
 class ModAntiRaid(Cog):
@@ -19,14 +19,14 @@ class ModAntiRaid(Cog):
         self.nocfgmsg = "Antiraid isn't set up for this server."
 
     def cull_recent_member_cache(self, guild, ts=None):
-        if config.guild_configs[guild.id]["antiraid"]["join_threshold"] <= 0:
+        if get_config(guild.id, "antiraid", "join_threshold") <= 0:
             return
 
         if not ts:
             ts = datetime.datetime.now(datetime.timezone.utc)
 
         cutoff_ts = ts - datetime.timedelta(
-            seconds=config.guild_configs[guild.id]["antiraid"]["join_threshold"]
+            seconds=get_config(guild.id, "antiraid", "join_threshold")
         )
 
         self.mem_cache[guild.id] = [
@@ -96,13 +96,13 @@ class ModAntiRaid(Cog):
     async def announce_lockdown(self, channel_list, lockdown):
         guild = channel_list[0].guild
 
-        if not config.guild_configs[guild.id]["antiraid"]["announce_channels"]:
+        if not get_config(guild.id, "antiraid", "announce_channels"):
             return
 
         to_announce = channel_list
-        if config.guild_configs[guild.id]["antiraid"]["announce_channels"] != "all":
+        if get_config(guild.id, "antiraid", "announce_channels")[0] != "all":
             to_announce = []
-            for c in config.guild_configs[guild.id]["antiraid"]["announce_channels"]:
+            for c in get_config(guild.id, "antiraid", "announce_channels"):
                 to_announce.append(c)
 
         for c in to_announce:
@@ -140,9 +140,9 @@ class ModAntiRaid(Cog):
         try:
             allowed_roles = [
                 r
-                for r in config.guild_configs[channel_list[0].guild.id]["misc"][
-                    "authorized_roles"
-                ]
+                for r in get_config(
+                    channel_list[0].guild.id, "misc", "authorized_roles"
+                )
             ]
         except:
             allowed_roles = None
@@ -209,7 +209,7 @@ class ModAntiRaid(Cog):
 
         channel_list = self.get_public_channels(message.guild)
         staff_channel = message.guild.get_channel(
-            config.guild_configs[message.guild.id]["staff"]["staff_channel"]
+            get_config(message.guild.id, "staff", "staff_channel")
         )
         staff_channel_accessible = staff_channel.permissions_for(
             message.guild.me
@@ -218,10 +218,10 @@ class ModAntiRaid(Cog):
         if staff_channel_accessible:
             staff_announce_msg = f"{message.author.mention} ({message.author.id}) mentioned `{len(message.mentions)}` members in {message.channel.mention}."
 
-            if config.guild_configs[message.guild.id]["antiraid"]["join_threshold"] > 0:
+            if get_config(message.guild.id, "antiraid", "join_threshold") > 0:
                 self.cull_recent_member_cache(message.created_at)
                 staff_announce_msg += (
-                    f"\nMembers who joined in the last {config.guild_configs[message.guild.id]['antiraid']['join_threshold']} seconds: "
+                    f"\nMembers who joined in the last {get_config(message.guild.id, 'antiraid', 'join_threshold')} seconds: "
                     + " ".join([m.mention for m in self.mem_cache])
                 )
 
@@ -241,7 +241,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ml"])
     async def masslock(self, ctx, *, args=""):
-        if not config_check(ctx.guild.id, "antiraid"):
+        if not get_config(ctx.guild.id, "antiraid", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         channel_list = self.parse_channel_list(ctx.guild, args)
         if not channel_list:
@@ -255,7 +255,7 @@ class ModAntiRaid(Cog):
     @commands.check(check_if_staff)
     @commands.command(aliases=["ul"])
     async def massunlock(self, ctx, *, args=""):
-        if not config_check(ctx.guild.id, "antiraid"):
+        if not get_config(ctx.guild.id, "antiraid", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
         channel_list = self.parse_channel_list(ctx.guild, args)
         if not channel_list:
@@ -286,7 +286,7 @@ class ModAntiRaid(Cog):
             or message.author.bot
             or not message.content
             or not message.guild
-            or not config_check(message.guild.id, "antiraid")
+            or not get_config(message.guild.id, "antiraid", "enable")
         ):
             return
 
@@ -297,7 +297,7 @@ class ModAntiRaid(Cog):
 
         if (
             # Check auto-lockdown is enabled
-            config.guild_configs[message.guild.id]["antiraid"]["mention_threshold"] > 0
+            get_config(message.guild.id, "antiraid", "enable")
             # Check auto-lockdown not already in progress
             and not message.guild.id in self.in_progress
             # Check channel is public
@@ -306,13 +306,13 @@ class ModAntiRaid(Cog):
             and len(message.author.roles) == 1
             # Check that mention count exceeds threshold
             and len(message.mentions)
-            >= config.guild_configs[message.guild.id]["antiraid"]["mention_threshold"]
+            >= get_config(message.guild.id, "antiraid", "mention_threshold")
         ):
             await self.execute_auto_lockdown(message)
 
     @Cog.listener()
     async def on_member_join(self, member):
-        if not config_check(member.guild.id, "antiraid"):
+        if not get_config(member.guild.id, "antiraid", "enable"):
             return
         # In the event this happens before anyone sends a message.
         if member.guild.id not in self.mem_cache:

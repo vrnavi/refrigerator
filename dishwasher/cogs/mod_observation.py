@@ -5,7 +5,7 @@ import discord
 import datetime
 import asyncio
 from helpers.checks import check_if_staff
-from helpers.configs import get_staff_config
+from helpers.sv_config import get_config
 
 
 class ModObserve(Cog):
@@ -54,7 +54,7 @@ class ModObserve(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
-        if not get_staff_config(member.guild.id, "staff_channel"):
+        if not get_config(member.guild.id, "staff", "staff_channel"):
             return
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
@@ -89,7 +89,7 @@ class ModObserve(Cog):
                 name="🔍 First message:", value="Currently watching...", inline=False
             )
             callout = await member.guild.get_channel(
-                get_staff_config(member.guild.id, "staff_channel")
+                get_config(member.guild.id, "staff", "staff_channel")
             ).send(embed=embed)
 
             def check(m):
