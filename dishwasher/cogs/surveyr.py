@@ -24,7 +24,7 @@ class Surveyr(Cog):
     def case_handler(self, cases, surveys):
         if cases.isdigit():
             return [int(cases)]
-        elif cases == "l":
+        elif cases == "l" or cases == "latest":
             return [int(list(surveys)[-1])]
         else:
             try:

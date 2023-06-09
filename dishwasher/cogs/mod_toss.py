@@ -10,6 +10,7 @@ from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
+from helpers.store import LAST_UNROLEBAN
 from helpers.sv_config import get_config
 
 
@@ -222,9 +223,24 @@ class ModToss(Cog):
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["unroleban"])
-    async def untoss(self, ctx, *, user_ids):
+    async def untoss(self, ctx, *, user_ids=None):
         if not get_config(ctx.guild.id, "toss", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
+
+        if (
+            not user_ids
+            and get_config(ctx.guild.id, "archive", "enable")
+            and LAST_UNROLEBAN.isset(ctx.guild.id)
+            and LAST_UNROLEBAN.diff(ctx.guild.id, ctx.message.created_at)
+            < get_config(ctx.guild.id, "archive", "unroleban_expiry")
+        ):
+            user_ids = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
+        else:
+            return await ctx.reply(
+                content="There's nobody in the roleban cache, or `archive` is not enabled..\nYou'll need to untoss with a ping or ID.",
+                mention_author=False,
+            )
+
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         staff_channel = get_config(ctx.guild.id, "staff", "staff_channel")
 
