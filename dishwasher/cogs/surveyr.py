@@ -339,7 +339,9 @@ class Surveyr(Cog):
         caseid, timestamp = new_survey(
             guild.id, member.id, msg.id, user.id, reason, "bans"
         )
-        self.bancooldown[guild.id] = member.id
+        if guild.id not in self.bancooldown:
+            self.bancooldown[guild.id] = []
+        self.bancooldown[guild.id].append(member.id)
 
         await msg.edit(
             content=(
@@ -353,6 +355,7 @@ class Surveyr(Cog):
         await asyncio.sleep(2)
         try:
             await guild.fetch_ban(member)
+            self.bancooldown[guild.id].remove(member.id)
         except discord.NotFound:
             reason = get_surveys(guild.id)[str(caseid)]["reason"]
             edit_survey(guild.id, caseid, entry.user.id, reason, "softbans")
@@ -360,7 +363,7 @@ class Surveyr(Cog):
             content = msg.content.split("\n")
             content[0] = f"`#{caseid}` **SOFTBAN** on <t:{timestamp}:f>"
             await msg.edit(content="\n".join(content))
-            del self.bancooldown[guild.id]
+            self.bancooldown[guild.id].remove(member.id)
         return
 
     @Cog.listener()
@@ -369,6 +372,7 @@ class Surveyr(Cog):
         if (
             not get_config(guild.id, "surveyr", "enable")
             or "unbans" not in surveyr_event_types
+            or member.id in self.bancooldown[guild.id]
         ):
             return
         survey_channel = get_config(guild.id, "surveyr", "survey_channel")
