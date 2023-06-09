@@ -5,7 +5,7 @@ import config
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
-from helpers.sv_config import fill_config, friendly_names
+from helpers.sv_config import fill_config, make_config, set_config, friendly_names
 
 
 class sv_config(Cog):
@@ -16,7 +16,7 @@ class sv_config(Cog):
     @commands.check(check_if_staff)
     @commands.group(invoke_without_command=True)
     async def configs(self, ctx, guild: discord.Guild = None):
-        """[O] Gets the configuration for a guild."""
+        """[S] Gets the configuration for a guild."""
         if not guild:
             guild = ctx.guild
         configs = fill_config(guild.id)
@@ -35,13 +35,43 @@ class sv_config(Cog):
                     k = friendly_names[k]
                 if not v and str(v) != "False":
                     v = f"Not Configured ({type(v).__name__})"
+                if str(v) == "None":
+                    v = "Forcibly Disabled"
                 lines += f"\n**{k}**\n{v}"
             embed.add_field(
                 name=p.title(),
                 value=lines,
                 inline=True,
             )
-        await ctx.reply(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
+
+    @commands.check(check_if_bot_manager)
+    @configs.command()
+    async def reset(self, ctx, guild: discord.Guild = None):
+        """[S] Resets the configuration for a guild."""
+        if not guild:
+            guild = ctx.guild
+        make_configs(guild.id)
+        await ctx.reply(content=f"The configuration for **{guild}** has been reset.", mention_author=False)
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @configs.command()
+    async def set(self, ctx, category, setting, *, value):
+        """[S] Sets the configuration for a guild."""
+        configs = fill_config(ctx.guild.id)
+        category = category.lower()
+        setting = setting.lower()
+        if category not in configs or setting not in configs[category] and :
+            return await ctx.reply(content="You specified an invalid category or setting.", mention_author=False)
+        if type(configs[category][setting]).__name__ == "str":
+            configs[category][setting] = value
+        
+        
+        await ctx.reply(content=f"The configuration for **{guild}** has been reset.", mention_author=False)
+        
+        
+        
 
 
 async def setup(bot: Bot):

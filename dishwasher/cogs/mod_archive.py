@@ -238,6 +238,8 @@ class ModArchive(Cog):
 
             fn = "{:%Y-%m-%d} {}".format(message.created_at, user)
 
+            reply = "📕 Archived as: `{}.txt`".format(fn)
+
             out += "{:%Y-%m-%d %H:%M} {}: {}".format(
                 message.created_at, self.bot.user.name, reply
             )
@@ -288,7 +290,7 @@ class ModArchive(Cog):
                     inline=True,
                 )
 
-            await message.channel.send(content=f"📕 Archived\n`{fn}.txt`")
+            await message.channel.send(content=reply)
             await modch.send(embed=embed)
 
             return True
