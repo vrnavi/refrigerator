@@ -345,12 +345,8 @@ class Logs2(Cog):
                 rolelist = "\n".join(reversed(roles))
                 role_changed = True
 
-        name_changed = False
-        if str(member_before) != str(member_after):
-            name_changed = True
-        nick_changed = False
-        if member_before.nick != member_after.nick:
-            nick_changed = True
+        name_changed = True if str(member_before) != str(member_after) else False
+        nick_changed = True if member_before.nick != member_after.nick else False
 
         if name_changed or nick_changed or role_changed:
             embed = make_embed(
