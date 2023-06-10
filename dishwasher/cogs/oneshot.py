@@ -1,9 +1,9 @@
-import config
 import discord
 import datetime
 from discord.ext import commands
 from discord.ext.commands import Cog
 from helpers.checks import check_if_staff
+from helpers.sv_config import get_config
 
 
 class OneShot(Cog):
