@@ -96,7 +96,7 @@ class Basic(Cog):
             if config.catbox_key:
                 formdata.add_field("userhash", config.catbox_key)
             formdata.add_field("url", r)
-            async with bot.session.post(api_url, data=formdata) as response:
+            async with self.bot.session.post(api_url, data=formdata) as response:
                 output = await response.text()
                 await ctx.reply(content=output, mention_author=False)
 
