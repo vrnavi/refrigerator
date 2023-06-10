@@ -84,7 +84,7 @@ class Basic(Cog):
     async def rehost(self, ctx, links=None):
         """[U] Uploads a file to catbox.moe."""
         api_url = "https://catbox.moe/user/api.php"
-        if not ctx.message.attachments or not links:
+        if not ctx.message.attachments and not links:
             return await ctx.reply(
                 content="You need to supply a file or a file link to rehost.",
                 mention_author=False,
