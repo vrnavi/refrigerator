@@ -141,7 +141,14 @@ class Admin(Cog):
         ctx,
     ):
         """[O] Shows the permissions."""
-        pass
+        await ctx.reply(
+            content="\n".join(
+                [
+                    f"{'-' if not y else '+'} " + y
+                    for x, y in iter(ctx.channel.permissions_for(ctx.guild.me))
+                ]
+            )
+        )
 
     @commands.check(check_if_bot_manager)
     @commands.command()
