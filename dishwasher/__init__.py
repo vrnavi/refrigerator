@@ -260,6 +260,9 @@ for wanted_json in wanted_jsons:
         with open(wanted_json, "w") as f:
             f.write("{}")
 
+if os.path.exists("logs/dishwasher.log"):
+    os.remove("logs/dishwasher.log")
+
 
 async def main():
     async with bot:
