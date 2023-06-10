@@ -3,6 +3,7 @@ import traceback
 import datetime
 import discord
 import time
+import os
 import math
 import parsedatetime
 import random
