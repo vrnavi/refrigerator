@@ -142,7 +142,7 @@ class Admin(Cog):
     ):
         """[O] Shows the permissions."""
         await ctx.reply(
-            content="My permissions for the current channel...\n```"
+            content="My permissions for the current channel...\n```diff\n"
             + "\n".join(
                 [
                     f"{'-' if not y else '+'} " + x
