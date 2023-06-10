@@ -89,7 +89,8 @@ class Basic(Cog):
                 content="You need to supply a file or a file link to rehost.",
                 mention_author=False,
             )
-        for r in [f.url for f in ctx.message.attachments] + links.split():
+        links = links.split() if links else []
+        for r in [f.url for f in ctx.message.attachments] + links:
             formdata = aiohttp.FormData()
             formdata.add_field("reqtype", "urlupload")
             if config.catbox_key:
