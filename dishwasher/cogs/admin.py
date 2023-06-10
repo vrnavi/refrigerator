@@ -144,7 +144,7 @@ class Admin(Cog):
         await ctx.reply(
             content="\n".join(
                 [
-                    f"{'-' if not y else '+'} " + y
+                    f"{'-' if not y else '+'} " + x
                     for x, y in iter(ctx.channel.permissions_for(ctx.guild.me))
                 ]
             )
