@@ -8,6 +8,7 @@ from helpers.checks import check_if_staff
 from helpers.userlogs import setwatch, get_userlog
 from helpers.placeholders import random_self_msg, random_bot_msg, create_log_embed
 from helpers.sv_config import get_config
+from helpers.embeds import make_embed
 
 
 class ModWatch(Cog):
@@ -134,6 +135,73 @@ class ModWatch(Cog):
                 msgembed.set_author(
                     name=f"{self.bot.escape_message(message.author)}",
                     icon_url=f"{message.author.display_avatar.url}",
+                )
+                await trackermsg.edit(content=None, embed=msgembed)
+        except KeyError:
+            return
+
+    @Cog.listener()
+    async def on_member_join(self, member):
+        await self.bot.wait_until_ready()
+        if not get_config(member.guild.id, "staff", "tracker_channel"):
+            return
+        userlog = get_userlog(member.guild.id)
+        try:
+            if userlog[str(member.id)]["watch"]["state"]:
+                trackerthread = await self.bot.fetch_channel(
+                    userlog[str(member.id)]["watch"]["thread"]
+                )
+                trackermsg = await self.bot.get_channel(
+                    get_config(member.guild.id, "staff", "tracker_channel")
+                ).fetch_message(userlog[str(member.id)]["watch"]["message"])
+                invite_used = self.bot.get_used_invites(member)
+                threadembed = make_embed(
+                    self.bot, "mem_join", member=member, invite=invite_used
+                )
+                await trackerthread.send(embed=threadembed)
+                msgembed = discord.Embed(
+                    title="🔍 User on watch...",
+                    description=f"**ID:** `{member.id}`\n**Thread:** {trackerthread.mention}\n**Last Update:** <t:{datetime.datetime.now().strftime('%s')}:f>",
+                    timestamp=datetime.datetime.now(),
+                )
+                msgembed.set_footer(
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                )
+                msgembed.set_author(
+                    name=f"{self.bot.escape_message(member)}",
+                    icon_url=f"{member.display_avatar.url}",
+                )
+                await trackermsg.edit(content=None, embed=msgembed)
+        except KeyError:
+            return
+
+    @Cog.listener()
+    async def on_member_remove(self, member):
+        await self.bot.wait_until_ready()
+        if not get_config(member.guild.id, "staff", "tracker_channel"):
+            return
+        userlog = get_userlog(member.guild.id)
+        try:
+            if userlog[str(member.id)]["watch"]["state"]:
+                trackerthread = await self.bot.fetch_channel(
+                    userlog[str(member.id)]["watch"]["thread"]
+                )
+                trackermsg = await self.bot.get_channel(
+                    get_config(member.guild.id, "staff", "tracker_channel")
+                ).fetch_message(userlog[str(member.id)]["watch"]["message"])
+                threadembed = make_embed(self.bot, "mem_remove", member=member)
+                await trackerthread.send(embed=threadembed)
+                msgembed = discord.Embed(
+                    title="🔍 User on watch...",
+                    description=f"**ID:** `{member.id}`\n**Thread:** {trackerthread.mention}\n**Last Update:** <t:{datetime.datetime.now().strftime('%s')}:f>",
+                    timestamp=datetime.datetime.now(),
+                )
+                msgembed.set_footer(
+                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
+                )
+                msgembed.set_author(
+                    name=f"{self.bot.escape_message(member)}",
+                    icon_url=f"{member.display_avatar.url}",
                 )
                 await trackermsg.edit(content=None, embed=msgembed)
         except KeyError:
