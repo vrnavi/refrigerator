@@ -154,7 +154,7 @@ class ModWatch(Cog):
                 trackermsg = await self.bot.get_channel(
                     get_config(member.guild.id, "staff", "tracker_channel")
                 ).fetch_message(userlog[str(member.id)]["watch"]["message"])
-                invite_used = self.bot.get_used_invites(member)
+                invite_used = await self.bot.get_used_invites(member)
                 threadembed = make_embed(
                     self.bot, "mem_join", member=member, invite=invite_used
                 )

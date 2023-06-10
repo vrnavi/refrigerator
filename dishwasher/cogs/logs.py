@@ -42,7 +42,7 @@ class Logs2(Cog):
 
         escaped_name = self.bot.escape_message(member)
 
-        invite_used = self.bot.get_used_invites(member)
+        invite_used = await self.bot.get_used_invites(member)
 
         # Prepare embed message
         embeds = []
