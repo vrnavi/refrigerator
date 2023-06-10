@@ -21,7 +21,7 @@ class Common(Cog):
         self.bot.aioget = self.aioget
         self.bot.aiogetbytes = self.aiogetbytes
         self.bot.escape_message = self.escape_message
-        self.bot.get_used_invite = self.get_used_invite
+        self.bot.get_used_invites = self.get_used_invites
         self.bot.parse_time = self.parse_time
         self.bot.c_to_f = self.c_to_f
         self.bot.f_to_c = self.f_to_c
