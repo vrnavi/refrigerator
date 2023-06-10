@@ -242,13 +242,15 @@ class Admin(Cog):
                     await self.bot.load_extension(cog_name)
                     self.bot.log.info(f"Reloaded ext {cog}")
                     await ctx.message.reply(
-                        content=f":white_check_mark: `{cog}` successfully reloaded."
+                        content=f":white_check_mark: `{cog}` successfully reloaded.",
+                        mention_author=False,
                     )
                     await self.cog_load_actions(cog)
                 except:
                     await ctx.message.reply(
                         content=f":x: Cog reloading failed, traceback: "
-                        f"```\n{traceback.format_exc()}\n```"
+                        f"```\n{traceback.format_exc()}\n```",
+                        mention_author=False,
                     )
                     return
 
@@ -262,12 +264,14 @@ class Admin(Cog):
         except:
             await ctx.message.reply(
                 content=f":x: Cog loading failed, traceback: "
-                f"```\n{traceback.format_exc()}\n```"
+                f"```\n{traceback.format_exc()}\n```",
+                mention_author=False,
             )
             return
         self.bot.log.info(f"Loaded ext {ext}")
         await ctx.message.reply(
-            content=f":white_check_mark: `{ext}` successfully loaded."
+            content=f":white_check_mark: `{ext}` successfully loaded.",
+            mention_author=False,
         )
 
     @commands.check(check_if_bot_manager)
@@ -277,7 +281,8 @@ class Admin(Cog):
         await self.bot.unload_extension("cogs." + ext)
         self.bot.log.info(f"Unloaded ext {ext}")
         await ctx.message.reply(
-            content=f":white_check_mark: `{ext}` successfully unloaded."
+            content=f":white_check_mark: `{ext}` successfully unloaded.",
+            mention_author=False,
         )
 
     @commands.check(check_if_bot_manager)
@@ -296,12 +301,14 @@ class Admin(Cog):
         except:
             await ctx.message.reply(
                 content=f":x: Cog reloading failed, traceback: "
-                f"```\n{traceback.format_exc()}\n```"
+                f"```\n{traceback.format_exc()}\n```",
+                mention_author=False,
             )
             return
         self.bot.log.info(f"Reloaded ext {ext}")
         await ctx.message.reply(
-            content=f":white_check_mark: `{ext}` successfully reloaded."
+            content=f":white_check_mark: `{ext}` successfully reloaded.",
+            mention_author=False,
         )
 
     @Cog.listener()

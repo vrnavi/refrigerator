@@ -100,7 +100,7 @@ class Common(Cog):
         """Escapes unfun stuff from messages"""
         return str(text).replace("@", "@ ").replace("<#", "# ")
 
-    def get_used_invites(self, member: discord.Member):
+    async def get_used_invites(self, member: discord.Member):
         """Handles the invite correlation stuff"""
         if not os.path.exists(f"{self.bot.server_data}/{member.guild.id}/invites.json"):
             if not os.path.exists(f"{self.bot.server_data}/{member.guild.id}"):
