@@ -57,6 +57,9 @@ initial_cogs = [
 # This section is for various API keys.
 # [cogs.messagescan] DeepL Translator API key.
 deepl_key = "key_goes_here"
+# [cogs.basic] Catbox Account Key
+# Will default to anonymous upload if not supplied.
+catbox_key = "key_goes_here"
 
 # Channels that will be cleaned every minute/hour.
 minutely_clean_channels = []

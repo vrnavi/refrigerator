@@ -2,6 +2,7 @@ import time
 import config
 import discord
 import os
+import io
 import matplotlib
 import matplotlib.pyplot as plt
 import typing
@@ -78,6 +79,25 @@ class Basic(Cog):
         """[U] Converts base 10 to 16."""
         hex_val = hex(num).upper().replace("0X", "0x")
         await ctx.send(f"{ctx.author.mention}: {hex_val}")
+
+    @commands.command(aliases=["catbox", "imgur"])
+    async def rehost(self, ctx, links=None):
+        """[U] Uploads a file to catbox.moe."""
+        api_url = "https://catbox.moe/user/api.php"
+        if not ctx.message.attachments or not links:
+            return await ctx.reply(
+                content="You need to supply a file or a file link to rehost.",
+                mention_author=False,
+            )
+        for r in [f.url for f in ctx.message.attachments] + links.split():
+            formdata = aiohttp.FormData()
+            formdata.add_field("reqtype", "urlupload")
+            if config.catbox_key:
+                formdata.add_field("userhash", config.catbox_key)
+            formdata.add_field("url", r)
+            async with bot.session.post(api_url, data=formdata) as response:
+                output = await response.text()
+                await ctx.reply(content=output, mention_author=False)
 
     @commands.command(name="dec")
     async def _dec(self, ctx, num):
