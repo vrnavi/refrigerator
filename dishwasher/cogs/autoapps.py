@@ -57,8 +57,9 @@ class AutoApps(Cog):
                     char = str(message.attachments[0].filename.split("-")[-1][:-4])
                 else:
                     return
-                await message.channel.send(content=str(user))
+                user = await self.bot.fetch_user(message.content.split()[-1][:-1])
                 await message.channel.send(content=message.content.split()[-1][:-1])
+                await message.channel.send(content=user)
                 thread = await message.guild.get_channel(
                     1117253103700430868
                 ).create_thread(
@@ -67,7 +68,6 @@ class AutoApps(Cog):
                     reason=f"Automatic Applications by {self.bot.user.name}.",
                     invitable=False,
                 )
-                user = await self.bot.fetch_user(message.content.split()[-1][:-1])
                 await thread.add_user(user)
                 await thread.send(
                     content=f"{user.mention}, this thread is for the discussion of your submitted character `{message.embeds[0].fields[2].value}` with the GMs."
