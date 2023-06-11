@@ -71,13 +71,8 @@ class AutoApps(Cog):
                         invitable=False,
                     )
                     await thread.add_user(user)
-                    for u in staff_role.members:
-                        try:
-                            await thread.add_user(u)
-                        except:
-                            continue
                     await thread.send(
-                        content=f"This thread is for the discussion of your submitted character `#{char}` with the GMs."
+                        content=f"This thread is for the discussion of your submitted character `#{char}` with the {staff_role.mention}s."
                     )
                 minreq = 2
             else:
