@@ -53,7 +53,9 @@ class AutoApps(Cog):
             elif message.guild.id == 363821745590763520:
                 if message.embeds:
                     char = message.embeds[0].title.split()[-1]
+                    embedapp = message.embeds[0]
                 elif message.attachments:
+                    embedapp = None
                     char = str(message.attachments[0].filename.split("-")[-1][:-4])
                 else:
                     return
@@ -72,7 +74,8 @@ class AutoApps(Cog):
                     )
                     await thread.add_user(user)
                     await thread.send(
-                        content=f"This thread is for the discussion of your submitted character `#{char}` with the {staff_role.mention}s."
+                        content=f"This thread is for the discussion of your submitted character `#{char}` with the {staff_role.mention}s.",
+                        embed=embedapp,
                     )
                 minreq = 2
             else:
