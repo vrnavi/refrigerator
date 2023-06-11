@@ -51,12 +51,14 @@ class AutoApps(Cog):
                     + "\n"
                 )
             elif message.guild.id == 363821745590763520:
-                if message.embeds is None and message.attachments is None:
-                    return
                 if message.embeds:
                     char = message.embeds[0].title.split()[-1]
                 elif message.attachments:
                     char = str(message.attachments[0].filename.split("-")[-1][:-4])
+                else:
+                    return
+                await message.channel.send(content=str(user))
+                await message.channel.send(content=message.content.split()[-1][:-1])
                 thread = await message.guild.get_channel(
                     1117253103700430868
                 ).create_thread(
@@ -66,8 +68,6 @@ class AutoApps(Cog):
                     invitable=False,
                 )
                 user = await self.bot.fetch_user(message.content.split()[-1][:-1])
-                await message.channel.send(content=str(user))
-                await message.channel.send(content=message.content.split()[-1][:-1])
                 await thread.add_user(user)
                 await thread.send(
                     content=f"{user.mention}, this thread is for the discussion of your submitted character `{message.embeds[0].fields[2].value}` with the GMs."
