@@ -58,18 +58,27 @@ class AutoApps(Cog):
                 else:
                     return
                 user = await self.bot.fetch_user(message.content.split()[-1][:-1])
-                thread = await message.guild.get_channel(
-                    1117253103700430868
-                ).create_thread(
-                    name="#" + char,
-                    type=discord.ChannelType.private_thread,
-                    reason=f"Automatic Applications by {self.bot.user.name}.",
-                    invitable=False,
-                )
-                await thread.add_user(user)
-                await thread.send(
-                    content=f"{user.mention}, this thread is for the discussion of your submitted character `#{char}` with the GMs."
-                )
+                if "#" + char not in [
+                    t.name
+                    for t in message.guild.get_channel(1117253103700430868).threads
+                ]:
+                    thread = await message.guild.get_channel(
+                        1117253103700430868
+                    ).create_thread(
+                        name="#" + char,
+                        type=discord.ChannelType.private_thread,
+                        reason=f"Automatic Applications by {self.bot.user.name}.",
+                        invitable=False,
+                    )
+                    await thread.add_user(user)
+                    for u in staff_role.members:
+                        try:
+                            await thread.add_user(u.id)
+                        except:
+                            continue
+                    await thread.send(
+                        content=f"This thread is for the discussion of your submitted character `#{char}` with the GMs."
+                    )
                 minreq = 2
             else:
                 user = message.author
