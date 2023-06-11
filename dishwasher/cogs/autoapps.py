@@ -86,7 +86,7 @@ class AutoApps(Cog):
             if staff_role:
                 msg += f"There are currently `{int(len(staff_role.members))}` Staff members at this time.\nVoting should end once one option reaches `{minreq}` votes."
             if staledays:
-                msg += f"\n\nThis appeal will turn stale on <t:{int(datetime.now(timezone.utc).timestamp())+staledays}:f>, or <t:{int(datetime.now(timezone.utc).timestamp())+staledays}:R>."
+                msg += f"\n\nThis {get_config(message.guild.id, 'autoapp', 'autoapp_name')} will turn stale on <t:{int(datetime.now(timezone.utc).timestamp())+staledays}:f>, or <t:{int(datetime.now(timezone.utc).timestamp())+staledays}:R>."
             await appthread.send(content=msg)
 
 
