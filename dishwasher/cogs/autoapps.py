@@ -53,7 +53,6 @@ class AutoApps(Cog):
             elif message.guild.id == 363821745590763520:
                 if message.embeds is None and message.attachments is None:
                     return
-                user = message.guild.get_member(int(message.content.split()[-1][:-1]))
                 if message.embeds:
                     char = message.embeds[0].title.split()[-1]
                 elif message.attachments:
@@ -66,7 +65,8 @@ class AutoApps(Cog):
                     reason=f"Automatic Applications by {self.bot.user.name}.",
                     invitable=False,
                 )
-                await thread.add_user(user.id)
+                await thread.add_user(message.content.split()[-1][:-1])
+                user = await self.bot.fetch_user(message.content.split()[-1][:-1])
                 await thread.send(
                     content=f"{user.mention}, this thread is for the discussion of your submitted character `{message.embeds[0].fields[2].value}` with the GMs."
                 )
