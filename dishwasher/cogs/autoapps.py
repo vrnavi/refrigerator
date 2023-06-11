@@ -81,7 +81,7 @@ class AutoApps(Cog):
                 threadname = custom_threadname
             else:
                 threadname = (
-                    user
+                    str(user)
                     + "'s "
                     + get_config(message.guild.id, "autoapp", "autoapp_name")
                 )
