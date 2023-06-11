@@ -58,8 +58,6 @@ class AutoApps(Cog):
                 else:
                     return
                 user = await self.bot.fetch_user(message.content.split()[-1][:-1])
-                await message.channel.send(content=message.content.split()[-1][:-1])
-                await message.channel.send(content=user)
                 thread = await message.guild.get_channel(
                     1117253103700430868
                 ).create_thread(
@@ -70,7 +68,7 @@ class AutoApps(Cog):
                 )
                 await thread.add_user(user)
                 await thread.send(
-                    content=f"{user.mention}, this thread is for the discussion of your submitted character `{message.embeds[0].fields[2].value}` with the GMs."
+                    content=f"{user.mention}, this thread is for the discussion of your submitted character `#{char}` with the GMs."
                 )
                 minreq = 2
             else:
