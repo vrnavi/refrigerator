@@ -52,13 +52,17 @@ class AutoApps(Cog):
                     + "\n"
                 )
             elif message.guild.id == 363821745590763520:
-                if message.embeds is None:
+                if message.embeds is None and message.attachments is None:
                     return
-                user = await self.bot.fetch_user(message.content.split()[-1][:-1])
+                user = await self.bot.fetch_user(int(message.content.split()[-1][:-1]))
+                if message.embeds:
+                    char = message.embeds[0].fields[2].value
+                elif message.attachments:
+                    char = str(message.attachments[0].filename.split("-")[-1])
                 thread = await message.guild.get_channel(
                     1117253103700430868
                 ).create_thread(
-                    name=message.embeds[0].fields[2].value,
+                    name="#" + char,
                     type=discord.ChannelType.private_thread,
                     reason=f"Automatic Applications by {self.bot.user.name}.",
                     invitable=False,
