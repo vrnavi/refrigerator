@@ -246,8 +246,8 @@ class Mod(Cog):
             if reason:
                 dm_message += f'\n*The given reason is:* "{reason}".'
             appealmsg = (
-                f", but you may appeal it here:\n{get_config(ctx.guild.id, 'appeal', 'appeal_url')}"
-                if get_config(ctx.guild.id, "appeal", "appeal_url")
+                f", but you may appeal it here:\n{get_config(ctx.guild.id, 'staff', 'appeal_url')}"
+                if get_config(ctx.guild.id, "staff", "appeal_url")
                 else "."
             )
             dm_message += f"\n\nThis ban does not expire{appealmsg}"
