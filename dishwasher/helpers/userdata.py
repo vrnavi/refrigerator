@@ -11,7 +11,7 @@ def get_userprefix(uid):
     userdata = get_userdata()
     uid = str(uid)
     if uid not in userdata:
-        return None
+        return []
     return userdata[uid]["prefixes"]
 
 
