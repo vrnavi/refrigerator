@@ -2,6 +2,7 @@ import discord
 from discord.ext.commands import Cog
 import json
 import re
+import io
 import config
 from datetime import datetime
 from datetime import timezone
@@ -54,8 +55,11 @@ class AutoApps(Cog):
                 if message.embeds:
                     char = message.embeds[0].title.split()[-1]
                     embedapp = message.embeds[0]
+                    fileapp = None
                 elif message.attachments:
                     embedapp = None
+                    fileapp = io.BytesIO()
+                    await message.attachments[0].save(fileapp)
                     char = str(message.attachments[0].filename.split("-")[-1][:-4])
                 else:
                     return
@@ -76,6 +80,7 @@ class AutoApps(Cog):
                     await thread.send(
                         content=f"This thread is for the discussion of your submitted character `#{char}` with the {staff_role.mention}s.",
                         embed=embedapp,
+                        file=fileapp,
                     )
                 minreq = 2
             else:
