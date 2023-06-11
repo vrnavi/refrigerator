@@ -73,7 +73,7 @@ class AutoApps(Cog):
                     await thread.add_user(user)
                     for u in staff_role.members:
                         try:
-                            await thread.add_user(u.id)
+                            await thread.add_user(u)
                         except:
                             continue
                     await thread.send(
