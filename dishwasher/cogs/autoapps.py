@@ -53,7 +53,7 @@ class AutoApps(Cog):
             elif message.guild.id == 363821745590763520:
                 if message.embeds is None and message.attachments is None:
                     return
-                user = await self.bot.fetch_user(message.content.split()[-1][:-1])
+                user = await message,guild.fetch_member(message.content.split()[-1][:-1])
                 if message.embeds:
                     char = message.embeds[0].title.split()[-1]
                 elif message.attachments:
