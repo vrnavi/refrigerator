@@ -29,19 +29,18 @@ class AutoApps(Cog):
             and message.author.id
             == get_config(message.guild.id, "autoapp", "autoapp_id")
         ):
-            custom_msg = None
             staledays = (
                 get_config(message.guild.id, "autoapp", "autoapp_staledays") * 86400
-            )
-            threadname = (
-                user + "'s " + get_config(message.guild.id, "autoapp", "autoapp_name")
             )
             staff_role = message.guild.get_role(
                 get_config(message.guild.id, "staff", "staff_role")
             )
             if staff_role:
                 minreq = int(len(staff_role.members) / 2 // 1 + 1)
+
             # Guild specific code.
+            custom_msg = None
+            custom_threadname = None
             if message.guild.id == 256926147827335170:
                 if message.embeds[0].fields[2].value is None:
                     return
@@ -56,7 +55,7 @@ class AutoApps(Cog):
                     return
                 user = await self.bot.fetch_user(int(message.content.split()[-1][:-1]))
                 if message.embeds:
-                    char = message.embeds[0].fields[2].value
+                    char = message.embeds[0].title.split()[-1]
                 elif message.attachments:
                     char = str(message.attachments[0].filename.split("-")[-1])
                 thread = await message.guild.get_channel(
@@ -78,8 +77,16 @@ class AutoApps(Cog):
             await message.add_reaction("✅")
             await message.add_reaction("❎")
             await message.add_reaction("✳️")
+            if custom_threadname:
+                threadname = custom_threadname
+            else:
+                threadname = (
+                    user
+                    + "'s "
+                    + get_config(message.guild.id, "autoapp", "autoapp_name")
+                )
             appthread = await message.create_thread(
-                name=staff_thread_name,
+                name=threadname,
                 reason=f"Automatic Applications by {self.bot.user.name}.",
             )
             msg = f"Vote using reactions. Use this thread for discussion.\n`✅ = Yes`\n`❎ = No`\n`✳️ = Abstain`\n\n"
