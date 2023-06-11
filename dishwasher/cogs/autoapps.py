@@ -57,7 +57,7 @@ class AutoApps(Cog):
                 if message.embeds:
                     char = message.embeds[0].title.split()[-1]
                 elif message.attachments:
-                    char = str(message.attachments[0].filename.split("-")[-1][:-5])
+                    char = str(message.attachments[0].filename.split("-")[-1][:-4])
                 thread = await message.guild.get_channel(
                     1117253103700430868
                 ).create_thread(
