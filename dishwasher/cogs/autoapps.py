@@ -65,8 +65,10 @@ class AutoApps(Cog):
                     reason=f"Automatic Applications by {self.bot.user.name}.",
                     invitable=False,
                 )
-                await thread.add_user(message.content.split()[-1][:-1])
                 user = await self.bot.fetch_user(message.content.split()[-1][:-1])
+                await message.channel.send(content=str(user))
+                await message.channel.send(content=message.content.split()[-1][:-1])
+                await thread.add_user(user)
                 await thread.send(
                     content=f"{user.mention}, this thread is for the discussion of your submitted character `{message.embeds[0].fields[2].value}` with the GMs."
                 )
