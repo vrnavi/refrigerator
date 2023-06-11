@@ -58,7 +58,7 @@ class AutoApps(Cog):
                 else:
                     return
                 user = await self.bot.fetch_user(message.content.split()[-1][:-1])
-                if "#" + char not in [
+                if staff_role not in user.roles and "#" + char not in [
                     t.name
                     for t in message.guild.get_channel(1117253103700430868).threads
                 ]:
