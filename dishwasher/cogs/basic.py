@@ -323,16 +323,22 @@ class Basic(Cog):
     @commands.group(invoke_without_command=True)
     async def info(self, ctx, *, target: discord.User = None):
         """[S] Gets full user info."""
-        if target == None:
+        if not target:
             target = ctx.author
-        nickname = ""
-        if ctx.guild.get_member(target.id):
+
+        if not ctx.guild.get_member(target.id):
+            # Memberless code.
+            color = discord.Color.lighter_gray()
+            nickname = ""
+        else:
+            # Member code.
             target = ctx.guild.get_member(target.id)
+            color = target.color
             nickname = f"\n**Nickname:** `{ctx.guild.get_member(target.id).nick}`"
 
         embed = discord.Embed(
-            color=target.color,
-            title=f"Info for {'user' if ctx.guild.get_member(target.id) else ''} @{target}{' [BOT]' if target.bot else ''}",
+            color=color,
+            title=f"Info for {'user' if ctx.guild.get_member(target.id) else 'member'} @{target}{' [BOT]' if target.bot else ''}",
             description=f"**ID:** `{target.id}`{nickname}",
             timestamp=datetime.now(),
         )
@@ -356,27 +362,17 @@ class Basic(Cog):
                 inline=True,
             )
             try:
-                emoji = (
-                    f"{target.activity.emoji} "
-                    if target.activity.emoji is not None
-                    else ""
-                )
+                emoji = f"{target.activity.emoji} " if target.activity.emoji else ""
             except:
                 emoji = ""
             try:
                 details = (
-                    f"\n{target.activity.details}"
-                    if target.activity.details is not None
-                    else ""
+                    f"\n{target.activity.details}" if target.activity.details else ""
                 )
             except:
                 details = ""
             try:
-                name = (
-                    f"{target.activity.name}"
-                    if target.activity.name is not None
-                    else ""
-                )
+                name = f"{target.activity.name}" if target.activity.name else ""
             except:
                 name = ""
             if emoji or name or details:

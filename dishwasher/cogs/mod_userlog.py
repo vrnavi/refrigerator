@@ -218,45 +218,30 @@ class ModUserlog(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def fullinfo(self, ctx, target=None):
+    async def fullinfo(self, ctx, *, target: discord.User = None):
         """[S] Gets full user info."""
-        if target == None:
+        if not target:
             target = ctx.author
-        else:
-            # target handler
-            # In the case of IDs.
-            try:
-                target_id = int(target)
-                target = await self.bot.fetch_user(target_id)
-            # In the case of mentions.
-            except ValueError:
-                target = await self.bot.fetch_user(target[2:-1])
-
-        if target.bot:
-            isbot = " [BOT]"
-        else:
-            isbot = ""
 
         embeds = []
 
-        if ctx.guild.get_member(target.id) is None:
+        if not ctx.guild.get_member(target.id):
             # Memberless code.
             color = discord.Color.lighter_gray()
-            usertype = "user"
             nickname = ""
         else:
             # Member code.
             target = ctx.guild.get_member(target.id)
             color = target.color
-            usertype = "member"
             nickname = f"\n**Nickname:** `{target.nick}`"
+
         embed = discord.Embed(
             color=color,
-            title=f"Statistics for {usertype} @{target}{isbot}",
+            title=f"Info for {'user' if ctx.guild.get_member(target.id) else 'member'} @{target}{' [BOT]' if target.bot else ''}",
             description=f"**ID:** `{target.id}`{nickname}",
             timestamp=datetime.now(),
         )
-        embed.set_footer(text="Dishwasher")
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
         embed.set_thumbnail(url=f"{target.display_avatar.url}")
         embed.add_field(
@@ -264,7 +249,7 @@ class ModUserlog(Cog):
             value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
             inline=True,
         )
-        if ctx.guild.get_member(target.id) is not None:
+        if ctx.guild.get_member(target.id):
             embed.add_field(
                 name="⏱️ Account joined:",
                 value=f"<t:{target.joined_at.astimezone().strftime('%s')}:f>\n<t:{target.joined_at.astimezone().strftime('%s')}:R>",
@@ -278,26 +263,32 @@ class ModUserlog(Cog):
             emoji = ""
             details = ""
             try:
-                if target.activity.emoji is not None:
-                    emoji = f"{target.activity.emoji} "
+                emoji = f"{target.activity.emoji} " if target.activity.emoji else ""
             except:
-                pass
+                emoji = ""
             try:
-                if target.activity.details is not None:
-                    details = f"\n{target.activity.details}"
+                details = (
+                    f"\n{target.activity.details}" if target.activity.details else ""
+                )
             except:
-                pass
-            embed.add_field(
-                name="💭 Status:",
-                value=f"{emoji}{target.activity.name}{details}",
-                inline=False,
-            )
+                details = ""
+            try:
+                name = f"{target.activity.name}" if target.activity.name else ""
+            except:
+                name = ""
+            if emoji or name or details:
+                embed.add_field(
+                    name="💭 Status:", value=f"{emoji}{name}{details}", inline=False
+                )
             roles = []
-            for index, role in enumerate(target.roles):
-                if role.name == "@everyone":
-                    continue
-                roles.append("<@&" + str(role.id) + ">")
-                rolelist = ",".join(reversed(roles))
+            if target.roles:
+                for index, role in enumerate(target.roles):
+                    if role.name == "@everyone":
+                        continue
+                    roles.append("<@&" + str(role.id) + ">")
+                    rolelist = ",".join(reversed(roles))
+            else:
+                rolelist = "None"
             embed.add_field(name=f"🎨 Roles:", value=f"{rolelist}", inline=False)
         embeds.append(embed)
 
