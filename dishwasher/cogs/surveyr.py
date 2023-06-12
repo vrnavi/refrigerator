@@ -157,7 +157,7 @@ class Surveyr(Cog):
                 content = msg.content.split("\n")
                 content[
                     1
-                ] = f"**User:** {censored_globalname + ' [' if censored_globalname else ''}{censored_member}{']' if censored_globalname else ''} ({member.id})"
+                ] = f"**User:** {censored_globalname + ' [' if censored_globalname else ''}{censored_username}{']' if censored_globalname else ''} ({member.id})"
                 await msg.edit(content="\n".join(content))
             except KeyError:
                 await ctx.reply(
