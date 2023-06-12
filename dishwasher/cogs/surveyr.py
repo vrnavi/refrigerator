@@ -142,14 +142,22 @@ class Surveyr(Cog):
             try:
                 survey = get_surveys(ctx.guild.id)[str(case)]
                 member = await self.bot.fetch_user(survey["target_id"])
-                censored_member = (
-                    "`" + " " * len(member.name) + "`#" + member.discriminator
+                censored_username = "`" + " " * len(member.name) + "`"
+                censored_globalname = (
+                    "`" + " " * len(member.global_name) + "`"
+                    if member.global_name
+                    else ""
                 )
+                # todo: remove when discord completes its rollout
+                if int(member.discriminator):
+                    censored_username += "#" + member.discriminator
                 msg = await ctx.guild.get_channel(
                     get_config(ctx.guild.id, "surveyr", "survey_channel")
                 ).fetch_message(survey["post_id"])
                 content = msg.content.split("\n")
-                content[1] = f"**User:** {censored_member} ({member.id})"
+                content[
+                    1
+                ] = f"**User:** {censored_globalname + ' [' if censored_globalname else ''}{censored_member}{']' if censored_globalname else ''} ({member.id})"
                 await msg.edit(content="\n".join(content))
             except KeyError:
                 await ctx.reply(
@@ -194,7 +202,9 @@ class Surveyr(Cog):
                     get_config(ctx.guild.id, "surveyr", "survey_channel")
                 ).fetch_message(survey["post_id"])
                 content = msg.content.split("\n")
-                content[1] = f"**User:** {member} ({member.id})"
+                content[
+                    1
+                ] = f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})"
                 await msg.edit(content="\n".join(content))
             except KeyError:
                 await ctx.reply(
@@ -284,8 +294,8 @@ class Surveyr(Cog):
         await msg.edit(
             content=(
                 f"`#{caseid}` **KICK** on <t:{timestamp}:f>\n"
-                f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {user} ({user.id})\n"
+                f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})\n"
+                f"**Staff:** {user.global_name + ' [' if user.global_name else ''}{user}{']' if user.global_name else ''} ({user.id})\n"
                 f"**Reason:** {reason}"
             )
         )
@@ -344,8 +354,8 @@ class Surveyr(Cog):
         await msg.edit(
             content=(
                 f"`#{caseid}` **BAN** on <t:{timestamp}:f>\n"
-                f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {user} ({user.id})\n"
+                f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})\n"
+                f"**Staff:** {user.global_name + ' [' if user.global_name else ''}{user}{']' if user.global_name else ''} ({user.id})\n"
                 f"**Reason:** {reason}"
             )
         )
@@ -416,8 +426,8 @@ class Surveyr(Cog):
         await msg.edit(
             content=(
                 f"`#{caseid}` **UNBAN** on <t:{timestamp}:f>\n"
-                f"**User:** {member} ({member.id})\n"
-                f"**Staff:** {user} ({user.id})\n"
+                f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})\n"
+                f"**Staff:** {user.global_name + ' [' if user.global_name else ''}{user}{']' if user.global_name else ''} ({user.id})\n"
                 f"**Reason:** {reason}"
             )
         )

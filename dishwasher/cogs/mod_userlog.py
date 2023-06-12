@@ -237,7 +237,7 @@ class ModUserlog(Cog):
 
         embed = discord.Embed(
             color=color,
-            title=f"Info for {'user' if ctx.guild.get_member(target.id) else 'member'} @{target}{' [BOT]' if target.bot else ''}",
+            title=f"Info for {'user' if ctx.guild.get_member(target.id) else 'member'} {target}{' [BOT]' if target.bot else ''}",
             description=f"**ID:** `{target.id}`{nickname}",
             timestamp=datetime.now(),
         )
