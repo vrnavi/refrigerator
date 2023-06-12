@@ -95,12 +95,14 @@ class Surveyr(Cog):
                 edit_survey(
                     ctx.guild.id,
                     case,
-                    survey["issuer_id"],
+                    ctx.author.id,
                     reason,
                     survey["type"],
                 )
                 content = msg.content.split("\n")
-                content[2] = f"**Staff:** {ctx.author.global_name + ' [' if ctx.author.global_name else ''}{ctx.author}{']' if ctx.author.global_name else ''} ({ctx.author.id})"
+                content[
+                    2
+                ] = f"**Staff:** {ctx.author.global_name + ' [' if ctx.author.global_name else ''}{ctx.author}{']' if ctx.author.global_name else ''} ({ctx.author.id})"
                 content[3] = f"**Reason:** {reason}"
                 await msg.edit(content="\n".join(content))
             except KeyError:
