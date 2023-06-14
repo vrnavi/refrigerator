@@ -28,11 +28,15 @@ class Surveyr(Cog):
             return [int(list(surveys)[-1])]
         else:
             try:
-                if len(cases.split("-")) != 2:
+                if "-" in cases:
+                    cases = cases.split("-")
+                elif " " in cases:
+                    cases = cases.split()
+                if len(cases) != 2:
                     return None
-                elif cases.split("-")[1] == "l" or cases.split("-")[1] == "latest":
-                    return range(int(cases.split("-")[0]), int(list(surveys)[-1]) + 1)
-                return range(int(cases.split("-")[0]), int(cases.split("-")[1]) + 1)
+                elif cases[1] == "l" or cases[1] == "latest":
+                    return range(int(cases[0]), int(list(surveys)[-1]) + 1)
+                return range(int(cases[0]), int(cases[1]) + 1)
             except:
                 return None
 
