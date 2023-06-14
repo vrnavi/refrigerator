@@ -30,8 +30,8 @@ class Surveyr(Cog):
             try:
                 if "-" in cases:
                     cases = cases.split("-")
-                elif " " in cases:
-                    cases = cases.split()
+                elif ".." in cases:
+                    cases = cases.split("..")
                 if len(cases) != 2:
                     return None
                 elif cases[1] == "l" or cases[1] == "latest":
