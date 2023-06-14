@@ -328,7 +328,7 @@ class ModToss(Cog):
             staff_channel = get_config(member.guild.id, "staff", "staff_channel")
             if staff_channel:
                 await member.guild.get_channel(staff_channel).send(
-                    f"**{us}** left while tossed.\nLaugh at this user!"
+                    f"**{member}** left while tossed.\nLaugh at this user!"
                 )
 
             LAST_UNROLEBAN.set(
