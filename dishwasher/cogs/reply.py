@@ -52,9 +52,9 @@ class Reply(Cog):
             else:
                 self.usercounts[message.author.id] += 1
 
-            if self.usercounts[message.author.id] == 10:
+            if self.usercounts[message.author.id] == 5:
                 await message.reply(
-                    content=f"{message.guild.get_role(staff_role).mention} | {message.author.mention} reached `10` reply ping violations.",
+                    content=f"{message.guild.get_role(staff_role).mention} | {message.author.mention} reached `5` reply ping violations.",
                     mention_author=False,
                 )
                 self.usercounts[message.author.id] = 0
@@ -62,7 +62,7 @@ class Reply(Cog):
 
             await message.add_reaction("🗞️")
             nagmsg = await message.reply(
-                content=f"This is violation number `{self.usercounts[message.author.id]}`. Do not exceed `10` violations today.",
+                content=f"This is violation number `{self.usercounts[message.author.id]}`. Do not exceed `5` violations today.",
                 file=discord.File("assets/noreply.png"),
                 delete_after=15,
                 mention_author=True,
