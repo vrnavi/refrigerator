@@ -30,7 +30,7 @@ class Surveyr(Cog):
             try:
                 if len(cases.split("-")) != 2:
                     return None
-                elif cases.split("-")[1] == "l":
+                elif cases.split("-")[1] == "l" or cases.split("-")[1] == "latest":
                     return range(int(cases.split("-")[0]), int(list(surveys)[-1]) + 1)
                 return range(int(cases.split("-")[0]), int(cases.split("-")[1]) + 1)
             except:
@@ -48,7 +48,7 @@ class Surveyr(Cog):
             await ctx.reply(content="There are no surveys yet.", mention_author=False)
         msg = []
         for i, k in enumerate(reversed(surveys)):
-            if i == 4:
+            if i == 5:
                 break
             event_type = surveyr_event_types[surveys[k]["type"]]
             target = await self.bot.fetch_user(surveys[k]["target_id"])
