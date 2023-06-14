@@ -577,7 +577,7 @@ class Logs2(Cog):
                 value=f"If there is a new icon, it is to the right.",
                 inline=False,
             )
-            embed.set_thumbnail(role_after.icon.url)
+            embed.set_thumbnail(url=role_after.icon.url)
 
         if role_before.hoist != role_after.hoist:
             updated = True
