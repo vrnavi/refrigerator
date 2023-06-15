@@ -241,20 +241,18 @@ class ModToss(Cog):
         if not get_config(ctx.guild.id, "toss", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
 
-        if (
-            not user_ids
-            and LAST_UNROLEBAN.isset(ctx.guild.id)
-            and LAST_UNROLEBAN.diff(ctx.guild.id, ctx.message.created_at)
-            < get_config(ctx.guild.id, "archive", "unroleban_expiry")
-        ):
-            user_ids = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
-            if not get_config(ctx.guild.id, "archive", "enable"):
-                LAST_UNROLEBAN.unset(ctx.guild.id)
-        elif not user_ids:
-            return await ctx.reply(
-                content="There's nobody in the roleban cache.\nYou'll need to untoss with a ping or ID.",
-                mention_author=False,
-            )
+        if not user_ids:
+            if LAST_UNROLEBAN.isset(ctx.guild.id) and LAST_UNROLEBAN.diff(
+                ctx.guild.id, ctx.message.created_at
+            ) < get_config(ctx.guild.id, "archive", "unroleban_expiry"):
+                user_ids = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
+                if not get_config(ctx.guild.id, "archive", "enable"):
+                    LAST_UNROLEBAN.unset(ctx.guild.id)
+            else:
+                return await ctx.reply(
+                    content="There's nobody in the roleban cache.\nYou'll need to untoss with a ping or ID.",
+                    mention_author=False,
+                )
 
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         staff_channel = get_config(ctx.guild.id, "staff", "staff_channel")
