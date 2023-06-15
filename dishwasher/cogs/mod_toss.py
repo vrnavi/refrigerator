@@ -250,7 +250,7 @@ class ModToss(Cog):
             user_ids = str(LAST_UNROLEBAN.guild_set[ctx.guild.id]["user_id"])
             if not get_config(ctx.guild.id, "archive", "enable"):
                 LAST_UNROLEBAN.unset(ctx.guild.id)
-        else:
+        elif not user_ids:
             return await ctx.reply(
                 content="There's nobody in the roleban cache.\nYou'll need to untoss with a ping or ID.",
                 mention_author=False,
