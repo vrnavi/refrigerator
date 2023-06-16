@@ -82,7 +82,11 @@ class AutoApps(Cog):
                     await thread.send(
                         content=f"This thread is for the discussion of your submitted character `#{char}` with the {staff_role.mention}s.",
                         embed=embedapp,
-                        file=fileapp,
+                        file=discord.File(
+                            fp=fileapp, filename=message.attachments[0].filename
+                        )
+                        if fileapp
+                        else None,
                     )
                 minreq = 2
             else:
