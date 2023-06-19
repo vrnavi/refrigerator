@@ -64,9 +64,26 @@ class Reply(Cog):
             nagmsg = await message.reply(
                 content=f"This is violation number `{self.usercounts[message.author.id]}`. Do not exceed `5` violations today.",
                 file=discord.File("assets/noreply.png"),
-                delete_after=15,
                 mention_author=True,
             )
+            await nagmsg.add_reaction("🛑")
+
+            def check(r, u):
+                return (
+                    u.id == reference_author.id
+                    and str(r.emoji) == "🛑"
+                    and r.message.id == nagmsg.id
+                )
+
+            try:
+                await self.bot.wait_for("reaction_add", timeout=15.0, check=check)
+            except asyncio.TimeoutError:
+                await nagmsg.delete()
+            else:
+                self.usercounts[message.author.id] -= 1
+                await nagmsg.edit(
+                    content="Violation pardoned.", suppress=True, delete_after=15
+                )
             return
 
     @Cog.listener()
