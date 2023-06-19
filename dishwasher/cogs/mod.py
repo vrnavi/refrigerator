@@ -506,6 +506,11 @@ class Mod(Cog):
         """[S] Clears a given number of messages."""
         if not channel:
             channel = ctx.channel
+        if limit >= 1000000:
+            return await ctx.reply(
+                content=f"Your purge limit of `{limit}` is too high. Are you trying to `purge from {limit}`?",
+                mention_author=False,
+            )
         deleted = len(await channel.purge(limit=limit))
         await ctx.send(f"🚮 `{deleted}` messages purged.", delete_after=5)
 
