@@ -82,7 +82,9 @@ class Reply(Cog):
             else:
                 self.usercounts[message.author.id] -= 1
                 await nagmsg.edit(
-                    content="Violation pardoned.", suppress=True, delete_after=15
+                    content="Violation pardoned. You now have `{self.usercounts[message.author.id]}` violations.",
+                    attachments=[],
+                    delete_after=15,
                 )
             return
 
