@@ -82,6 +82,7 @@ class Reply(Cog):
                 await nagmsg.delete()
             else:
                 self.usercounts[message.author.id] -= 1
+                await message.remove_reaction("🗞️", self.bot.user)
                 await nagmsg.edit(
                     content=f"Violation pardoned. You now have `{self.usercounts[message.author.id]}` violations.",
                     attachments=[],
