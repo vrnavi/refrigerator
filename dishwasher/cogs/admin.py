@@ -236,10 +236,19 @@ class Admin(Cog):
         tmp = await ctx.message.reply(content="Pulling...", mention_author=False)
         git_output = await self.bot.async_call_shell("git pull")
         allowed_mentions = discord.AllowedMentions(replied_user=False)
-        await tmp.edit(
-            content=f"Pull complete. Output: ```{git_output}```",
-            allowed_mentions=allowed_mentions,
-        )
+        if len(git_output) > 2000:
+            parts = await self.bot.slice_message(git_output, prefix="```", suffix="```")
+            await tmp.edit(
+                content=f"Output too long. Sending in new message...",
+                allowed_mentions=allowed_mentions,
+            )
+            for x in parts:
+                await ctx.send(content=x)
+        else:
+            await tmp.edit(
+                content=f"Pull complete. Output: ```{git_output}```",
+                allowed_mentions=allowed_mentions,
+            )
         if auto:
             cogs_to_reload = re.findall(r"cogs/([a-z_]*).py[ ]*\|", git_output)
             for cog in cogs_to_reload:
