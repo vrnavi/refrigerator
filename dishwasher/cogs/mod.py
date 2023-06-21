@@ -771,10 +771,11 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def eggtimer(self, ctx):
+    async def eggtimer(self, ctx, minutes: int = 5):
         """[S] Posts a timer."""
-        await ctx.reply(content="⏳", delete_after=5)
-        await asyncio.sleep(300)
+        time = minutes * 60
+        await ctx.message.add_reaction("⏳")
+        await asyncio.sleep(time)
         msg = await ctx.channel.send(content=ctx.author.mention)
         await msg.edit(content="⌛", delete_after=5)
 
