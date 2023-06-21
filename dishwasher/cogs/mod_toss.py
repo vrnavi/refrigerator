@@ -59,6 +59,29 @@ class ModToss(Cog):
                 return True
 
     @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def sessions(self, ctx):
+        if not get_config(ctx.guild.id, "toss", "enable"):
+            return await ctx.reply(self.nocfgmsg, mention_author=False)
+        embed = discord.Embed(
+            title="👁‍🗨 Toss Channel Sessions...",
+            color=ctx.author.color,
+            timestamp=datetime.now(),
+        )
+        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
+        for c in get_config(ctx.guild.id, "toss", "toss_channels"):
+            if c in [g.name for g in ctx.guild.channels]:
+                embed.add_field(
+                    name=f"🔴 #{c}",
+                    value="Occupied.\nput users who are tossed in this channel here",
+                    inline=False,
+                )
+            else:
+                embed.add_field(name=f"🟢 #{c}", value="Available.", inline=False)
+        ctx.reply(embed=embed, mention_author=False)
+
+    @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
     @commands.check(check_if_staff)
     @commands.command(aliases=["roleban"])
