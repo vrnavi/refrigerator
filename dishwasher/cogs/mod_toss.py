@@ -325,9 +325,16 @@ class ModToss(Cog):
         if self.is_rolebanned(member):
             staff_channel = get_config(member.guild.id, "staff", "staff_channel")
             if staff_channel:
-                await member.guild.get_channel(staff_channel).send(
-                    f"**{member}** left while tossed.\nLaugh at this user!"
-                )
+                try:
+                    await member.guild.fetch_ban(member)
+                except NotFound:
+                    await member.guild.get_channel(staff_channel).send(
+                        f"**{member}** left while tossed.\nLaugh at this user!"
+                    )
+                else:
+                    await member.guild.get_channel(staff_channel).send(
+                        f"**{member}** finally got banned while tossed."
+                    )
 
             LAST_UNROLEBAN.set(
                 member.guild.id,
