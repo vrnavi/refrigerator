@@ -771,6 +771,16 @@ class Mod(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
+    async def eggtimer(self, ctx):
+        """[S] Posts a timer."""
+        await ctx.reply(content="⏳", delete_after=5)
+        await asyncio.sleep(300)
+        msg = await ctx.channel.send(content=ctx.author.mention)
+        await msg.edit(content="⌛", delete_after=5)
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
     async def warn(self, ctx, target: discord.User, *, reason: str = ""):
         """[S] Warns a user."""
         if target == ctx.author:
