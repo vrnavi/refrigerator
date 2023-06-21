@@ -74,11 +74,11 @@ class ModToss(Cog):
             if c in [g.name for g in ctx.guild.channels]:
                 embed.add_field(
                     name=f"🔴 #{c}",
-                    value="Occupied.\nput users who are tossed in this channel here",
+                    value="__Occupied__\n> put users who are tossed in this channel here",
                     inline=False,
                 )
             else:
-                embed.add_field(name=f"🟢 #{c}", value="Available.", inline=False)
+                embed.add_field(name=f"🟢 #{c}", value="__Available__", inline=False)
         await ctx.reply(embed=embed, mention_author=False)
 
     @commands.guild_only()
