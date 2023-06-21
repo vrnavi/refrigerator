@@ -101,8 +101,13 @@ class ModToss(Cog):
                     roles.append(rx)
                     role_ids.append(rx.id)
 
+            if not os.path.exists(f"{self.bot.server_data}/{ctx.guild.id}/toss"):
+                os.makedirs(f"{self.bot.server_data}/{ctx.guild.id}/toss")
+
             try:
-                with open(rf"data/toss/{ctx.guild.id}-{us.id}.json", "x") as file:
+                with open(
+                    rf"{self.bot.server_data}/{ctx.guild.id}/toss/{us.id}.json", "x"
+                ) as file:
                     file.write(json.dumps(role_ids))
             except FileExistsError:
                 if toss_role in us.roles:
@@ -111,7 +116,9 @@ class ModToss(Cog):
                     )
                     continue
                 else:
-                    with open(rf"data/toss/{ctx.guild.id}-{us.id}.json", "w") as file:
+                    with open(
+                        rf"{self.bot.server_data}/{ctx.guild.id}/toss/{us.id}.json", "w"
+                    ) as file:
                         file.write(json.dumps(role_ids))
 
             prev_roles = ""
@@ -267,11 +274,13 @@ class ModToss(Cog):
                 continue
 
             try:
-                with open(rf"data/toss/{ctx.guild.id}-{us.id}.json") as file:
+                with open(
+                    rf"{self.bot.server_data}/{ctx.guild.id}/toss/{us.id}.json"
+                ) as file:
                     raw_d = file.read()
                     roles = json.loads(raw_d)
                     print(roles)
-                os.remove(rf"data/toss/{ctx.guild.id}-{us.id}.json")
+                os.remove(rf"{self.bot.server_data}/{ctx.guild.id}/toss/{us.id}.json")
             except FileNotFoundError:
                 await ctx.reply(
                     f"{us.name} is not currently tossed.", mention_author=False

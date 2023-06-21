@@ -55,6 +55,19 @@ class Basic(Cog):
         await ctx.send(f"{the_text} got stuck in the Dishwasher.")
 
     @commands.command()
+    async def eggtimer(self, ctx, minutes: int = 5):
+        """[S] Posts a timer."""
+        if minutes >= 60:
+            return await ctx.reply(
+                "I'm not making a timer longer than an hour.", mention_author=False
+            )
+        time = minutes * 60
+        await ctx.message.add_reaction("⏳")
+        await asyncio.sleep(time)
+        msg = await ctx.channel.send(content=ctx.author.mention)
+        await msg.edit(content="⌛", delete_after=5)
+
+    @commands.command()
     async def avy(self, ctx, target: discord.User = None):
         """[U] Gets an avy."""
         if target is not None:
