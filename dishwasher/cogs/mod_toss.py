@@ -72,11 +72,27 @@ class ModToss(Cog):
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         for c in get_config(ctx.guild.id, "toss", "toss_channels"):
             if c in [g.name for g in ctx.guild.channels]:
-                embed.add_field(
-                    name=f"🔴 #{c}",
-                    value="__Occupied__\n> put users who are tossed in this channel here",
-                    inline=False,
-                )
+                if not os.listdir(f"{self.bot.server_data}/{ctx.guild.id}/toss/{c}"):
+                    embed.add_field(
+                        name=f"🟡 #{c}",
+                        value="__Error__\nChannel exists yet no users...\nIf you see this, please delete the channel.",
+                        inline=False,
+                    )
+                else:
+                    userlist = "\n".join(
+                        [
+                            f"> {user.global_name} [{user}]"
+                            for user in [
+                                await self.bot.fetch_user(u)
+                                for u in [uf[:-4] for uf in os.listdirs()]
+                            ]
+                        ]
+                    )
+                    embed.add_field(
+                        name=f"🔴 #{c}",
+                        value=f"__Occupied__\n{userlist}",
+                        inline=False,
+                    )
             else:
                 embed.add_field(name=f"🟢 #{c}", value="__Available__", inline=False)
         await ctx.reply(embed=embed, mention_author=False)
@@ -95,6 +111,21 @@ class ModToss(Cog):
         online = False
         staff_channel = get_config(ctx.guild.id, "staff", "staff_channel")
         modlog_channel = get_config(ctx.guild.id, "logs", "mlog_thread")
+
+        # todo: find an available session and use that
+        if all(
+            [
+                g in ctx.guild.channels
+                for g in get_config(ctx.guild.id, "toss", "toss_channels")
+            ]
+        ):
+            return await ctx.reply(
+                content="I cannot toss them. All sessions are currently in use.",
+                mention_author=False,
+            )
+        for c in get_config(ctx.guild.id, "toss", "toss_channels"):
+            if c not in [g.name for g in ctx.guild.channels]:
+                pass  # make the channel and save this
 
         for us in user_id_list:
             if us.id == ctx.author.id:
