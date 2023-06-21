@@ -79,7 +79,7 @@ class ModToss(Cog):
                 )
             else:
                 embed.add_field(name=f"🟢 #{c}", value="Available.", inline=False)
-        ctx.reply(embed=embed, mention_author=False)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @commands.guild_only()
     @commands.bot_has_permissions(kick_members=True)
