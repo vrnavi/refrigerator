@@ -72,7 +72,7 @@ class ModToss(Cog):
         embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
         for c in get_config(ctx.guild.id, "toss", "toss_channels"):
             if c in [g.name for g in ctx.guild.channels]:
-                if not os.listdir(f"{self.bot.server_data}/{ctx.guild.id}/toss/{c}"):
+                if not os.path.exists(f"{self.bot.server_data}/{ctx.guild.id}/toss/{c}") or not os.listdir(f"{self.bot.server_data}/{ctx.guild.id}/toss/{c}"):
                     embed.add_field(
                         name=f"🟡 #{c}",
                         value="__Error__\nChannel exists yet no users...\nIf you see this, please delete the channel.",
