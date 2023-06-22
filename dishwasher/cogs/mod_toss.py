@@ -87,7 +87,12 @@ class ModToss(Cog):
                             f"> {user.global_name} [{user}]"
                             for user in [
                                 await self.bot.fetch_user(u)
-                                for u in [uf[:-4] for uf in os.listdirs()]
+                                for u in [
+                                    uf[:-5]
+                                    for uf in os.listdir(
+                                        f"{self.bot.server_data}/{ctx.guild.id}/toss/{c}"
+                                    )
+                                ]
                             ]
                         ]
                     )
@@ -135,7 +140,7 @@ class ModToss(Cog):
                 output += "\n" + random_self_msg(ctx.author.name)
             elif us.id == self.bot.application_id:
                 output += "\n" + random_bot_msg(ctx.author.name)
-            elif str(us.id) + ".txt" in alreadytossed and toss_role in us.roles:
+            elif str(us.id) + ".json" in alreadytossed and toss_role in us.roles:
                 output += "\n" + f"{us.global_name} [{us}] is already tossed."
             else:
                 continue
@@ -361,14 +366,14 @@ class ModToss(Cog):
                 return await nagmsg.edit(content="Operation cancelled.", delete_after=5)
             elif reaction == "✅":
                 user_ids = [
-                    record[:-4]
+                    record[:-5]
                     for record in os.listdir(
                         f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
                     )
                 ]
         elif user_ids == "all":
             user_ids = [
-                record[:-4]
+                record[:-5]
                 for record in os.listdir(
                     f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
                 )
@@ -385,7 +390,7 @@ class ModToss(Cog):
             elif us.id == ctx.author.id:
                 output += "\n" + random_self_msg(ctx.author.name)
             elif (
-                str(us.id) + ".txt"
+                str(us.id) + ".json"
                 not in os.listdir(
                     f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
                 )
@@ -490,7 +495,10 @@ class ModToss(Cog):
                 users = self.bot.tosscache[ctx.guild.id][ctx.channel.name]
                 user = f"{users[0].name} {users[0].id}"
             except:
-                pass
+                return await ctx.reply(
+                    content="The toss cache is empty. Untoss someone first.",
+                    mention_author=False,
+                )
 
             fn = ctx.message.created_at.strftime("%Y-%m-%d") + " " + str(user)
             reply = f"📕 Archived as: `{fn}.txt`"
@@ -586,7 +594,7 @@ class ModToss(Cog):
                 for c in os.listdir(
                     f"{self.bot.server_data}/{member.guild.id}/toss/{p}"
                 ):
-                    if member.id == c[:-4]:
+                    if member.id == c[:-5]:
                         session = p
                         break
                 if session:
@@ -645,7 +653,7 @@ class ModToss(Cog):
                     for c in os.listdir(
                         f"{self.bot.server_data}/{member.guild.id}/toss/{p}"
                     ):
-                        if member.id == c[:-4]:
+                        if member.id == c[:-5]:
                             self.bot.tosscache[member.guild.id][p].append(member.id)
                             os.replace(
                                 f"{self.bot.server_data}/{after.guild.id}/toss/{p}/{c}",
@@ -686,7 +694,7 @@ class ModToss(Cog):
                     for c in os.listdir(
                         f"{self.bot.server_data}/{after.guild.id}/toss/{p}"
                     ):
-                        if after.id == c[:-4]:
+                        if after.id == c[:-5]:
                             self.bot.tosscache[after.guild.id][p].append(after.id)
                             os.remove(
                                 f"{self.bot.server_data}/{after.guild.id}/toss/{p}/{c}"
