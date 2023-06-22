@@ -540,7 +540,7 @@ class ModToss(Cog):
                     title="📁 Toss Channel Archived",
                     description=f"{ctx.channel.name}'s session was archived by {ctx.author.mention} ({ctx.author.id})",
                     color=ctx.author.color,
-                    timestamp=datetime.datetime.now(),
+                    timestamp=datetime.now(),
                 )
                 embed.set_footer(
                     text=self.bot.user.name, icon_url=self.bot.user.display_avatar
