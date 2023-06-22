@@ -178,16 +178,14 @@ class ModToss(Cog):
                         ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
                         staff_role: discord.PermissionOverwrite(read_messages=True),
                     }
-                    toss_channel = (
-                        await ctx.guild.create_text_channel(
-                            name=c,
-                            reason="Dishwasher Toss3",
-                            category=ctx.guild.get_channel(
-                                get_config(ctx.guild.id, "toss", "toss_category")
-                            ),
-                            topic="The rolebanned channel. You likely won't get banned, but don't leave immediately, or you will be banned.",  # i need to replace this
-                            overwrites=overwrites,
+                    toss_channel = await ctx.guild.create_text_channel(
+                        name=c,
+                        reason="Dishwasher Toss3",
+                        category=ctx.guild.get_channel(
+                            get_config(ctx.guild.id, "toss", "toss_category")
                         ),
+                        topic="The rolebanned channel. You likely won't get banned, but don't leave immediately, or you will be banned.",  # i need to replace this
+                        overwrites=overwrites,
                     )
                     for x in bot_roles:
                         toss_channel.set_permissions(x, read_messages=True)
@@ -696,8 +694,12 @@ class ModToss(Cog):
     @Cog.listener()
     async def on_guild_channel_delete(self, channel):
         await self.bot.wait_until_ready()
-        if channel.name in get_config(channel.guild.id, "toss", "toss_channels") and channel.guild.id in self.bot.tosscache and channel.name in self.bot.tosscache[channel.guild.id]:
-                self.bot.tosscache[channel.guild.id][channel.name] = []
+        if (
+            channel.name in get_config(channel.guild.id, "toss", "toss_channels")
+            and channel.guild.id in self.bot.tosscache
+            and channel.name in self.bot.tosscache[channel.guild.id]
+        ):
+            self.bot.tosscache[channel.guild.id][channel.name] = []
 
 
 async def setup(bot):
