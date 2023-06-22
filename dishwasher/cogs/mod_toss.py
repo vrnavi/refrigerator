@@ -89,7 +89,7 @@ class ModToss(Cog):
                 else:
                     userlist = "\n".join(
                         [
-                            f"> {user.global_name} [{user}]"
+                            f"> {'**' + user.global_name + '** [' if user.global_name else '**'}{user}{']' if user.global_name else '**'}"
                             for user in [
                                 await self.bot.fetch_user(u)
                                 for u in [
@@ -147,7 +147,10 @@ class ModToss(Cog):
             elif us.id == self.bot.application_id:
                 output += "\n" + random_bot_msg(ctx.author.name)
             elif str(us.id) + ".json" in alreadytossed and toss_role in us.roles:
-                output += "\n" + f"{us.global_name} [{us}] is already tossed."
+                output += (
+                    "\n"
+                    + f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} is already tossed."
+                )
             else:
                 continue
             user_id_list.remove(us)
@@ -404,7 +407,10 @@ class ModToss(Cog):
                 )
                 and toss_role not in us.roles
             ):
-                output += "\n" + f"{us.global_name} [{us}] is not already tossed."
+                output += (
+                    "\n"
+                    + f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} is not already tossed."
+                )
             else:
                 continue
             user_id_list.remove(us)
