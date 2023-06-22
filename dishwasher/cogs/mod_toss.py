@@ -276,7 +276,10 @@ class ModToss(Cog):
                 invalid_ids.append(us.name)
 
         output += "\n" + "\n".join(
-            [f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed." for us in user_id_list]
+            [
+                f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed."
+                for us in user_id_list
+            ]
         )
 
         if invalid_ids:

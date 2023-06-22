@@ -1,3 +1,16 @@
+import discord
+import json
+import os
+import httplib2
+import re
+import datetime
+import config
+import asyncio
+import textwrap
+import zipfile
+from io import BytesIO
+
+
 async def log_whole_channel(bot, channel, zip_files=False):
     st = ""
 
