@@ -251,7 +251,7 @@ class ModToss(Cog):
 
                 if staff_channel:
                     await ctx.guild.get_channel(staff_channel).send(
-                        f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed in {ctx.channel.mention} by {ctx.message.author.global_name} [{ctx.message.author}]. {us.mention}\n"
+                        f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed in `#{ctx.channel.name}` by {'**' + ctx.author.global_name + '** [' if ctx.author.global_name else '**'}{ctx.author}{']' if ctx.author.global_name else '**'}. {us.mention}\n"
                         f"**ID:** {us.id}\n"
                         f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
                         f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
@@ -263,7 +263,7 @@ class ModToss(Cog):
                     embed = discord.Embed(
                         color=discord.Colour.from_str("#FF0000"),
                         title="🚷 Toss",
-                        description=f"{us.mention} was tossed by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({ctx.message.jump_url})]",
+                        description=f"{us.mention} was tossed by {ctx.author.mention} [`#{ctx.channel.name}`] [[Jump]({ctx.message.jump_url})]",
                         timestamp=datetime.now(),
                     )
                     embed.set_footer(
@@ -331,6 +331,9 @@ class ModToss(Cog):
                 except asyncio.TimeoutError:
                     pokemsg = await toss_channel.send(f"{ctx.author.mention}")
                     await pokemsg.edit(content="⏰", delete_after=5)
+                except discord.NotFound:
+                    # The channel probably got deleted before anything could happen.
+                    return
                 else:
                     pokemsg = await toss_channel.send(f"{ctx.author.mention}")
                     await pokemsg.edit(
@@ -522,7 +525,7 @@ class ModToss(Cog):
             out += f"{ctx.message.created_at.strftime('%Y-%m-%d %H:%M')} {self.bot.user.name}: {reply}"
             out += "\nThis toss session had the following users:"
             for u in users:
-                out += f"\n- **{u.global_name}** [{u}] ({u.id})"
+                out += f"\n- {'**' + u.global_name + '** [' if u.global_name else '**'}{u}{']' if u.global_name else '**'} ({u.id})"
 
             if get_config(ctx.guild.id, "archive", "enable"):
                 credentials = ServiceAccountCredentials.from_json_keyfile_name(
@@ -545,7 +548,7 @@ class ModToss(Cog):
 
                 embed = discord.Embed(
                     title="📁 Toss Channel Archived",
-                    description=f"{ctx.channel.name}'s session was archived by {ctx.author.mention} ({ctx.author.id})",
+                    description=f"`#{ctx.channel.name}`'s session was archived by {ctx.author.mention} ({ctx.author.id})",
                     color=ctx.author.color,
                     timestamp=datetime.now(),
                 )
@@ -594,7 +597,7 @@ class ModToss(Cog):
                     )
                 channel = staff_channel if staff_channel else log_channel
                 await channel.send(
-                    content="📁 Toss Session Archive\nf{ctx.channel.name}'s session was archived by {ctx.author.mention} ({ctx.author.id})",
+                    content=f"📁 Toss Session Archive\n`#{ctx.channel.name}`'s session was archived by {ctx.author.mention} ({ctx.author.id})",
                     files=files,
                 )
         await ctx.channel.delete(reason="Dishwasher Toss3")
