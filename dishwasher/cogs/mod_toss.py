@@ -360,9 +360,9 @@ class ModToss(Cog):
             except asyncio.TimeoutError:
                 return await nagmsg.edit(content="Operation timed out.", delete_after=5)
 
-            if reaction == "❎":
+            if str(reaction) == "❎":
                 return await nagmsg.edit(content="Operation cancelled.", delete_after=5)
-            elif reaction == "✅":
+            elif str(reaction) == "✅":
                 user_ids = " ".join(
                     [
                         record[:-5]
