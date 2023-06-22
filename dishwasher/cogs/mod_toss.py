@@ -495,7 +495,7 @@ class ModToss(Cog):
             users = None
             try:
                 users = [
-                    ctx.guild.get_user(uid)
+                    ctx.guild.get_member(uid)
                     for uid in self.bot.tosscache[ctx.guild.id][ctx.channel.name]
                 ]
                 user = f"{users[0].name} {users[0].id}"
