@@ -494,7 +494,7 @@ class ModToss(Cog):
             user = f"unspecified (logged by {ctx.author})"
             users = None
             try:
-                users = self.bot.tosscache[ctx.guild.id][ctx.channel.name]
+                users = [ctx.guild.get_user(uid) for uid in self.bot.tosscache[ctx.guild.id][ctx.channel.name]]
                 user = f"{users[0].name} {users[0].id}"
             except:
                 return await ctx.reply(
