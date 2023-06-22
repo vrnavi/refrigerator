@@ -12,6 +12,7 @@ import asyncio
 import shutil
 import os
 from helpers.checks import check_if_bot_manager
+from helpers.sv_config import get_config
 
 
 class Admin(Cog):
@@ -186,6 +187,7 @@ class Admin(Cog):
                 "guild": ctx.guild,
                 "channel": ctx.message.channel,
                 "author": ctx.message.author,
+                "config": config,
                 # modules
                 "discord": discord,
                 "commands": commands,
@@ -194,6 +196,7 @@ class Admin(Cog):
                 "asyncio": asyncio,
                 "random": random,
                 "os": os,
+                "get_config": get_config,
                 # utilities
                 "_get": discord.utils.get,
                 "_find": discord.utils.find,
