@@ -1,4 +1,4 @@
-async def log_whole_channel(self, channel, zip_files=False):
+async def log_whole_channel(bot, channel, zip_files=False):
     st = ""
 
     if zip_files:
@@ -24,7 +24,7 @@ async def log_whole_channel(self, channel, zip_files=False):
             add += " " * (padding * (not blank_content)) + "Attachment: " + a.filename
             if zip_files:
                 fn = "{}-{}-{}".format(m.id, a.id, a.filename)
-                async with self.bot.session.get(a.url) as r:
+                async with bot.session.get(a.url) as r:
                     f = await r.read()
 
                 z.writestr(fn, f)
@@ -37,7 +37,7 @@ async def log_whole_channel(self, channel, zip_files=False):
             if e.type == "rich":
                 if not blank_content:
                     add += "\n"
-                add += self.textify_embed(
+                add += textify_embed(
                     e, limit=40, padding=padding, pad_first_line=not blank_content
                 )
                 blank_content = False
@@ -66,7 +66,7 @@ async def log_whole_channel(self, channel, zip_files=False):
     return ret
 
 
-def textify_embed(self, embed, limit=40, padding=0, pad_first_line=True):
+def textify_embed(embed, limit=40, padding=0, pad_first_line=True):
     text_proc = []
     title = ""
     if embed.title:
@@ -119,7 +119,7 @@ def textify_embed(self, embed, limit=40, padding=0, pad_first_line=True):
     return ret
 
 
-async def get_members(self, message, args):
+async def get_members(bot, message, args):
     user = []
     if args:
         user = message.guild.get_member_named(args)
@@ -134,7 +134,7 @@ async def get_members(self, message, args):
                 u = message.guild.get_member(a)
                 if not u:
                     try:
-                        u = await self.bot.fetch_user(a)
+                        u = await bot.fetch_user(a)
                     except:
                         pass
                 if u:

@@ -49,7 +49,7 @@ class ModArchive(Cog):
             pass
 
         if ctx.channel.name in get_config(ctx.guild.id, "toss", "toss_channels"):
-            out = await log_whole_channel(ctx.channel, zip_files=True)
+            out = await log_whole_channel(self.bot, ctx.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
 
@@ -60,7 +60,7 @@ class ModArchive(Cog):
                 user = f"{users[0].name} {users[0].id}"
 
             if args:
-                users = await get_members(ctx.message, args)
+                users = await get_members(self.bot, ctx.message, args)
                 if users[0]:
                     user = f"{users[0].name} {users[0].id}"
                 else:

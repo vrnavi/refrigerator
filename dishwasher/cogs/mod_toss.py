@@ -478,7 +478,7 @@ class ModToss(Cog):
             get_config(ctx.guild.id, "logs", "mlog_thread")
         )
         if archive:
-            out = await log_whole_channel(ctx.channel, zip_files=True)
+            out = await log_whole_channel(self.bot, ctx.channel, zip_files=True)
             zipped_files = out[1]
             out = out[0]
             user = f"unspecified (logged by {ctx.author})"
