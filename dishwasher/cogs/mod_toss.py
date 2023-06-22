@@ -374,7 +374,7 @@ class ModToss(Cog):
         elif user_ids == "all":
             user_ids = " ".join(
                 [
-                    int(record[:-5])
+                    record[:-5]
                     for record in os.listdir(
                         f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
                     )
