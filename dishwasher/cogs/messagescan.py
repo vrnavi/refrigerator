@@ -257,8 +257,12 @@ class Messagescan(Cog):
         ):
             # Discord SUCKS!!
             if twitterlinks:
+                ctr = 0
                 while not message.embeds:
+                    if ctr == 50:
+                        break
                     await asyncio.sleep(0.1)
+                    ctr += 1
             await message.edit(suppress=True)
 
         def deletecheck(m):
