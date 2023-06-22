@@ -7,6 +7,7 @@ import random
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
+import httplib2
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from oauth2client.service_account import ServiceAccountCredentials
