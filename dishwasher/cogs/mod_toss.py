@@ -351,9 +351,7 @@ class ModToss(Cog):
             await nagmsg.add_reaction("❎")
 
             def check(r, u):
-                return (
-                    u.id == ctx.author.id and str(r.emoji) == "✅" or str(r.emoji) == "❎"
-                )
+                return u.id == ctx.author.id and str(r.emoji) in ["✅", "❎"]
 
             try:
                 reaction, user = await self.bot.wait_for(
@@ -365,19 +363,23 @@ class ModToss(Cog):
             if reaction == "❎":
                 return await nagmsg.edit(content="Operation cancelled.", delete_after=5)
             elif reaction == "✅":
-                user_ids = [
-                    record[:-5]
+                user_ids = " ".join(
+                    [
+                        record[:-5]
+                        for record in os.listdir(
+                            f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
+                        )
+                    ]
+                )
+        elif user_ids == "all":
+            user_ids = " ".join(
+                [
+                    int(record[:-5])
                     for record in os.listdir(
                         f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
                     )
                 ]
-        elif user_ids == "all":
-            user_ids = [
-                record[:-5]
-                for record in os.listdir(
-                    f"{self.bot.server_data}/{ctx.guild.id}/toss/{ctx.channel.name}"
-                )
-            ]
+            )
 
         user_id_list, invalid_ids = self.get_user_list(ctx, user_ids)
         staff_channel = get_config(ctx.guild.id, "staff", "staff_channel")
