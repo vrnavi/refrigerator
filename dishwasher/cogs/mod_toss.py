@@ -178,8 +178,6 @@ class ModToss(Cog):
                         ctx.guild.me: discord.PermissionOverwrite(read_messages=True),
                         staff_role: discord.PermissionOverwrite(read_messages=True),
                     }
-                    for x in bot_roles:
-                        overwrites[x] = discord.PermissionOverwrite(read_messages=True)
                     toss_channel = (
                         await ctx.guild.create_text_channel(
                             name=c,
