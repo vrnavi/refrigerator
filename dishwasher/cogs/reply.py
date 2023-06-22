@@ -89,6 +89,16 @@ class Reply(Cog):
                     delete_after=15,
                 )
             return
+            
+    @commands.guild_only()
+    @commands.check(check_if_staff)
+    @commands.command()
+    async def reset(self, ctx, target: discord.Member):
+        if target.id not in self.usercounts or self.usercounts[target.id] == 0:
+            return await ctx.reply(content="This user doesn't have any reply ping violations.", mention_author=False)
+        else:
+            self.usercounts[target.id] = 0
+            return await ctx.reply(content="This user's reply ping counter has been reset.", mention_author=False)
 
     @Cog.listener()
     async def on_message(self, message):
