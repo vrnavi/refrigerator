@@ -189,6 +189,8 @@ class ModToss(Cog):
                             overwrites=overwrites,
                         ),
                     )
+                    for x in bot_roles:
+                        toss_channel.set_permissions(x, read_messages=True)
                     break
 
         for us in user_id_list:
@@ -203,12 +205,12 @@ class ModToss(Cog):
             ) as file:
                 file.write(json.dumps([role.id for role in roles]))
 
-            prev_roles = " ".join([f"`{r.name}`" for r in roles])
+            prev_roles = " ".join([f"`{role.name}`" for role in roles])
 
             try:
                 await us.add_roles(toss_role, reason="User tossed.")
                 fail_roles = []
-                if len(roles) > 0:
+                if roles:
                     for rr in roles:
                         if not rr.is_assignable():
                             fail_roles.append(rr.name)
@@ -694,8 +696,8 @@ class ModToss(Cog):
     @Cog.listener()
     async def on_guild_channel_delete(self, channel):
         await self.bot.wait_until_ready()
-        if channel.name in get_config(channel.guild.id, "toss", "toss_channels"):
-            self.bot.tosscache[channel.guild.id][channel.name] = []
+        if channel.name in get_config(channel.guild.id, "toss", "toss_channels") and channel.guild.id in self.bot.tosscache and channel.name in self.bot.tosscache[channel.guild.id]:
+                self.bot.tosscache[channel.guild.id][channel.name] = []
 
 
 async def setup(bot):
