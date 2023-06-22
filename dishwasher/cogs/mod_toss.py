@@ -237,7 +237,7 @@ class ModToss(Cog):
 
                 if staff_channel:
                     await ctx.guild.get_channel(staff_channel).send(
-                        f"**{us.global_name}** [{us}] has been tossed in {ctx.channel.mention} by {ctx.message.author.global_name} [{ctx.message.author}]. {us.mention}\n"
+                        f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed in {ctx.channel.mention} by {ctx.message.author.global_name} [{ctx.message.author}]. {us.mention}\n"
                         f"**ID:** {us.id}\n"
                         f"**Created:** <t:{int(us.created_at.timestamp())}:R> on <t:{int(us.created_at.timestamp())}:f>\n"
                         f"**Joined:** <t:{int(us.joined_at.timestamp())}:R> on <t:{int(us.joined_at.timestamp())}:f>\n"
@@ -261,12 +261,12 @@ class ModToss(Cog):
                     )
                     embed.add_field(
                         name=f"👤 User",
-                        value=f"**{us.global_name}** [{us}]\n{us.mention} ({us.id})",
+                        value=f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'}\n{us.mention} ({us.id})",
                         inline=True,
                     )
                     embed.add_field(
                         name=f"🛠️ Staff",
-                        value=f"**{ctx.author.global_name}** [{ctx.author}]\n{ctx.author.mention} ({ctx.author.id})",
+                        value=f"{'**' + ctx.author.global_name + '** [' if ctx.author.global_name else '**'}{ctx.author}{']' if ctx.author.global_name else '**'}\n{ctx.author.mention} ({ctx.author.id})",
                         inline=True,
                     )
                     mlog = await self.bot.fetch_channel(modlog_channel)
@@ -276,7 +276,7 @@ class ModToss(Cog):
                 invalid_ids.append(us.name)
 
         output += "\n" + "\n".join(
-            [f"**{us.global_name}** [{us}] has been tossed." for us in user_id_list]
+            [f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed." for us in user_id_list]
         )
 
         if invalid_ids:
@@ -301,7 +301,7 @@ class ModToss(Cog):
                 f"**Do NOT leave the server, or you will be instantly banned.**"
             )
 
-            if any([us.raw_status == "offline" for us in user_id_list]):
+            if any([us.raw_status != "offline" for us in user_id_list]):
                 await toss_channel.send(f"⏰ Please respond within `5 minutes`.")
 
                 def check(m):
@@ -435,14 +435,14 @@ class ModToss(Cog):
                 self.bot.tosscache[ctx.guild.id][ctx.channel.name] = []
             self.bot.tosscache[ctx.guild.id][ctx.channel.name].append(us.id)
 
-            restored = " ".join([f"`{rx.name}`" for rx in roles_actual])
+            restored = " ".join([f"`{rx.name}`" for rx in roles])
             output += (
                 "\n"
-                + f"**{us.global_name}** [{us}] has been untossed.\n**Roles Restored:** {restored}"
+                + f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been untossed.\n**Roles Restored:** {restored}"
             )
             if staff_channel:
                 await ctx.guild.get_channel(staff_channel).send(
-                    f"**{us.global_name}** [{us}] has been untossed in {ctx.channel.mention} by {ctx.author.global_name}.\n**Roles Restored:** {restored}"
+                    f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been untossed in {ctx.channel.mention} by {ctx.author.global_name}.\n**Roles Restored:** {restored}"
                 )
 
         if invalid_ids:
