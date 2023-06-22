@@ -135,7 +135,8 @@ class ModToss(Cog):
         staff_role = ctx.guild.get_role(get_config(ctx.guild.id, "staff", "staff_role"))
         toss_role = ctx.guild.get_role(get_config(ctx.guild.id, "toss", "toss_role"))
         bot_roles = [
-            ctx.guild.get_role(r) for r in get_config(ctx.guild.id, "misc", "bot_roles")
+            ctx.guild.get_role(int(r))
+            for r in get_config(ctx.guild.id, "misc", "bot_roles")
         ]
 
         output = ""
