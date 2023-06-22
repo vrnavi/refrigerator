@@ -347,8 +347,8 @@ class ModToss(Cog):
                 content="**⚠️ Warning**\nThis will untoss all users and end the session. Are you sure you want to do this?\nUse `untoss all` in the future to skip this warning.",
                 mention_author=False,
             )
-            nagmsg.add_reaction("✅")
-            nagmsg.add_reaction("❎")
+            await nagmsg.add_reaction("✅")
+            await nagmsg.add_reaction("❎")
 
             def check(r, u):
                 return (
