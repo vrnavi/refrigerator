@@ -198,7 +198,7 @@ class ModToss(Cog):
                         overwrites=overwrites,
                     )
                     for x in bot_roles:
-                        toss_channel.set_permissions(x, read_messages=True)
+                        await toss_channel.set_permissions(x, read_messages=True)
                     break
 
         for us in user_id_list:
