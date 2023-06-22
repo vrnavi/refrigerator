@@ -182,13 +182,13 @@ class ModToss(Cog):
                         overwrites[x] = discord.PermissionOverwrite(read_messages=True)
                     toss_channel = (
                         await ctx.guild.create_text_channel(
-                            c,
+                            name=c,
                             reason="Dishwasher Toss3",
                             category=ctx.guild.get_channel(
                                 get_config(ctx.guild.id, "toss", "toss_category")
                             ),
-                            overwrites=overwrites,
                             topic="The rolebanned channel. You likely won't get banned, but don't leave immediately, or you will be banned.",  # i need to replace this
+                            overwrites=overwrites,
                         ),
                     )
                     break
