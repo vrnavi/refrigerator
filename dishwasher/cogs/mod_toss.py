@@ -7,6 +7,10 @@ import random
 from datetime import datetime, timezone
 from discord.ext import commands
 from discord.ext.commands import Cog
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+from oauth2client.service_account import ServiceAccountCredentials
+from io import BytesIO
 from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
