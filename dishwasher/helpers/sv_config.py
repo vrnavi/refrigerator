@@ -28,6 +28,7 @@ stock_configs = {
         "enable": False,
         "toss_role": 0,
         "toss_channel": 0,
+        "toss_category": 0,
         "toss_channels": [],
     },
     "archive": {
