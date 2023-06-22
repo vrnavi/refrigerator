@@ -111,7 +111,7 @@ class ModToss(Cog):
         alreadytossed = [
             tossed
             for dsub in [
-                os.listdir(f"{self.bot.server_data}/{ctx.guild.id}/toss/{channel}")
+                os.listdir(channel)
                 for channel in [
                     dirs[0]
                     for dirs in os.walk(f"{self.bot.server_data}/{ctx.guild.id}/toss")
