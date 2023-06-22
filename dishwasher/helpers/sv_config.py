@@ -27,7 +27,6 @@ stock_configs = {
     "toss": {
         "enable": False,
         "toss_role": 0,
-        "toss_channel": 0,
         "toss_category": 0,
         "toss_channels": [],
     },
@@ -82,7 +81,7 @@ friendly_names = {
     "autoapp_msg": "Auto App Custom Message",
     "tracker_channel": "Tracker Channel ID",
     "toss_role": "Toss Role ID",
-    "toss_channel": "Toss Channel ID",
+    "toss_category": "Toss Category ID",
     "toss_channels": "Names for Toss Channels",
     "drive_folder": "Google Drive Folder",
     "unroleban_expiry": "Toss Expire Time",
