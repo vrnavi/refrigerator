@@ -30,10 +30,7 @@ class usertime(Cog):
             return
         elif timezone not in available_timezones():
             await ctx.reply(
-                content="Invalid timezone provided. Please provide a timezone in the `America/Chicago` format.\n"
-                "If you don't know what yours is, please check the following list.\n"
-                "<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>\n"
-                "You can also use your GMT offset with the following format: `Etc/GMT<offset>`. For example, `Etc/GMT+5`.",
+                content="Invalid timezone provided. For help, run `timezone` by itself.",
                 mention_author=False,
             )
             return
