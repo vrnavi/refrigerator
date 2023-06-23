@@ -194,7 +194,7 @@ class Messagescan(Cog):
 
         for link in msglinks + twitterlinks:
             parts = message.content.split(link)
-            if parts[0].count("||") % 2 and parts[1].count("||"):
+            if parts[0].count("||") % 2 and parts[1].count("||") % 2:
                 # Assume message is spoilered.
                 try:
                     msglinks.remove(link)
