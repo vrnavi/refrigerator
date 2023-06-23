@@ -2,6 +2,7 @@ import json
 import discord
 import datetime
 import config
+import asyncio
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
@@ -45,7 +46,7 @@ class sv_config(Cog):
             return u.id == ctx.author.id and str(r.emoji) in navigation_reactions
 
         while True:
-            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\n**Page:** {hindex}\nTweak a setting with `{config.prefixes[0]}configs set <category> <setting> <value>`."
+            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0].title()} <setting> <value>`."
             page = list(configs.items())[hindex - 1]
             lines = ""
             for k, v in page[1].items():
