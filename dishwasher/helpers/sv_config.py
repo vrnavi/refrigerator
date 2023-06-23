@@ -137,7 +137,7 @@ def set_config(sid, part, key, value):
     if str(value).lower() == "none":
         value = None
 
-    settingtype = type(configs[part][key]).__name__
+    settingtype = type(stock_configs[part][key]).__name__
     if settingtype == "str":
         if value:
             pass
