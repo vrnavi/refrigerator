@@ -46,8 +46,8 @@ class sv_config(Cog):
             return u.id == ctx.author.id and str(r.emoji) in navigation_reactions
 
         while True:
-            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0].title()} <setting> <value>`."
             page = list(configs.items())[hindex - 1]
+            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0].title()} <setting> <value>`."
             lines = ""
             for k, v in page[1].items():
                 f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
