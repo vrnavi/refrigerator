@@ -29,7 +29,7 @@ class sv_config(Cog):
             guild = ctx.guild
         configs = fill_config(guild.id)
 
-        navigation_reactions = ["⏹", "⬅️", "➡"]
+        navigation_reactions = ["⏹", "⬅️", "➡", "⬆", "⬇️"]
 
         embed = stock_embed(self.bot)
         embed.title = "⚙️ Server Configuration Editor"
@@ -49,15 +49,16 @@ class sv_config(Cog):
         while True:
             page = list(configs.items())[hindex - 1]
             vlimit = len(page[1])
-            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0]} <setting> <value>`."
+            embed.description = f"Page `{hindex}` of `{hlimit}` for server {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0]} <setting> <value>`."
             lines = ""
-            for k, v in page[1].items():
-                f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
+            for i, (k, v) in enumerate(page[1].items()):
+                friendly = f"**{friendly_names[k]}**" if k in friendly_names else ""
+                setting = f"`{k}`" if vindex != i + 1 else f"> `{k}`"
                 if not v and str(v) != "False" and str(v) != "None":
                     v = f"Not Configured ({type(v).__name__})"
                 if str(v) == "None":
                     v = "Forcibly Disabled"
-                lines += f"\n{f}`{k}`\n{v}"
+                lines += f"\n{friendly}\n{setting}\n{v}"
             embed.set_field_at(
                 index=0,
                 name=page[0].title(),
@@ -93,6 +94,14 @@ class sv_config(Cog):
                 if hindex != hlimit:
                     hindex += 1
                 await configmsg.remove_reaction("➡", ctx.author)
+            elif str(reaction) == "⬆":
+                if vindex != 0:
+                    hindex -= 1
+                await configmsg.remove_reaction("⬆", ctx.author)
+            elif str(reaction) == "⬇":
+                if vindex != vlimit:
+                    vindex += 1
+                await configmsg.remove_reaction("⬇", ctx.author)
 
     @commands.check(check_if_bot_manager)
     @configs.command()
