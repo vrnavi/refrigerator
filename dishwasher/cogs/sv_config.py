@@ -29,7 +29,7 @@ class sv_config(Cog):
             guild = ctx.guild
         configs = fill_config(guild.id)
 
-        navigation_reactions = ["⏹", "⬅️", "➡", "⬆", "⬇️"]
+        navigation_reactions = ["⏹", "⬅️", "➡", "⬆", "⬇️", "⏺"]
 
         embed = stock_embed(self.bot)
         embed.title = "⚙️ Server Configuration Editor"
@@ -39,12 +39,16 @@ class sv_config(Cog):
         hindex = 1
         hlimit = len(configs.items())
         vindex = 0
+        pagemode = "play"
         configmsg = await ctx.reply(embed=embed, mention_author=False)
         for e in navigation_reactions:
             await configmsg.add_reaction(e)
 
-        def check(r, u):
+        def reactioncheck(r, u):
             return u.id == ctx.author.id and str(r.emoji) in navigation_reactions
+
+        def messagecheck(m):
+            return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
 
         while True:
             page = list(configs.items())[hindex - 1]
@@ -53,7 +57,12 @@ class sv_config(Cog):
             lines = ""
             for i, (k, v) in enumerate(page[1].items()):
                 friendly = f"**{friendly_names[k]}**\n" if k in friendly_names else ""
-                setting = f"`{k}`" if vindex != i + 1 else f"> `{k}`"
+                if pagemode == "rec":
+                    setting = f"> **`{k}`**"
+                    key = k
+                    value = v
+                else:
+                    setting = f"`{k}`" if vindex != i + 1 else f"> `{k}`"
                 if not v and str(v) != "False" and str(v) != "None":
                     v = f"Not Configured ({type(v).__name__})"
                 if str(v) == "None":
@@ -67,41 +76,114 @@ class sv_config(Cog):
             )
             allowed_mentions = discord.AllowedMentions(replied_user=False)
             await configmsg.edit(embed=embed, allowed_mentions=allowed_mentions)
-            try:
-                reaction, user = await self.bot.wait_for(
-                    "reaction_add", timeout=30.0, check=check
-                )
-            except asyncio.TimeoutError:
-                return await configmsg.edit(
-                    content="Operation timed out.",
-                    embed=None,
-                    delete_after=5,
-                    allowed_mentions=allowed_mentions,
-                )
 
-            if str(reaction) == "⏹":
-                return await configmsg.edit(
-                    content="Operation cancelled.",
-                    embed=None,
-                    delete_after=5,
-                    allowed_mentions=allowed_mentions,
-                )
-            if str(reaction) == "⬅️":
-                if hindex != 1:
-                    hindex -= 1
-                await configmsg.remove_reaction("⬅️", ctx.author)
-            elif str(reaction) == "➡":
-                if hindex != hlimit:
-                    hindex += 1
-                await configmsg.remove_reaction("➡", ctx.author)
-            elif str(reaction) == "⬆":
-                if vindex != 0:
-                    vindex -= 1
-                await configmsg.remove_reaction("⬆", ctx.author)
-            elif str(reaction) == "⬇️":
-                if vindex != vlimit:
-                    vindex += 1
-                await configmsg.remove_reaction("⬇️", ctx.author)
+            if pagemode == "play":
+                try:
+                    reaction, user = await self.bot.wait_for(
+                        "reaction_add", timeout=30.0, check=reactioncheck
+                    )
+                except asyncio.TimeoutError:
+                    return await configmsg.edit(
+                        content="Operation timed out.",
+                        embed=None,
+                        delete_after=5,
+                        allowed_mentions=allowed_mentions,
+                    )
+
+                if str(reaction) == "⏹":
+                    return await configmsg.edit(
+                        content="Operation cancelled.",
+                        embed=None,
+                        delete_after=5,
+                        allowed_mentions=allowed_mentions,
+                    )
+                if str(reaction) == "⬅️":
+                    if hindex != 1:
+                        hindex -= 1
+                    vindex = 0
+                    await configmsg.remove_reaction("⬅️", ctx.author)
+                elif str(reaction) == "➡":
+                    if hindex != hlimit:
+                        hindex += 1
+                    vindex = 0
+                    await configmsg.remove_reaction("➡", ctx.author)
+                elif str(reaction) == "⬆":
+                    if vindex != 0:
+                        vindex -= 1
+                    await configmsg.remove_reaction("⬆", ctx.author)
+                elif str(reaction) == "⬇️":
+                    if vindex != vlimit:
+                        vindex += 1
+                    await configmsg.remove_reaction("⬇️", ctx.author)
+                elif str(reacttion) == "⏺":
+                    pagemode == "rec"
+                    await configmsg.remove_reaction("⏺", ctx.author)
+                    await configmsg.remove_reaction("⏺", ctx.guild.me)
+                    await configmsg.add_reaction("▶")
+            elif pagemode == "rec":
+                if configs[page[0]][key] == None:
+                    await ctx.send(
+                        content="This setting has been administratively disabled by the bot owner. You cannot edit it.",
+                        delete_after=5,
+                    )
+                    pagemode == "play"
+                    continue
+                elif key == "enable":
+                    for k, v in configs[page[0]].items():
+                        if not v and type(v).__name__ != "bool":
+                            await ctx.send(
+                                content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
+                                delete_after=5,
+                            )
+                            pagemode == "play"
+                            continue
+                editingmsg = f"**Editing** the setting `{key}`. Press ⏹ to cancel, or ▶ to save your changes.\nThis setting is a"
+                settingtype = type(configs[page[0]][key]).__name__
+                if settingtype == "str":
+                    editingmsg += " string. Set this by replying with whatever."
+                elif settingtype == "int":
+                    editingmsg += "n integer. Set this by replying with a number."
+                elif settingtype == "list":
+                    editingmsg += " list. Set this by replying with a list of whatevers, separated by spaces."
+                elif settingtype == "bool":
+                    editingmsg += (
+                        " boolean. Set this by replying with `true` or `false`."
+                    )
+                if value:
+                    editingmsg += (
+                        '\nYou can also reply with "none" to remove the current value.'
+                    )
+                configsuppmsg = await ctx.send(content=editingmsg)
+
+                try:
+                    message = await self.bot.wait_for(
+                        "message", timeout=30.0, check=messagecheck
+                    )
+                except asyncio.TimeoutError:
+                    await configsuppmsg.delete()
+                    return await configmsg.edit(
+                        content="Operation timed out.",
+                        embed=None,
+                        delete_after=5,
+                        allowed_mentions=allowed_mentions,
+                    )
+
+                try:
+                    configs = set_config(ctx.guild.id, page[0], key, message.content)
+                except:
+                    await configsuppmsg.edit(
+                        content="You gave an invalid value. Please try again while following the instructions of what to send.",
+                        delete_after=5,
+                    )
+                    pagemode == "play"
+                    continue
+                else:
+                    await configsuppmsg.edit(
+                        content=f"**{page[0].title()}/**`{key}` has been updated with a new value of `{configs[page[0]][key]}`.",
+                        delete_after=5,
+                    )
+                    pagemode == "play"
+                    continue
 
     @commands.check(check_if_bot_manager)
     @configs.command()

@@ -132,6 +132,30 @@ def get_config(sid, part, key):
 def set_config(sid, part, key, value):
     configs = fill_config(sid)
 
+    settingtype = type(configs[part][key]).__name__
+    if settingtype == "str":
+        if value:
+            pass
+        else:
+            value = ""
+    elif settingtype == "int":
+        if value:
+            value = int(value)
+        else:
+            value = 0
+    elif settingtype == "list":
+        pre_cfg = configs[category][setting]
+        if value:
+            if value.split()[0] == "add":
+                value = pre_cfg + value.split()[1:]
+            elif value.split()[0] == "del":
+                pre_cfg.remove(v)
+                value = pre_cfg
+        else:
+            value = []
+    elif settingtype == "bool":
+        value = True if str(value).title() == "True" else False
+
     if part not in configs:
         configs[part] = {}
     configs[part][key] = value
