@@ -5,6 +5,7 @@ import config
 from helpers.checks import check_if_staff, check_if_bot_manager
 from discord.ext.commands import Cog, Context, Bot
 from discord.ext import commands
+from helpers.embeds import stock_embed
 from helpers.sv_config import (
     fill_config,
     make_config,
@@ -26,29 +27,59 @@ class sv_config(Cog):
         if not guild:
             guild = ctx.guild
         configs = fill_config(guild.id)
-        embed = discord.Embed(
-            title=f"⚙️ Configuration for {guild}",
-            description=f"Tweak a setting with `{config.prefixes[0]}configs set <category> <setting> <value>`.",
-            color=ctx.author.color,
-            timestamp=datetime.datetime.now(),
-        )
-        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
+
+        navigation_reactions = ["⬅️", "➡"]
+
+        embed = stock_embed(self.bot)
+        embed.title = "⚙️ Server Configuration Editor"
+        embed.color = ctx.author.color
         embed.set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
-        for p, s in configs.items():
+        embed.add_field(name="⏳", value="Loading...", inline=False)
+        hindex = 1
+        hlimit = len(configs.items)
+        configmsg = await ctx.reply(embed=embed, mention_author=False)
+        for e in navigation_reactions:
+            await configmsg.add_reaction(e)
+
+        def check(r, u):
+            return u.id == ctx.author.id and str(r.emoji) in navigation_reactions
+
+        while True:
+            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\n**Page:** {hindex}\nTweak a setting with `{config.prefixes[0]}configs set <category> <setting> <value>`."
+            page = configs.items()[hindex - 1]
             lines = ""
-            for k, v in s.items():
+            for k, v in page[1].items():
                 f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
                 if not v and str(v) != "False" and str(v) != "None":
                     v = f"Not Configured ({type(v).__name__})"
                 if str(v) == "None":
                     v = "Forcibly Disabled"
                 lines += f"\n{f}`{k}`\n{v}"
-            embed.add_field(
-                name=p.title(),
+            embed.set_field_at(
+                index=0,
+                name=page[0].title(),
                 value=lines,
-                inline=True,
+                inline=False,
             )
-        await ctx.reply(embed=embed, mention_author=False)
+            allowed_mentions = discord.AllowedMentions(replied_user=False)
+            await configmsg.edit(embed=embed, allowed_mentions=allowed_mentions)
+            try:
+                reaction, user = await self.bot.wait_for(
+                    "reaction_add", timeout=30.0, check=check
+                )
+            except asyncio.TimeoutError:
+                return await configmsg.edit(
+                    content="Operation timed out.", delete_after=5
+                )
+
+            if str(reaction) == "⬅️":
+                if hindex != 1:
+                    hindex -= 1
+                await configmsg.remove_reaction("⬅️", ctx.author)
+            elif str(reaction) == "➡":
+                if hindex != hlimit:
+                    hindex += 1
+                await configmsg.remove_reaction("➡", ctx.author)
 
     @commands.check(check_if_bot_manager)
     @configs.command()

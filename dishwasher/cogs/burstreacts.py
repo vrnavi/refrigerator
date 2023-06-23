@@ -46,9 +46,9 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         mlog = await self.bot.fetch_channel(get_config(guild.id, "logs", "mlog_thread"))
 
         embed = stock_embed(self.bot)
-        embed.title="🗑️ Autoremoved a Super Reaction"
-        embed.description=f"{author}`'s {emoji} was removed. [{message.jump_url}]"
-        embed.color=0xEA50BA,
+        embed.title = "🗑️ Autoremoved a Super Reaction"
+        embed.description = f"{author}`'s {emoji} was removed. [{message.jump_url}]"
+        embed.color = (0xEA50BA,)
         embed.set_author(
             name=self.bot.escape_message(author),
             icon_url=author.display_avatar.url,
