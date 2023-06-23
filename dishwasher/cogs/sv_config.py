@@ -115,7 +115,7 @@ class sv_config(Cog):
                     if vindex != vlimit:
                         vindex += 1
                     await configmsg.remove_reaction("⬇️", ctx.author)
-                elif str(reacttion) == "⏺":
+                elif str(reaction) == "⏺":
                     pagemode == "rec"
                     await configmsg.remove_reaction("⏺", ctx.author)
                     await configmsg.remove_reaction("⏺", ctx.guild.me)
