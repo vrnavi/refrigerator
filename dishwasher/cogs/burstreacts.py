@@ -4,6 +4,7 @@ import discord
 import config
 from discord.ext import commands
 from helpers.sv_config import get_config
+from helpers.embeds import stock_embed
 
 
 class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
@@ -44,17 +45,14 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         # Send information to log channel
         mlog = await self.bot.fetch_channel(get_config(guild.id, "logs", "mlog_thread"))
 
-        embed = discord.Embed(
-            title="🗑️ Autoremoved a Super Reaction",
-            description=f"{author}`'s {emoji} was removed. [{message.jump_url}]",
-            colour=0xEA50BA,
-            timestamp=discord.utils.utcnow(),
-        )
+        embed = stock_embed(self.bot)
+        embed.title="🗑️ Autoremoved a Super Reaction"
+        embed.description=f"{author}`'s {emoji} was removed. [{message.jump_url}]"
+        embed.color=0xEA50BA,
         embed.set_author(
-            name=f"{self.bot.escape_message(author)}",
-            icon_url=f"{author.display_avatar.url}",
+            name=self.bot.escape_message(author),
+            icon_url=author.display_avatar.url,
         )
-        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
 
         await mlog.send(embed=embed)
 
