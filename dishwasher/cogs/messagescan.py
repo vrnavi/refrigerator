@@ -191,6 +191,15 @@ class Messagescan(Cog):
         twitterlinks = self.twitterlink_re.findall(message.content)
         if not msglinks and not twitterlinks:
             return
+        for link in msglinks + twitterlinks:
+            parts = message.content.split(link)
+            if parts[0].count("||") % 2 and parts[1].count("||"):
+                # Assume message is spoilered.
+                try:
+                    msglinks.remove(link)
+                except:
+                    twitterlinks.remove(link)
+                    
         tlinks = None
         embeds = None
         failed = False
