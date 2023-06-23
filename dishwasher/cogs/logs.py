@@ -615,6 +615,21 @@ class Logs2(Cog):
                 inline=False,
             )
 
+        # Permissions
+        if role_before.permissions != role_after.permissions:
+            output = []
+            for perm, value in dict(discord.Permissions()).items():
+                if dict(role_before.permissions)[perm] != dict(role_before.permissions)[perm]:
+                    output.append(
+                        f"{perm}\n- {dict(role_before.permissions)[perm]}\n+ {dict(role_before.permissions)[perm]}"
+                    )
+
+            embed.add_field(
+                name="🔒 Permission Change",
+                value="```diff\n" + "\n".join(output) + "```",
+                inline=False,
+            )
+
         if embed.fields:
             await slog.send(embed=embed)
 
