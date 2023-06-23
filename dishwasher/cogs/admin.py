@@ -142,7 +142,7 @@ class Admin(Cog):
         self,
         ctx,
         target: discord.Member = None,
-        channel: discord.Channel = None,
+        channel: discord.abc.GuildChannel = None,
     ):
         """[O] Shows the permissions."""
         if not target:
