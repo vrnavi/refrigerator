@@ -62,6 +62,7 @@ stock_configs = {
         "embed_enable": False,
         "translate_enable": False,
         "burstreacts_enable": False,
+        "autoreadable_enable": False,
     },
 }
 friendly_names = {
@@ -98,6 +99,7 @@ friendly_names = {
     "embed_enable": "Messagescan Feature Enabled",
     "translate_enable": "Translate Feature Enabled",
     "burstreacts_enable": "Burstreacts Feature Enabled",
+    "burstreacts_enable": "Autoreadable Feature Enabled",
 }
 server_data = "data/servers"
 
