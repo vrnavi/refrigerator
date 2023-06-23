@@ -43,9 +43,9 @@ class AutoApps(Cog):
             custom_msg = None
             custom_threadname = None
             if message.guild.id == 256926147827335170:
-                if message.embeds[0].fields[2].value is None:
+                if not message.embeds:
                     return
-                user = await self.bot.fetch_user(message.embeds[0].fields[2])
+                user = await self.bot.fetch_user(message.embeds[0].fields[2].value)
                 custom_msg = (
                     "\n"
                     + f"Until it can be coded to automatically appear here, use `pws logs {user.id}`.\nRemember to post ban context if available (ban record, modmail logs, etc.)."
