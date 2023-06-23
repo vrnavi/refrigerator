@@ -488,6 +488,50 @@ class Logs2(Cog):
                 inline=False,
             )
 
+        # News
+        try:
+            if channel_before.is_news() != channel_after.is_news():
+                embed.add_field(
+                    name="📣 News Change",
+                    value=f"❌ {channel_before.is_news()}\n⬇️\n⭕ {channel_after.is_news()}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Bitrate
+        try:
+            if channel_before.bitrate != channel_after.bitrate:
+                embed.add_field(
+                    name="🔊 Bitrate Change",
+                    value=f"❌ {channel_before.bitrate}\n⬇️\n⭕ {channel_after.bitrate}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # User Limit
+        try:
+            if channel_before.user_limit != channel_after.user_limit:
+                embed.add_field(
+                    name="👥 User Limit Change",
+                    value=f"❌ {channel_before.user_limit}\n⬇️\n⭕ {channel_after.user_limit}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Slowmode
+        try:
+            if channel_before.slowmode_delay != channel_after.slowmode_delay:
+                embed.add_field(
+                    name="⏱️ Slowmode Change",
+                    value=f"❌ {channel_before.slowmode_delay}\n⬇️\n⭕ {channel_after.slowmode_delay}",
+                    inline=False,
+                )
+        except:
+            pass
+
         # Permissions
         if channel_before.overwrites != channel_after.overwrites:
             output = []
