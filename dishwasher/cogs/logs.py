@@ -350,7 +350,7 @@ class Logs2(Cog):
                 elif role in member_before.roles and role not in member_after.roles:
                     roles.append("> ~~" + role.mention + "~~")
                 elif role not in member_before.roles and role in member_after.roles:
-                    roles.append("> __" + role.mention + "__")
+                    roles.append("> " + role.mention)
                 else:
                     continue
 
