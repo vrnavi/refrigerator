@@ -467,7 +467,9 @@ class Surveyr(Cog):
                     f"**Reason:** {reason}"
                 )
             )
-        elif "role" in get_config(member_after.guild.id, "surveyr", "log_types"):
+        elif "promote" in get_config(
+            member_after.guild.id, "surveyr", "log_types"
+        ) or "demote" in get_config(member_after.guild.id, "surveyr", "log_types"):
             role_add = []
             role_remove = []
             for role in member_after.guild.roles:
@@ -511,35 +513,42 @@ class Surveyr(Cog):
 
             user, reason = self.format_handler(entry)
 
-            for role in role_add:
-                msg = await guild.get_channel(survey_channel).send(content="⌛")
-                caseid, timestamp = new_survey(
-                    guild.id, member_after.id, msg.id, user.id, reason, "roleadds"
-                )
-
-                await msg.edit(
-                    content=(
-                        f"`#{caseid}` **PROMOTION** to `{role.name}` on <t:{timestamp}:f>\n"
-                        f"**User:** " + username_system(member) + "\n"
-                        f"**Staff:** " + username_system(user) + "\n"
-                        f"**Reason:** {reason}"
+            if "promote" in get_config(member_after.guild.id, "surveyr", "log_types"):
+                for role in role_add:
+                    msg = await guild.get_channel(survey_channel).send(content="⌛")
+                    caseid, timestamp = new_survey(
+                        guild.id, member_after.id, msg.id, user.id, reason, "roleadds"
                     )
-                )
 
-            for role in role_remove:
-                msg = await guild.get_channel(survey_channel).send(content="⌛")
-                caseid, timestamp = new_survey(
-                    guild.id, member_after.id, msg.id, user.id, reason, "roleremoves"
-                )
-
-                await msg.edit(
-                    content=(
-                        f"`#{caseid}` **DEMOTION** from `{role.name}` on <t:{timestamp}:f>\n"
-                        f"**User:** " + username_system(member) + "\n"
-                        f"**Staff:** " + username_system(user) + "\n"
-                        f"**Reason:** {reason}"
+                    await msg.edit(
+                        content=(
+                            f"`#{caseid}` **PROMOTION** to `{role.name}` on <t:{timestamp}:f>\n"
+                            f"**User:** " + username_system(member) + "\n"
+                            f"**Staff:** " + username_system(user) + "\n"
+                            f"**Reason:** {reason}"
+                        )
                     )
-                )
+
+            if "demote" in get_config(member_after.guild.id, "surveyr", "log_types"):
+                for role in role_remove:
+                    msg = await guild.get_channel(survey_channel).send(content="⌛")
+                    caseid, timestamp = new_survey(
+                        guild.id,
+                        member_after.id,
+                        msg.id,
+                        user.id,
+                        reason,
+                        "roleremoves",
+                    )
+
+                    await msg.edit(
+                        content=(
+                            f"`#{caseid}` **DEMOTION** from `{role.name}` on <t:{timestamp}:f>\n"
+                            f"**User:** " + username_system(member) + "\n"
+                            f"**Staff:** " + username_system(user) + "\n"
+                            f"**Reason:** {reason}"
+                        )
+                    )
 
 
 async def setup(bot):

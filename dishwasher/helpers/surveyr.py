@@ -9,8 +9,8 @@ surveyr_event_types = {
     "kicks": "Kick",
     "softbans": "Softban",
     "timeouts": "Timeout",
-    "roleadds": "Promotion",
-    "roleremoves": "Demotion",
+    "promotes": "Promotion",
+    "demotes": "Demotion",
 }
 server_data = "data/servers"
 
