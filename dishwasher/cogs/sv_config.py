@@ -116,7 +116,7 @@ class sv_config(Cog):
                         vindex += 1
                     await configmsg.remove_reaction("⬇️", ctx.author)
                 elif str(reaction) == "⏺":
-                    pagemode == "rec"
+                    pagemode = "rec"
                     await configmsg.remove_reaction("⏺", ctx.author)
                     await configmsg.remove_reaction("⏺", ctx.guild.me)
                     await configmsg.add_reaction("▶")
