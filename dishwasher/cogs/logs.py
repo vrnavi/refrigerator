@@ -506,7 +506,7 @@ class Logs2(Cog):
 
             embed.add_field(
                 name="� Permission Change",
-                value="```" + output + "```",
+                value="```" + "\n".join(output) + "```",
                 inline=False,
             )
 
