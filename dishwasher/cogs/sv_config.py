@@ -52,13 +52,13 @@ class sv_config(Cog):
             embed.description = f"Page `{hindex}` of `{hlimit}` for server {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0]} <setting> <value>`."
             lines = ""
             for i, (k, v) in enumerate(page[1].items()):
-                friendly = f"**{friendly_names[k]}**" if k in friendly_names else ""
+                friendly = f"**{friendly_names[k]}**\n" if k in friendly_names else ""
                 setting = f"`{k}`" if vindex != i + 1 else f"> `{k}`"
                 if not v and str(v) != "False" and str(v) != "None":
                     v = f"Not Configured ({type(v).__name__})"
                 if str(v) == "None":
                     v = "Forcibly Disabled"
-                lines += f"\n{friendly}\n{setting}\n{v}"
+                lines += f"\n{friendly}{setting}\n{v}"
             embed.set_field_at(
                 index=0,
                 name=page[0].title(),
@@ -98,10 +98,10 @@ class sv_config(Cog):
                 if vindex != 0:
                     hindex -= 1
                 await configmsg.remove_reaction("⬆", ctx.author)
-            elif str(reaction) == "⬇":
+            elif str(reaction) == "⬇️":
                 if vindex != vlimit:
                     vindex += 1
-                await configmsg.remove_reaction("⬇", ctx.author)
+                await configmsg.remove_reaction("⬇️", ctx.author)
 
     @commands.check(check_if_bot_manager)
     @configs.command()
