@@ -480,6 +480,14 @@ class Logs2(Cog):
         except:
             pass
 
+        # NSFW
+        if channel_before.nsfw != channel_after.nsfw:
+            embed.add_field(
+                name="🔞 NSFW Change",
+                value=f"❌ {channel_before.nsfw}\n⬇️\n⭕ {channel_after.nsfw}",
+                inline=False,
+            )
+
         # Permissions
         if channel_before.overwrites != channel_after.overwrites:
             output = []
