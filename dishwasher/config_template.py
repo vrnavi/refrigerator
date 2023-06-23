@@ -38,6 +38,7 @@ initial_cogs = [
     "cogs.mod_timed",
     "cogs.mod_toss",
     "cogs.mod_watch",
+    "cogs.namecheck",
     "cogs.sv_configs",
     "cogs.autoapps",
     "cogs.basic",
