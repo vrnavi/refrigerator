@@ -96,7 +96,7 @@ class sv_config(Cog):
                 await configmsg.remove_reaction("➡", ctx.author)
             elif str(reaction) == "⬆":
                 if vindex != 0:
-                    hindex -= 1
+                    vindex -= 1
                 await configmsg.remove_reaction("⬆", ctx.author)
             elif str(reaction) == "⬇️":
                 if vindex != vlimit:
