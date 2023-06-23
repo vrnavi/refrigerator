@@ -16,22 +16,18 @@ def split_content(content):
     return list([content[i : i + 1020] for i in range(0, len(content), 1020)])
 
 
-def make_fragments(embed, split_content):
-    for i, c in enumerate(split_content):
+def slice_embed(embed, content, name):
+    embed.add_field(
+        name=name,
+        value="**Message was too long to post!** Split into fragments below.",
+        inline=False,
+    )
+    for i, c in enumerate(split_content(content)):
         embed.add_field(
             name=f"🧩 Fragment {i+1}",
             value=f">>> {c}",
             inline=False,
         )
-
-
-def slice_embed(embed, content, name):
-    embed.add_field(
-        name=name,
-        value=f"**Message was too long to post!** Split into fragments below.",
-        inline=False,
-    )
-    make_fragments(embed, split_content(content))
 
 
 def mod_embed(embed, target, staff, reason=None):
