@@ -191,6 +191,7 @@ class Messagescan(Cog):
         twitterlinks = self.twitterlink_re.findall(message.content)
         if not msglinks and not twitterlinks:
             return
+
         for link in msglinks + twitterlinks:
             parts = message.content.split(link)
             if parts[0].count("||") % 2 and parts[1].count("||"):
@@ -199,16 +200,13 @@ class Messagescan(Cog):
                     msglinks.remove(link)
                 except:
                     twitterlinks.remove(link)
-                    
+
         tlinks = None
         embeds = None
         failed = False
 
         if twitterlinks:
-            tlinks = []
-            for t in twitterlinks:
-                tlinks.append(t[:8] + "vx" + t[8:])
-            tlinks = "\n".join(tlinks)
+            tlinks = "\n".join([t[:8] + "vx" + t[8:] for t in twitterlinks])
 
         if msglinks:
             embeds = []

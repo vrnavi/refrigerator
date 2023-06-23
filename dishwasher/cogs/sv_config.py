@@ -233,7 +233,7 @@ class sv_config(Cog):
                         content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
                         mention_author=False,
                     )
-            
+
         try:
             configs = set_config(ctx.guild.id, category, setting, value)
             return await ctx.reply(
@@ -245,7 +245,7 @@ class sv_config(Cog):
                 content="You gave an invalid value. If you don't know what you're doing, use `pls configs` interactively.",
                 mention_author=False,
             )
-            
+
     @commands.check(check_if_bot_manager)
     @configs.command()
     async def disable(self, ctx, guild: discord.Guild, category, setting):
