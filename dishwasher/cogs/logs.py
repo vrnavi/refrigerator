@@ -480,6 +480,36 @@ class Logs2(Cog):
         except:
             pass
 
+        # Permissions
+        if channel_before.overwrites != channel_after.overwrites:
+            output = []
+            for obj, perms in channel_before.overwrites:
+                if obj not in channel_after.overwrites:
+                    output.append(f"- `{obj}`")
+                for perm, value in iter(perms):
+                    if perm != channel_after.overwrites_for(obj).perm:
+                        if obj in channel_after.overwrites:
+                            output.append(f"`{obj}`")
+                        output.append(
+                            f"{perm}\n- {value}\n+ {channel_after.overwrites_for(obj).perm}"
+                        )
+            for obj, perms in channel_after.overwrites:
+                if obj not in channel_before.overwrites:
+                    output.append(f"+ `{obj}`")
+                for perm, value in iter(perms):
+                    if perm != channel_before.overwrites_for(obj).perm:
+                        if obj in channel_before.overwrites:
+                            output.append(f"`{obj}`")
+                        output.append(
+                            f"{perm}\n- {value}\n+ {channel_after.overwrites_for(obj).perm}"
+                        )
+
+            embed.add_field(
+                name="� Permission Change",
+                value="```" + output + "```",
+                inline=False,
+            )
+
         if embed.fields:
             await slog.send(embed=embed)
 
