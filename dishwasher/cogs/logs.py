@@ -483,25 +483,25 @@ class Logs2(Cog):
         # Permissions
         if channel_before.overwrites != channel_after.overwrites:
             output = []
-            for obj, perms in list(channel_before.overwrites.items()):
-                if obj not in channel_after.overwrites:
-                    output.append(f"- `{obj}`")
-                for perm, value in dict(perms):
-                    if value != dict(channel_after.overwrites_for(obj))[perm]:
-                        if obj in channel_after.overwrites:
-                            output.append(f"`{obj}`")
+            for entry in list(channel_before.overwrites.items()):
+                if entry[0] not in channel_after.overwrites:
+                    output.append(f"- `{entry[0]}`")
+                for perm, value in dict(entry[1]):
+                    if value != dict(channel_after.overwrites_for(entry[0]))[perm]:
+                        if entry[0] in channel_after.overwrites:
+                            output.append(f"`{entry[0]}`")
                         output.append(
-                            f"{perm}\n- {value}\n+ {channel_after.overwrites_for(obj).perm}"
+                            f"{perm}\n- {value}\n+ {dict(channel_after.overwrites_for(entry[0]))[perm]}"
                         )
-            for obj, perms in list(channel_after.overwrites.items()):
-                if obj not in channel_before.overwrites:
-                    output.append(f"+ `{obj}`")
-                for perm, value in dict(perms):
-                    if value != dict(channel_before.overwrites_for(obj))[perm]:
-                        if obj in channel_before.overwrites:
-                            output.append(f"`{obj}`")
+            for entry in list(channel_after.overwrites.items()):
+                if entry[0] not in channel_before.overwrites:
+                    output.append(f"+ `{entry[0]}`")
+                for perm, value in dict(entry[1]):
+                    if value != dict(channel_before.overwrites_for(entry[0]))[perm]:
+                        if entry[0] in channel_before.overwrites:
+                            output.append(f"`{entry[0]}`")
                         output.append(
-                            f"{perm}\n- {value}\n+ {channel_after.overwrites_for(obj).perm}"
+                            f"{perm}\n- {dict(channel_before.overwrites_for(entry[0]))[perm]}\n+ {value}"
                         )
 
             embed.add_field(
