@@ -353,7 +353,7 @@ class Logs2(Cog):
                     ["_~~" + role.name + "~~_" for role in role_removal]
                     + ["__**" + role.name + "**__" for role in role_addition]
                     + [
-                        role
+                        str(role)
                         for role in member_after.roles
                         if role.name != "@everyone"
                         and role not in role_removal
