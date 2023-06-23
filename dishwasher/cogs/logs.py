@@ -346,11 +346,11 @@ class Logs2(Cog):
                 if role == member_after.guild.default_role:
                     continue
                 if role in member_before.roles and role in member_after.roles:
-                    roles.append(role.name)
+                    roles.append(role.mention)
                 elif role in member_before.roles and role not in member_after.roles:
-                    roles.append("_~~" + role.name + "~~_")
+                    roles.append("_~~" + role.mention + "~~_")
                 elif role not in member_before.roles and role in member_after.roles:
-                    roles.append("__**" + role.name + "**__")
+                    roles.append("__**" + role.mention + "**__")
                 else:
                     continue
 
