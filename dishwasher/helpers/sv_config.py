@@ -134,7 +134,7 @@ def get_config(sid, part, key):
 def set_config(sid, part, key, value):
     configs = fill_config(sid)
 
-    if value.lower() == "none":
+    if str(value).lower() == "none":
         value = None
 
     settingtype = type(configs[part][key]).__name__
