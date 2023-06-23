@@ -486,7 +486,7 @@ class Logs2(Cog):
             for entry in list(channel_before.overwrites.items()):
                 if entry[0] not in channel_after.overwrites:
                     output.append(f"- `{entry[0]}`")
-                for perm, value in dict(entry[1]):
+                for perm, value in dict(entry[1]).items():
                     if value != dict(channel_after.overwrites_for(entry[0]))[perm]:
                         if entry[0] in channel_after.overwrites:
                             output.append(f"`{entry[0]}`")
@@ -496,7 +496,7 @@ class Logs2(Cog):
             for entry in list(channel_after.overwrites.items()):
                 if entry[0] not in channel_before.overwrites:
                     output.append(f"+ `{entry[0]}`")
-                for perm, value in dict(entry[1]):
+                for perm, value in dict(entry[1]).items():
                     if value != dict(channel_before.overwrites_for(entry[0]))[perm]:
                         if entry[0] in channel_before.overwrites:
                             output.append(f"`{entry[0]}`")
