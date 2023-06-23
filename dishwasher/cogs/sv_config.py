@@ -29,7 +29,7 @@ class sv_config(Cog):
             guild = ctx.guild
         configs = fill_config(guild.id)
 
-        navigation_reactions = ["⬅️", "➡"]
+        navigation_reactions = [⏹, "⬅️", "➡"]
 
         embed = stock_embed(self.bot)
         embed.title = "⚙️ Server Configuration Editor"
@@ -38,6 +38,7 @@ class sv_config(Cog):
         embed.add_field(name="⏳", value="Loading...", inline=False)
         hindex = 1
         hlimit = len(configs.items())
+        vindex = 0
         configmsg = await ctx.reply(embed=embed, mention_author=False)
         for e in navigation_reactions:
             await configmsg.add_reaction(e)
@@ -47,7 +48,8 @@ class sv_config(Cog):
 
         while True:
             page = list(configs.items())[hindex - 1]
-            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0].title()} <setting> <value>`."
+            vlimit = len(page[1])
+            embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0]} <setting> <value>`."
             lines = ""
             for k, v in page[1].items():
                 f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
@@ -73,6 +75,10 @@ class sv_config(Cog):
                     content="Operation timed out.", delete_after=5
                 )
 
+            if str(reaction) == "⏹":
+                return await configmsg.edit(
+                    content="Operation cancelled.", delete_after=5
+                )
             if str(reaction) == "⬅️":
                 if hindex != 1:
                     hindex -= 1
