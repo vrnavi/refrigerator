@@ -72,12 +72,18 @@ class sv_config(Cog):
                 )
             except asyncio.TimeoutError:
                 return await configmsg.edit(
-                    content="Operation timed out.", delete_after=5
+                    content="Operation timed out.",
+                    embed=None,
+                    delete_after=5,
+                    allowed_mentions=allowed_mentions,
                 )
 
             if str(reaction) == "⏹":
                 return await configmsg.edit(
-                    content="Operation cancelled.", delete_after=5
+                    content="Operation cancelled.",
+                    embed=None,
+                    delete_after=5,
+                    allowed_mentions=allowed_mentions,
                 )
             if str(reaction) == "⬅️":
                 if hindex != 1:
