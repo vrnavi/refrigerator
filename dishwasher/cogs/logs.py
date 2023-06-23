@@ -754,37 +754,43 @@ class Logs2(Cog):
             )
 
         # Tags
-        if role_before.tags != role_after.tags:
-            if role_before.tags.is_bot_managed != role_after.tags.is_bot_managed:
-                embed.add_field(
-                    name="🤖 Bot Manager Change",
-                    value=f"❌ {str(role_before.tags.bot_id)}\n⬇️\n⭕ {str(role_after.tags.bot_id)}",
-                    inline=False,
-                )
-            if (
-                role_before.tags.is_guild_connection
-                != role_after.tags.is_guild_connection
-            ):
-                embed.add_field(
-                    name="🔗 Linked Role Change",
-                    value=f"❌ {role_before.tags.is_guild_connection()}\n⬇️\n⭕ {role_after.tags.is_guild_connection()}",
-                    inline=False,
-                )
-            if (
-                role_before.tags.is_available_for_purchase
-                != role_after.tags.is_available_for_purchase
-            ):
-                embed.add_field(
-                    name="💰 Pay For Role Change",
-                    value=f"❌ {role_before.tags.subscription_listing_id}\n⬇️\n⭕ {role_after.tags.subscription_listing_id()}",
-                    inline=False,
-                )
-            if role_before.tags.is_integration() != role_after.tags.is_integration():
-                embed.add_field(
-                    name="🤝 Integration Change",
-                    value=f"❌ {ole_before.tags.integration_id}\n⬇️\n⭕ {role_after.tags.integration_id}",
-                    inline=False,
-                )
+        try:
+            if role_before.tags != role_after.tags:
+                if role_before.tags.is_bot_managed != role_after.tags.is_bot_managed:
+                    embed.add_field(
+                        name="🤖 Bot Manager Change",
+                        value=f"❌ {str(role_before.tags.bot_id)}\n⬇️\n⭕ {str(role_after.tags.bot_id)}",
+                        inline=False,
+                    )
+                if (
+                    role_before.tags.is_guild_connection
+                    != role_after.tags.is_guild_connection
+                ):
+                    embed.add_field(
+                        name="🔗 Linked Role Change",
+                        value=f"❌ {role_before.tags.is_guild_connection()}\n⬇️\n⭕ {role_after.tags.is_guild_connection()}",
+                        inline=False,
+                    )
+                if (
+                    role_before.tags.is_available_for_purchase
+                    != role_after.tags.is_available_for_purchase
+                ):
+                    embed.add_field(
+                        name="💰 Pay For Role Change",
+                        value=f"❌ {role_before.tags.subscription_listing_id}\n⬇️\n⭕ {role_after.tags.subscription_listing_id()}",
+                        inline=False,
+                    )
+                if (
+                    role_before.tags.is_integration()
+                    != role_after.tags.is_integration()
+                ):
+                    embed.add_field(
+                        name="🤝 Integration Change",
+                        value=f"❌ {ole_before.tags.integration_id}\n⬇️\n⭕ {role_after.tags.integration_id}",
+                        inline=False,
+                    )
+        except:
+            pass
 
         # Permissions
         if role_before.permissions != role_after.permissions:
