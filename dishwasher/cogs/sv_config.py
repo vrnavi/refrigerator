@@ -29,7 +29,7 @@ class sv_config(Cog):
             guild = ctx.guild
         configs = fill_config(guild.id)
 
-        navigation_reactions = [⏹, "⬅️", "➡"]
+        navigation_reactions = ["⏹", "⬅️", "➡"]
 
         embed = stock_embed(self.bot)
         embed.title = "⚙️ Server Configuration Editor"
