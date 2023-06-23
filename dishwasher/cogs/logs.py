@@ -486,8 +486,8 @@ class Logs2(Cog):
             for obj, perms in channel_before.overwrites.items():
                 if obj not in channel_after.overwrites:
                     output.append(f"- `{obj}`")
-                for perm, value in iter(perms):
-                    if perm != channel_after.overwrites_for(obj).perm:
+                for perm, value in dict(perms):
+                    if value != dict(channel_after.overwrites_for(obj))[perm]:
                         if obj in channel_after.overwrites:
                             output.append(f"`{obj}`")
                         output.append(
@@ -496,8 +496,8 @@ class Logs2(Cog):
             for obj, perms in channel_after.overwrites.items():
                 if obj not in channel_before.overwrites:
                     output.append(f"+ `{obj}`")
-                for perm, value in iter(perms):
-                    if perm != channel_before.overwrites_for(obj).perm:
+                for perm, value in dict(perms):
+                    if value != dict(channel_before.overwrites_for(obj))[perm]:
                         if obj in channel_before.overwrites:
                             output.append(f"`{obj}`")
                         output.append(
