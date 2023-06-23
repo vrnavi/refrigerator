@@ -127,15 +127,6 @@ class sv_config(Cog):
                     )
                     pagemode = "play"
                     continue
-                elif key == "enable":
-                    for k, v in configs[page[0]].items():
-                        if not v and type(v).__name__ != "bool":
-                            await ctx.send(
-                                content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
-                                delete_after=5,
-                            )
-                            pagemode = "play"
-                            continue
                 editingmsg = f"**Editing** the setting `{key}`.\n\nThis setting is a"
                 settingtype = type(configs[page[0]][key]).__name__
                 if settingtype == "str":
@@ -173,6 +164,15 @@ class sv_config(Cog):
                         delete_after=5,
                         allowed_mentions=allowed_mentions,
                     )
+                elif key == "enable" and message.content == "true":
+                    for k, v in configs[page[0]].items():
+                        if not v and type(v).__name__ != "bool":
+                            await ctx.send(
+                                content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
+                                delete_after=5,
+                            )
+                            pagemode = "play"
+                            continue
 
                 try:
                     configs = set_config(ctx.guild.id, page[0], key, message.content)
@@ -226,94 +226,26 @@ class sv_config(Cog):
                 content="This setting has been administratively disabled by the bot owner.",
                 mention_author=True,
             )
-        settingtype = type(configs[category][setting]).__name__
-        if settingtype == "str":
-            if not value:
-                value = ""
-            set_config(ctx.guild.id, category, setting, value)
+        elif configs[category][setting] == "enable" and value == "true":
+            for k, v in configs[category].items():
+                if not v and type(v).__name__ != "bool":
+                    return await ctx.reply(
+                        content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
+                        mention_author=False,
+                    )
+            
+        try:
+            configs = set_config(ctx.guild.id, category, setting, value)
             return await ctx.reply(
-                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
+                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{configs[category][setting]}`.",
                 mention_author=False,
             )
-        elif settingtype == "int":
-            if not value:
-                value = 0
-            try:
-                set_config(ctx.guild.id, category, setting, int(value))
-                return await ctx.reply(
-                    content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
-                    mention_author=False,
-                )
-            except ValueError:
-                return await ctx.reply(
-                    content="This setting requires an `int` to be given.\nYou can supply numbers only.",
-                    mention_author=False,
-                )
-        elif settingtype == "list":
-            pre_cfg = configs[category][setting]
-            if value:
-                if value.split()[0] == "add":
-                    set_config(
-                        ctx.guild.id, category, setting, pre_cfg + value.split()[1:]
-                    )
-                    return await ctx.reply(
-                        content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{pre_cfg + value.split()[1:]}`.",
-                        mention_author=False,
-                    )
-                elif value.split()[0] == "remove":
-                    if not pre_cfg:
-                        return await ctx.reply(
-                            content="There is nothing to remove.", mention_author=False
-                        )
-                    for v in value.split()[1:]:
-                        if v not in pre_cfg:
-                            await ctx.reply(
-                                content=f"{v} is not present in this setting, skipping.",
-                                mention_author=False,
-                            )
-                            continue
-                        pre_cfg.remove(v)
-                        set_config(ctx.guild.id, category, setting, pre_cfg)
-                    return await ctx.reply(
-                        content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{pre_cfg}`.",
-                        mention_author=False,
-                    )
-                else:
-                    set_config(ctx.guild.id, category, setting, value.split())
-                    return await ctx.reply(
-                        content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value.split()}`.",
-                        mention_author=False,
-                    )
-            else:
-                set_config(ctx.guild.id, category, setting, [])
-                return await ctx.reply(
-                    content=f"**{category.title()}/**`{setting}` has been updated with a new value of `[]`.",
-                    mention_author=False,
-                )
-        elif settingtype == "bool":
-            if value.title() not in ("True", "False"):
-                return await ctx.reply(
-                    content="This setting requires a `bool` to be given.\nYou can supply `true` or `false`.",
-                    mention_author=False,
-                )
-            if setting == "enable":
-                for k, v in configs[category].items():
-                    if not v and type(v).__name__ != "bool":
-                        return await ctx.reply(
-                            content="This feature cannot be enabled unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
-                            mention_author=False,
-                        )
-            set_config(
-                ctx.guild.id,
-                category,
-                setting,
-                True if value.title() == "True" else False,
-            )
+        except:
             return await ctx.reply(
-                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{value}`.",
+                content="You gave an invalid value. If you don't know what you're doing, use `pls configs` interactively.",
                 mention_author=False,
             )
-
+            
     @commands.check(check_if_bot_manager)
     @configs.command()
     async def disable(self, ctx, guild: discord.Guild, category, setting):
