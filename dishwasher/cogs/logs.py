@@ -483,7 +483,7 @@ class Logs2(Cog):
         # Permissions
         if channel_before.overwrites != channel_after.overwrites:
             output = []
-            for obj, perms in channel_before.overwrites.items():
+            for obj, perms in list(channel_before.overwrites.items()):
                 if obj not in channel_after.overwrites:
                     output.append(f"- `{obj}`")
                 for perm, value in dict(perms):
@@ -493,7 +493,7 @@ class Logs2(Cog):
                         output.append(
                             f"{perm}\n- {value}\n+ {channel_after.overwrites_for(obj).perm}"
                         )
-            for obj, perms in channel_after.overwrites.items():
+            for obj, perms in list(channel_after.overwrites.items()):
                 if obj not in channel_before.overwrites:
                     output.append(f"+ `{obj}`")
                 for perm, value in dict(perms):
