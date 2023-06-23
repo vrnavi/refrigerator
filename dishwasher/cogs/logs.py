@@ -532,6 +532,84 @@ class Logs2(Cog):
         except:
             pass
 
+        # Thread Default Archive
+        try:
+            if (
+                channel_before.default_auto_archive_duration
+                != channel_after.default_auto_archive_duration
+            ):
+                embed.add_field(
+                    name="⏲️ Thread Default Archive Change",
+                    value=f"❌ {channel_before.default_auto_archive_duration}\n⬇️\n⭕ {channel_after.default_auto_archive_duration}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Thread Default Slowmode
+        try:
+            if (
+                channel_before.default_thread_slowmode_delay
+                != channel_after.default_thread_slowmode_delay
+            ):
+                embed.add_field(
+                    name="⏱️ Thread Default Slowmode Change",
+                    value=f"❌ {channel_before.default_thread_slowmode_delay}\n⬇️\n⭕ {channel_after.default_thread_slowmode_delay}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Forum Default Reaction Emoji
+        try:
+            if (
+                channel_before.default_reaction_emoji
+                != channel_after.default_reaction_emoji
+            ):
+                embed.add_field(
+                    name="👍 Forum Default Emoji Change",
+                    value=f"❌ {channel_before.default_reaction_emoji}\n⬇️\n⭕ {channel_after.default_reaction_emoji}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Forum Default Reaction Emoji
+        try:
+            if (
+                channel_before.default_reaction_emoji
+                != channel_after.default_reaction_emoji
+            ):
+                embed.add_field(
+                    name="👍 Forum Default Emoji Change",
+                    value=f"❌ {channel_before.default_reaction_emoji}\n⬇️\n⭕ {channel_after.default_reaction_emoji}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Forum Default Sort Order
+        try:
+            if channel_before.default_sort_order != channel_after.default_sort_order:
+                embed.add_field(
+                    name="🗂️ Forum Default Sort Order Change",
+                    value=f"❌ {channel_before.default_sort_order}\n⬇️\n⭕ {channel_after.default_sort_order}",
+                    inline=False,
+                )
+        except:
+            pass
+
+        # Forum Default Sort Order
+        try:
+            if channel_before.default_layout != channel_after.default_layout:
+                embed.add_field(
+                    name="🗒️ Forum Default Layout Change",
+                    value=f"❌ {channel_before.default_layout}\n⬇️\n⭕ {channel_after.default_layout}",
+                    inline=False,
+                )
+        except:
+            pass
+
         # Permissions
         if channel_before.overwrites != channel_after.overwrites:
             output = []
@@ -666,6 +744,47 @@ class Logs2(Cog):
                 value=f"❌ {str(role_before.mentionable)}\n⬇️\n⭕ {str(role_after.mentionable)}",
                 inline=False,
             )
+
+        # Managed
+        if role_before.managed != role_after.managed:
+            embed.add_field(
+                name="🔧 Management Change",
+                value=f"❌ {str(role_before.managed)}\n⬇️\n⭕ {str(role_after.managed)}",
+                inline=False,
+            )
+
+        # Tags
+        if role_before.tags != role_after.tags:
+            if role_before.tags.is_bot_managed != role_after.tags.is_bot_managed:
+                embed.add_field(
+                    name="🤖 Bot Manager Change",
+                    value=f"❌ {str(role_before.tags.bot_id)}\n⬇️\n⭕ {str(role_after.tags.bot_id)}",
+                    inline=False,
+                )
+            if (
+                role_before.tags.is_guild_connection
+                != role_after.tags.is_guild_connection
+            ):
+                embed.add_field(
+                    name="🔗 Linked Role Change",
+                    value=f"❌ {role_before.tags.is_guild_connection()}\n⬇️\n⭕ {role_after.tags.is_guild_connection()}",
+                    inline=False,
+                )
+            if (
+                role_before.tags.is_available_for_purchase
+                != role_after.tags.is_available_for_purchase
+            ):
+                embed.add_field(
+                    name="💰 Pay For Role Change",
+                    value=f"❌ {role_before.tags.subscription_listing_id}\n⬇️\n⭕ {role_after.tags.subscription_listing_id()}",
+                    inline=False,
+                )
+            if role_before.tags.is_integration() != role_after.tags.is_integration():
+                embed.add_field(
+                    name="🤝 Integration Change",
+                    value=f"❌ {ole_before.tags.integration_id}\n⬇️\n⭕ {role_after.tags.integration_id}",
+                    inline=False,
+                )
 
         # Permissions
         if role_before.permissions != role_after.permissions:
