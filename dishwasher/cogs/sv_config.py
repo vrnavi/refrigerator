@@ -120,6 +120,7 @@ class sv_config(Cog):
                     await configmsg.remove_reaction("⏺", ctx.author)
                     await configmsg.remove_reaction("⏺", ctx.guild.me)
                     await configmsg.add_reaction("▶")
+                    continue
             elif pagemode == "rec":
                 if configs[page[0]][key] == None:
                     await ctx.send(
