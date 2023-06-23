@@ -135,19 +135,26 @@ class Admin(Cog):
             guildmsg += f"\n- {g.name} with `{g.member_count}` members."
         await ctx.reply(content=guildmsg, mention_author=False)
 
+    @commands.guild_only()
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def permcheck(
         self,
         ctx,
+        target: discord.Member = None,
+        channel: discord.Channel = None,
     ):
         """[O] Shows the permissions."""
+        if not target:
+            target = ctx.guild.me
+        if not channel:
+            channel = ctx.channel
         await ctx.reply(
-            content="My permissions for the current channel...\n```diff\n"
+            content=f"{target}'s permissions for the current channel...\n```diff\n"
             + "\n".join(
                 [
                     f"{'-' if not y else '+'} " + x
-                    for x, y in iter(ctx.channel.permissions_for(ctx.guild.me))
+                    for x, y in iter(channel.permissions_for(ctx.guild.me))
                 ]
             )
             + "```",
