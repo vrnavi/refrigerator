@@ -341,30 +341,24 @@ class Logs2(Cog):
 
         # Roles
         if member_before.roles != member_after.roles:
-            role_removal = [
-                role for role in member_before.roles if role not in member_after.roles
-            ]
-            role_addition = [
-                role for role in member_after.roles if role not in member_before.roles
-            ]
+            roles = []
+            for role in member_after.guild.roles:
+                if role == member_after.guild.default_role:
+                    continue
+                if role in member_before.roles and role in member_after.roles:
+                    roles.append(role.name)
+                elif role in member_before.roles and role not in member_after.roles:
+                    roles.append("_~~" + role.name + "~~_")
+                elif role not in member_before.roles and role in member_after.roles:
+                    roles.append("__**" + role.name + "**__")
+                else:
+                    continue
 
-            if role_addition or role_removal:
-                roles = (
-                    ["_~~" + role.name + "~~_" for role in role_removal]
-                    + ["__**" + role.name + "**__" for role in role_addition]
-                    + [
-                        str(role)
-                        for role in member_after.roles
-                        if role.name != "@everyone"
-                        and role not in role_removal
-                        and role not in role_addition
-                    ]
-                )
-                embed.add_field(
-                    name="🎨 Role Change",
-                    value="\n".join(reversed(roles)),
-                    inline=False,
-                )
+            embed.add_field(
+                name="🎨 Role Change",
+                value="\n".join(reversed(roles)),
+                inline=False,
+            )
 
         # Usernames
         if str(member_before) != str(member_after):
