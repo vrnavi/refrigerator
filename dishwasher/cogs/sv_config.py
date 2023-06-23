@@ -46,7 +46,7 @@ class sv_config(Cog):
 
         while True:
             embed.description = f"Page `{hindex}` of `{hlimit}` for guild {guild}.\n**Page:** {hindex}\nTweak a setting with `{config.prefixes[0]}configs set <category> <setting> <value>`."
-            page = configs.items()[hindex - 1]
+            page = list(configs.items())[hindex - 1]
             lines = ""
             for k, v in page[1].items():
                 f = f"**{friendly_names[k]}**" + "\n" if k in friendly_names else ""
