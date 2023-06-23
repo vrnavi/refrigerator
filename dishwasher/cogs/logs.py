@@ -619,7 +619,10 @@ class Logs2(Cog):
         if role_before.permissions != role_after.permissions:
             output = []
             for perm, value in dict(discord.Permissions()).items():
-                if dict(role_before.permissions)[perm] != dict(role_after.permissions)[perm]:
+                if (
+                    dict(role_before.permissions)[perm]
+                    != dict(role_after.permissions)[perm]
+                ):
                     output.append(
                         f"{perm}\n- {dict(role_before.permissions)[perm]}\n+ {dict(role_after.permissions)[perm]}"
                     )
