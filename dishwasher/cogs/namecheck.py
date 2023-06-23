@@ -73,15 +73,12 @@ class NameCheck(Cog):
             return
 
         # Non-Alphanumeric
-        if member_before.display_name != member_after.display_name:
-            readable = len([b for b in member_after.display_name if b.isalnum()])
-            if readable < self.readablereq:
-                newname = unidecode(member_after.display_name)
-                if not newname:
-                    newname = "Unreadable Name"
-                await member_after.edit(
-                    nick=newname, reason="Automatic Unreadable Name"
-                )
+        readable = len([b for b in member_after.display_name if b.isalnum()])
+        if readable < self.readablereq:
+            newname = unidecode(member_after.display_name)
+            if not newname:
+                newname = "Unreadable Name"
+            await member_after.edit(nick=newname, reason="Automatic Unreadable Name")
 
         # Hoist
         if member_after.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
