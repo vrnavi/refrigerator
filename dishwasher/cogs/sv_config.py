@@ -125,7 +125,7 @@ class sv_config(Cog):
                         content="This setting has been administratively disabled by the bot owner. You cannot edit it.",
                         delete_after=5,
                     )
-                    pagemode == "play"
+                    pagemode = "play"
                     continue
                 elif key == "enable":
                     for k, v in configs[page[0]].items():
@@ -134,7 +134,7 @@ class sv_config(Cog):
                                 content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
                                 delete_after=5,
                             )
-                            pagemode == "play"
+                            pagemode = "play"
                             continue
                 editingmsg = f"**Editing** the setting `{key}`.\n\nThis setting is a"
                 settingtype = type(configs[page[0]][key]).__name__
@@ -165,6 +165,15 @@ class sv_config(Cog):
                         allowed_mentions=allowed_mentions,
                     )
 
+                if message.content == "stop":
+                    await configsuppmsg.delete()
+                    return await configmsg.edit(
+                        content="Operation cancelled.",
+                        embed=None,
+                        delete_after=5,
+                        allowed_mentions=allowed_mentions,
+                    )
+
                 try:
                     configs = set_config(ctx.guild.id, page[0], key, message.content)
                 except:
@@ -172,14 +181,14 @@ class sv_config(Cog):
                         content="You gave an invalid value. Please try again while following the instructions of what to send.",
                         delete_after=5,
                     )
-                    pagemode == "play"
+                    pagemode = "play"
                     continue
                 else:
                     await configsuppmsg.edit(
                         content=f"**{page[0].title()}/**`{key}` has been updated with a new value of `{configs[page[0]][key]}`.",
                         delete_after=5,
                     )
-                    pagemode == "play"
+                    pagemode = "play"
                     continue
 
     @commands.check(check_if_bot_manager)
