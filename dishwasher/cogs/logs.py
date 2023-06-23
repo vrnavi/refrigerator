@@ -34,21 +34,8 @@ class Logs2(Cog):
             get_config(member.guild.id, "logs", "ulog_thread")
         )
 
-        # Deal with unreadable names before anything.
-        readable = 0
-        for b in member.display_name:
-            if b.isalnum():
-                readable += 1
-        if readable < 1:
-            await member.edit(
-                nick="Unreadable Name", reason="Automatic Unreadable Name"
-            )
-        # Deal with "hoist" names. ᲼
-        # WIP
-
         invite_used = await self.bot.get_used_invites(member)
 
-        # Prepare embed message
         embeds = []
         embed = stock_embed(self.bot)
         embed.color = discord.Color.lighter_gray()
@@ -315,20 +302,6 @@ class Logs2(Cog):
         if not ulog:
             return
         ulog = await self.bot.fetch_channel(ulog)
-
-        # Swiftly deal with unreadable names.
-        if member_before.display_name != member_after.display_name:
-            readable = 0
-            for b in member_after.display_name:
-                if b.isalnum():
-                    readable = readable + 1
-            if readable < 1:
-                await member_after.edit(
-                    nick="Unreadable Name", reason="Automatic Unreadable Name"
-                )
-                return
-        # Deal with "hoist" names. ᲼
-        # WIP
 
         embed = stock_embed(self.bot)
         embed.color = member_after.color
