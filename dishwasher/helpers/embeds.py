@@ -1,17 +1,8 @@
 import discord
 import datetime
 
-header_types = {
-    "channel_create": "🏠 Channel Created",
-    "channel_delete": "🏚️ Channel Deleted",
-    "channel_update": "🏘️ Channel Update",
-    "role_create": "🏷️ Role Created",
-    "role_delete": "🔥 Role Deleted",
-    "role_update": "🖋️ Role Update",
-}
 
-
-def username_system(user):
+def username_system(user, include_id=False):
     return (
         "**" + user.global_name + "** ["
         if user.global_name
