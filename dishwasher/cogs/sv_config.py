@@ -36,7 +36,7 @@ class sv_config(Cog):
         embed.set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
         embed.add_field(name="⏳", value="Loading...", inline=False)
         hindex = 1
-        hlimit = len(configs.items)
+        hlimit = len(configs.items())
         configmsg = await ctx.reply(embed=embed, mention_author=False)
         for e in navigation_reactions:
             await configmsg.add_reaction(e)
