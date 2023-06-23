@@ -57,7 +57,7 @@ class sv_config(Cog):
             lines = ""
             for i, (k, v) in enumerate(page[1].items()):
                 friendly = f"**{friendly_names[k]}**\n" if k in friendly_names else ""
-                if pagemode == "rec":
+                if pagemode == "rec" and vindex == i + 1:
                     setting = f"> **`{k}`**"
                     key = k
                     value = v
@@ -118,8 +118,6 @@ class sv_config(Cog):
                 elif str(reaction) == "⏺":
                     pagemode = "rec"
                     await configmsg.remove_reaction("⏺", ctx.author)
-                    await configmsg.remove_reaction("⏺", ctx.guild.me)
-                    await configmsg.add_reaction("▶")
                     continue
             elif pagemode == "rec":
                 if configs[page[0]][key] == None:
@@ -138,7 +136,7 @@ class sv_config(Cog):
                             )
                             pagemode == "play"
                             continue
-                editingmsg = f"**Editing** the setting `{key}`. Press ⏹ to cancel, or ▶ to save your changes.\nThis setting is a"
+                editingmsg = f"**Editing** the setting `{key}`.\n\nThis setting is a"
                 settingtype = type(configs[page[0]][key]).__name__
                 if settingtype == "str":
                     editingmsg += " string. Set this by replying with whatever."
@@ -151,9 +149,7 @@ class sv_config(Cog):
                         " boolean. Set this by replying with `true` or `false`."
                     )
                 if value:
-                    editingmsg += (
-                        '\nYou can also reply with "none" to remove the current value.'
-                    )
+                    editingmsg += '\nYou can also reply with "none" to remove the current value, or "stop" to cancel the operation.'
                 configsuppmsg = await ctx.send(content=editingmsg)
 
                 try:
