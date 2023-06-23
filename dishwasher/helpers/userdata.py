@@ -1,6 +1,8 @@
 import json
 import time
 
+user_data = "data/users"
+
 
 def get_userdata():
     with open("data/userdata.json", "r") as f:

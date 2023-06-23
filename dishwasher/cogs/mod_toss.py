@@ -16,6 +16,7 @@ from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
 from helpers.archive import log_whole_channel, get_members
+from helpers.embeds import stock_embed, username_system
 from helpers.sv_config import get_config
 
 
@@ -70,12 +71,9 @@ class ModToss(Cog):
     async def sessions(self, ctx):
         if not get_config(ctx.guild.id, "toss", "enable"):
             return await ctx.reply(self.nocfgmsg, mention_author=False)
-        embed = discord.Embed(
-            title="👁‍🗨 Toss Channel Sessions...",
-            color=ctx.author.color,
-            timestamp=datetime.now(),
-        )
-        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
+        embed = stock_embed(self.bot)
+        embed.title = "👁‍🗨 Toss Channel Sessions..."
+        embed.color = ctx.author.color
         for c in get_config(ctx.guild.id, "toss", "toss_channels"):
             if c in [g.name for g in ctx.guild.channels]:
                 if not os.path.exists(
@@ -260,29 +258,12 @@ class ModToss(Cog):
                     )
 
                 if modlog_channel:
-                    embed = discord.Embed(
-                        color=discord.Colour.from_str("#FF0000"),
-                        title="🚷 Toss",
-                        description=f"{us.mention} was tossed by {ctx.author.mention} [`#{ctx.channel.name}`] [[Jump]({ctx.message.jump_url})]",
-                        timestamp=datetime.now(),
-                    )
-                    embed.set_footer(
-                        text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-                    )
-                    embed.set_author(
-                        name=f"{self.bot.escape_message(us)}",
-                        icon_url=f"{us.display_avatar.url}",
-                    )
-                    embed.add_field(
-                        name=f"👤 User",
-                        value=f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'}\n{us.mention} ({us.id})",
-                        inline=True,
-                    )
-                    embed.add_field(
-                        name=f"🛠️ Staff",
-                        value=f"{'**' + ctx.author.global_name + '** [' if ctx.author.global_name else '**'}{ctx.author}{']' if ctx.author.global_name else '**'}\n{ctx.author.mention} ({ctx.author.id})",
-                        inline=True,
-                    )
+                    embed = stock_embed(self.bot)
+                    embed.color = discord.Color.from_str("#FF0000")
+                    embed.title = "🚷 Toss"
+                    embed.description = f"{us.mention} was tossed by {ctx.author.mention} [`#{ctx.channel.name}`] [[Jump]({ctx.message.jump_url})]"
+                    mod_embed(embed, us, ctx.author)
+
                     mlog = await self.bot.fetch_channel(modlog_channel)
                     await mlog.send(embed=embed)
 
@@ -290,10 +271,7 @@ class ModToss(Cog):
                 invalid_ids.append(us.name)
 
         output += "\n" + "\n".join(
-            [
-                f"{'**' + us.global_name + '** [' if us.global_name else '**'}{us}{']' if us.global_name else '**'} has been tossed."
-                for us in user_id_list
-            ]
+            [f"{username_system(us)} has been tossed." for us in user_id_list]
         )
 
         if invalid_ids:
@@ -313,13 +291,13 @@ class ModToss(Cog):
 
         if not addition:
             await toss_channel.send(
-                f"{toss_pings}\nYou were tossed by {ctx.message.author.global_name}.\n"
-                f'*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
-                f"**Do NOT leave the server, or you will be instantly banned.**"
+                f"{toss_pings}\nYou were tossed by {ctx.author.global_name if ctx.author.global_name else ctx.author.name}.\n"
+                '*For your reference, a "toss" is where a Staff member wishes to speak with you, one on one.*\n'
+                "**Do NOT leave the server, or you will be instantly banned.**"
             )
 
             if any([us.raw_status != "offline" for us in user_id_list]):
-                await toss_channel.send(f"⏰ Please respond within `5 minutes`.")
+                await toss_channel.send("⏰ Please respond within `5 minutes`.")
 
                 def check(m):
                     return m.author in user_id_list and m.channel == toss_channel
@@ -329,13 +307,13 @@ class ModToss(Cog):
                         "message", timeout=60 * 5, check=check
                     )
                 except asyncio.TimeoutError:
-                    pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+                    pokemsg = await toss_channel.send(ctx.author.mention)
                     await pokemsg.edit(content="⏰", delete_after=5)
                 except discord.NotFound:
                     # The channel probably got deleted before anything could happen.
                     return
                 else:
-                    pokemsg = await toss_channel.send(f"{ctx.author.mention}")
+                    pokemsg = await toss_channel.send(ctx.author.mention)
                     await pokemsg.edit(
                         content="⏰🔨 Tossed user sent a message. Timer destroyed.",
                         delete_after=5,
@@ -546,15 +524,10 @@ class ModToss(Cog):
                 f.SetContentString(out)
                 f.Upload()
 
-                embed = discord.Embed(
-                    title="📁 Toss Channel Archived",
-                    description=f"`#{ctx.channel.name}`'s session was archived by {ctx.author.mention} ({ctx.author.id})",
-                    color=ctx.author.color,
-                    timestamp=datetime.now(),
-                )
-                embed.set_footer(
-                    text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-                )
+                embed = stock_embed(self.bot)
+                embed.title = "📁 Toss Channel Archived"
+                embed.description = f"`#{ctx.channel.name}`'s session was archived by {ctx.author.mention} ({ctx.author.id})"
+                embed.color = ctx.author.color
                 embed.set_author(
                     name=ctx.author, icon_url=ctx.author.display_avatar.url
                 )

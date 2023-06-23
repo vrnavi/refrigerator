@@ -6,9 +6,14 @@ import datetime
 import asyncio
 from helpers.checks import check_if_staff
 from helpers.sv_config import get_config
+from helpers.embeds import stock_embed, createdat_embed
 
 
 class ModObserve(Cog):
+    """
+    A tool to help moderators keep track of potential problem users.
+    """
+
     def __init__(self, bot):
         self.bot = bot
         self.raidmode = []
@@ -59,25 +64,14 @@ class ModObserve(Cog):
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
         if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
-            escaped_name = self.bot.escape_message(member)
-            embed = discord.Embed(
-                color=discord.Color.lighter_gray(),
-                title="📥 User Joined",
-                description=f"<@{member.id}> ({member.id})",
-                timestamp=datetime.datetime.now(),
-            )
-            embed.set_footer(
-                text=self.bot.user.name, icon_url=self.bot.user.display_avatar
-            )
-            embed.set_author(
-                name=f"{escaped_name}", icon_url=f"{member.display_avatar.url}"
-            )
-            embed.set_thumbnail(url=f"{member.display_avatar.url}")
-            embed.add_field(
-                name="⏰ Account created:",
-                value=f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>",
-                inline=True,
-            )
+            embed = stock_embed(self.bot)
+            embed.color = discord.Color.lighter_gray()
+            embed.title = "📥 User Joined"
+            embed.description = f"{member.mention} ({member.id})"
+            embed.set_thumbnail(url=member.display_avatar.url)
+            embed.set_author(name=member, icon_url=member.display_avatar.url)
+            createdat_embed(embed, member)
+
             if member.guild.id in self.raidmode:
                 rmstr = "`🟢 ON`"
             else:
