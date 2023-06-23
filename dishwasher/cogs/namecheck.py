@@ -28,7 +28,7 @@ class NameCheck(Cog):
         newname = unidecode(target.display_name)
         if not newname:
             newname = "Unreadable Name"
-        await target.edit(nick=target.display_name, reason="Unreadable Name")
+        await target.edit(nick=target.display_name, reason="Namecheck")
         return await ctx.reply(
             content=f"Successfully decancered **{oldname}** to  `{newname}`.",
             mention_author=False,
@@ -39,9 +39,7 @@ class NameCheck(Cog):
     @commands.command()
     async def dehoist(self, ctx, target: discord.Member):
         oldname = target.display_name
-        await target.edit(
-            nick="᲼" + target.display_name, reason="Automatic Unreadable Name"
-        )
+        await target.edit(nick="᲼" + target.display_name, reason="Namecheck")
         return await ctx.reply(
             content=f"Successfully dehoisted **{oldname}**.", mention_author=False
         )
@@ -58,12 +56,12 @@ class NameCheck(Cog):
             newname = unidecode(member.display_name)
             if not newname:
                 newname = "Unreadable Name"
-            await member.edit(nick=newname, reason="Automatic Unreadable Name")
+            await member.edit(nick=newname, reason="Automatic Namecheck")
 
         # Hoist
         if member.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
             await member.edit(
-                nick="᲼" + member.display_name, reason="Automatic Unreadable Name"
+                nick="᲼" + member.display_name, reason="Automatic Namecheck"
             )
 
     @Cog.listener()
@@ -78,12 +76,12 @@ class NameCheck(Cog):
             newname = unidecode(member_after.display_name)
             if not newname:
                 newname = "Unreadable Name"
-            await member_after.edit(nick=newname, reason="Automatic Unreadable Name")
+            await member_after.edit(nick=newname, reason="Automatic Namecheck")
 
         # Hoist
         if member_after.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
             await member_after.edit(
-                nick="᲼" + member_after.display_name, reason="Automatic Unreadable Name"
+                nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
             )
 
 

@@ -8,8 +8,17 @@ surveyr_event_types = {
     "unbans": "Unban",
     "kicks": "Kick",
     "softbans": "Softban",
+    "timeouts": "Timeout",
+    "roleadds": "Promotion",
+    "roleremoves": "Demotion",
 }
 server_data = "data/servers"
+
+
+def username_system(user):
+    part1 = user.global_name + f" [{user}]" if user.global_name else f"{user}"
+    part2 = " (" + user.id + ")" if include_id else ""
+    return part1 + part2
 
 
 def make_surveys(serverid):

@@ -44,8 +44,9 @@ stock_configs = {
     "surveyr": {
         "enable": False,
         "survey_channel": 0,
-        "log_types": [],
         "start_case": 0,
+        "log_types": [],
+        "log_roles": [],
     },
     "cotd": {
         "enable": False,

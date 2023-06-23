@@ -8,7 +8,13 @@ import asyncio
 import os
 from helpers.checks import check_if_staff
 from helpers.sv_config import get_config
-from helpers.surveyr import surveyr_event_types, new_survey, edit_survey, get_surveys
+from helpers.surveyr import (
+    surveyr_event_types,
+    new_survey,
+    edit_survey,
+    get_surveys,
+    username_system,
+)
 
 
 class Surveyr(Cog):
@@ -39,6 +45,24 @@ class Surveyr(Cog):
                 return range(int(cases[0]), int(cases[1]) + 1)
             except:
                 return None
+
+    def format_handler(self, entry):
+        if entry.user.id == self.bot.user.id:
+            # Recognize audit log reason formats by Dishwasher
+            user = guild.get_member_named(entry.reason.split()[3].split("#")[0])
+            reason = (
+                entry.reason.split("]")[1][1:]
+                if entry.reason.split("]")[1][1:]
+                else f"No reason was given, {user.mention}..."
+            )
+        else:
+            user = entry.user
+            reason = (
+                entry.reason
+                if entry.reason
+                else f"No reason was given, {user.mention}..."
+            )
+        return user, reason
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -104,9 +128,7 @@ class Surveyr(Cog):
                     survey["type"],
                 )
                 content = msg.content.split("\n")
-                content[
-                    2
-                ] = f"**Staff:** {ctx.author.global_name + ' [' if ctx.author.global_name else ''}{ctx.author}{']' if ctx.author.global_name else ''} ({ctx.author.id})"
+                content[2] = f"**Staff: **" + username_system(ctx.author)
                 content[3] = f"**Reason:** {reason}"
                 await msg.edit(content="\n".join(content))
             except KeyError:
@@ -208,9 +230,7 @@ class Surveyr(Cog):
                     get_config(ctx.guild.id, "surveyr", "survey_channel")
                 ).fetch_message(survey["post_id"])
                 content = msg.content.split("\n")
-                content[
-                    1
-                ] = f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})"
+                content[1] = f"**User:** " + username_system(member)
                 await msg.edit(content="\n".join(content))
             except KeyError:
                 await ctx.reply(
@@ -276,21 +296,7 @@ class Surveyr(Cog):
             else:
                 await asyncio.sleep(1)
 
-        if entry.user.id == self.bot.user.id:
-            # Recognize audit log reason formats by Dishwasher
-            user = guild.get_member_named(entry.reason.split()[3].split("#")[0])
-            reason = (
-                entry.reason.split("]")[1][1:]
-                if entry.reason.split("]")[1][1:]
-                else f"No reason was given, {user.mention}..."
-            )
-        else:
-            user = entry.user
-            reason = (
-                entry.reason
-                if entry.reason
-                else f"No reason was given, {user.mention}..."
-            )
+        user, reason = self.format_handler(entry)
 
         msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
@@ -333,21 +339,7 @@ class Surveyr(Cog):
             else:
                 await asyncio.sleep(1)
 
-        if entry.user.id == self.bot.user.id:
-            # Recognize audit log reason formats by Dishwasher
-            user = guild.get_member_named(entry.reason.split()[3].split("#")[0])
-            reason = (
-                entry.reason.split("]")[1][1:]
-                if entry.reason.split("]")[1][1:]
-                else f"No reason was given, {user.mention}..."
-            )
-        else:
-            user = entry.user
-            reason = (
-                entry.reason
-                if entry.reason
-                else f"No reason was given, {user.mention}..."
-            )
+        user, reason = self.format_handler(entry)
 
         msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
@@ -360,8 +352,8 @@ class Surveyr(Cog):
         await msg.edit(
             content=(
                 f"`#{caseid}` **BAN** on <t:{timestamp}:f>\n"
-                f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})\n"
-                f"**Staff:** {user.global_name + ' [' if user.global_name else ''}{user}{']' if user.global_name else ''} ({user.id})\n"
+                f"**User:** " + username_system(member) + "\n"
+                f"**Staff:** " + username_system(user) + "\n"
                 f"**Reason:** {reason}"
             )
         )
@@ -408,21 +400,7 @@ class Surveyr(Cog):
             else:
                 await asyncio.sleep(1)
 
-        if entry.user.id == self.bot.user.id:
-            # Recognize audit log reason formats by Dishwasher
-            user = guild.get_member_named(entry.reason.split()[3].split("#")[0])
-            reason = (
-                entry.reason.split("]")[1][1:]
-                if entry.reason.split("]")[1][1:]
-                else f"No reason was given, {user.mention}..."
-            )
-        else:
-            user = entry.user
-            reason = (
-                entry.reason
-                if entry.reason
-                else f"No reason was given, {user.mention}..."
-            )
+        user, reason = self.format_handler(entry)
 
         msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
@@ -432,12 +410,136 @@ class Surveyr(Cog):
         await msg.edit(
             content=(
                 f"`#{caseid}` **UNBAN** on <t:{timestamp}:f>\n"
-                f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})\n"
-                f"**Staff:** {user.global_name + ' [' if user.global_name else ''}{user}{']' if user.global_name else ''} ({user.id})\n"
+                f"**User:** " + username_system(member) + "\n"
+                f"**Staff:** " + username_system(user) + "\n"
                 f"**Reason:** {reason}"
             )
         )
         return
+
+    @Cog.listener()
+    async def on_member_update(self, member_before, member_after):
+        await self.bot.wait_until_ready()
+        if (
+            not get_config(member_after.guild.id, "surveyr", "enable")
+            or "timeout"
+            not in get_config(member_after.guild.id, "surveyr", "log_types")
+            and "role" not in get_config(member_after.guild.id, "surveyr", "log_types")
+        ):
+            return
+        guild = member_after.guild
+        survey_channel = get_config(member_after.guild.id, "surveyr", "survey_channel")
+
+        if (
+            "timeout" in get_config(member_after.guild.id, "surveyr", "log_types")
+            and not member_before.timed_out_until
+            and member_after.timed_out_until
+        ):
+            # Waiting for Discord's mistimed audit log entry.
+            entry = None
+            for x in range(60):
+                if x == 59:
+                    return
+                async for log in guild.audit_logs(
+                    before=datetime.datetime.now() + datetime.timedelta(0, 10),
+                    action=discord.AuditLogAction.member_update,
+                ):
+                    if log.target.id == member_after.id and log.after.timed_out_until:
+                        entry = log
+                        break
+                if entry:
+                    break
+                else:
+                    await asyncio.sleep(1)
+
+            user, reason = self.format_handler(entry)
+
+            msg = await guild.get_channel(survey_channel).send(content="⌛")
+            caseid, timestamp = new_survey(
+                guild.id, member_after.id, msg.id, user.id, reason, "timeouts"
+            )
+
+            await msg.edit(
+                content=(
+                    f"`#{caseid}` **TIMEOUT** ending <t:{int(entry.after.timed_out_until.timestamp())}:R> on <t:{timestamp}:f>\n"
+                    f"**User:** " + username_system(member) + "\n"
+                    f"**Staff:** " + username_system(user) + "\n"
+                    f"**Reason:** {reason}"
+                )
+            )
+        elif "role" in get_config(member_after.guild.id, "surveyr", "log_types"):
+            role_add = []
+            role_remove = []
+            for role in member_after.guild.roles:
+                if (
+                    role == member_after.guild.default_role
+                    or role.id
+                    not in get_config(member_after.guild.id, "surveyr", "log_roles")
+                ):
+                    continue
+                elif role not in member_before.roles and role in member_after.roles:
+                    if role.id == get_config(
+                        member_after.guild.id, "staff", "exstaff_role"
+                    ):
+                        continue
+                    # Special Role Added
+                    role_add.append(role.id)
+                elif role in member_before.roles and role not in member_after.roles:
+                    if role.id == get_config(
+                        member_after.guild.id, "staff", "exstaff_role"
+                    ):
+                        continue
+                    # Special Role Removed
+                    role_remove.append(role.id)
+
+            # Waiting for Discord's mistimed audit log entry.
+            entry = None
+            for x in range(60):
+                if x == 59:
+                    return
+                async for log in guild.audit_logs(
+                    before=datetime.datetime.now() + datetime.timedelta(0, 10),
+                    action=discord.AuditLogAction.member_update,
+                ):
+                    if log.target.id == member_after.id:
+                        entry = log
+                        break
+                if entry:
+                    break
+                else:
+                    await asyncio.sleep(1)
+
+            user, reason = self.format_handler(entry)
+
+            for role in role_add:
+                msg = await guild.get_channel(survey_channel).send(content="⌛")
+                caseid, timestamp = new_survey(
+                    guild.id, member_after.id, msg.id, user.id, reason, "roleadds"
+                )
+
+                await msg.edit(
+                    content=(
+                        f"`#{caseid}` **PROMOTION** to `{role.name}` on <t:{timestamp}:f>\n"
+                        f"**User:** " + username_system(member) + "\n"
+                        f"**Staff:** " + username_system(user) + "\n"
+                        f"**Reason:** {reason}"
+                    )
+                )
+
+            for role in role_remove:
+                msg = await guild.get_channel(survey_channel).send(content="⌛")
+                caseid, timestamp = new_survey(
+                    guild.id, member_after.id, msg.id, user.id, reason, "roleremoves"
+                )
+
+                await msg.edit(
+                    content=(
+                        f"`#{caseid}` **DEMOTION** from `{role.name}` on <t:{timestamp}:f>\n"
+                        f"**User:** " + username_system(member) + "\n"
+                        f"**Staff:** " + username_system(user) + "\n"
+                        f"**Reason:** {reason}"
+                    )
+                )
 
 
 async def setup(bot):
