@@ -86,7 +86,7 @@ class NameCheck(Cog):
 
         # Validate
         if name != member_after.display_name:
-            await member.edit(
+            await member_after.edit(
                 nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
             )
 
