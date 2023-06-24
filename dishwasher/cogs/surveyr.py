@@ -90,7 +90,15 @@ class Surveyr(Cog):
     @commands.guild_only()
     @commands.check(check_if_staff)
     @commands.command()
-    async def manualsurvey(self, ctx, survey_type: str, member: discord.User, user: discord.User, *, reason: str):
+    async def manualsurvey(
+        self,
+        ctx,
+        survey_type: str,
+        member: discord.User,
+        user: discord.User,
+        *,
+        reason: str,
+    ):
         """[S] Invokes Surveyr manually."""
         if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
