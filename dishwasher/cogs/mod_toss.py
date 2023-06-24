@@ -590,7 +590,7 @@ class ModToss(Cog):
         if (
             not message.guild
             or not get_config(message.guild.id, "toss", "enable")
-            or self.is_rolebanned(member)
+            or self.is_rolebanned(message.author)
             or message.guild.get_role(get_config(message.guild.id, "staff", "staff_role"))
             in message.author.roles
         ):
@@ -615,7 +615,7 @@ class ModToss(Cog):
                 )
                 await toss_channel.set_permissions(message.author, read_messages=True)
                 await toss_channel.send(
-                    content=f"{member.mention}, you were rolebanned for spamming."
+                    content=f"{message.author.mention}, you were rolebanned for spamming."
                 )
                 userlog(
                     message.guild.id,
