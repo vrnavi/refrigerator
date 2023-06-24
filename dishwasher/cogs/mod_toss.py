@@ -105,7 +105,7 @@ class ModToss(Cog):
                 roles.append(rx)
 
         with open(
-            rf"{self.bot.server_data}/{user.guild.id}/toss/{toss_channel.name}/{user.id}.json",
+            rf"{self.bot.server_data}/{user.guild.id}/toss/{toss_channel[0].name}/{user.id}.json",
             "w",
         ) as file:
             file.write(json.dumps([role.id for role in roles]))
