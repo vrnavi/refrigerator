@@ -325,6 +325,14 @@ class Logs2(Cog):
                 inline=False,
             )
 
+        # Display Names
+        if member_before.global_name != member_after.global_name:
+            embed.add_field(
+                name="🪪 Display Name Change",
+                value=f"❌ {member_before.global_name}\n⬇️\n⭕ {member_after.global_name}",
+                inline=False,
+            )
+
         # Nicknames
         if member_before.nick != member_after.nick:
             if not member_before.nick:
