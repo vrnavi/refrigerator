@@ -170,13 +170,13 @@ class Dishtimer(Cog):
         await self.bot.wait_until_ready()
         log_channel = self.bot.get_channel(config.bot_logchannel)
         try:
-            shutil.make_archive("data/data_backup", "zip", self.bot.all_data)
+            shutil.make_archive("data_backup", "zip", self.bot.all_data)
             for m in config.bot_managers:
                 await self.bot.get_user(m).send(
                     content="Daily backups:",
-                    file=discord.File("data/data_backup.zip"),
+                    file=discord.File("data_backup.zip"),
                 )
-            os.remove("data/data_backup.zip")
+            os.remove("data_backup.zip")
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(

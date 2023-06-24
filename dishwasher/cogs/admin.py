@@ -34,20 +34,20 @@ class Admin(Cog):
     @commands.command()
     async def getdata(self, ctx):
         """[O] Returns data files."""
-        shutil.make_archive("data/data_backup", "zip", self.bot.all_data)
+        shutil.make_archive("data_backup", "zip", self.bot.all_data)
         await ctx.message.reply(
             content="Your current data files...",
-            files=discord.File("data/data_backup.zip"),
+            files=discord.File("data_backup.zip"),
             mention_author=False,
         )
-        os.remove("data/data_backup.zip")
+        os.remove("data_backup.zip")
 
     @commands.check(check_if_bot_manager)
     @commands.command()
     async def setdata(self, ctx):
         """[O] Replaces data files. This is destructive behavior!"""
         if not ctx.message.attachments:
-            ctx.reply(
+            await ctx.reply(
                 content="You need to supply the data files.", mention_author=False
             )
             return
@@ -87,7 +87,9 @@ class Admin(Cog):
         if not server:
             server = ctx.guild
         if not ctx.message.attachments:
-            ctx.reply(content="You need to supply the data file.", mention_author=False)
+            await ctx.reply(
+                content="You need to supply the data file.", mention_author=False
+            )
             return
         await ctx.message.attachments[0].save(f"data/{server.id}.zip")
         if os.path.exists(f"{self.bot.server_data}/{server.id}"):
