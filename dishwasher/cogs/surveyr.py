@@ -89,26 +89,29 @@ class Surveyr(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
-    @commands.command(invoke_without_command=True)
-    async def manualsurvey(self, ctx):
+    @commands.command()
+    async def manualsurvey(self, ctx, survey_type: str, member: discord.User, user: discord.User, *, reason: str):
         """[S] Invokes Surveyr manually."""
         if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         surveys = get_surveys(ctx.guild.id)
-        if not surveys:
-            await ctx.reply(content="There are no surveys yet.", mention_author=False)
-        msg = []
-        for i, k in enumerate(reversed(surveys)):
-            if i == 5:
-                break
-            event_type = surveyr_event_types[surveys[k]["type"]]
-            target = await self.bot.fetch_user(surveys[k]["target_id"])
-            issuer = await self.bot.fetch_user(surveys[k]["issuer_id"])
-            msg.append(f"`#{k}` **{event_type.upper()}** of {target} by {issuer}")
-        await ctx.reply(
-            content="**The last few surveys:**\n" + "\n".join(reversed(msg)),
-            mention_author=False,
+        guild = member.guild
+        survey_channel = get_config(member.guild.id, "surveyr", "survey_channel")
+
+        msg = await guild.get_channel(survey_channel).send(content="⌛")
+        caseid, timestamp = new_survey(
+            guild.id, member.id, msg.id, user.id, reason, survey_type
         )
+
+        await msg.edit(
+            content=(
+                f"`#{caseid}` **{surveyr_event_types[survey_type].upper()}** on <t:{timestamp}:f>\n"
+                f"**User:** " + username_system(member) + "\n"
+                f"**Staff:** " + username_system(user) + "\n"
+                f"**Reason:** {reason}"
+            )
+        )
+        return
 
     @commands.guild_only()
     @commands.check(check_if_staff)
@@ -329,8 +332,8 @@ class Surveyr(Cog):
         await msg.edit(
             content=(
                 f"`#{caseid}` **KICK** on <t:{timestamp}:f>\n"
-                f"**User:** {member.global_name + ' [' if member.global_name else ''}{member}{']' if member.global_name else ''} ({member.id})\n"
-                f"**Staff:** {user.global_name + ' [' if user.global_name else ''}{user}{']' if user.global_name else ''} ({user.id})\n"
+                f"**User:** " + username_system(member) + "\n"
+                f"**Staff:** " + username_system(user) + "\n"
                 f"**Reason:** {reason}"
             )
         )
