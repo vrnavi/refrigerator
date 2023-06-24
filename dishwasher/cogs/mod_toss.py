@@ -588,7 +588,8 @@ class ModToss(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         if (
-            not get_config(message.guild.id, "toss", "enable")
+            not message.guild
+            or not get_config(message.guild.id, "toss", "enable")
             or self.is_rolebanned(member)
             or message.guild.get_role(get_config(message.guild.id, "staff", "staff_role"))
             in message.author.roles
