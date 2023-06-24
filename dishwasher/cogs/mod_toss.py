@@ -240,11 +240,11 @@ class ModToss(Cog):
             toss_channel = ctx.channel
         else:
             addition = False
-            toss_channel = await new_session(ctx.guild)
+            toss_channel = await self.new_session(ctx.guild)
 
         for us in user_id_list:
             try:
-                bad_roles_msg, prev_roles = await perform_toss(us, ctx.author)
+                bad_roles_msg, prev_roles = await self.perform_toss(us, ctx.author)
                 await toss_channel.set_permissions(us, read_messages=True)
 
                 userlog(
@@ -609,8 +609,8 @@ class ModToss(Cog):
             else:
                 self.spamcounter[message.author.id]["spamcounter"] += 1
             if self.spamcounter[message.author.id]["spamcounter"] == 5:
-                toss_channel = await new_session(message.guild)
-                bad_roles_msg, prev_roles = await perform_toss(
+                toss_channel = await self.new_session(message.guild)
+                bad_roles_msg, prev_roles = await self.perform_toss(
                     message.author, message.guild.me
                 )
                 await toss_channel.set_permissions(message.author, read_messages=True)
@@ -662,8 +662,8 @@ class ModToss(Cog):
         if not session:
             return
 
-        toss_channel = await new_session(message.guild)
-        bad_roles_msg, prev_roles = await perform_toss(message.author, message.guild.me)
+        toss_channel = await self.new_session(message.guild)
+        bad_roles_msg, prev_roles = await self.perform_toss(message.author, message.guild.me)
         await toss_channel.set_permissions(message.author, read_messages=True)
         await toss_channel.send(
             content=f"{member.mention}, you were previously rolebanned. As such, a new session has been made for you here."
