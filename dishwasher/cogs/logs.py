@@ -12,6 +12,7 @@ from helpers.embeds import (
     stock_embed,
     slice_embed,
     mod_embed,
+    author_embed,
     createdat_embed,
     joinedat_embed,
 )
