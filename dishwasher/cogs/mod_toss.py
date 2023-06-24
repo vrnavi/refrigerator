@@ -589,9 +589,12 @@ class ModToss(Cog):
         await self.bot.wait_until_ready()
         if (
             not message.guild
+            or message.author.bot
             or not get_config(message.guild.id, "toss", "enable")
             or self.is_rolebanned(message.author)
-            or message.guild.get_role(get_config(message.guild.id, "staff", "staff_role"))
+            or message.guild.get_role(
+                get_config(message.guild.id, "staff", "staff_role")
+            )
             in message.author.roles
         ):
             return
@@ -663,7 +666,9 @@ class ModToss(Cog):
             return
 
         toss_channel = await self.new_session(message.guild)
-        bad_roles_msg, prev_roles = await self.perform_toss(message.author, message.guild.me)
+        bad_roles_msg, prev_roles = await self.perform_toss(
+            message.author, message.guild.me
+        )
         await toss_channel.set_permissions(message.author, read_messages=True)
         await toss_channel.send(
             content=f"{member.mention}, you were previously rolebanned. As such, a new session has been made for you here."
