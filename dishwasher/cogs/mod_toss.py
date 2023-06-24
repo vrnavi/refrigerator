@@ -16,7 +16,7 @@ from helpers.checks import check_if_staff
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
 from helpers.archive import log_whole_channel, get_members
-from helpers.embeds import stock_embed, username_system
+from helpers.embeds import stock_embed, username_system, mod_embed
 from helpers.sv_config import get_config
 
 
