@@ -97,7 +97,7 @@ class ModToss(Cog):
                 )
                 return toss_channel
 
-    async def perform_toss(self, user, staff):
+    async def perform_toss(self, user, staff, channel):
         toss_role = user.guild.get_role(get_config(user.guild.id, "toss", "toss_role"))
         roles = []
         for rx in user.roles:
@@ -105,7 +105,7 @@ class ModToss(Cog):
                 roles.append(rx)
 
         with open(
-            rf"{self.bot.server_data}/{user.guild.id}/toss/{toss_channel.name}/{user.id}.json",
+            rf"{self.bot.server_data}/{user.guild.id}/toss/{channel.name}/{user.id}.json",
             "w",
         ) as file:
             file.write(json.dumps([role.id for role in roles]))
@@ -244,7 +244,9 @@ class ModToss(Cog):
 
         for us in user_id_list:
             try:
-                bad_roles_msg, prev_roles = await self.perform_toss(us, ctx.author)
+                bad_roles_msg, prev_roles = await self.perform_toss(
+                    us, ctx.author, toss_channel
+                )
                 await toss_channel.set_permissions(us, read_messages=True)
 
                 userlog(
@@ -614,7 +616,7 @@ class ModToss(Cog):
             if self.spamcounter[message.author.id]["spamcounter"] == 5:
                 toss_channel = await self.new_session(message.guild)
                 bad_roles_msg, prev_roles = await self.perform_toss(
-                    message.author, message.guild.me
+                    message.author, message.guild.me, toss_channel
                 )
                 await toss_channel.set_permissions(message.author, read_messages=True)
                 await toss_channel.send(
@@ -667,7 +669,7 @@ class ModToss(Cog):
 
         toss_channel = await self.new_session(message.guild)
         bad_roles_msg, prev_roles = await self.perform_toss(
-            message.author, message.guild.me
+            message.author, message.guild.me, toss_channel
         )
         await toss_channel.set_permissions(message.author, read_messages=True)
         await toss_channel.send(
