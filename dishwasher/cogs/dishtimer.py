@@ -151,7 +151,6 @@ class Dishtimer(Cog):
         await self.bot.wait_until_ready()
         log_channel = self.bot.get_channel(config.bot_logchannel)
         try:
-            await self.send_data()
             # Handle clean channels
             for clean_channel in config.hourly_clean_channels:
                 await self.clean_channel(clean_channel)
@@ -171,13 +170,13 @@ class Dishtimer(Cog):
         await self.bot.wait_until_ready()
         log_channel = self.bot.get_channel(config.bot_logchannel)
         try:
-            shutil.make_archive("data/serverdata_backup", "zip", self.bot.server_data)
+            shutil.make_archive("data/data_backup", "zip", self.bot.all_data)
             for m in config.bot_managers:
                 await self.bot.get_user(m).send(
-                    content="Daily serverdata backups:",
-                    file=discord.File("data/serverdata_backup.zip"),
+                    content="Daily backups:",
+                    file=discord.File("data/data_backup.zip"),
                 )
-            os.remove("data/serverdata_backup.zip")
+            os.remove("data/data_backup.zip")
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(

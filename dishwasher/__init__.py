@@ -37,6 +37,8 @@ wanted_jsons = [
     "data/userdata.json",
 ]
 server_data = "data/servers"
+bot_data = "data/bot"
+all_data = "data"
 
 intents = discord.Intents.all()
 intents.typing = False
@@ -52,6 +54,8 @@ bot.log = log
 bot.config = config
 bot.wanted_jsons = wanted_jsons
 bot.server_data = server_data
+bot.bot_data = bot_data
+bot.all_data = all_data
 
 
 @bot.event

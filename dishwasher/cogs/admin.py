@@ -34,12 +34,13 @@ class Admin(Cog):
     @commands.command()
     async def getdata(self, ctx):
         """[O] Returns data files."""
-        data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
+        shutil.make_archive("data/data_backup", "zip", self.bot.all_data)
         await ctx.message.reply(
             content="Your current data files...",
-            files=data_files,
+            files=discord.File("data/data_backup.zip"),
             mention_author=False,
         )
+        os.remove("data/data_backup.zip")
 
     @commands.check(check_if_bot_manager)
     @commands.command()
@@ -50,16 +51,11 @@ class Admin(Cog):
                 content="You need to supply the data files.", mention_author=False
             )
             return
-        for f in ctx.message.attachments:
-            if f"data/{f.filename}" in self.bot.wanted_jsons:
-                await f.save(f"data/{f.filename}")
-                await ctx.reply(
-                    content=f"{f.filename} file saved.", mention_author=False
-                )
-            else:
-                await ctx.reply(
-                    content=f"{f.filename} is not a data file.", mention_author=False
-                )
+        await ctx.message.attachments[0].save("data.zip")
+        if os.path.exists("data"):
+            shutil.rmtree("data")
+        shutil.unpack_archive("data.zip", "data")
+        await ctx.reply(content=f"{server.name}'s data saved.", mention_author=False)
 
     @commands.check(check_if_bot_manager)
     @commands.command(aliases=["getserverdata"])
