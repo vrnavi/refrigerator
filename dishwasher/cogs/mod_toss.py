@@ -84,16 +84,14 @@ class ModToss(Cog):
                 }
                 for x in bot_roles:
                     overwrites[x] = discord.PermissionOverwrite(read_messages=True)
-                toss_channel = (
-                    await guild.create_text_channel(
-                        c,
-                        reason="Dishwasher Toss3",
-                        category=guild.get_channel(
-                            get_config(guild.id, "toss", "toss_category")
-                        ),
-                        overwrites=overwrites,
-                        topic="The rolebanned channel. You likely won't get banned, but don't leave immediately, or you will be banned.",  # i need to replace this
+                toss_channel = await guild.create_text_channel(
+                    c,
+                    reason="Dishwasher Toss3",
+                    category=guild.get_channel(
+                        get_config(guild.id, "toss", "toss_category")
                     ),
+                    overwrites=overwrites,
+                    topic="The rolebanned channel. You likely won't get banned, but don't leave immediately, or you will be banned.",  # i need to replace this
                 )
                 return toss_channel
 
@@ -105,7 +103,7 @@ class ModToss(Cog):
                 roles.append(rx)
 
         with open(
-            rf"{self.bot.server_data}/{user.guild.id}/toss/{toss_channel[0].name}/{user.id}.json",
+            rf"{self.bot.server_data}/{user.guild.id}/toss/{toss_channel.name}/{user.id}.json",
             "w",
         ) as file:
             file.write(json.dumps([role.id for role in roles]))
@@ -130,6 +128,7 @@ class ModToss(Cog):
             if len(fail_roles) > 0
             else ""
         )
+
         return bad_roles_msg, prev_roles
 
     @commands.guild_only()
