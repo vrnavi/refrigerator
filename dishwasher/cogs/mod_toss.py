@@ -588,9 +588,9 @@ class ModToss(Cog):
     async def on_message(self, message):
         await self.bot.wait_until_ready()
         if (
-            not get_config(ctx.guild.id, "toss", "enable")
+            not get_config(message.guild.id, "toss", "enable")
             or self.is_rolebanned(member)
-            or ctx.guild.get_role(get_config(ctx.guild.id, "staff", "staff_role"))
+            or message.guild.get_role(get_config(message.guild.id, "staff", "staff_role"))
             in message.author.roles
         ):
             return
@@ -624,7 +624,7 @@ class ModToss(Cog):
                     "tosses",
                 )
                 if staff_channel:
-                    await ctx.guild.get_channel(staff_channel).send(
+                    await message.guild.get_channel(staff_channel).send(
                         f"{'**' + message.author.global_name + '** [' if message.author.global_name else '**'}{message.author}{']' if message.author.global_name else '**'} has been tossed for hitting 5 spam messages.\n"
                         f"**ID:** {message.author.id}\n"
                         f"**Created:** <t:{int(message.author.created_at.timestamp())}:R> on <t:{int(message.author.created_at.timestamp())}:f>\n"
@@ -641,7 +641,7 @@ class ModToss(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         await self.bot.wait_until_ready()
-        if not get_config(ctx.guild.id, "toss", "enable"):
+        if not get_config(member.guild.id, "toss", "enable"):
             return
         staff_channel = member.guild.get_channel(
             get_config(member.guild.id, "staff", "staff_channel")
@@ -680,7 +680,7 @@ class ModToss(Cog):
     @Cog.listener()
     async def on_member_remove(self, member):
         await self.bot.wait_until_ready()
-        if not get_config(ctx.guild.id, "toss", "enable"):
+        if not get_config(member.guild.id, "toss", "enable"):
             return
         if self.is_rolebanned(member):
             session = None
@@ -724,7 +724,7 @@ class ModToss(Cog):
     @Cog.listener()
     async def on_member_update(self, before, after):
         await self.bot.wait_until_ready()
-        if not get_config(ctx.guild.id, "toss", "enable"):
+        if not get_config(after.guild.id, "toss", "enable"):
             return
         if self.is_rolebanned(before) and not self.is_rolebanned(after):
             try:
@@ -744,7 +744,7 @@ class ModToss(Cog):
     async def on_guild_channel_delete(self, channel):
         await self.bot.wait_until_ready()
         if (
-            get_config(ctx.guild.id, "toss", "enable")
+            get_config(channel.guild.id, "toss", "enable")
             and channel.name in get_config(channel.guild.id, "toss", "toss_channels")
             and channel.guild.id in self.bot.tosscache
             and channel.name in self.bot.tosscache[channel.guild.id]
