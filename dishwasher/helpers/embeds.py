@@ -6,8 +6,8 @@ def username_system(user):
     part1 = (
         "**" + user.global_name + f"** [{user}]" if user.global_name else f"**{user}**"
     )
-    part2 = "\n" + user.mention if include_mention else ""
-    part3 = " (" + user.id + ")" if include_id else ""
+    part2 = "\n" + user.mention
+    part3 = " (" + user.id + ")"
     return part1 + part2 + part3
 
 
