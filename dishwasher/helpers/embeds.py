@@ -44,7 +44,7 @@ def author_embed(embed, obj, thumbnail=False):
             icon_url=obj.display_avatar.url,
         )
         if thumbnail:
-            embed.set_thumbnail(url=obj.icon.url)
+            embed.set_thumbnail(url=obj.display_avatar.url)
 
 
 def mod_embed(embed, target, staff, reason=None):

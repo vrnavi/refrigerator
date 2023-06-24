@@ -89,6 +89,29 @@ class Surveyr(Cog):
 
     @commands.guild_only()
     @commands.check(check_if_staff)
+    @commands.command(invoke_without_command=True)
+    async def manualsurvey(self, ctx):
+        """[S] Invokes Surveyr manually."""
+        if not get_config(ctx.guild.id, "surveyr", "enable"):
+            return await ctx.reply(content=self.nocfgmsg, mention_author=False)
+        surveys = get_surveys(ctx.guild.id)
+        if not surveys:
+            await ctx.reply(content="There are no surveys yet.", mention_author=False)
+        msg = []
+        for i, k in enumerate(reversed(surveys)):
+            if i == 5:
+                break
+            event_type = surveyr_event_types[surveys[k]["type"]]
+            target = await self.bot.fetch_user(surveys[k]["target_id"])
+            issuer = await self.bot.fetch_user(surveys[k]["issuer_id"])
+            msg.append(f"`#{k}` **{event_type.upper()}** of {target} by {issuer}")
+        await ctx.reply(
+            content="**The last few surveys:**\n" + "\n".join(reversed(msg)),
+            mention_author=False,
+        )
+
+    @commands.guild_only()
+    @commands.check(check_if_staff)
     @commands.command(aliases=["r"])
     async def reason(self, ctx, caseids: str, *, reason: str):
         """[S] Edits case reasons."""
