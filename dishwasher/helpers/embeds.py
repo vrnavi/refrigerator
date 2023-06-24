@@ -40,7 +40,7 @@ def author_embed(embed, obj, thumbnail=False):
 
     elif type(obj).__name__ == "Member":
         embed.set_author(
-            name=obj.global_name if obj.global_name else str(obj),
+            name=obj.global_name + f" [{obj}]" if obj.global_name else str(obj),
             icon_url=obj.display_avatar.url,
         )
         if thumbnail:
