@@ -97,7 +97,7 @@ class Surveyr(Cog):
         surveys = get_surveys(ctx.guild.id)
         survey_channel = get_config(ctx.guild.id, "surveyr", "survey_channel")
 
-        msg = await guild.get_channel(survey_channel).send(content="⌛")
+        msg = await ctx.guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
             ctx.guild.id, member.id, msg.id, user.id, reason, survey_type
         )
