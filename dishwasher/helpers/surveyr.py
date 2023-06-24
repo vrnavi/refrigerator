@@ -17,7 +17,7 @@ server_data = "data/servers"
 
 def username_system(user):
     part1 = user.global_name + f" [{user}]" if user.global_name else f"{user}"
-    part2 = " (" + user.id + ")" if include_id else ""
+    part2 = " (" + user.id + ")"
     return part1 + part2
 
 
