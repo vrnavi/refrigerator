@@ -64,7 +64,7 @@ class NameCheck(Cog):
         # Validate
         if name != member.display_name:
             await member.edit(
-                nick="᲼" + member.display_name, reason="Automatic Namecheck"
+                nick=name, reason="Automatic Namecheck"
             )
 
     @Cog.listener()
@@ -87,7 +87,7 @@ class NameCheck(Cog):
         # Validate
         if name != member_after.display_name:
             await member_after.edit(
-                nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
+                nick=name, reason="Automatic Namecheck"
             )
 
 
