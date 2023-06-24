@@ -97,7 +97,7 @@ class ModToss(Cog):
                 )
                 return toss_channel
 
-    async def perform_toss(self, user, staff, channel):
+    async def perform_toss(self, user, staff, toss_channel):
         toss_role = user.guild.get_role(get_config(user.guild.id, "toss", "toss_role"))
         roles = []
         for rx in user.roles:
@@ -105,7 +105,7 @@ class ModToss(Cog):
                 roles.append(rx)
 
         with open(
-            rf"{self.bot.server_data}/{user.guild.id}/toss/{channel.name}/{user.id}.json",
+            rf"{self.bot.server_data}/{user.guild.id}/toss/{toss_channel.name}/{user.id}.json",
             "w",
         ) as file:
             file.write(json.dumps([role.id for role in roles]))
