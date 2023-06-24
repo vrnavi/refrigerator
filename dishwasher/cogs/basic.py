@@ -134,7 +134,7 @@ class Basic(Cog):
             title=self.bot.user.name,
             url=config.source_url,
             description=config.embed_desc,
-            color=ctx.guild.me.color,
+            color=ctx.guild.me.color if ctx.guild else self.bot.user.color,
         )
         embed.set_thumbnail(url=self.bot.user.display_avatar.url)
         await ctx.reply(embed=embed, mention_author=False)
