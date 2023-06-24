@@ -411,7 +411,8 @@ class Surveyr(Cog):
         if (
             not get_config(guild.id, "surveyr", "enable")
             or "unban" not in get_config(guild.id, "surveyr", "log_types")
-            or member.id in self.bancooldown[guild.id]
+            or guild.id in self.bancooldown
+            and member.id in self.bancooldown[guild.id]
         ):
             return
         survey_channel = get_config(guild.id, "surveyr", "survey_channel")
