@@ -37,7 +37,7 @@ class Admin(Cog):
         shutil.make_archive("data_backup", "zip", self.bot.all_data)
         await ctx.message.reply(
             content="Your current data files...",
-            files=discord.File("data_backup.zip"),
+            file=discord.File("data_backup.zip"),
             mention_author=False,
         )
         os.remove("data_backup.zip")
