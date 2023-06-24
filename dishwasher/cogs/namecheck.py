@@ -50,19 +50,22 @@ class NameCheck(Cog):
         if not get_config(member.guild.id, "misc", "autoreadable_enable"):
             return
 
+        name = member.display_name
+
+        # Non-Alphanumeric
+        readable = len([b for b in name if b.isascii()])
+        if readable < self.readablereq:
+            name = unidecode(name) if unidecode(name) else "Unreadable Name"
+
         # Hoist
-        if member.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
+        if name[:1] in ("!", "-", ".", "(", ")", ":"):
+            name = "᲼" + name
+
+        # Validate
+        if name != member.display_name:
             await member.edit(
                 nick="᲼" + member.display_name, reason="Automatic Namecheck"
             )
-
-        # Non-Alphanumeric
-        readable = len([b for b in member.display_name if b.isalnum()])
-        if readable < self.readablereq:
-            newname = unidecode(member.display_name)
-            if not newname:
-                newname = "Unreadable Name"
-            await member.edit(nick=newname, reason="Automatic Namecheck")
 
     @Cog.listener()
     async def on_member_update(self, member_before, member_after):
@@ -70,19 +73,22 @@ class NameCheck(Cog):
         if not get_config(member_after.guild.id, "misc", "autoreadable_enable"):
             return
 
-        # Hoist
-        if member_after.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
-            await member_after.edit(
-                nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
-            )
+        name = member_after.display_name
 
         # Non-Alphanumeric
-        readable = len([b for b in member_after.display_name if b.isalnum()])
+        readable = len([b for b in name if b.isascii()])
         if readable < self.readablereq:
-            newname = unidecode(member_after.display_name)
-            if not newname:
-                newname = "Unreadable Name"
-            await member_after.edit(nick=newname, reason="Automatic Namecheck")
+            name = unidecode(name) if unidecode(name) else "Unreadable Name"
+
+        # Hoist
+        if name[:1] in ("!", "-", ".", "(", ")", ":"):
+            name = "᲼" + name
+
+        # Validate
+        if name != member_after.display_name:
+            await member.edit(
+                nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
+            )
 
 
 async def setup(bot):
