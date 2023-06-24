@@ -50,6 +50,12 @@ class NameCheck(Cog):
         if not get_config(member.guild.id, "misc", "autoreadable_enable"):
             return
 
+        # Hoist
+        if member.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
+            await member.edit(
+                nick="᲼" + member.display_name, reason="Automatic Namecheck"
+            )
+
         # Non-Alphanumeric
         readable = len([b for b in member.display_name if b.isalnum()])
         if readable < self.readablereq:
@@ -58,17 +64,17 @@ class NameCheck(Cog):
                 newname = "Unreadable Name"
             await member.edit(nick=newname, reason="Automatic Namecheck")
 
-        # Hoist
-        if member.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
-            await member.edit(
-                nick="᲼" + member.display_name, reason="Automatic Namecheck"
-            )
-
     @Cog.listener()
     async def on_member_update(self, member_before, member_after):
         await self.bot.wait_until_ready()
         if not get_config(member_after.guild.id, "misc", "autoreadable_enable"):
             return
+
+        # Hoist
+        if member_after.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
+            await member_after.edit(
+                nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
+            )
 
         # Non-Alphanumeric
         readable = len([b for b in member_after.display_name if b.isalnum()])
@@ -77,12 +83,6 @@ class NameCheck(Cog):
             if not newname:
                 newname = "Unreadable Name"
             await member_after.edit(nick=newname, reason="Automatic Namecheck")
-
-        # Hoist
-        if member_after.display_name[:1] in ("!", "-", ".", "(", ")", ":"):
-            await member_after.edit(
-                nick="᲼" + member_after.display_name, reason="Automatic Namecheck"
-            )
 
 
 async def setup(bot):
