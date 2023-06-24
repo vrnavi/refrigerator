@@ -67,10 +67,9 @@ class ModToss(Cog):
                 return True
 
     async def new_session(self, guild):
-        staff_role = ctx.guild.get_role(get_config(ctx.guild.id, "staff", "staff_role"))
+        staff_role = guild.get_role(get_config(guild.id, "staff", "staff_role"))
         bot_roles = [
-            ctx.guild.get_role(int(r))
-            for r in get_config(ctx.guild.id, "misc", "bot_roles")
+            guild.get_role(int(r)) for r in get_config(guild.id, "misc", "bot_roles")
         ]
         for c in get_config(guild.id, "toss", "toss_channels"):
             if c not in [g.name for g in guild.channels]:

@@ -246,6 +246,8 @@ async def on_command_error(ctx, error):
 
 @bot.event
 async def on_message(message):
+    await bot.wait_until_ready()
+    # Insert botban stuff here.
     if message.author.bot:
         return
 
