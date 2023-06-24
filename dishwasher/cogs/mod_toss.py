@@ -98,6 +98,7 @@ class ModToss(Cog):
                 return toss_channel
 
     async def perform_toss(self, user, staff):
+        toss_role = user.guild.get_role(get_config(user.guild.id, "toss", "toss_role"))
         roles = []
         for rx in user.roles:
             if rx != user.guild.default_role and rx != toss_role:
