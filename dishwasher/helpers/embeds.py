@@ -29,6 +29,24 @@ def slice_embed(embed, content, name):
         )
 
 
+def author_embed(embed, obj, thumbnail=False):
+    if type(obj).__name__ == "Guild":
+        embed.set_author(
+            name=obj.name,
+            icon_url=obj.icon.url,
+        )
+        if thumbnail:
+            embed.set_thumbnail(url=obj.display_avatar.url)
+
+    elif type(obj).__name__ == "Member":
+        embed.set_author(
+            name=obj.global_name if obj.global_name else str(obj),
+            icon_url=obj.display_avatar.url,
+        )
+        if thumbnail:
+            embed.set_thumbnail(url=obj.icon.url)
+
+
 def mod_embed(embed, target, staff, reason=None):
     embed.set_author(
         name=target,

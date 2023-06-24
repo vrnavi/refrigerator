@@ -41,11 +41,7 @@ class Logs2(Cog):
         embed.color = discord.Color.lighter_gray()
         embed.title = "📥 User Joined"
         embed.description = f"{member.mention} ({member.id})"
-        embed.set_thumbnail(url=member.display_avatar.url)
-        embed.set_author(
-            name=member,
-            icon_url=member.display_avatar.url,
-        )
+        author_embed(embed, member, True)
         createdat_embed(embed, member)
         embed.add_field(name="📨 Invite used:", value=invite_used, inline=True)
 
@@ -91,10 +87,7 @@ class Logs2(Cog):
         embed.color = discord.Color.light_gray()
         embed.title = "📝 Message Edit"
         embed.description = f"{after.author.mention} ({after.author.id}) in {after.channel.mention} [[Jump]({after.jump_url})]"
-        embed.set_author(
-            name=self.bot.escape_message(after.author),
-            icon_url=after.author.display_avatar.url,
-        )
+        author_embed(embed, after.author)
 
         beforename = (
             f"❌ Before on <t:{before.created_at.astimezone().strftime('%s')}:f>"
@@ -136,10 +129,7 @@ class Logs2(Cog):
         embed.color = discord.Color.dark_gray()
         embed.title = "🗑️ Message Delete"
         embed.description = f"{message.author.mention} ({message.author.id}) in {message.channel.mention}"
-        embed.set_author(
-            name=message.author,
-            icon_url=message.author.display_avatar.url,
-        )
+        author_embed(embed, message.author)
         name = f"🧾 Sent on <t:{message.created_at.astimezone().strftime('%s')}:f>:"
         if len(message.clean_content) > 1024:
             slice_embed(embed, message.clean_content, name)
@@ -214,11 +204,7 @@ class Logs2(Cog):
         embed.color = discord.Color.darker_gray()
         embed.title = "📥 User Left"
         embed.description = f"{member.mention} ({member.id})"
-        embed.set_thumbnail(url=member.display_avatar.url)
-        embed.set_author(
-            name=member,
-            icon_url=member.display_avatar.url,
-        )
+        author_embed(embed, member, True)
         createdat_embed(embed, member)
         joinedat_embed(embed, member)
 
@@ -307,10 +293,7 @@ class Logs2(Cog):
         embed.color = member_after.color
         embed.title = "ℹ️ Member Update"
         embed.description = f"{member_after.mention} ({member_after.id})"
-        embed.set_author(
-            name=member_after,
-            icon_url=member_after.display_avatar.url,
-        )
+        author_embed(embed, member_after)
 
         # Roles
         if member_before.roles != member_after.roles:
@@ -372,10 +355,7 @@ class Logs2(Cog):
         embed.description = (
             f"{guild_after.name} with `{guild_after.member_count}` members."
         )
-        embed.set_author(
-            name=guild_after.name,
-            icon_url=guild_after.icon.url,
-        )
+        author_embed(embed, guild_after)
 
         # Server Names
         if guild_before.name != guild_after.name:
@@ -416,10 +396,7 @@ class Logs2(Cog):
         embed.color = discord.Color.from_str("#00FFFF")
         embed.title = "🏠 Channel Created"
         embed.description = f"`{str(channel.category)}/`#{channel.name} ({channel.id}) [{channel.mention}]"
-        embed.set_author(
-            name=channel.guild.name,
-            icon_url=channel.guild.icon.url,
-        )
+        author_embed(embed, channel.guild)
 
         await slog.send(embed=embed)
 
@@ -435,10 +412,7 @@ class Logs2(Cog):
         embed.color = discord.Color.from_str("#FF00FF")
         embed.title = "🏚️ Channel Deleted"
         embed.description = f"`{str(channel.category)}/`#{channel.name} ({channel.id})"
-        embed.set_author(
-            name=channel.guild.name,
-            icon_url=channel.guild.icon.url,
-        )
+        author_embed(embed, channel.guild)
 
         await slog.send(embed=embed)
 
@@ -456,10 +430,7 @@ class Logs2(Cog):
         embed.description = (
             f"{channel_after.name} ({channel_after.id}) [{channel_after.mention}]"
         )
-        embed.set_author(
-            name=channel_after.guild.name,
-            icon_url=channel_after.guild.icon.url,
-        )
+        author_embed(embed, channel_after.guild)
 
         # Names
         if channel_before.name != channel_after.name:
@@ -658,6 +629,7 @@ class Logs2(Cog):
             name=role.guild.name,
             icon_url=role.guild.icon.url,
         )
+        author_embed(embed, role.guild)
 
         await slog.send(embed=embed)
 

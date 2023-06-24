@@ -49,7 +49,7 @@ class Surveyr(Cog):
     def format_handler(self, entry):
         if entry.user.id == self.bot.user.id:
             # Recognize audit log reason formats by Dishwasher
-            user = guild.get_member_named(entry.reason.split()[3].split("#")[0])
+            user = entry.guild.get_member_named(entry.reason.split()[3].split("#")[0])
             reason = (
                 entry.reason.split("]")[1][1:]
                 if entry.reason.split("]")[1][1:]
