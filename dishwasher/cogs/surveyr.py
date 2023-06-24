@@ -95,12 +95,11 @@ class Surveyr(Cog):
         if not get_config(ctx.guild.id, "surveyr", "enable"):
             return await ctx.reply(content=self.nocfgmsg, mention_author=False)
         surveys = get_surveys(ctx.guild.id)
-        guild = member.guild
-        survey_channel = get_config(member.guild.id, "surveyr", "survey_channel")
+        survey_channel = get_config(ctx.guild.id, "surveyr", "survey_channel")
 
         msg = await guild.get_channel(survey_channel).send(content="⌛")
         caseid, timestamp = new_survey(
-            guild.id, member.id, msg.id, user.id, reason, survey_type
+            ctx.guild.id, member.id, msg.id, user.id, reason, survey_type
         )
 
         await msg.edit(
