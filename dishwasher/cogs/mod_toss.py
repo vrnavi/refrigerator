@@ -602,12 +602,22 @@ class ModToss(Cog):
         staff_channel = message.guild.get_channel(
             get_config(message.guild.id, "staff", "staff_channel")
         )
+        staff_role = message.guild.get_role(
+            get_config(message.guild.id, "staff", "staff_role")
+        )
         if message.author.id not in self.spamcounter:
             self.spamcounter[message.author.id] = {}
         if "original_message" not in self.spamcounter[message.author.id]:
-            self.spamcounter[message.author.id]["original_message"] = message.content
+            self.spamcounter[message.author.id]["original_message"] = message
             return
-        elif message.content == self.spamcounter[message.author.id]["original_message"]:
+        cutoff_ts = spamcounter[message.author.id][
+            "original_message"
+        ] + datetime.timedelta(seconds=10)
+        if (
+            message.content
+            == self.spamcounter[message.author.id]["original_message"].content
+            and message.created_at < cutoff_ts
+        ):
             if "spamcounter" not in self.spamcounter[message.author.id]:
                 self.spamcounter[message.author.id]["spamcounter"] = 1
             else:
@@ -630,6 +640,7 @@ class ModToss(Cog):
                 )
                 if staff_channel:
                     await staff_channel.send(
+                        f"{staff_role.mention}\n"
                         f"{'**' + message.author.global_name + '** [' if message.author.global_name else '**'}{message.author}{']' if message.author.global_name else '**'} has been tossed for hitting 5 spam messages.\n"
                         f"**ID:** {message.author.id}\n"
                         f"**Created:** <t:{int(message.author.created_at.timestamp())}:R> on <t:{int(message.author.created_at.timestamp())}:f>\n"
@@ -639,7 +650,7 @@ class ModToss(Cog):
                     )
                 return
         else:
-            self.spamcounter[message.author.id]["original_message"] = message.content
+            self.spamcounter[message.author.id]["original_message"] = message
             self.spamcounter[message.author.id]["spamcounter"] = 0
             return
 
