@@ -63,9 +63,7 @@ class NameCheck(Cog):
 
         # Validate
         if name != member.display_name:
-            await member.edit(
-                nick=name, reason="Automatic Namecheck"
-            )
+            await member.edit(nick=name, reason="Automatic Namecheck")
 
     @Cog.listener()
     async def on_member_update(self, member_before, member_after):
@@ -86,9 +84,7 @@ class NameCheck(Cog):
 
         # Validate
         if name != member_after.display_name:
-            await member_after.edit(
-                nick=name, reason="Automatic Namecheck"
-            )
+            await member_after.edit(nick=name, reason="Automatic Namecheck")
 
 
 async def setup(bot):

@@ -59,7 +59,7 @@ def mod_embed(embed, target, staff, reason=None):
     )
     embed.add_field(
         name=f"🛠️ Staff",
-        value=username_system(target),
+        value=username_system(staff),
         inline=True,
     )
     if reason:
