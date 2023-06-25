@@ -4,7 +4,7 @@ import json
 import os
 import asyncio
 import random
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from discord.ext import commands
 from discord.ext.commands import Cog
 import httplib2
@@ -612,7 +612,7 @@ class ModToss(Cog):
             return
         cutoff_ts = self.spamcounter[message.author.id][
             "original_message"
-        ] + datetime.timedelta(seconds=10)
+        ] + timedelta(seconds=10)
         if (
             message.content
             == self.spamcounter[message.author.id]["original_message"].content
