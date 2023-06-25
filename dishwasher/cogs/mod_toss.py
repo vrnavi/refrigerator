@@ -27,6 +27,11 @@ class ModToss(Cog):
         self.spamcounter = {}
         self.nocfgmsg = "Tossing isn't enabled for this server."
 
+    # Thank you to https://stackoverflow.com/a/29489919 for this function.
+    def principal_period(self, s):
+        i = (s + s).find(s, 1, -1)
+        return None if i == -1 else s[:i]
+
     def get_user_list(self, ctx, user_ids):
         user_id_list = []
         invalid_ids = []
@@ -615,6 +620,8 @@ class ModToss(Cog):
         ].created_at + timedelta(seconds=10)
         if (
             message.content
+            == self.spamcounter[message.author.id]["original_message"].content
+            or self.principal_period(message.content)
             == self.spamcounter[message.author.id]["original_message"].content
             and message.created_at < cutoff_ts
         ):
