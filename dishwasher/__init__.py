@@ -28,6 +28,7 @@ log.addHandler(stdout_handler)
 async def get_prefix(message: voltage.Message, bot: commands.CommandsClient):
     return config.prefixes + get_userprefix(message.author.id)
 
+
 wanted_jsons = [
     "data/dishtimers.json",
     "data/userdata.json",
@@ -36,9 +37,7 @@ server_data = "data/servers"
 bot_data = "data/bot"
 all_data = "data"
 
-bot = commands.CommandsClient(
-    prefix=get_prefix
-)
+bot = commands.CommandsClient(prefix=get_prefix)
 
 # These do not work, as CommandsClient does not have a __dict__ attribute
 # which means we can't dynamically shove attributes onto it
@@ -92,7 +91,7 @@ for wanted_json in wanted_jsons:
 
 def main():
     # i've only ported these two so just these for now
-    for cog in ['cogs.usertime', 'cogs.prefixes']:
+    for cog in ["cogs.usertime", "cogs.prefixes"]:
         try:
             target = importlib.import_module(cog)
             if not target:
