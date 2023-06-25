@@ -612,7 +612,7 @@ class ModToss(Cog):
             return
         cutoff_ts = self.spamcounter[message.author.id][
             "original_message"
-        ] + timedelta(seconds=10)
+        ].created_at + timedelta(seconds=10)
         if (
             message.content
             == self.spamcounter[message.author.id]["original_message"].content
