@@ -16,7 +16,9 @@ class prefixes(commands.SubclassedCog):
     @commands.command(aliases=["prefix"])
     async def prefixes(self, ctx):
         """[U] Lists all prefixes."""
-        embed = voltage.embed.SendableEmbed(title="Your current prefixes...", description="")
+        embed = voltage.embed.SendableEmbed(
+            title="Your current prefixes...", description=""
+        )
 
         uid = str(ctx.author.id)
         userprefixes = get_userprefix(uid)
