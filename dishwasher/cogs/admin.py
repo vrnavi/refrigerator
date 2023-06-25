@@ -11,6 +11,7 @@ import random
 import asyncio
 import shutil
 import os
+import config
 from helpers.checks import check_if_bot_manager
 from helpers.sv_config import get_config
 
@@ -26,7 +27,7 @@ class Admin(Cog):
     async def _exit(self, ctx):
         """[O] Shuts down (or restarts) the bot."""
         await ctx.message.reply(
-            content=random.choice(self.bot.config.death_messages), mention_author=False
+            content=random.choice(config.death_messages), mention_author=False
         )
         await self.bot.close()
 
