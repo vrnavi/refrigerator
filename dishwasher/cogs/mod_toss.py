@@ -610,7 +610,7 @@ class ModToss(Cog):
         if "original_message" not in self.spamcounter[message.author.id]:
             self.spamcounter[message.author.id]["original_message"] = message
             return
-        cutoff_ts = spamcounter[message.author.id][
+        cutoff_ts = self.spamcounter[message.author.id][
             "original_message"
         ] + datetime.timedelta(seconds=10)
         if (
