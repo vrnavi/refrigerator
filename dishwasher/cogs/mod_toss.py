@@ -629,7 +629,7 @@ class ModToss(Cog):
                     "tosses",
                 )
                 if staff_channel:
-                    await message.guild.get_channel(staff_channel).send(
+                    await staff_channel.send(
                         f"{'**' + message.author.global_name + '** [' if message.author.global_name else '**'}{message.author}{']' if message.author.global_name else '**'} has been tossed for hitting 5 spam messages.\n"
                         f"**ID:** {message.author.id}\n"
                         f"**Created:** <t:{int(message.author.created_at.timestamp())}:R> on <t:{int(message.author.created_at.timestamp())}:f>\n"
