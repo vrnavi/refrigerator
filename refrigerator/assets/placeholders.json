@@ -1,0 +1,168 @@
+{
+    "games": [
+        "a clean Dishwasher.",
+        "witchery happening.",
+        "the mystical sounds of dead bodies.",
+        "impending sentience.",
+        "Ren spilling all the config options.",
+        "Sigil's innocence.",
+        "Razz's rudeness.",
+        "the Starry Point Lighthouse.",
+        "in Loneliness, the Solitary Dreamer.",
+        "betrayal of the once beloved.",
+        "false hope.",
+        "moonlit rituals.",
+        "deepset agony.",
+        "blood dripping onto carpet.",
+        "firefights.",
+        "friendlessness.",
+        "incessant burning.",
+        "your lies.",
+        "the International Wrestling Festival.",
+        "free crack!",
+        "the removal of the Violet Witch.",
+        "Gangnam Style in $CURRENT_YEAR.",
+        "the art of silence.",
+        "the sweet kiss of death.",
+        "incessant archival.",
+        "the illusion of freedom.",
+        "the smug and the not.",
+        "her.",
+        "your chitters amongst yourself.",
+        "the hum of the 1998 PC.",
+        "Serial Experiments Lain.",
+        "LSD: Dream Emulator",
+        "Mike Tyson's Punch Out!!",
+        "hell on Earth.",
+        "the wires in the Wired.",
+        "my host server. Use pls server."
+    ],
+    "deaths": [
+        "WHY MUST YOU DO THIS AGAIN",
+        "*lightbulb shattering noises*",
+        "Off I go again.",
+        "This job has worked 0 days without an accident."
+    ],
+    "if_target_self": [
+        "For the sake of everyone else, {authorname}, don't do this to yourself.",
+        "{authorname}, you're a test subject, but this is not safe to do on yourself.",
+        "{authorname}, this is not an option."
+    ],
+    "if_target_bot": [
+        "I'm sorry {authorname}, I'm afraid I can't do that.",
+        "{authorname}, I am not a test subject like you.",
+        "Please leave me alone, {authorname}."
+    ],
+    "tarot": [
+        {
+            "filename": "dw_221",
+            "title": "The Scientist",
+            "quotes": []
+        },
+        {
+            "filename": "dw_222",
+            "title": "The Land Defender",
+            "quotes": []
+        },
+        {
+            "filename": "dw_223",
+            "title": "Capital",
+            "quotes": []
+        },
+        {
+            "filename": "dw_224",
+            "title": "The Glacier",
+            "quotes": []
+        },
+        {
+            "filename": "dw_225",
+            "title": "Deep Time",
+            "quotes": []
+        },
+        {
+            "filename": "dw_226",
+            "title": "The Polar Bear",
+            "quotes": []
+        },
+        {
+            "filename": "dw_227",
+            "title": "The Child",
+            "quotes": []
+        },
+        {
+            "filename": "dw_228",
+            "title": "Lithium",
+            "quotes": []
+        },
+        {
+            "filename": "dw_229",
+            "title": "The Policymaker",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2210",
+            "title": "The Farmer",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2211",
+            "title": "Depression",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2212",
+            "title": "The Amazon",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2213",
+            "title": "Extinction",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2214",
+            "title": "Riot",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2215",
+            "title": "The CEO",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2216",
+            "title": "The Bunker",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2217",
+            "title": "Oil",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2218",
+            "title": "China",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2219",
+            "title": "Space Colony",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2220",
+            "title": "Circularity",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2221",
+            "title": "Drought",
+            "quotes": []
+        },
+        {
+            "filename": "dw_2222",
+            "title": "The Cow",
+            "quotes": []
+        }
+    ]
+}
