@@ -48,7 +48,7 @@ class CogBurstReacts(commands.Cog, name="Burst reactions handler"):
         embed = stock_embed(self.bot)
         embed.title = "🗑️ Autoremoved a Super Reaction"
         embed.description = f"{author}`'s {emoji} was removed. [{message.jump_url}]"
-        embed.color = (0xEA50BA,)
+        embed.color = 0xEA50BA
         embed.set_author(
             name=self.bot.escape_message(author),
             icon_url=author.display_avatar.url,
