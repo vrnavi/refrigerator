@@ -5,10 +5,10 @@ from helpers.checks import check_only_server
 from helpers.sv_config import get_config
 
 
-class OneShot(commands.Cog):
-    def __init__(self, bot: commands.CommandsClient, data):
+class CogOneShot(commands.Cog):
+    def __init__(self, bot: commands.CommandsClient):
+        self.qualified_name = "oneshot"
         self.bot = bot
-        self.data = data
 
     @commands.check(check_only_server)
     @commands.command(aliases=["renavi"])
@@ -159,5 +159,5 @@ class OneShot(commands.Cog):
         )
 
 
-def setup(bot: commands.CommandsClient, data) -> OneShot:
-    return OneShot(bot, data)
+def setup(bot: commands.CommandsClient):
+    return CogOneShot(bot)

@@ -13,10 +13,10 @@ import config
 from helpers.checks import check_only_server
 
 
-class Basic(commands.Cog):
-    def __init__(self, bot: commands.CommandsClient, data):
+class CogBasic(commands.Cog):
+    def __init__(self, bot: commands.CommandsClient):
+        self.qualified_name = "basic"
         self.bot = bot
-        self.data = data
         matplotlib.use("agg")
 
     @commands.command(aliases=["hi", "hey"])
@@ -462,5 +462,5 @@ class Basic(commands.Cog):
         await ctx.message.reply(embed=embed, mention=False)
 
 
-def setup(bot: commands.CommandsClient, data) -> commands.Cog:
-    return Basic(bot, data)
+def setup(bot: commands.CommandsClient):
+    return CogBasic(bot)

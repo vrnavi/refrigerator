@@ -166,7 +166,10 @@ async def main():
                 target = importlib.import_module(cog)
                 if not target:
                     raise Exception()
-                bot.add_cog(target.setup(bot, data))
+                if cog == "cogs.admin":
+                    bot.add_cog(target.setup(bot, data))
+                else:
+                    bot.add_cog(target.setup(bot))
             except:
                 log.exception(f"Failed to load cog {cog}.")
 

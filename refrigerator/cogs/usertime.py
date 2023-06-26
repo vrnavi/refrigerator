@@ -7,10 +7,9 @@ from helpers.userdata import fill_userdata, set_userdata
 
 
 class CogUsertime(commands.Cog):
-    def __init__(self, bot: commands.CommandsClient, data):
+    def __init__(self, bot: commands.CommandsClient):
         self.qualified_name = "usertime"
         self.bot = bot
-        self.data = data
 
     @commands.command()
     async def timezone(self, ctx: commands.Context, *, timezone: str):
@@ -117,5 +116,5 @@ class CogUsertime(commands.Cog):
         return None
 
 
-def setup(bot: commands.CommandsClient, data) -> commands.Cog:
-    return CogUsertime(bot, data)
+def setup(bot: commands.CommandsClient):
+    return CogUsertime(bot)

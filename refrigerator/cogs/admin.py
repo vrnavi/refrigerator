@@ -313,7 +313,7 @@ class CogAdmin(commands.Cog):
                 try:
                     self.bot.remove_cog(cog)
                     target = importlib.import_module(f"cogs.{cog}")
-                    self.bot.add_cog(target.setup(self.bot, self.data))
+                    self.bot.add_cog(target.setup(self.bot))
                     self.bot.log.info(f"Reloaded ext {cog}")
                     await ctx.message.reply(
                         content=f":white_check_mark: `{cog}` successfully reloaded.",
@@ -334,7 +334,7 @@ class CogAdmin(commands.Cog):
         """[O] Loads a cog."""
         try:
             target = importlib.import_module(f"cogs.{ext}")
-            self.bot.add_cog(target.setup(self.bot, self.data))
+            self.bot.add_cog(target.setup(self.bot))
             await self.cog_load_actions(ext)
         except:
             await ctx.message.reply(
@@ -386,7 +386,7 @@ class CogAdmin(commands.Cog):
         try:
             self.bot.remove_cog(ext)
             target = importlib.import_module(f"cogs.{ext}")
-            self.bot.add_cog(target.setup(self.bot, self.data))
+            self.bot.add_cog(target.setup(self.bot))
             await self.cog_load_actions(ext)
         except KeyError:
             await ctx.message.reply(
@@ -409,5 +409,5 @@ class CogAdmin(commands.Cog):
         )
 
 
-def setup(bot, data):
+def setup(bot: commands.CommandsClient, data):
     return CogAdmin(bot, data)
