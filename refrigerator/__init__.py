@@ -107,6 +107,10 @@ class Refrigerator(commands.CommandsClient):
             f"Bot is Ready as {self.user.name}#{self.user.discriminator} ({self.user.id})"
         )
 
+        await self.edit_status(
+            presence=revolt.PresenceType.focus, text="Take THAT, Discord."
+        )
+
     async def on_server_join(self, server: revolt.Server):
         mentions = ", ".join(
             [self.get_user(uid).mention for uid in config.bot_managers]
@@ -150,7 +154,13 @@ async def main():
         bot = Refrigerator(session, config.token)
 
         # TODO: Port all discord.py-like cogs into revolt.py-like
-        ported_cogs = ["cogs.prefixes", "cogs.usertime", "cogs.admin", "cogs.oneshot"]
+        ported_cogs = [
+            "cogs.prefixes",
+            "cogs.usertime",
+            "cogs.admin",
+            "cogs.basic",
+            "cogs.oneshot",
+        ]
         for cog in ported_cogs:
             try:
                 target = importlib.import_module(cog)
