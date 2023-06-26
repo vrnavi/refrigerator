@@ -1,18 +1,18 @@
 import json
 from datetime import datetime
 from zoneinfo import ZoneInfo, available_timezones
-import voltage
-from voltage.ext import commands
+import revolt
+from revolt.ext import commands
 from helpers.userdata import fill_userdata, set_userdata
 
 
-class usertime(commands.SubclassedCog):
+class usertime(commands.Cog):
     def __init__(self, bot, data):
         self.bot = bot
         self.data = data
 
     @commands.command()
-    async def timezone(self, ctx, *, timezone: str = None):
+    async def timezone(self, ctx: commands.Context, *, timezone: str = None):
         """
         Sets your timezone for use with the 'tf' command.
         Timezones must be supplied the IANA tzdb (i.e. America/Chicago) format.
@@ -20,7 +20,7 @@ class usertime(commands.SubclassedCog):
 
         userdata, uid = fill_userdata(ctx.author.id)
         if timezone == None:
-            await ctx.reply(
+            await ctx.message.reply(
                 content=f"Your timezone is `{'not set' if not userdata[uid]['timezone'] else userdata[uid]['timezone']}`.\n"
                 "To change this, enter a timezone. A list of timezones is available here.\n"
                 "<https://en.wikipedia.org/wiki/List_of_tz_database_time_zones>\n"
@@ -30,7 +30,7 @@ class usertime(commands.SubclassedCog):
             )
             return
         elif timezone not in available_timezones():
-            await ctx.reply(
+            await ctx.message.reply(
                 content="Invalid timezone provided. For help, run `timezone` by itself.",
                 mention=False,
             )
@@ -38,15 +38,15 @@ class usertime(commands.SubclassedCog):
         else:
             userdata[uid]["timezone"] = timezone
             set_userdata(json.dumps(userdata))
-            await ctx.reply(
+            await ctx.message.reply(
                 f"Your timezone has been set to `{timezone}`.", mention=False
             )
 
     @commands.command(aliases=["tf"])
     async def timefor(
         self,
-        ctx,
-        target: voltage.Member = None,
+        ctx: commands.Context,
+        target: commands.converters.MemberConverter = None,
         *,
         time: str = None,
     ):
@@ -56,14 +56,14 @@ class usertime(commands.SubclassedCog):
             suserdata, suid = fill_userdata(ctx.author.id)
             tuserdata, tuid = fill_userdata(target.id)
             if not suserdata[suid]["timezone"]:
-                await ctx.reply(
+                await ctx.message.reply(
                     content="I have no idea what time it is for you. You can set your timezone with `timezone`.",
                     mention=False,
                 )
                 return
             elif not tuserdata[tuid]["timezone"]:
-                await ctx.reply(
-                    content="I don't know what time it is for {target.display_name}.",
+                await ctx.message.reply(
+                    content=f"I don't know what time it is for {target.name}.",
                     mention=False,
                 )
                 return
@@ -71,7 +71,7 @@ class usertime(commands.SubclassedCog):
             parsed_time = self.parse_time(time)
 
             if not parsed_time:
-                await ctx.reply(
+                await ctx.message.reply(
                     content="Given time is invalid. Try `12AM`, `12 AM`, `12:00 AM`, or `00:00`.",
                     mention=False,
                 )
@@ -85,24 +85,24 @@ class usertime(commands.SubclassedCog):
             )
             parsed_time = parsed_time.astimezone(suser_timezone)
 
-            await ctx.reply(
+            await ctx.message.reply(
                 content=f"`{time}` for them is `{parsed_time.strftime('%I:%M %p')}` for you.",
                 mention=False,
             )
         else:
             userdata, uid = fill_userdata(ctx.author.id if not target else target.id)
             if not userdata[uid]["timezone"]:
-                await ctx.reply(
+                await ctx.message.reply(
                     content=(
                         "I have no idea what time it is for you. You can set your timezone with `timezone`."
                         if not target
-                        else f"I don't know what time it is for {target.display_name}."
+                        else f"I don't know what time it is for {target.name}."
                     ),
                     mention=False,
                 )
                 return
             now = datetime.now(ZoneInfo(userdata[uid]["timezone"]))
-            await ctx.reply(
+            await ctx.message.reply(
                 content=f"{'Your' if not target else 'Their'} current time is `{now.strftime('%H:%M, %Y-%m-%d')}`",
                 mention=False,
             )
