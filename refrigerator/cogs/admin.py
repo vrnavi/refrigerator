@@ -29,9 +29,7 @@ class Admin(commands.SubclassedCog):
     @commands.command(name="exit", aliases=["quit", "bye"])
     async def _exit(self, ctx):
         """[O] Shuts down (or restarts) the bot."""
-        await ctx.reply(
-            content=random.choice(config.death_messages), mention=False
-        )
+        await ctx.reply(content=random.choice(config.death_messages), mention=False)
         exit()
 
     @check_if_bot_manager()
@@ -51,9 +49,7 @@ class Admin(commands.SubclassedCog):
     async def setdata(self, ctx):
         """[O] Replaces data files. This is destructive behavior!"""
         if not ctx.message.attachments:
-            await ctx.reply(
-                content="You need to supply the data files.", mention=False
-            )
+            await ctx.reply(content="You need to supply the data files.", mention=False)
             return
         await ctx.message.attachments[0].save("data.zip")
         if os.path.exists("data"):
@@ -69,7 +65,7 @@ class Admin(commands.SubclassedCog):
             server = ctx.guild
         try:
             shutil.make_archive(
-                f"data/{server.id}", "zip", f"{data["server_data"]}/{server.id}"
+                f"data/{server.id}", "zip", f"{self.data['server_data']}/{server.id}"
             )
             sdata = voltage.File(f"data/{server.id}.zip")
             await ctx.message.reply(
@@ -91,15 +87,13 @@ class Admin(commands.SubclassedCog):
         if not server:
             server = ctx.guild
         if not ctx.message.attachments:
-            await ctx.reply(
-                content="You need to supply the data file.", mention=False
-            )
+            await ctx.reply(content="You need to supply the data file.", mention=False)
             return
         await ctx.message.attachments[0].save(f"data/{server.id}.zip")
-        if os.path.exists(f"{data["server_data"]}/{server.id}"):
-            shutil.rmtree(f"{data["server_data"]}/{server.id}")
+        if os.path.exists(f"{data['server_data']}/{server.id}"):
+            shutil.rmtree(f"{data['server_data']}/{server.id}")
         shutil.unpack_archive(
-            f"data/{server.id}.zip", f"{data["server_data"]}/{server.id}"
+            f"data/{server.id}.zip", f"{data['server_data']}/{server.id}"
         )
         await ctx.reply(content=f"{server.name}'s data saved.", mention=False)
 
