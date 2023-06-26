@@ -150,7 +150,7 @@ async def main():
         bot = Refrigerator(session, config.token)
 
         # TODO: Port all discord.py-like cogs into revolt.py-like
-        ported_cogs = ["cogs.prefixes", "cogs.usertime", "cogs.admin"]
+        ported_cogs = ["cogs.prefixes", "cogs.usertime", "cogs.admin", "cogs.oneshot"]
         for cog in ported_cogs:
             try:
                 target = importlib.import_module(cog)

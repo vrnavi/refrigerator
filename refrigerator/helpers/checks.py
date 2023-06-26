@@ -24,3 +24,7 @@ async def check_if_staff(ctx: commands.Context):
 
 async def check_if_bot_manager(ctx: commands.Context):
     return any(m == ctx.author.id for m in config.bot_managers)
+
+
+async def check_only_server(ctx: commands.Context):
+    return bool(ctx.server is not None)
