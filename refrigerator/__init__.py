@@ -125,7 +125,7 @@ class Refrigerator(commands.CommandsClient):
             return bool(user.id in config.bot_managers and react == "✅")
 
         try:
-            await self.wait_for("reaction_add", timeout=10.0, check=check)
+            await self.wait_for("reaction_add", timeout=600.0, check=check)
         except asyncio.TimeoutError:
             await msg.edit(content=f"{msg.content}\n\n(Interaction timeout.)")
         else:
