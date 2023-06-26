@@ -8,6 +8,7 @@ from helpers.userdata import fill_userdata, set_userdata
 
 class CogUsertime(commands.Cog):
     def __init__(self, bot: commands.CommandsClient, data):
+        self.qualified_name = "usertime"
         self.bot = bot
         self.data = data
 

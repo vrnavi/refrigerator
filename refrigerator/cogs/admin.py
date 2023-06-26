@@ -1,5 +1,4 @@
-import voltage
-from voltage.ext import commands
+import importlib
 import traceback
 import inspect
 import re
@@ -11,158 +10,198 @@ import asyncio
 import shutil
 import os
 import config
+import revolt
+from revolt.ext import commands
+
 from helpers.checks import check_if_bot_manager
 from helpers.sv_config import get_config
 
 
-listener = commands.Cog("listener")
-
-
-class Admin(commands.SubclassedCog):
-    def __init__(self, bot, data):
+class CogAdmin(commands.Cog):
+    def __init__(self, bot: commands.CommandsClient, data):
+        self.qualified_name = "admin"
         self.bot = bot
         self.data = data
         self.last_eval_result = None
         self.previous_eval_code = None
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command(name="exit", aliases=["quit", "bye"])
-    async def _exit(self, ctx):
+    async def _exit(self, ctx: commands.Context):
         """[O] Shuts down (or restarts) the bot."""
-        await ctx.reply(content=random.choice(config.death_messages), mention=False)
-        exit()
+        await ctx.message.reply(
+            content=random.choice(config.death_messages), mention=False
+        )
+        self.bot.log.info(
+            f"{ctx.author.original_name}#{ctx.author.discriminator} ({ctx.author.id}) issued shutdown command"
+        )
+        await self.bot.stop()
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def getdata(self, ctx):
+    async def getdata(self, ctx: commands.Context):
         """[O] Returns data files."""
-        shutil.make_archive("data_backup", "zip", data["all_data"])
-        await ctx.reply(
+        shutil.make_archive("data_backup", "zip", self.data["all_data"])
+        await ctx.message.reply(
             content="Your current data files...",
-            file=voltage.File("data_backup.zip"),
+            attachments=[revolt.File("data_backup.zip")],
             mention=False,
         )
         os.remove("data_backup.zip")
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def setdata(self, ctx):
+    async def setdata(self, ctx: commands.Context):
         """[O] Replaces data files. This is destructive behavior!"""
         if not ctx.message.attachments:
-            await ctx.reply(content="You need to supply the data files.", mention=False)
+            await ctx.message.reply(
+                content="You need to supply the data files.", mention=False
+            )
             return
-        await ctx.message.attachments[0].save("data.zip")
+        with open("data.zip", "wb") as fp:
+            await ctx.message.attachments[0].save(fp)
         if os.path.exists("data"):
             shutil.rmtree("data")
         shutil.unpack_archive("data.zip", "data")
-        await ctx.reply(content=f"{server.name}'s data saved.", mention=False)
+        await ctx.message.reply(f"{ctx.server.name}'s data saved.", mention=False)
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command(aliases=["getserverdata"])
-    async def getsdata(self, ctx, server: voltage.Server = None):
+    async def getsdata(self, ctx: commands.Context, server: str = None):
         """[O] Returns server data."""
-        if not server:
-            server = ctx.guild
+        if server:
+            try:
+                server = self.bot.get_server(server)
+            except LookupError:
+                await ctx.message.reply(
+                    "That server is not in bot's servers.",
+                    mention=False,
+                )
+                return
+        else:
+            server = ctx.server
+
         try:
+            if not os.path.isdir(f"data/servers/{server.id}"):
+                raise FileNotFoundError
             shutil.make_archive(
                 f"data/{server.id}", "zip", f"{self.data['server_data']}/{server.id}"
             )
-            sdata = voltage.File(f"data/{server.id}.zip")
             await ctx.message.reply(
                 content=f"{server.name}'s data...",
-                file=sdata,
+                attachments=[
+                    revolt.File(
+                        f"data/{server.id}.zip", filename=f"data_{server.id}.zip"
+                    )
+                ],
                 mention=False,
             )
             os.remove(f"data/{server.id}.zip")
         except FileNotFoundError:
             await ctx.message.reply(
-                content="That server doesn't have any data.",
+                "That server doesn't have any data.",
                 mention=False,
             )
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command(aliases=["setserverdata"])
-    async def setsdata(self, ctx, server: voltage.Server = None):
+    async def setsdata(self, ctx: commands.Context, server: str = None):
         """[O] Replaces server data files. This is destructive behavior!"""
-        if not server:
-            server = ctx.guild
-        if not ctx.message.attachments:
-            await ctx.reply(content="You need to supply the data file.", mention=False)
-            return
-        await ctx.message.attachments[0].save(f"data/{server.id}.zip")
-        if os.path.exists(f"{data['server_data']}/{server.id}"):
-            shutil.rmtree(f"{data['server_data']}/{server.id}")
-        shutil.unpack_archive(
-            f"data/{server.id}.zip", f"{data['server_data']}/{server.id}"
-        )
-        await ctx.reply(content=f"{server.name}'s data saved.", mention=False)
+        if server:
+            try:
+                server = self.bot.get_server(server)
+            except LookupError:
+                await ctx.message.reply(
+                    "That server is not in bot's servers.",
+                    mention=False,
+                )
+                return
+        else:
+            server = ctx.server
 
-    @check_if_bot_manager()
+        if not ctx.message.attachments:
+            await ctx.message.reply("You need to supply the data file.", mention=False)
+            return
+        with open(f"data/{server.id}.zip", "wb") as fp:
+            await ctx.message.attachments[0].save(fp)
+        if os.path.exists(f"{self.data['server_data']}/{server.id}"):
+            shutil.rmtree(f"{self.data['server_data']}/{server.id}")
+        shutil.unpack_archive(
+            f"data/{server.id}.zip", f"{self.data['server_data']}/{server.id}"
+        )
+        await ctx.message.reply(f"{server.name}'s data saved.", mention=False)
+
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def getlogs(self, ctx):
+    async def getlogs(self, ctx: commands.Context):
         """[O] Returns the log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         await ctx.message.reply(
             content="The current log file...",
-            file=voltage.File("logs/upload.log", filename="dishwasher.log"),
+            attachments=[revolt.File("logs/upload.log", filename="dishwasher.log")],
             mention=False,
         )
         os.remove("logs/upload.log")
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def taillogs(self, ctx):
+    async def taillogs(self, ctx: commands.Context):
         """[O] Returns the last 10 lines of the log file."""
         shutil.copy("logs/dishwasher.log", "logs/upload.log")
         with open("logs/upload.log", "r+") as f:
             tail = "\n".join(f.read().split("\n")[-10:])
         os.remove("logs/upload.log")
         await ctx.message.reply(
-            content=f"The current tailed log file...\n```{tail.replace('```', '')}```",
+            content=f"The current tailed log file...\n```{tail.replace('```', '')}\n```",
             mention=False,
         )
 
-    @check_if_bot_manager()
-    @commands.command()
-    async def guilds(self, ctx):
+    @commands.check(check_if_bot_manager)
+    @commands.command(aliases=["servers"])
+    async def guilds(self, ctx: commands.Context):
         """[O] Shows the current guilds I am in."""
         guildmsg = "**I am in the following guilds:**"
-        for g in self.bot.guilds:
-            guildmsg += f"\n- {g.name} with `{g.member_count}` members."
-        await ctx.reply(content=guildmsg, mention=False)
+        for g in self.bot.servers:
+            guildmsg += f"\n- {g.name} (`{g.id}`) with `{len(g.members)}` members."
+        await ctx.message.reply(guildmsg, mention=False)
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
     async def permcheck(
         self,
-        ctx,
-        target: voltage.Member = None,
-        channel: voltage.Channel = None,
+        ctx: commands.Context,
+        target: commands.MemberConverter = None,
+        channel: commands.ChannelConverter = None,
     ):
         """[O] Shows the permissions."""
         if not ctx.server:
             return
         if not target:
-            target = ctx.guild.me
+            target = ctx.server.get_member(self.bot.user.id)
         if not channel:
             channel = ctx.channel
-        await ctx.reply(
-            content=f"{target}'s permissions for the current channel...\n```diff\n"
+        await ctx.message.reply(
+            content=f"{target.name}#{target.discriminator}'s permissions for the {channel.mention} channel...\n"
+            "```diff\n"
             + "\n".join(
                 [
                     f"{'-' if not y else '+'} " + x
-                    for x, y in iter(channel.permissions_for(ctx.guild.me))
+                    for x, y in iter(target.get_channel_permissions(ctx.channel))
                 ]
             )
-            + "```",
+            + "\n ```",
             mention=False,
         )
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def threadlock(self, ctx, channel: voltage.TextChannel):
-        """[O] Locks all threads in a given channel.."""
-        msg = await ctx.reply(content="Locking threads...", mention=False)
+    async def threadlock(
+        self, ctx: commands.Context, channel: commands.ChannelConverter
+    ):
+        """[O] Locks all threads in a given channel."""
+        await ctx.message.reply("Revolt does not have Threads...", mention=False)
+        return
+        msg = await ctx.message.reply("Locking threads...", mention=False)
         # Pull old archvied threads from the grave.
         async for t in channel.archived_threads():
             await t.edit(archived=False)
@@ -176,24 +215,23 @@ class Admin(commands.SubclassedCog):
             await t.edit(archived=True)
         await msg.edit(content="Done.")
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command(name="eval")
-    async def _eval(self, ctx, *, code: str):
+    async def _eval(self, ctx: commands.Context, *, code: str):
         """[O] Evaluates some code."""
         try:
             code = code.strip("` ")
-
             env = {
                 "bot": self.bot,
                 "ctx": ctx,
                 "message": ctx.message,
-                "server": ctx.guild,
-                "guild": ctx.guild,
+                "server": ctx.server,
+                "guild": ctx.server,
                 "channel": ctx.message.channel,
                 "author": ctx.message.author,
                 "config": config,
                 # modules
-                "voltage": voltage,
+                "revolt": revolt,
                 "commands": commands,
                 "datetime": datetime,
                 "json": json,
@@ -202,8 +240,8 @@ class Admin(commands.SubclassedCog):
                 "os": os,
                 "get_config": get_config,
                 # utilities
-                "_get": voltage.utils.get,
-                "_find": voltage.utils.find,
+                "_get": revolt.utils.get,
+                # "_find": revolt.utils.find,  # FIXME: revolt.py find util
                 # last result
                 "_": self.last_eval_result,
                 "_p": self.previous_eval_code,
@@ -236,25 +274,34 @@ class Admin(commands.SubclassedCog):
         # Used for specific cog actions, tore out the verification cog since don't need it.
         pass
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def pull(self, ctx, auto=False):
+    async def pull(self, ctx: commands.Context, auto: str = None):
         """[O] Performs a git pull."""
-        tmp = await ctx.message.reply(content="Pulling...", mention=False)
+        if auto and auto.lower() in [
+            "yes",
+            "yeah",
+            "yep",
+            "true",
+            "1",
+            "reload",
+            "auto",
+        ]:
+            auto = True
+        else:
+            auto = False
+        tmp = await ctx.message.reply("Pulling...", mention=False)
         git_output = await self.bot.async_call_shell("git pull")
-        allowed_mentions = voltage.AllowedMentions(replied_user=False)
         if len(git_output) > 2000:
-            parts = await self.bot.slice_message(git_output, prefix="```", suffix="```")
-            await tmp.edit(
-                content=f"Output too long. Sending in new message...",
-                allowed_mentions=allowed_mentions,
+            parts = await self.bot.slice_message(
+                git_output, prefix="```shell", suffix="```"
             )
+            await tmp.edit(content=f"Output too long. Sending in new message...")
             for x in parts:
                 await ctx.send(content=x)
         else:
             await tmp.edit(
-                content=f"Pull complete. Output: ```{git_output}```",
-                allowed_mentions=allowed_mentions,
+                content=f"Pull complete. Output:\n```shell\n{git_output}\n```"
             )
         if auto:
             cogs_to_reload = re.findall(r"cogs/([a-z_]*).py[ ]*\|", git_output)
@@ -264,8 +311,9 @@ class Admin(commands.SubclassedCog):
                     continue
 
                 try:
-                    await self.bot.unload_extension(cog_name)
-                    await self.bot.load_extension(cog_name)
+                    self.bot.remove_cog(cog)
+                    target = importlib.import_module(f"cogs.{cog}")
+                    self.bot.add_cog(target.setup(self.bot, self.data))
                     self.bot.log.info(f"Reloaded ext {cog}")
                     await ctx.message.reply(
                         content=f":white_check_mark: `{cog}` successfully reloaded.",
@@ -274,23 +322,24 @@ class Admin(commands.SubclassedCog):
                     await self.cog_load_actions(cog)
                 except:
                     await ctx.message.reply(
-                        content=f":x: Cog reloading failed, traceback: "
-                        f"```\n{traceback.format_exc()}\n```",
+                        content=f":x: Cog reloading failed, traceback:\n"
+                        f"```py\n{traceback.format_exc()}\n```",
                         mention=False,
                     )
                     return
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def load(self, ctx, ext: str):
+    async def load(self, ctx: commands.Context, ext: str):
         """[O] Loads a cog."""
         try:
-            await self.bot.load_extension("cogs." + ext)
+            target = importlib.import_module(f"cogs.{ext}")
+            self.bot.add_cog(target.setup(self.bot, self.data))
             await self.cog_load_actions(ext)
         except:
             await ctx.message.reply(
-                content=f":x: Cog loading failed, traceback: "
-                f"```\n{traceback.format_exc()}\n```",
+                content=f":x: Cog loading failed, traceback:\n"
+                f"```py\n{traceback.format_exc()}\n```",
                 mention=False,
             )
             return
@@ -300,20 +349,34 @@ class Admin(commands.SubclassedCog):
             mention=False,
         )
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def unload(self, ctx, ext: str):
+    async def unload(self, ctx: commands.Context, ext: str):
         """[O] Unloads a cog."""
-        await self.bot.unload_extension("cogs." + ext)
+        try:
+            self.bot.remove_cog(ext)
+        except KeyError:
+            await ctx.message.reply(
+                content=f":x: Cog unloading failed, the cog `{ext}` is not loaded yet.",
+                mention=False,
+            )
+            return
+        except Exception:
+            await ctx.message.reply(
+                content=f":x: Cog unloading failed, traceback:\n"
+                f"```py\n{traceback.format_exc()}\n```",
+                mention=False,
+            )
+            return
         self.bot.log.info(f"Unloaded ext {ext}")
         await ctx.message.reply(
             content=f":white_check_mark: `{ext}` successfully unloaded.",
             mention=False,
         )
 
-    @check_if_bot_manager()
+    @commands.check(check_if_bot_manager)
     @commands.command()
-    async def reload(self, ctx, ext="_"):
+    async def reload(self, ctx: commands.Context, ext: str = "_"):
         """[O] Reloads a cog."""
         if ext == "_":
             ext = self.lastreload
@@ -321,48 +384,30 @@ class Admin(commands.SubclassedCog):
             self.lastreload = ext
 
         try:
-            await self.bot.unload_extension("cogs." + ext)
-            await self.bot.load_extension("cogs." + ext)
+            self.bot.remove_cog(ext)
+            target = importlib.import_module(f"cogs.{ext}")
+            self.bot.add_cog(target.setup(self.bot, self.data))
             await self.cog_load_actions(ext)
-        except:
+        except KeyError:
             await ctx.message.reply(
-                content=f":x: Cog reloading failed, traceback: "
-                f"```\n{traceback.format_exc()}\n```",
+                content=f":x: Cog unloading failed, the cog `{ext}` is not loaded yet.",
                 mention=False,
             )
             return
+        except Exception:
+            await ctx.message.reply(
+                content=f":x: Cog reloading failed, traceback:\n"
+                f"```py\n{traceback.format_exc()}\n```",
+                mention=False,
+            )
+            return
+
         self.bot.log.info(f"Reloaded ext {ext}")
         await ctx.message.reply(
             content=f":white_check_mark: `{ext}` successfully reloaded.",
             mention=False,
         )
 
-    @listener.listen("guild_join")
-    async def on_guild_join(self, guild):
-        msgs = []
-        for m in config.bot_managers:
-            msg = await self.bot.get_user(m).send(
-                content=f"{self.bot.user.name} joined `{guild}` with `{guild.members}` members.\nCheck the checkmark within an hour to leave."
-            )
-            await msg.add_reaction("✅")
-            msgs.append(msg)
-
-        def check(r, u):
-            return (
-                u.id in config.bot_managers
-                and str(r.emoji) == "✅"
-                and type(r.message.channel) == voltage.channel.DMChannel
-            )
-
-        try:
-            r, u = await self.bot.wait_for("reaction_add", timeout=600.0, check=check)
-        except asyncio.TimeoutError:
-            pass
-        else:
-            await guild.leave()
-            for m in msgs:
-                await m.edit(content=f"{m.content}\n\nI have left this guild.")
-
 
 def setup(bot, data):
-    return Admin(bot, data)
+    return CogAdmin(bot, data)

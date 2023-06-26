@@ -39,11 +39,54 @@ data = {
 
 
 class Refrigerator(commands.CommandsClient):
+    log = log
+
     async def get_prefix(self, message: revolt.Message):
         return config.prefixes + get_userprefix(message.author.id)
 
     async def bot_check(self, ctx: commands.Context):
         return ctx.message.author.bot is False
+
+    async def slice_message(
+        self, text: str, size: int = 2000, prefix: str = "", suffix: str = ""
+    ):
+        """Slices a message into multiple messages."""
+        reply_list = []
+        size_wo_fix = size - len(prefix) - len(suffix)
+        while len(text) > size_wo_fix:
+            reply_list.append(f"{prefix}{text[:size_wo_fix]}{suffix}")
+            text = text[size_wo_fix:]
+        reply_list.append(f"{prefix}{text}{suffix}")
+        return reply_list
+
+    async def async_call_shell(
+        self, shell_command: str, inc_stdout=True, inc_stderr=True
+    ):
+        pipe = asyncio.subprocess.PIPE
+        proc = await asyncio.create_subprocess_shell(
+            str(shell_command), stdout=pipe, stderr=pipe
+        )
+
+        if not (inc_stdout or inc_stderr):
+            return "??? you set both stdout and stderr to False????"
+
+        proc_result = await proc.communicate()
+        stdout_str = proc_result[0].decode("utf-8").strip()
+        stderr_str = proc_result[1].decode("utf-8").strip()
+
+        if inc_stdout and not inc_stderr:
+            return stdout_str
+        elif inc_stderr and not inc_stdout:
+            return stderr_str
+
+        if stdout_str and stderr_str:
+            return f"stdout:\n\n{stdout_str}\n\n" f"======\n\nstderr:\n\n{stderr_str}"
+        elif stdout_str:
+            return f"stdout:\n\n{stdout_str}"
+        elif stderr_str:
+            return f"stderr:\n\n{stderr_str}"
+
+        return "No output."
 
     async def on_ready(self):
         data["aiosession"] = aiohttp.ClientSession()
@@ -63,6 +106,31 @@ class Refrigerator(commands.CommandsClient):
         log.info(
             f"Bot is Ready as {self.user.name}#{self.user.discriminator} ({self.user.id})"
         )
+
+    async def on_server_join(self, server: revolt.Server):
+        mentions = ", ".join(
+            [self.get_user(uid).mention for uid in config.bot_managers]
+        )
+
+        channel = self.get_channel(config.bot_logchannel)
+        msg: revolt.Message = await channel.send(
+            f"### {mentions}\n\n"
+            f"### {self.user.mention} joined `{server.name}` with `{len(server.members)}` members.\n"
+            "Check the checkmark within an hour to leave."
+        )
+        await msg.add_reaction("%E2%9C%85")  # :white_check_mark:
+        await asyncio.sleep(1.0)
+
+        def check(msg: revolt.Message, user: revolt.User, react: str):
+            return bool(user.id in config.bot_managers and react == "✅")
+
+        try:
+            await self.wait_for("reaction_add", timeout=10.0, check=check)
+        except asyncio.TimeoutError:
+            await msg.edit(content=f"{msg.content}\n\n(Interaction timeout.)")
+        else:
+            await server.leave_server()
+            await msg.edit(content=f"{msg.content}\n\n(I have left this guild.)")
 
 
 if not os.path.exists("data"):
