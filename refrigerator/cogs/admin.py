@@ -313,6 +313,7 @@ class CogAdmin(commands.Cog):
                 try:
                     self.bot.remove_cog(cog)
                     target = importlib.import_module(f"cogs.{cog}")
+                    importlib.reload(target)
                     self.bot.add_cog(target.setup(self.bot))
                     self.bot.log.info(f"Reloaded ext {cog}")
                     await ctx.message.reply(
@@ -334,6 +335,7 @@ class CogAdmin(commands.Cog):
         """[O] Loads a cog."""
         try:
             target = importlib.import_module(f"cogs.{ext}")
+            importlib.reload(target)
             self.bot.add_cog(target.setup(self.bot))
             await self.cog_load_actions(ext)
         except:
@@ -386,6 +388,7 @@ class CogAdmin(commands.Cog):
         try:
             self.bot.remove_cog(ext)
             target = importlib.import_module(f"cogs.{ext}")
+            importlib.reload(target)
             self.bot.add_cog(target.setup(self.bot))
             await self.cog_load_actions(ext)
         except KeyError:
