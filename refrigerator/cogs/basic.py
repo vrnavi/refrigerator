@@ -418,7 +418,9 @@ class CogBasic(commands.Cog):
             description=f"**ID:** `{role.id}`\n**Color:** `{str(role.color)}`",
             colour=role.color,
         )
-        embed.description += f"\n⏰ Role created: {role.created_at().strftime('%B %d, %Y %H:%M (%Z)')}"
+        embed.description += (
+            f"\n⏰ Role created: {role.created_at().strftime('%B %d, %Y %H:%M (%Z)')}"
+        )
         embed.description += f"\n👥 Role members: {role_member_count}"
         embed.description += f"\n\n🚩 Role flags:"
         embed.description += f"\n**Hoisted:** {str(role.hoist)}"
