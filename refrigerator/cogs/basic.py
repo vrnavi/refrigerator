@@ -364,22 +364,24 @@ class CogBasic(commands.Cog):
         else:
             # Member code.
             target = ctx.server.get_member(target.id)
-            if target.roles:
+            if len(target.roles) > 0:
                 color = target.roles[-1].color
+            else:
+                color = "#aaaaaa"
             nickname = f"\n**Nickname:** `{ctx.server.get_member(target.id).nickname}`"
 
         embed = revolt.SendableEmbed(
             title=f"Info for {'user' if ctx.server.get_member(target.id) else 'member'} {target.original_name}#{target.discriminator}{' [BOT]' if target.bot else ''}",
             description=(
                 f"**ID:** `{target.id}`{nickname}\n\n"
-                f"⏰ Account created: {target.created_at().date()}\n"
+                f"⏰ Account created: {target.created_at().strftime('%B %d, %Y %H:%M (%Z)')}\n"
             ),
             colour=color,
             icon_url=target.avatar.url if target.avatar else None,
         )
 
         if ctx.server.get_member(target.id):
-            embed.description += f"⏱️ Account joined: {target.joined_at.date()}\n"
+            embed.description += f"⏱️ Account joined: {target.joined_at.strftime('%B %d, %Y %H:%M (%Z)')}\n"
             embed.description += f"🗃️ Joinscore: `{sorted(ctx.server.members, key=lambda v: v.joined_at).index(target) + 1}` of `{len(ctx.server.members)}`"
 
             if not target.bot and target.status.text:
@@ -416,7 +418,7 @@ class CogBasic(commands.Cog):
             description=f"**ID:** `{role.id}`\n**Color:** `{str(role.color)}`",
             colour=role.color,
         )
-        embed.description += f"\n⏰ Role created: {role.created_at().date()}"
+        embed.description += f"\n⏰ Role created: {role.created_at().strftime('%B %d, %Y %H:%M (%Z)')}"
         embed.description += f"\n👥 Role members: {role_member_count}"
         embed.description += f"\n\n🚩 Role flags:"
         embed.description += f"\n**Hoisted:** {str(role.hoist)}"
@@ -451,7 +453,7 @@ class CogBasic(commands.Cog):
             elif c.channel_type == revolt.ChannelType.voice_channel:
                 vc_count += 1
 
-        embed.description += f"\n⏰ Server created: {server.created_at().date()}"
+        embed.description += f"\n⏰ Server created: {server.created_at().strftime('%B %d, %Y %H:%M (%Z)')}"
         embed.description += f"\n👥 Server members: {len(server.members)}"
         embed.description += f"\n#️⃣ Counters:"
         embed.description += f"\n**Text Channels:** `{tc_count}`"
