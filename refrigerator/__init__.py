@@ -160,6 +160,7 @@ async def main():
             "cogs.admin",
             "cogs.basic",
             "cogs.oneshot",
+            "cogs.namecheck",
         ]
         for cog in ported_cogs:
             try:

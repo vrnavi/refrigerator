@@ -155,7 +155,9 @@ class CogOneShot(commands.Cog):
         400 (bad request) HTTP error when tring to edit something.
         """
         await self.bot.http.request(
-            "PATCH", f"/servers/{server.id}/members/{member.id}", json={"roles": roles}
+            "PATCH",
+            f"/servers/{server.id}/members/{member.id}",
+            json={"remove": None, "roles": roles},
         )
 
 
