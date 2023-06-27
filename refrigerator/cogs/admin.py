@@ -18,10 +18,10 @@ from helpers.sv_config import get_config
 
 
 class CogAdmin(commands.Cog):
-    def __init__(self, bot: commands.CommandsClient, data):
+    def __init__(self, bot: commands.CommandsClient):
         self.qualified_name = "admin"
         self.bot = bot
-        self.data = data
+        self.data = bot.data
         self.last_eval_result = None
         self.previous_eval_code = None
 
@@ -412,5 +412,5 @@ class CogAdmin(commands.Cog):
         )
 
 
-def setup(bot: commands.CommandsClient, data):
-    return CogAdmin(bot, data)
+def setup(bot: commands.CommandsClient):
+    return CogAdmin(bot)

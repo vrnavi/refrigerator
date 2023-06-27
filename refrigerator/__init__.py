@@ -7,6 +7,7 @@ import aiohttp
 import config
 import datetime
 import importlib
+from typing import Dict, Any
 import revolt
 from revolt.ext import commands
 
@@ -40,6 +41,7 @@ data = {
 
 class Refrigerator(commands.CommandsClient):
     log = log
+    data: Dict[str, Any] = data
 
     async def get_prefix(self, message: revolt.Message):
         return config.prefixes + get_userprefix(message.author.id)
@@ -167,10 +169,7 @@ async def main():
                 target = importlib.import_module(cog)
                 if not target:
                     raise Exception()
-                if cog == "cogs.admin":
-                    bot.add_cog(target.setup(bot, data))
-                else:
-                    bot.add_cog(target.setup(bot))
+                bot.add_cog(target.setup(bot))
             except:
                 log.exception(f"Failed to load cog {cog}.")
 
