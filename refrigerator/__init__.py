@@ -6,11 +6,11 @@ import asyncio
 import aiohttp
 import config
 import random
-import voltage
 import datetime
 import importlib
 import traceback
-from voltage.ext import commands
+import revolt
+from revolt.ext import commands
 from helpers.userdata import get_userprefix
 
 # TODO: check __name__ for __main__ nerd
@@ -23,10 +23,6 @@ stdout_handler.setFormatter(log_format)
 log = logging.getLogger("discord")
 log.setLevel(logging.INFO)
 log.addHandler(stdout_handler)
-
-
-async def get_prefix(message: voltage.Message, bot: commands.CommandsClient):
-    return config.prefixes + get_userprefix(message.author.id)
 
 
 data = {
@@ -42,33 +38,29 @@ data = {
     "start_timestamp": None,
 }
 
-bot = commands.CommandsClient(prefix=get_prefix)
 
+class Client(commands.CommandsClient):
+    async def get_prefix(self, message: revolt.Message):
+        return config.prefixes + get_userprefix(message.author.id)
 
-@bot.listen("ready")
-async def on_ready():
-    data["aiosession"] = aiohttp.ClientSession()
-    data["log_channel"] = bot.get_channel(config.bot_logchannel)
-    data["start_timestamp"] = datetime.datetime.utcnow().replace(
-        tzinfo=datetime.timezone.utc
-    )
+    async def bot_check(self, ctx: commands.Context):
+        return ctx.message.author.bot is False
 
-    # Send "Dishwasher has started! x has y members!"
-    guild = data["log_channel"].server
-    msg = (
-        f"**{bot.user.name} is now `🟢 ONLINE`.**\n"
-        f"`{guild.name}` has `{len(guild.members)}` members."
-    )
+    async def on_ready(self):
+        data["aiosession"] = aiohttp.ClientSession()
+        data["log_channel"] = self.get_channel(config.bot_logchannel)
+        data["start_timestamp"] = datetime.datetime.utcnow().replace(
+            tzinfo=datetime.timezone.utc
+        )
 
-    await data["log_channel"].send(msg)
+        # Send "Dishwasher has started! x has y members!"
+        guild = data["log_channel"].server
+        msg = (
+            f"**{self.user.name} is now `🟢 ONLINE`.**\n"
+            f"`{guild.name}` has `{len(guild.members)}` members."
+        )
 
-
-@bot.listen("on_message")
-async def on_message(message: voltage.Message):
-    await bot.wait_for("ready")
-    # Insert botban stuff here.
-    if message.author.bot:
-        return
+        await data["log_channel"].send(msg)
 
 
 if not os.path.exists("data"):
@@ -83,16 +75,22 @@ for wanted_json in data["wanted_jsons"]:
             f.write("{}")
 
 
-def main():
-    # i've only ported these two so just these for now
-    for cog in ["cogs.usertime", "cogs.prefixes", "cogs.admin"]:
-        try:
-            bot.add_extension(cog, data)
-        except:
-            log.exception(f"Failed to load cog {cog}.")
+async def main():
+    async with revolt.utils.client_session() as session:
+        bot = Client(session, config.token)
+        # i've only ported these two so just these for now
+        for cog in ["cogs.usertime", "cogs.prefixes", "cogs.admin"]:
+            try:
+                target = importlib.import_module(cog)
+                if not target:
+                    raise Exception()
 
-    bot.run(config.token)
+                bot.add_cog(target.setup(bot, data))
+            except:
+                log.exception(f"Failed to load cog {cog}.")
+
+        await bot.start()
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

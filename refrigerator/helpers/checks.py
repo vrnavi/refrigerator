@@ -1,6 +1,6 @@
 import config
 from helpers.sv_config import get_config
-from voltage.ext.commands import check
+from revolt.ext.commands import check
 
 
 @check
@@ -20,6 +20,7 @@ async def check_if_staff():
                 ctx.author.guild_permissions.manage_guild,
             )
         )
+
     return check
 
 
@@ -27,4 +28,5 @@ async def check_if_staff():
 async def check_if_bot_manager():
     async def check(ctx):
         return any(m == ctx.author.id for m in config.bot_managers)
+
     return check
