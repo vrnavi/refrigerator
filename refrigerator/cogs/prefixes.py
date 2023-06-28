@@ -5,14 +5,14 @@ import revolt
 from helpers.userdata import get_userprefix, fill_userdata, set_userdata
 
 
-class prefixes(commands.Cog):
+class CogPrefixes(commands.Cog):
     """
     Commands for letting users manage their custom prefixes.
     """
 
-    def __init__(self, bot, data):
+    def __init__(self, bot):
+        self.qualified_name = "prefixes"
         self.bot = bot
-        self.data = data
 
     @commands.group(aliases=["prefix"])
     async def prefixes(self, ctx: commands.Context):
@@ -74,5 +74,5 @@ class prefixes(commands.Cog):
             )
 
 
-def setup(bot, data):
-    return prefixes(bot, data)
+def setup(bot: commands.CommandsClient):
+    return CogPrefixes(bot)

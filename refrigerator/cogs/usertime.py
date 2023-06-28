@@ -1,25 +1,24 @@
 import json
 from datetime import datetime
 from zoneinfo import ZoneInfo, available_timezones
-import revolt
 from revolt.ext import commands
+
 from helpers.userdata import fill_userdata, set_userdata
 
 
-class usertime(commands.Cog):
-    def __init__(self, bot, data):
+class CogUsertime(commands.Cog):
+    def __init__(self, bot: commands.CommandsClient):
+        self.qualified_name = "usertime"
         self.bot = bot
-        self.data = data
 
     @commands.command()
-    async def timezone(self, ctx: commands.Context, *, timezone: str = None):
+    async def timezone(self, ctx: commands.Context, *, timezone: str):
         """
         Sets your timezone for use with the 'tf' command.
         Timezones must be supplied the IANA tzdb (i.e. America/Chicago) format.
         """
-
         userdata, uid = fill_userdata(ctx.author.id)
-        if timezone == None:
+        if not timezone:
             await ctx.message.reply(
                 content=f"Your timezone is `{'not set' if not userdata[uid]['timezone'] else userdata[uid]['timezone']}`.\n"
                 "To change this, enter a timezone. A list of timezones is available here.\n"
@@ -48,10 +47,10 @@ class usertime(commands.Cog):
         ctx: commands.Context,
         target: commands.converters.MemberConverter = None,
         *,
-        time: str = None,
+        time: str,
     ):
         """Send the current time in the invoker's (or mentioned user's) time zone."""
-        if time and target.id != ctx.author.id:
+        if time and ctx.author.id != target.id:
             # check both *have* timezones
             suserdata, suid = fill_userdata(ctx.author.id)
             tuserdata, tuid = fill_userdata(target.id)
@@ -117,5 +116,5 @@ class usertime(commands.Cog):
         return None
 
 
-def setup(bot, data):
-    return usertime(bot, data)
+def setup(bot: commands.CommandsClient):
+    return CogUsertime(bot)

@@ -1,32 +1,30 @@
+from revolt.ext import commands
+
 import config
 from helpers.sv_config import get_config
-from revolt.ext.commands import check
 
 
-@check
-async def check_if_staff():
-    async def check(ctx):
-        if ctx.author.id in config.bot_managers:
-            return True
-        if not ctx.guild:
-            return False
-        return any(
-            (
-                any(
-                    r.id == get_config(ctx.guild.id, "staff", "staff_role")
-                    for r in ctx.author.roles
-                ),
-                any(m == ctx.author.id for m in config.bot_managers),
-                ctx.author.guild_permissions.manage_guild,
-            )
+async def check_if_staff(ctx: commands.Context):
+    if ctx.author.id in config.bot_managers:
+        return True
+    if not ctx.server:
+        return False
+
+    return any(
+        (
+            any(
+                r.id == get_config(ctx.guild.id, "staff", "staff_role")
+                for r in ctx.author.roles
+            ),
+            any(m == ctx.author.id for m in config.bot_managers),
+            ctx.author.get_permissions().manage_server,
         )
+    )
 
-    return check
+
+async def check_if_bot_manager(ctx: commands.Context):
+    return any(m == ctx.author.id for m in config.bot_managers)
 
 
-@check
-async def check_if_bot_manager():
-    async def check(ctx):
-        return any(m == ctx.author.id for m in config.bot_managers)
-
-    return check
+async def check_only_server(ctx: commands.Context):
+    return bool(ctx.server is not None)

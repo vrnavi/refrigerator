@@ -1,15 +1,14 @@
-import discord
 import json
 
 # Basic bot config, insert your token here, update description if you want, put owner IDs, and log channel ID.
-prefixes = ["pws ", "dish "]
+prefixes = ["pls ", "pws ", "dish "]
 token = "token-goes-here"
 bot_description = "Dishwasher, a spaghetti bot."
-bot_managers = [120698901236809728]
-bot_logchannel = 1006820351134683186
+bot_managers = ["ulids-goes-here"]
+bot_logchannel = "ulid-goes-here"
 
 # If you forked Dishwasher, put your repo here
-source_url = "https://github.com/vrnavi/dishwasher"
+source_url = "https://github.com/vrnavi/refrigerator"
 
 # The bot description to be used in the about command.
 embed_desc = (
@@ -78,7 +77,7 @@ allowed_pin_roles = []
 # No touch!
 placeholders = json.load(open("assets/placeholders.json", "r"))
 # Change this to set the playing type.
-game_type = discord.ActivityType.listening
+game_type = None  # Revolt does not have activity types
 # This is a list of all the "games" to play.
 game_names = placeholders["games"]
 # These appear when doing pws quit.
