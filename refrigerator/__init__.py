@@ -2,15 +2,18 @@ import os
 import sys
 import logging
 import logging.handlers
+import math
 import asyncio
 import aiohttp
-import config
+import time
 import datetime
+import parsedatetime
 import importlib
 from typing import Dict, List, Any
 import revolt
 from revolt.ext import commands
 
+import config
 from helpers.userdata import get_userprefix
 
 # TODO: check __name__ for __main__ nerd
@@ -48,6 +51,12 @@ class Refrigerator(commands.CommandsClient):
 
     async def bot_check(self, ctx: commands.Context):
         return ctx.message.author.bot is False
+
+    def parse_time(self, delta_str):
+        cal = parsedatetime.Calendar()
+        time_struct, parse_status = cal.parse(delta_str)
+        res_timestamp = math.floor(time.mktime(time_struct))
+        return res_timestamp
 
     async def slice_message(
         self, text: str, size: int = 2000, prefix: str = "", suffix: str = ""
@@ -163,10 +172,11 @@ async def main():
 
         # TODO: Port all discord.py-like cogs into revolt.py-like
         ported_cogs = [
-            "cogs.prefixes",
-            "cogs.usertime",
             "cogs.admin",
             "cogs.basic",
+            "cogs.prefixes",
+            "cogs.usertime",
+            "cogs.remind",
             "cogs.oneshot",
             "cogs.namecheck",
         ]
