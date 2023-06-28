@@ -61,7 +61,11 @@ class Remind(commands.Cog):
         text = details["text"]
         added_on = details["added"]
         target = self.bot.get_user(user_id)
-        original_timestamp = int(datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S").replace(tzinfo=timezone.utc).timestamp())
+        original_timestamp = int(
+            datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S")
+            .replace(tzinfo=timezone.utc)
+            .timestamp()
+        )
         embed = revolt.SendableEmbed(
             title="⏰ Reminder",
             description=f"#### You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.\n#### 📝 Contents\n{text}",
