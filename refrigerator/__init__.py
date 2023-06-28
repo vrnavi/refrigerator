@@ -7,7 +7,7 @@ import aiohttp
 import config
 import datetime
 import importlib
-from typing import Dict, Any
+from typing import Dict, List, Any
 import revolt
 from revolt.ext import commands
 
@@ -114,29 +114,35 @@ class Refrigerator(commands.CommandsClient):
         )
 
     async def on_server_join(self, server: revolt.Server):
-        mentions = ", ".join(
-            [self.get_user(uid).mention for uid in config.bot_managers]
-        )
+        msgs: List[revolt.Message] = []
+        for m in config.bot_managers:
+            manager = self.get_user(m)
+            dm = await self.http.open_dm(manager.id)
+            channel: revolt.DMChannel = self.get_channel(dm["_id"])
+            msg = await channel.send(
+                f"### {self.user.mention} joined `{server.name}` with `{len(server.members)}` members.\n"
+                "Check the checkmark within an hour to leave."
+            )
+            await msg.add_reaction("✅")
+            msgs.append(msg)
 
-        channel = self.get_channel(config.bot_logchannel)
-        msg: revolt.Message = await channel.send(
-            f"### {mentions}\n\n"
-            f"### {self.user.mention} joined `{server.name}` with `{len(server.members)}` members.\n"
-            "Check the checkmark within an hour to leave."
-        )
-        await msg.add_reaction("%E2%9C%85")  # :white_check_mark:
         await asyncio.sleep(1.0)
 
         def check(msg: revolt.Message, user: revolt.User, react: str):
-            return bool(user.id in config.bot_managers and react == "✅")
+            return (
+                user.id in config.bot_managers
+                and react == "✅"
+                and type(msg.channel) == revolt.DMChannel
+            )
 
         try:
             await self.wait_for("reaction_add", timeout=600.0, check=check)
         except asyncio.TimeoutError:
-            await msg.edit(content=f"{msg.content}\n\n(Interaction timeout.)")
+            pass
         else:
             await server.leave_server()
-            await msg.edit(content=f"{msg.content}\n\n(I have left this guild.)")
+            for m in msgs:
+                await m.edit(content=f"{m.content}\n\n(I have left this guild.)")
 
 
 if not os.path.exists("data"):
