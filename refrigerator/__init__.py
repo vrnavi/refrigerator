@@ -179,7 +179,7 @@ async def main():
             "cogs.remind",
             "cogs.oneshot",
             "cogs.namecheck",
-            "cogs.mod_userlog"
+            "cogs.mod_userlog",
         ]
         for cog in ported_cogs:
             try:

@@ -115,7 +115,10 @@ class ModUserlog(commands.Cog):
     @commands.check(check_if_staff)
     @commands.command(name="userlog", aliases=["logs"])
     async def userlog_cmd(
-        self, ctx: commands.Context, target: commands.converters.UserConverter = None, event = ""
+        self,
+        ctx: commands.Context,
+        target: commands.converters.UserConverter = None,
+        event="",
     ):
         if not target:
             await ctx.send("You must specify a user to list logs for.")
@@ -125,7 +128,10 @@ class ModUserlog(commands.Cog):
         if ctx.server.get_member(target.id):
             target = ctx.server.get_member(target.id)
         embed = self.get_userlog_embed_for_id(
-            ctx.server.id, str(target.id), f'{target.original_name}#{target.discriminator}', event=event
+            ctx.server.id,
+            str(target.id),
+            f"{target.original_name}#{target.discriminator}",
+            event=event,
         )
         await ctx.send(embed=embed)
 
@@ -141,7 +147,10 @@ class ModUserlog(commands.Cog):
 
         """[S] Lists notes for a user."""
         embed = self.get_userlog_embed_for_id(
-            ctx.server.id, str(target.id), f'{target.original_name}#{target.discriminator}', event="notes"
+            ctx.server.id,
+            str(target.id),
+            f"{target.original_name}#{target.discriminator}",
+            event="notes",
         )
         await ctx.send(embed=embed)
 
@@ -150,7 +159,10 @@ class ModUserlog(commands.Cog):
     async def myuserlog(self, ctx: commands.Context):
         """[U] Lists your userlog events (warns, etc)."""
         embed = self.get_userlog_embed_for_id(
-            ctx.server.id, str(ctx.author.id), f'{ctx.author.original_name}#{ctx.author.discriminator}', True
+            ctx.server.id,
+            str(ctx.author.id),
+            f"{ctx.author.original_name}#{ctx.author.discriminator}",
+            True,
         )
         dm_channel = await get_dm_channel(self.bot, ctx.author)
         await dm_channel.send(embed=embed)
@@ -163,7 +175,12 @@ class ModUserlog(commands.Cog):
     @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["clearwarns"])
-    async def clearevent(self, ctx: commands.Context, target: commands.converters.MemberConverter, event="warns"):
+    async def clearevent(
+        self,
+        ctx: commands.Context,
+        target: commands.converters.MemberConverter,
+        event="warns",
+    ):
         """[S] Clears all events of given type for a user."""
         # target handler
         # In the case of IDs.
@@ -222,7 +239,9 @@ class ModUserlog(commands.Cog):
     @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command()
-    async def fullinfo(self, ctx: commands.Context, target: commands.converters.MemberConverter = None):
+    async def fullinfo(
+        self, ctx: commands.Context, target: commands.converters.MemberConverter = None
+    ):
         """[S] Gets full user info."""
         if not target:
             target = ctx.author
@@ -251,7 +270,9 @@ class ModUserlog(commands.Cog):
         if ctx.server.get_member(target.id):
             joined_at = int(target.joined_at.astimezone().timestamp())
 
-            embed.description += f"\n**⏱️ Account joined:** <t:{joined_at}:f> (<t:{joined_at}:R>)"
+            embed.description += (
+                f"\n**⏱️ Account joined:** <t:{joined_at}:f> (<t:{joined_at}:R>)"
+            )
             embed.description += f"\n**🗃️ Joinscore:** `{sorted(ctx.server.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.server.members)}`"
 
             status = ""
@@ -276,7 +297,10 @@ class ModUserlog(commands.Cog):
 
         event_types = ["warns", "bans", "kicks", "tosses", "notes"]
         embed = self.get_userlog_embed_for_id(
-            ctx.server.id, str(target.id), f'{target.original_name}#{target.discriminator}', event=event_types
+            ctx.server.id,
+            str(target.id),
+            f"{target.original_name}#{target.discriminator}",
+            event=event_types,
         )
         embeds.append(embed)
 
