@@ -42,7 +42,7 @@ data = {
 }
 
 
-class Refrigerator(commands.CommandsClient):
+class Refrigerator(commands.CommandsClient, revolt.Client):
     log = log
     data: Dict[str, Any] = data
 
@@ -179,6 +179,7 @@ async def main():
             "cogs.remind",
             "cogs.oneshot",
             "cogs.namecheck",
+            "cogs.mod_userlog",
         ]
         for cog in ported_cogs:
             try:

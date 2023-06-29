@@ -1,15 +1,16 @@
-import discord
-from discord.ext import commands
-from discord.ext.commands import Cog
+import revolt
+from revolt.ext import commands
 import config
 import json
 from datetime import datetime, timezone
-from helpers.checks import check_if_staff
+from helpers.checks import check_if_staff, check_only_server
 from helpers.userlogs import get_userlog, set_userlog, userlog_event_types
+from helpers.colors import colors
+from helpers.messageutils import message_to_url, get_dm_channel
 
 
-class ModUserlog(Cog):
-    def __init__(self, bot):
+class ModUserlog(commands.Cog):
+    def __init__(self, bot: revolt.Client):
         self.bot = bot
 
     def get_userlog_embed_for_id(
@@ -21,13 +22,13 @@ class ModUserlog(Cog):
             wanted_events = ["tosses"] + wanted_events
         if event and not isinstance(event, list):
             wanted_events = [event]
-        embed = discord.Embed(color=discord.Color.dark_red())
-        embed.set_author(name=f"Logs for {name}")
+        embed = revolt.embed.SendableEmbed(colour=colors.dark_red, description="")
+        embed.title = f"Logs for {name}"
         userlog = get_userlog(gid)
 
         if uid not in userlog:
             embed.description = f"No records found.{own_note}"
-            embed.color = discord.Color.green()
+            embed.colour = colors.green
             return embed
 
         for event_type in wanted_events:
@@ -50,10 +51,8 @@ class ModUserlog(Cog):
                         + f"__Reason:__ {event['reason']}\n"
                     )
                 if len(contents) != 0:
-                    embed.add_field(
-                        name=event_type.capitalize(),
-                        value=contents,
-                        inline=False,
+                    embed.description += (
+                        f"**{event_type.capitalize()}**\n {contents}\n",
                     )
 
         if not own and "watch" in userlog[uid]:
@@ -61,12 +60,12 @@ class ModUserlog(Cog):
                 watch_state = ""
             else:
                 watch_state = "not "
-                embed.color = discord.Color.orange()
-            embed.set_footer(text=f"User is {watch_state}under watch.")
+                embed.colour = colors.orange
+            embed.description += f"User is {watch_state}under watch."
 
-        if not embed.fields:
+        if embed.description == "":
             embed.description = f"No logs recorded.{own_note}"
-            embed.color = discord.Color.green()
+            embed.colour = colors.green
         return embed
 
     def clear_event_from_id(self, uid: str, event_type):
@@ -93,8 +92,8 @@ class ModUserlog(Cog):
             return "Index is below 1!"
         event = userlog[uid][event_type][idx - 1]
         event_name = userlog_event_types[event_type]
-        embed = discord.Embed(
-            color=discord.Color.dark_red(),
+        embed = revolt.embed.SendableEmbed(
+            color=colors.dark_red,
             title=f"{event_name} {idx} on " f"{event['timestamp']}",
             description=f"Issuer: {event['issuer_name']}\n"
             f"Reason: {event['reason']}",
@@ -103,59 +102,85 @@ class ModUserlog(Cog):
         set_userlog(json.dumps(userlog))
         return embed
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["events"])
-    async def eventtypes(self, ctx):
+    async def eventtypes(self, ctx: commands.Context):
         """[S] Lists available event types."""
         event_list = [f"{et} ({userlog_event_types[et]})" for et in userlog_event_types]
-        event_text = "Available events:\n``` - " + "\n - ".join(event_list) + "```"
+        event_text = "Available events:\n``` - " + "\n - ".join(event_list)
         await ctx.send(event_text)
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(name="userlog", aliases=["logs"])
-    async def userlog_cmd(self, ctx, target: discord.User, event=""):
+    async def userlog_cmd(
+        self,
+        ctx: commands.Context,
+        target: commands.converters.UserConverter = None,
+        event="",
+    ):
+        if not target:
+            await ctx.send("You must specify a user to list logs for.")
+            return
+
         """[S] Lists userlog events for a user."""
-        if ctx.guild.get_member(target.id):
-            target = ctx.guild.get_member(target.id)
+        if ctx.server.get_member(target.id):
+            target = ctx.server.get_member(target.id)
         embed = self.get_userlog_embed_for_id(
-            ctx.guild.id, str(target.id), str(target), event=event
+            ctx.server.id,
+            str(target.id),
+            f"{target.original_name}#{target.discriminator}",
+            event=event,
         )
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["listnotes", "usernotes"])
-    async def notes(self, ctx, target: discord.Member):
+    async def notes(
+        self, ctx: commands.Context, target: commands.converters.MemberConverter = None
+    ):
+        if not target:
+            await ctx.send("You must specify a user to list notes for.")
+            return
+
         """[S] Lists notes for a user."""
         embed = self.get_userlog_embed_for_id(
-            ctx.guild.id, str(target.id), str(target), event="notes"
+            ctx.server.id,
+            str(target.id),
+            f"{target.original_name}#{target.discriminator}",
+            event="notes",
         )
         await ctx.send(embed=embed)
 
-    @commands.guild_only()
-    @commands.command(
-        aliases=[
-            "mywarns",
-            "mylogs",
-        ]
-    )
-    async def myuserlog(self, ctx):
+    @commands.check(check_only_server)
+    @commands.command(aliases=["mywarns", "mylogs"])
+    async def myuserlog(self, ctx: commands.Context):
         """[U] Lists your userlog events (warns, etc)."""
         embed = self.get_userlog_embed_for_id(
-            ctx.guild.id, str(ctx.author.id), str(ctx.author), True
+            ctx.server.id,
+            str(ctx.author.id),
+            f"{ctx.author.original_name}#{ctx.author.discriminator}",
+            True,
         )
-        await ctx.author.send(embed=embed)
+        dm_channel = await get_dm_channel(self.bot, ctx.author)
+        await dm_channel.send(embed=embed)
+
         await ctx.message.add_reaction("📨")
-        await ctx.reply(
-            content="For privacy, your logs have been DMed.", mention_author=False
+        await ctx.message.reply(
+            content="For privacy, your logs have been DMed.", mention=False
         )
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["clearwarns"])
-    async def clearevent(self, ctx, target, event="warns"):
+    async def clearevent(
+        self,
+        ctx: commands.Context,
+        target: commands.converters.MemberConverter,
+        event="warns",
+    ):
         """[S] Clears all events of given type for a user."""
         # target handler
         # In the case of IDs.
@@ -166,25 +191,23 @@ class ModUserlog(Cog):
             target = await self.bot.fetch_user(target[2:-1])
 
         mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+            config.guild_configs[ctx.server.id]["logs"]["mlog_thread"]
         )
         msg = self.clear_event_from_id(str(target.id), event)
-        safe_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, str(target)
-        )
+        safe_name = f"{target.original_name}#{target.discriminator}"
         await ctx.send(msg)
         msg = (
             f"🗑 **Cleared {event}**: {ctx.author.mention} cleared"
             f" all {event} events of {target.mention} | "
             f"{safe_name}"
-            f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+            f"\n🔗 __Jump__: <f{message_to_url(ctx.message)}>"
         )
         await mlog.send(msg)
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["delwarn"])
-    async def delevent(self, ctx, target, idx: int, event="warns"):
+    async def delevent(self, ctx: commands.Context, target, idx: int, event="warns"):
         """[S] Removes a specific event from a user."""
         # target handler
         # In the case of IDs.
@@ -195,118 +218,95 @@ class ModUserlog(Cog):
             target = await self.bot.fetch_user(target[2:-1])
 
         mlog = await self.bot.fetch_channel(
-            config.guild_configs[ctx.guild.id]["logs"]["mlog_thread"]
+            config.guild_configs[ctx.server.id]["logs"]["mlog_thread"]
         )
         del_event = self.delete_event_from_id(str(target.id), idx, event)
         event_name = userlog_event_types[event].lower()
         # This is hell.
-        if isinstance(del_event, discord.Embed):
+        if isinstance(del_event, ctx.server):
             await ctx.send(f"{target.mention} has a {event_name} removed!")
-            safe_name = await commands.clean_content(escape_markdown=True).convert(
-                ctx, str(target)
-            )
+            safe_name = f"{target.original_name}#{target.discriminator}"
             msg = (
                 f"🗑 **Deleted {event_name}**: "
                 f"{ctx.author.mention} removed "
                 f"{event_name} {idx} from {target.mention} | {safe_name}"
-                f"\n🔗 __Jump__: <{ctx.message.jump_url}>"
+                f"\n🔗 __Jump__: <{message_to_url(ctx.message)}>"
             )
             await mlog.send(msg, embed=del_event)
         else:
             await ctx.send(del_event)
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command()
-    async def fullinfo(self, ctx, *, target: discord.User = None):
+    async def fullinfo(
+        self, ctx: commands.Context, target: commands.converters.MemberConverter = None
+    ):
         """[S] Gets full user info."""
         if not target:
             target = ctx.author
 
-        embeds = []
+        embeds: list[revolt.SendableEmbed] = []
 
-        if not ctx.guild.get_member(target.id):
+        if not ctx.server.get_member(target.id):
             # Memberless code.
-            color = discord.Color.lighter_gray()
+            color = colors.light_grey
             nickname = ""
         else:
             # Member code.
-            target = ctx.guild.get_member(target.id)
-            color = target.color
-            nickname = f"\n**Nickname:** `{target.nick}`"
+            target = ctx.server.get_member(target.id)
+            nickname = f"\n**Nickname:** `{target.display_name}`"
 
-        embed = discord.Embed(
-            color=color,
-            title=f"Info for {'user' if ctx.guild.get_member(target.id) else 'member'} {target}{' [BOT]' if target.bot else ''}",
+        embed = revolt.SendableEmbed(
+            title=f"Info for {'user' if ctx.server.get_member(target.id) else 'member'} {f'{target.original_name}#{target.discriminator}'}{' [BOT]' if target.bot else ''}",
             description=f"**ID:** `{target.id}`{nickname}",
-            timestamp=datetime.now(),
+            icon_url=target.avatar.url if target.avatar is not None else None,
         )
-        embed.set_footer(text=self.bot.user.name, icon_url=self.bot.user.display_avatar)
-        embed.set_author(name=f"{target}", icon_url=f"{target.display_avatar.url}")
-        embed.set_thumbnail(url=f"{target.display_avatar.url}")
-        embed.add_field(
-            name="⏰ Account created:",
-            value=f"<t:{target.created_at.astimezone().strftime('%s')}:f>\n<t:{target.created_at.astimezone().strftime('%s')}:R>",
-            inline=True,
-        )
-        if ctx.guild.get_member(target.id):
-            embed.add_field(
-                name="⏱️ Account joined:",
-                value=f"<t:{target.joined_at.astimezone().strftime('%s')}:f>\n<t:{target.joined_at.astimezone().strftime('%s')}:R>",
-                inline=True,
+
+        account_creation = int(target.created_at().astimezone().timestamp())
+
+        embed.description += f"\n**⏰ Account created:** <t:{account_creation}:f>\n<t:{account_creation}:R>"
+
+        if ctx.server.get_member(target.id):
+            joined_at = int(target.joined_at.astimezone().timestamp())
+
+            embed.description += (
+                f"\n**⏱️ Account joined:** <t:{joined_at}:f> (<t:{joined_at}:R>)"
             )
-            embed.add_field(
-                name="🗃️ Joinscore:",
-                value=f"`{sorted(ctx.guild.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.guild.members)}`",
-                inline=True,
-            )
-            emoji = ""
-            details = ""
+            embed.description += f"\n**🗃️ Joinscore:** `{sorted(ctx.server.members, key=lambda v: v.joined_at).index(target)+1}` of `{len(ctx.server.members)}`"
+
+            status = ""
             try:
-                emoji = f"{target.activity.emoji} " if target.activity.emoji else ""
+                status = f"{target.status.text}" if target.status.text else ""
             except:
-                emoji = ""
-            try:
-                details = (
-                    f"\n{target.activity.details}" if target.activity.details else ""
-                )
-            except:
-                details = ""
-            try:
-                name = f"{target.activity.name}" if target.activity.name else ""
-            except:
-                name = ""
-            if emoji or name or details:
-                embed.add_field(
-                    name="💭 Status:", value=f"{emoji}{name}{details}", inline=False
-                )
+                status = ""
+
+            if status:
+                embed.description += f"\n**💭 Status:** `{status}`"
+
             roles = []
             if target.roles:
                 for index, role in enumerate(target.roles):
-                    if role.name == "@everyone":
-                        continue
-                    roles.append("<@&" + str(role.id) + ">")
+                    roles.append(role.name)
                     rolelist = ",".join(reversed(roles))
             else:
                 rolelist = "None"
-            embed.add_field(name=f"🎨 Roles:", value=f"{rolelist}", inline=False)
-        embeds.append(embed)
 
-        user_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, target.name
-        )
-        display_name = await commands.clean_content(escape_markdown=True).convert(
-            ctx, target.display_name
-        )
+            embed.description += f"\n**🎨 Roles:** {rolelist}"
+        embeds.append(embed)
 
         event_types = ["warns", "bans", "kicks", "tosses", "notes"]
         embed = self.get_userlog_embed_for_id(
-            ctx.guild.id, str(target.id), str(target), event=event_types
+            ctx.server.id,
+            str(target.id),
+            f"{target.original_name}#{target.discriminator}",
+            event=event_types,
         )
         embeds.append(embed)
 
-        await ctx.reply(embeds=embeds, mention_author=False)
+        for idx in embeds:
+            await ctx.send(embed=idx)
 
 
-async def setup(bot):
-    await bot.add_cog(ModUserlog(bot))
+def setup(bot: revolt.Client):
+    return ModUserlog(bot)

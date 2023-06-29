@@ -13,7 +13,7 @@ async def check_if_staff(ctx: commands.Context):
     return any(
         (
             any(
-                r.id == get_config(ctx.guild.id, "staff", "staff_role")
+                r.id == get_config(ctx.server.id, "staff", "staff_role")
                 for r in ctx.author.roles
             ),
             any(m == ctx.author.id for m in config.bot_managers),
