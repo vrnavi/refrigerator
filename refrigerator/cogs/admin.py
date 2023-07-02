@@ -276,20 +276,8 @@ class CogAdmin(commands.Cog):
 
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def pull(self, ctx: commands.Context, auto: str = None):
+    async def pull(self, ctx: commands.Context, auto: commands.converters.BoolConverter = False):
         """[O] Performs a git pull."""
-        if auto and auto.lower() in [
-            "yes",
-            "yeah",
-            "yep",
-            "true",
-            "1",
-            "reload",
-            "auto",
-        ]:
-            auto = True
-        else:
-            auto = False
         tmp = await ctx.message.reply("Pulling...", mention=False)
         git_output = await self.bot.async_call_shell("git pull")
         if len(git_output) > 2000:
