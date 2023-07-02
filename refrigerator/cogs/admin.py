@@ -276,7 +276,9 @@ class CogAdmin(commands.Cog):
 
     @commands.check(check_if_bot_manager)
     @commands.command()
-    async def pull(self, ctx: commands.Context, auto: commands.converters.BoolConverter = False):
+    async def pull(
+        self, ctx: commands.Context, auto: commands.converters.BoolConverter = False
+    ):
         """[O] Performs a git pull."""
         tmp = await ctx.message.reply("Pulling...", mention=False)
         git_output = await self.bot.async_call_shell("git pull")
