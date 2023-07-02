@@ -49,7 +49,9 @@ class CogPrefixes(commands.Cog):
             )
 
     @prefixes.command()
-    async def remove(self, ctx: commands.Context, number: commands.converters.IntConverter):
+    async def remove(
+        self, ctx: commands.Context, number: commands.converters.IntConverter
+    ):
         """[U] Removes a prefix."""
         userdata, uid = fill_userdata(ctx.author.id)
         userdata[uid]["prefixes"]
