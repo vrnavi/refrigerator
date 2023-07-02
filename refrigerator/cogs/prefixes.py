@@ -49,18 +49,9 @@ class CogPrefixes(commands.Cog):
             )
 
     @prefixes.command()
-    async def remove(self, ctx: commands.Context, num: str):
-        # making num an int will throw an error.
-        # so it has to be passed as a string and then converted to an int.
-        number: int
-        try:
-            number = int(num)
-        except ValueError:
-            await ctx.message.reply(
-                content="This prefix does not exist.", mention=False
-            )
-            return
-
+    async def remove(
+        self, ctx: commands.Context, number: commands.converters.IntConverter
+    ):
         """[U] Removes a prefix."""
         userdata, uid = fill_userdata(ctx.author.id)
         userdata[uid]["prefixes"]
