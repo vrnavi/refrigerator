@@ -180,6 +180,7 @@ async def main():
             "cogs.oneshot",
             "cogs.namecheck",
             "cogs.mod_userlog",
+            "cogs.mod_archive"
         ]
         for cog in ported_cogs:
             try:
