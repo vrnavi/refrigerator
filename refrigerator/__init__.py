@@ -181,7 +181,6 @@ async def main():
             "cogs.namecheck",
             "cogs.mod_userlog",
             "cogs.mod_archive",
-            "cogs.sv_config",
             "cogs.explains"
         ]
         for cog in ported_cogs:
