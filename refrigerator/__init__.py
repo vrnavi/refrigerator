@@ -27,7 +27,6 @@ log = logging.getLogger("revolt")
 log.setLevel(logging.INFO)
 log.addHandler(stdout_handler)
 
-
 data = {
     "wanted_jsons": [
         "data/dishtimers.json",
@@ -45,6 +44,10 @@ data = {
 class Refrigerator(commands.CommandsClient, revolt.Client):
     log = log
     data: Dict[str, Any] = data
+    sniped: dict[str, revolt.Message] = {}
+    snipped: dict[str, tuple[revolt.Message, revolt.Message]] = {}
+    on_message_listeners = []
+    on_reaction_add_listeners = []
 
     async def get_prefix(self, message: revolt.Message):
         return config.prefixes + get_userprefix(message.author.id)
@@ -153,6 +156,32 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
             for m in msgs:
                 await m.edit(content=f"{m.content}\n\n(I have left this guild.)")
 
+    async def on_message_delete(self, message: revolt.Message):
+        if message.author.bot or isinstance(message.channel, revolt.DMChannel):
+            return
+
+        self.sniped[message.channel.id] = message
+
+    # requires that you install revolt.py from the github repo for this to work.
+    # python3 -m pip install git+https://github.com/revoltchat/revolt.py
+    async def on_message_update(self, before: revolt.Message, after: revolt.Message):
+        if before.author.bot or isinstance(before.channel, revolt.DMChannel):
+            return
+
+        self.snipped[before.channel.id] = (before, after)
+
+    async def on_message(self, message: revolt.Message):
+        await self.process_commands(message)
+
+        for func in self.on_message_listeners:
+            await func(self, message)
+
+    async def on_reaction_add(
+        self, message: revolt.Message, user: revolt.User, emoji_id: str
+    ):
+        for func in self.on_reaction_add_listeners:
+            await func(self, message, user, emoji_id)
+
 
 if not os.path.exists("data"):
     os.makedirs("data")
@@ -181,7 +210,8 @@ async def main():
             "cogs.namecheck",
             "cogs.mod_userlog",
             "cogs.mod_archive",
-            "cogs.explains"
+            "cogs.explains",
+            "cogs.messagescan",
         ]
         for cog in ported_cogs:
             try:
