@@ -98,6 +98,13 @@ class CogBasic(commands.Cog):
             mention=False,
         )
 
+    @commands.command(aliases=["bigtimerush"])
+    async def btr(self, ctx: commands.Context):
+        """[U] make it count, play it straight"""
+        await ctx.send(
+            attachments=[revolt.File("assets/bigtimerush.mp3", filename="bigtimerush.mp3")]
+        )
+
     @commands.command(name="hex")
     async def _hex(self, ctx: commands.Context, num: str):
         """[U] Converts base 10 to 16."""
