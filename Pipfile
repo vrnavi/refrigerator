@@ -5,7 +5,8 @@ name = "pypi"
 
 [packages]
 aiohttp = "*"
-"discord.py" = "==2.3.*"
+APScheduler = "*"
+"revolt.py" = "==0.1.*"
 gidgethub = "*"
 httplib2 = "*"
 matplotlib = "*"
@@ -20,4 +21,4 @@ unidecode = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.11"
+python_version = "3.9"

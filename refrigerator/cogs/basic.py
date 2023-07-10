@@ -217,15 +217,14 @@ class CogBasic(commands.Cog):
         RTT = Round-trip time, time taken to send a message to discord
         GW = Gateway Ping"""
         # TODO: revolt.py bot client does not have `latency` attribute...
-        return
         before = time.monotonic()
         tmp = await ctx.message.reply("⌛", mention=False)
         after = time.monotonic()
         rtt_ms = (after - before) * 1000
-        gw_ms = self.bot.latency * 1000
+        # gw_ms = self.bot.latency * 1000
 
-        message_text = f":ping_pong:\nrtt: `{rtt_ms:.1f}ms`\ngw: `{gw_ms:.1f}ms`"
-        self.bot.log.info(message_text)
+        message_text = f":ping_pong:\nrtt: `{rtt_ms:.1f}ms`"
+        # self.bot.log.info(message_text)
         await tmp.edit(content=message_text)
 
     @commands.check(check_only_server)

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f68211507ecbccafa5b2555231f5120d237f5e122fc35c63e57a13490192a347"
+            "sha256": "f0943ea85a8f0548c6800f5eae29f5d5f45e58bc77a6da9e5bdab9cae2fb3e50"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -383,14 +383,6 @@
             ],
             "index": "pypi",
             "version": "==1.15.0"
-        },
-        "discord.py": {
-            "hashes": [
-                "sha256:3e9498967822ad4499f8f72deb9173f942d9827d92b6e4e4e7732d24f78f300c",
-                "sha256:c71066a30f037d069218e59092505c3e8945fd175e396a80748056d989756806"
-            ],
-            "index": "pypi",
-            "version": "==2.3.0"
         },
         "fonttools": {
             "hashes": [
@@ -929,6 +921,12 @@
             "markers": "python_version >= '3.7'",
             "version": "==4.23.3"
         },
+        "py-ulid": {
+            "hashes": [
+                "sha256:e30fcd14386fb6568efe6345b4656cb79bf5b9f54b83822d2e36ca728fe0a661"
+            ],
+            "version": "==1.0.3"
+        },
         "pyasn1": {
             "hashes": [
                 "sha256:87a2121042a1ac9358cabcaf1d07680ff97ee6404333bacca15f76aa8ad01a57",
@@ -1115,6 +1113,14 @@
             "index": "pypi",
             "version": "==1.46"
         },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:88a4153d8505aabbb4e13aacb7c486c2b4a33ca3b3f807914a9b4c844c471c26",
+                "sha256:d91d5919357fe7f681a9f2b5b4cb2a5f1ef0a1e9f59c4d8ff0d3491e05c0ffd5"
+            ],
+            "markers": "python_version >= '3.7'",
+            "version": "==4.6.3"
+        },
         "unidecode": {
             "hashes": [
                 "sha256:547d7c479e4f377b430dd91ac1275d593308dce0fc464fb2ab7d41f82ec653be",
@@ -1138,6 +1144,14 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5'",
             "version": "==1.26.16"
+        },
+        "voltage": {
+            "hashes": [
+                "sha256:460cec98d76c85962b46dca54336d320497c65f5cd146edb93a7656d22072372",
+                "sha256:b9b0ee6af0297099110d86e84b048e253c17ff881e6eb5d1c4ca216e766f35ae"
+            ],
+            "index": "pypi",
+            "version": "==0.1.5a8"
         },
         "yarl": {
             "hashes": [
