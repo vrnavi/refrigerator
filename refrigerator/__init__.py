@@ -171,6 +171,9 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
         self.snipped[before.channel.id] = (before, after)
 
     async def on_message(self, message: revolt.Message):
+        if message.author.bot:
+            return
+
         await self.process_commands(message)
 
         for func in self.on_message_listeners:
@@ -212,6 +215,7 @@ async def main():
             "cogs.mod_archive",
             "cogs.explains",
             "cogs.messagescan",
+            "cogs.sv_config",
         ]
         for cog in ported_cogs:
             try:
