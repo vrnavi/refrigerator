@@ -1,6 +1,6 @@
-# Dishwasher
+# Refrigerator
 
-A fork of [robocop-ng](https://github.com/reswitched/robocop-ng) with heavy tweaks, ran on a Dishwasher. It's primarily used on the OneShot Discord. 
+This is [Dishwasher](https://github.com/vrnavi/dishwasher), but coded for Revolt instead. May lack feature parity with Dishwasher.
 
 ---
 
