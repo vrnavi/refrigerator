@@ -1,11 +1,12 @@
 import json
-import discord
 import datetime
+import requests
 import config
 import asyncio
-from helpers.checks import check_if_staff, check_if_bot_manager
-from discord.ext.commands import Cog, Context, Bot
-from discord.ext import commands
+from helpers.checks import check_if_staff, check_if_bot_manager, check_only_server
+from revolt.ext import commands
+import urllib.parse
+import revolt
 from helpers.embeds import stock_embed
 from helpers.sv_config import (
     fill_config,
@@ -16,36 +17,30 @@ from helpers.sv_config import (
 )
 
 
-class sv_config(Cog):
-    def __init__(self, bot):
+class sv_config(commands.Cog):
+    def __init__(self, bot: revolt.Client):
         self.bot = bot
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
-    @commands.group(invoke_without_command=True)
-    async def configs(self, ctx, guild: discord.Guild = None):
-        """[S] Gets the configuration for a guild."""
-        if not guild:
-            guild = ctx.guild
+    @commands.group()
+    async def configs(self, ctx: commands.Context):
+        guild = ctx.server
         configs = fill_config(guild.id)
 
-        navigation_reactions = ["⏹", "⬅️", "➡", "⬆", "⬇️", "⏺"]
+        navigation_reactions = ["⏹️", "⬅️", "➡️", "⬆️", "⬇️", "⏺️"]
 
-        embed = stock_embed(self.bot)
-        embed.title = "⚙️ Server Configuration Editor"
-        embed.color = ctx.author.color
-        embed.set_author(name=ctx.author, icon_url=ctx.author.display_avatar.url)
-        embed.add_field(name="⏳", value="Loading...", inline=False)
+        embed = revolt.SendableEmbed(title="⚙️ Server Configuration Editor", description="⏳ Loading...")
         hindex = 1
         hlimit = len(configs.items())
         vindex = 0
         pagemode = "play"
-        configmsg = await ctx.reply(embed=embed, mention_author=False)
+        configmsg = await ctx.message.reply(embed=embed, mention=False)
         for e in navigation_reactions:
             await configmsg.add_reaction(e)
 
-        def reactioncheck(r, u):
-            return u.id == ctx.author.id and str(r.emoji) in navigation_reactions
+        def reactioncheck(message: revolt.Message, user: revolt.User, emoji: str):
+            return user.id == ctx.author.id and emoji in navigation_reactions
 
         def messagecheck(m):
             return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
@@ -53,7 +48,7 @@ class sv_config(Cog):
         while True:
             page = list(configs.items())[hindex - 1]
             vlimit = len(page[1])
-            embed.description = f"Page `{hindex}` of `{hlimit}` for server {guild}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0]} <setting> <value>`."
+            embed.description = f"Page `{hindex}` of `{hlimit}` for server {guild.name}.\nTweak a setting with `{config.prefixes[0]}configs set {page[0]} <setting> <value>`."
             lines = ""
             for i, (k, v) in enumerate(page[1].items()):
                 friendly = f"**{friendly_names[k]}**\n" if k in friendly_names else ""
@@ -68,56 +63,46 @@ class sv_config(Cog):
                 if str(v) == "None":
                     v = "Forcibly Disabled"
                 lines += f"\n{friendly}{setting}\n{v}"
-            embed.set_field_at(
-                index=0,
-                name=page[0].title(),
-                value=lines,
-                inline=False,
-            )
-            allowed_mentions = discord.AllowedMentions(replied_user=False)
-            await configmsg.edit(embed=embed, allowed_mentions=allowed_mentions)
+            embed.description += "\n\n" + lines
+            await configmsg.edit(embeds=[embed])
 
             if pagemode == "play":
                 try:
-                    reaction, user = await self.bot.wait_for(
+                    reaction = await self.bot.wait_for(
                         "reaction_add", timeout=30.0, check=reactioncheck
                     )
                 except asyncio.TimeoutError:
                     return await configmsg.edit(
                         content="Operation timed out.",
-                        embed=None,
-                        delete_after=5,
-                        allowed_mentions=allowed_mentions,
+                        embeds=[]
                     )
 
-                if str(reaction) == "⏹":
+                if reaction[2] == "⏹":
                     return await configmsg.edit(
                         content="Operation cancelled.",
-                        embed=None,
-                        delete_after=5,
-                        allowed_mentions=allowed_mentions,
+                        embeds=[]
                     )
-                if str(reaction) == "⬅️":
+                if reaction[2] == "⬅️":
                     if hindex != 1:
                         hindex -= 1
                     vindex = 0
-                    await configmsg.remove_reaction("⬅️", ctx.author)
-                elif str(reaction) == "➡":
+                    await configmsg.remove_reaction("⬅️", reaction[1])
+                elif reaction[2] == "➡️":
                     if hindex != hlimit:
                         hindex += 1
                     vindex = 0
-                    await configmsg.remove_reaction("➡", ctx.author)
-                elif str(reaction) == "⬆":
+                    await configmsg.remove_reaction("➡️", reaction[1])
+                elif reaction[2] == "⬆️":
                     if vindex != 0:
                         vindex -= 1
-                    await configmsg.remove_reaction("⬆", ctx.author)
-                elif str(reaction) == "⬇️":
+                    await configmsg.remove_reaction("⬆️", reaction[1])
+                elif reaction[2] == "⬇️":
                     if vindex != vlimit:
                         vindex += 1
-                    await configmsg.remove_reaction("⬇️", ctx.author)
-                elif str(reaction) == "⏺":
+                    await configmsg.remove_reaction("⬇️", reaction[1])
+                elif reaction[2] == "⏺️":
                     pagemode = "rec"
-                    await configmsg.remove_reaction("⏺", ctx.author)
+                    await configmsg.remove_reaction("⏺", reaction[1])
                     continue
             elif pagemode == "rec":
                 if configs[page[0]][key] == None:
@@ -151,124 +136,111 @@ class sv_config(Cog):
                     await configsuppmsg.delete()
                     return await configmsg.edit(
                         content="Operation timed out.",
-                        embed=None,
-                        delete_after=5,
-                        allowed_mentions=allowed_mentions,
+                        embeds=None
                     )
 
                 if message.content == "stop":
                     await configsuppmsg.delete()
                     return await configmsg.edit(
                         content="Operation cancelled.",
-                        embed=None,
-                        delete_after=5,
-                        allowed_mentions=allowed_mentions,
+                        embeds=None
                     )
                 elif key == "enable" and message.content == "true":
                     for k, v in configs[page[0]].items():
                         if not v and type(v).__name__ != "bool":
                             await ctx.send(
-                                content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
-                                delete_after=5,
+                                content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again."
                             )
                             pagemode = "play"
                             continue
 
                 try:
-                    configs = set_config(ctx.guild.id, page[0], key, message.content)
+                    configs = set_config(ctx.server.id, page[0], key, message.content)
                 except:
                     await configsuppmsg.edit(
-                        content="You gave an invalid value. Please try again while following the instructions of what to send.",
-                        delete_after=5,
+                        content="You gave an invalid value. Please try again while following the instructions of what to send."
                     )
                     pagemode = "play"
                     continue
                 else:
                     await configsuppmsg.edit(
-                        content=f"**{page[0].title()}/**`{key}` has been updated with a new value of `{configs[page[0]][key]}`.",
-                        delete_after=5,
+                        content=f"**{page[0].title()}/**`{key}` has been updated with a new value of `{configs[page[0]][key]}`."
                     )
                     pagemode = "play"
                     continue
 
     @commands.check(check_if_bot_manager)
     @configs.command()
-    async def reset(self, ctx, guild: discord.Guild = None):
+    async def reset(self, ctx: commands.Context, guild: revolt.Server = None):
         """[O] Resets the configuration for a guild."""
         if not guild:
-            guild = ctx.guild
+            guild = ctx.server
         make_config(guild.id)
-        await ctx.reply(
-            content=f"The configuration for **{guild}** has been reset.",
-            mention_author=False,
+        await ctx.message.reply(
+            content=f"The configuration for **{guild}** has been reset."
         )
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @configs.command()
-    async def set(self, ctx, category, setting, *, value=None):
+    async def set(self, ctx: commands.Context, category: str, setting: str, *, value=None):
         """[S] Sets the configuration for a guild."""
-        configs = fill_config(ctx.guild.id)
+        configs = fill_config(ctx.server.id)
         category = category.lower()
         setting = setting.lower()
         if category not in configs or setting not in configs[category]:
             if category not in stock_configs or setting not in stock_configs[category]:
-                return await ctx.reply(
-                    content="You specified an invalid category or setting.",
-                    mention_author=False,
+                return await ctx.message.reply(
+                    content="You specified an invalid category or setting."
                 )
             else:
                 configs = set_config(
-                    ctx.guild.id, category, setting, stock_configs[category][setting]
+                    ctx.server.id, category, setting, stock_configs[category][setting]
                 )
         if configs[category][setting] == None:
-            return await ctx.reply(
+            return await ctx.message.reply(
                 content="This setting has been administratively disabled by the bot owner.",
-                mention_author=True,
+                mention=True,
             )
         elif configs[category][setting] == "enable" and value == "true":
             for k, v in configs[category].items():
                 if not v and type(v).__name__ != "bool":
-                    return await ctx.reply(
-                        content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again.",
-                        mention_author=False,
+                    return await ctx.message.reply(
+                        content="This setting cannot be changed unless the other settings in the category are properly configured.\nPlease configure these settings first, then try again."
                     )
 
         try:
-            configs = set_config(ctx.guild.id, category, setting, value)
-            return await ctx.reply(
-                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{configs[category][setting]}`.",
-                mention_author=False,
+            configs = set_config(ctx.server.id, category, setting, value)
+            return await ctx.message.reply(
+                content=f"**{category.title()}/**`{setting}` has been updated with a new value of `{configs[category][setting]}`."
             )
         except:
-            return await ctx.reply(
-                content="You gave an invalid value. If you don't know what you're doing, use `pls configs` interactively.",
-                mention_author=False,
+            return await ctx.message.reply(
+                content="You gave an invalid value. If you don't know what you're doing, use `pls configs` interactively."
             )
 
     @commands.check(check_if_bot_manager)
     @configs.command()
-    async def disable(self, ctx, guild: discord.Guild, category, setting):
+    async def disable(self, ctx: commands.Context, guild: revolt.Server, category, setting):
         """[O] Forcibly disables a setting for a guild."""
-        configs = fill_config(ctx.guild.id)
+        configs = fill_config(ctx.server.id)
         if category not in configs or setting not in configs[category]:
             configs = set_config(
-                ctx.guild.id, category, setting, stock_configs[category][setting]
+                ctx.server.id, category, setting, stock_configs[category][setting]
             )
-        set_config(ctx.guild.id, category, setting, None)
-        return await ctx.reply(
-            content=f"{guild}'s **{category.title()}/**`{setting}` has been DISABLED.",
-            mention_author=False,
+        set_config(ctx.server.id, category, setting, None)
+        return await ctx.message.reply(
+            content=f"{guild.name}'s **{category.title()}/**`{setting}` has been DISABLED."
         )
 
     @commands.check(check_if_bot_manager)
     @configs.command()
-    async def enable(self, ctx, guild: discord.Guild, category, setting):
+    async def enable(self, ctx: commands.Context, guild: revolt.Server, category: str, setting: str):
         """[O] Forcibly enables a setting for a guild."""
-        configs = fill_config(ctx.guild.id)
+        configs = fill_config(ctx.server.id)
         if category not in configs or setting not in configs[category]:
             configs = set_config(
-                ctx.guild.id, category, setting, stock_configs[category][setting]
+                ctx.server.id, category, setting, stock_configs[category][setting]
             )
         defaults = {
             "str": "",
@@ -277,16 +249,15 @@ class sv_config(Cog):
             "list": [],
         }
         set_config(
-            ctx.guild.id,
+            ctx.server.id,
             category,
             setting,
             defaults[type(stock_configs[category][setting]).__name__],
         )
-        return await ctx.reply(
-            content=f"{guild}'s **{category.title()}/**`{setting}` has been ENABLED.",
-            mention_author=False,
+        return await ctx.message.reply(
+            content=f"{guild.name}'s **{category.title()}/**`{setting}` has been ENABLED."
         )
 
 
-async def setup(bot: Bot):
-    await bot.add_cog(sv_config(bot))
+def setup(bot: revolt.Client):
+    return sv_config(bot)
