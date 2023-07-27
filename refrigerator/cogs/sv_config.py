@@ -71,17 +71,15 @@ class sv_config(commands.Cog):
                     reaction = await self.bot.wait_for(
                         "reaction_add", timeout=30.0, check=reactioncheck
                     )
-                except asyncio.TimeoutError:
-                    return await configmsg.edit(
-                        content="Operation timed out.",
-                        embeds=[]
-                    )
+                except:
+                    await ctx.send("Operation timed out.")
+                    await configmsg.delete()
+                    return
 
-                if reaction[2] == "⏹":
-                    return await configmsg.edit(
-                        content="Operation cancelled.",
-                        embeds=[]
-                    )
+                if reaction[2] == "⏹️":
+                    await ctx.send("Operation cancelled.")
+                    await configmsg.delete()
+                    return
                 if reaction[2] == "⬅️":
                     if hindex != 1:
                         hindex -= 1
@@ -102,7 +100,7 @@ class sv_config(commands.Cog):
                     await configmsg.remove_reaction("⬇️", reaction[1])
                 elif reaction[2] == "⏺️":
                     pagemode = "rec"
-                    await configmsg.remove_reaction("⏺", reaction[1])
+                    await configmsg.remove_reaction("⏺️", reaction[1])
                     continue
             elif pagemode == "rec":
                 if configs[page[0]][key] == None:
@@ -134,17 +132,13 @@ class sv_config(commands.Cog):
                     )
                 except asyncio.TimeoutError:
                     await configsuppmsg.delete()
-                    return await configmsg.edit(
-                        content="Operation timed out.",
-                        embeds=None
-                    )
+                    await configmsg.delete()
+                    await ctx.send("Operation timed out.")
 
                 if message.content == "stop":
                     await configsuppmsg.delete()
-                    return await configmsg.edit(
-                        content="Operation cancelled.",
-                        embeds=None
-                    )
+                    await configmsg.delete()
+                    await ctx.send("Operation cancelled.")
                 elif key == "enable" and message.content == "true":
                     for k, v in configs[page[0]].items():
                         if not v and type(v).__name__ != "bool":
