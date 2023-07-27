@@ -4,21 +4,21 @@ import time
 
 stock_configs = {
     "logs": {
-        "mlog_thread": 0,
-        "slog_thread": 0,
-        "ulog_thread": 0,
+        "mlog_thread": "",
+        "slog_thread": "",
+        "ulog_thread": "",
     },
     "staff": {
-        "staff_role": 0,
-        "exstaff_role": 0,
-        "staff_channel": 0,
+        "staff_role": "",
+        "exstaff_role": "",
+        "staff_channel": "",
         "rules_url": "",
         "appeal_url": "",
-        "tracker_channel": 0,
+        "tracker_channel": "",
     },
     "autoapp": {
         "enable": False,
-        "autoapp_channel": 0,
+        "autoapp_channel": "",
         "autoapp_id": 0,
         "autoapp_staledays": 0,
         "autoapp_name": "",
@@ -26,8 +26,8 @@ stock_configs = {
     },
     "toss": {
         "enable": False,
-        "toss_role": 0,
-        "toss_category": 0,
+        "toss_role": "",
+        "toss_category": "",
         "toss_channels": [],
     },
     "archive": {
@@ -43,19 +43,19 @@ stock_configs = {
     },
     "surveyr": {
         "enable": False,
-        "survey_channel": 0,
+        "survey_channel": "",
         "start_case": 0,
         "log_types": [],
         "log_roles": [],
     },
     "cotd": {
         "enable": False,
-        "cotd_role": 0,
+        "cotd_role": "",
         "cotd_name": "",
     },
     "noreply": {
         "enable": False,
-        "noreply_role": 0,
+        "noreply_role": "",
     },
     "misc": {
         "authorized_roles": [],
