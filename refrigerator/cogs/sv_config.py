@@ -1,13 +1,8 @@
-import json
-import datetime
-import requests
 import config
 import asyncio
 from helpers.checks import check_if_staff, check_if_bot_manager, check_only_server
 from revolt.ext import commands
-import urllib.parse
 import revolt
-from helpers.embeds import stock_embed
 from helpers.sv_config import (
     fill_config,
     make_config,
