@@ -35,7 +35,7 @@ class sv_config(commands.Cog):
             await configmsg.add_reaction(e)
 
         def reactioncheck(message: revolt.Message, user: revolt.User, emoji: str):
-            return user.id == ctx.author.id and emoji in navigation_reactions
+            return message.id == ctx.message.id and user.id == ctx.author.id and emoji in navigation_reactions
 
         def messagecheck(m):
             return m.author.id == ctx.author.id and m.channel.id == ctx.channel.id
