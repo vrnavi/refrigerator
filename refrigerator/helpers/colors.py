@@ -22,3 +22,7 @@
     darker_grey = "#546e7a"
     blurple = "#7289da"
     greyple = "#99aab5"
+
+    # prevent modification of the values in this class
+    def __setattr__(self, name, value):
+        pass
