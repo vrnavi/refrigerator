@@ -37,7 +37,6 @@ class CogPrefixes(commands.Cog):
     @prefixes.command()
     async def add(self, ctx: commands.Context, *, arg: str):
         userdata, uid = fill_userdata(ctx.author.id)
-        print(userdata)
         if not len(userdata[uid]["prefixes"]) >= config.maxprefixes:
             userdata[uid]["prefixes"].append(f"{arg} ")
             set_userdata(json.dumps(userdata))
