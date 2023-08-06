@@ -580,56 +580,6 @@ class Mod(commands.Cog):
 
     @commands.check(check_only_server)
     @commands.check(check_if_staff)
-    @purge.command()
-    async def ireacts(self, ctx: commands.Context):
-        """[S] Clears reactions interactively."""
-        deleted = 0
-        msg = await ctx.channel.send(
-            content="🔎 **Interactive Reactions enabled.** React here when done."
-        )
-        tasks = []
-
-        def check(message: revolt.Message, user: revolt.User, emoji: str):
-            # we only care about the user who is clearing reactions
-            if user.id != ctx.author.id:
-                return False
-            # this is how the user finishes
-            if message.id == msg.id:
-                return True
-            else:
-                # remove a reaction
-                async def impl():
-                    for reaction in filter(lambda e: e == emoji, message.reactions.keys()):
-                        deleted += 1
-                        await message.remove_reaction(reaction, remove_all=True)
-
-                # schedule immediately
-                tasks.append(asyncio.create_task(impl()))
-                return False
-
-        try:
-            await self.bot.wait_for("reaction_add", timeout=120.0, check=check)
-        except asyncio.TimeoutError:
-            await msg.edit(content=f"Operation timed out.")
-        else:
-            await asyncio.gather(*tasks)
-            await msg.edit(content=f"🚮 `{deleted}` reactions interactively purged.")
-
-            mlog = get_config(ctx.server.id, "logs", "mlog_thread")
-            if not mlog:
-                return
-            mlog = await self.bot.fetch_channel(mlog)
-
-            embed = revolt.SendableEmbed(
-                title="🗑 Purged",
-                colour=colors.lighter_grey,
-                description=f"{ctx.author.original_name}#{ctx.author.discriminator} purged {deleted} reactions interactively in {ctx.channel.mention}."
-            )
-
-            await mlog.send(embed=embed)
-
-    @commands.check(check_only_server)
-    @commands.check(check_if_staff)
     @commands.command()
     async def warn(self, ctx: commands.Context, target: commands.MemberConverter, *, reason: str = ""):
         """[S] Warns a user."""
