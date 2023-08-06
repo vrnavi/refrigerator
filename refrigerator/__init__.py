@@ -122,7 +122,7 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
         )
 
         await self.edit_status(
-            presence=revolt.PresenceType.focus, text="Take THAT, Discord."
+            presence=revolt.PresenceType.online, text="Take THAT, Discord."
         )
 
     async def on_server_join(self, server: revolt.Server):
@@ -216,6 +216,7 @@ async def main():
             "cogs.explains",
             "cogs.messagescan",
             "cogs.sv_config",
+            "cogs.mod"
         ]
         for cog in ported_cogs:
             try:

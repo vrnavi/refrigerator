@@ -3,6 +3,8 @@ from revolt.ext import commands
 import config
 from helpers.sv_config import get_config
 
+def check_if_bot_can_ban(ctx: commands.Context):
+    return ctx.server.get_member(ctx.state.me.id).get_permissions().ban_members
 
 async def check_if_staff(ctx: commands.Context):
     if ctx.author.id in config.bot_managers:
