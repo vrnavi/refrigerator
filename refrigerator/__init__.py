@@ -104,7 +104,7 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
                 f"**Error: Missing Permissions**\n"
                 "I don't have the right permissions to run this command. "
                 "I need: "
-                f"```- {error.permissions}```"
+                f"```- {', '.join(error.permissions)}```"
             )
         elif isinstance(error, helpers.errors.NotBotManagerError):
             return await ctx.send("You must be a bot manager to use this command.")
