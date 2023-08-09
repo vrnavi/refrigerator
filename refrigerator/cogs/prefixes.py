@@ -36,6 +36,11 @@ class CogPrefixes(commands.Cog):
 
     @prefixes.command()
     async def add(self, ctx: commands.Context, *, arg: str):
+        if (len(arg)) == 0:
+            await ctx.message.reply(
+                content="You cannot add an empty prefix.", mention=False
+            )
+            return
         userdata, uid = fill_userdata(ctx.author.id)
         if not len(userdata[uid]["prefixes"]) >= config.maxprefixes:
             userdata[uid]["prefixes"].append(f"{arg} ")
