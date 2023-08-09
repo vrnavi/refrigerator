@@ -12,6 +12,9 @@ import importlib
 from typing import Dict, List, Any
 import revolt
 from revolt.ext import commands
+from revolt.ext.commands.context import Context
+from helpers.messageutils import message_to_url
+import helpers.errors
 
 import config
 from helpers.userdata import get_userprefix
@@ -48,6 +51,73 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
     snipped: dict[str, tuple[revolt.Message, revolt.Message]] = {}
     on_message_listeners = []
     on_reaction_add_listeners = []
+
+    async def on_command_error(self, ctx: Context, error: Exception) -> None:
+        prefix = ctx.message.content.split()[0]
+        # We don't want to log commands that don't exist.
+        if isinstance(error, commands.errors.CommandNotFound):
+            return
+
+        log.error(
+            f"An error occurred with `{ctx.message.content}` from "
+            f"{ctx.message.author} ({ctx.message.author.id}):\n"
+            f"{type(error)}: {error}"
+        )
+
+        guildmsg = (
+            f"**Guild:** {ctx.server.name}\n**Channel:** {ctx.channel.name}\n**Link:** [Jump]({message_to_url(ctx.message)})\n"
+            if ctx.channel.channel_type == revolt.ChannelType.text_channel
+            else ""
+        )
+        err_log_embed = revolt.SendableEmbed(
+            title="⚠️ Command Error",
+            description=(
+                f"An error occurred...\n"
+                f"**Command:** `{ctx.message.content}`\n"
+                f"**User:** {ctx.author.original_name}#{ctx.author.discriminator} ({ctx.message.author.id})\n"
+                f"{guildmsg}"
+                f"```{type(error)}: {error}```"
+            )
+        )
+
+        for m in config.bot_managers:
+            channel_dict: revolt.DMChannel = await self.http.open_dm(m)
+            channel = await self.fetch_channel(channel_dict["_id"])
+            await channel.send(embed=err_log_embed)
+
+        help_text = (
+            f"Usage of this command is:\n```{prefix} {ctx.invoked_with} {ctx.command.name} "
+            f"{ctx.command.signature}```\nPlease see `{prefix} help"
+            f"` for more info."
+        )
+
+        if isinstance(error, RuntimeError):
+            return await ctx.send(f"You gave incomplete arguments. {help_text}")
+        elif isinstance(error, LookupError):
+            return await ctx.send("The members or channels provided in your command could not be found.")
+        elif isinstance(error, commands.errors.ServerOnly):
+            return await ctx.send("This command can only be used in a server.")
+        elif isinstance(error, commands.errors.InvalidLiteralArgument) or isinstance(error, commands.errors.BadBoolArgument) or isinstance(error, ValueError):
+            return await ctx.send(f"You gave invalid arguments. {help_text}")
+        elif isinstance(error, helpers.errors.InsufficientBotPermissionsError):
+            return await ctx.send(
+                f"**Error: Missing Permissions**\n"
+                "I don't have the right permissions to run this command. "
+                "I need: "
+                f"```- {error.permissions}```"
+            )
+        elif isinstance(error, helpers.errors.NotBotManagerError):
+            return await ctx.send("You must be a bot manager to use this command.")
+        elif isinstance(error, helpers.errors.NotStaffError):
+            return await ctx.send("You must be a staff member of this server to use this command.")
+        elif isinstance(error, commands.errors.CheckError):
+            return await ctx.send(
+                f"**Error: Check Failure**\n"
+                "You might not have the right permissions "
+                "to run this command, or you may not be able "
+                "to run this command in the current channel."
+            )
+
 
     async def get_prefix(self, message: revolt.Message):
         return config.prefixes + get_userprefix(message.author.id)
