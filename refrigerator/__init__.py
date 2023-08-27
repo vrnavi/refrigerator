@@ -51,7 +51,9 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
     snipped: dict[str, tuple[revolt.Message, revolt.Message]] = {}
     on_message_listeners = []
     on_reaction_add_listeners = []
-    
+    on_member_join_listeners = []
+    on_member_update_listeners = []
+
     async def on_command_error(self, ctx: Context, error: Exception) -> None:
         prefix = ctx.message.content.split()[0]
         # We don't want to log commands that don't exist.
@@ -253,8 +255,15 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
         self, message: revolt.Message, user: revolt.User, emoji_id: str
     ):
         for func in self.on_reaction_add_listeners:
-            await func(self, message, user, emoji_id)
+            await func(message, user, emoji_id)
 
+    async def on_member_join(self, member: revolt.Member):
+        for func in self.on_member_join_listeners:
+            await func(member)
+
+    async def on_member_update(self, old_member: revolt.Member, new_member: revolt.Member):
+        for func in self.on_member_update_listeners:
+            await func(old_member, new_member)
 
 if not os.path.exists("data"):
     os.makedirs("data")
