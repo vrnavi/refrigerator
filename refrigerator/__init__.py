@@ -51,7 +51,7 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
     snipped: dict[str, tuple[revolt.Message, revolt.Message]] = {}
     on_message_listeners = []
     on_reaction_add_listeners = []
-
+    
     async def on_command_error(self, ctx: Context, error: Exception) -> None:
         prefix = ctx.message.content.split()[0]
         # We don't want to log commands that don't exist.
@@ -271,6 +271,7 @@ for wanted_json in data["wanted_jsons"]:
 async def main():
     async with revolt.utils.client_session() as session:
         bot = Refrigerator(session, config.token)
+        bot
 
         ported_cogs = [
             "cogs.admin",
@@ -287,7 +288,9 @@ async def main():
             "cogs.sv_config",
             "cogs.mod",
             "cogs.cotd",
-            "cogs.mod_note"
+            "cogs.mod_note",
+            "cogs.common",
+            "cogs.meme"
         ]
         for cog in ported_cogs:
             try:

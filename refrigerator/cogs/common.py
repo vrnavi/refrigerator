@@ -1,18 +1,16 @@
 import asyncio
 import traceback
-import datetime
-import discord
+import revolt
 import time
 import os
 import json
 import math
 import parsedatetime
-import random
-from discord.ext.commands import Cog
+from revolt.ext import commands
 
 
-class Common(Cog):
-    def __init__(self, bot):
+class Common(commands.Cog):
+    def __init__(self, bot: commands.CommandsClient):
         self.bot = bot
 
         self.bot.async_call_shell = self.async_call_shell
@@ -23,7 +21,6 @@ class Common(Cog):
         self.bot.aioget = self.aioget
         self.bot.aiogetbytes = self.aiogetbytes
         self.bot.escape_message = self.escape_message
-        self.bot.get_used_invites = self.get_used_invites
         self.bot.parse_time = self.parse_time
         self.bot.c_to_f = self.c_to_f
         self.bot.f_to_c = self.f_to_c
@@ -102,64 +99,6 @@ class Common(Cog):
         """Escapes unfun stuff from messages"""
         return str(text).replace("@", "@ ").replace("<#", "# ")
 
-    async def get_used_invites(self, member: discord.Member):
-        """Handles the invite correlation stuff"""
-        if not os.path.exists(f"{self.bot.server_data}/{member.guild.id}/invites.json"):
-            if not os.path.exists(f"{self.bot.server_data}/{member.guild.id}"):
-                os.makedirs(f"{self.bot.server_data}/{member.guild.id}")
-            with open(
-                f"{self.bot.server_data}/{member.guild.id}/invites.json", "w"
-            ) as f:
-                f.write("{}")
-        with open(f"{self.bot.server_data}/{member.guild.id}/invites.json", "r") as f:
-            invites = json.load(f)
-
-        real_invites = await member.guild.invites()
-
-        # Add unknown active invites. Can happen if invite was manually created
-        for invite in real_invites:
-            if invite.id not in invites:
-                invites[invite.id] = {
-                    "uses": 0,
-                    "url": invite.url,
-                    "max_uses": invite.max_uses,
-                    "code": invite.code,
-                }
-
-        probable_invites_used = []
-        items_to_delete = []
-        # Look for invites whose usage increased since last lookup
-        for id, invite in invites.items():
-            real_invite = next((x for x in real_invites if x.id == id), None)
-
-            if real_invite is None:
-                # Invite does not exist anymore. Was either revoked manually
-                # or the final use was used up
-                probable_invites_used.append(invite)
-                items_to_delete.append(id)
-            elif invite["uses"] < real_invite.uses:
-                probable_invites_used.append(invite)
-                invite["uses"] = real_invite.uses
-
-        # Delete used up invites
-        for id in items_to_delete:
-            del invites[id]
-
-        # Save invites data.
-        with open(f"{self.bot.server_data}/{member.guild.id}/invites.json", "w") as f:
-            f.write(json.dumps(invites))
-
-        # Prepare the invite correlation message
-        if len(probable_invites_used) == 1:
-            invite_used = probable_invites_used[0]["code"]
-        elif len(probable_invites_used) == 0:
-            invite_used = "Unknown"
-        else:
-            invite_used = "One of: "
-            invite_used += ", ".join([x["code"] for x in probable_invites_used])
-
-        return invite_used
-
     # This function is based on https://stackoverflow.com/a/35435419/3286892
     # by link2110 (https://stackoverflow.com/users/5890923/link2110)
     # modified by Ave (https://github.com/aveao), licensed CC-BY-SA 3.0
@@ -210,5 +149,5 @@ class Common(Cog):
         return "No output."
 
 
-async def setup(bot):
-    await bot.add_cog(Common(bot))
+def setup(bot):
+    return Common(bot)
