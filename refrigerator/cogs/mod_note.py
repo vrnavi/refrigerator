@@ -1,22 +1,21 @@
-import discord
-from discord.ext import commands
-from discord.ext.commands import Cog
-from helpers.checks import check_if_staff
+import revolt
+from revolt.ext import commands
+from helpers.checks import check_if_staff, check_only_server
 from helpers.userlogs import userlog
 
 
-class ModNote(Cog):
+class ModNote(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["addnote"])
-    async def note(self, ctx, target: discord.User, *, note: str = ""):
+    async def note(self, ctx: commands.Context, target: commands.MemberConverter, *, note: str = ""):
         """[S] Adds a note to a user."""
-        userlog(ctx.guild.id, target.id, ctx.author, note, "notes")
-        await ctx.send(f"Noted.")
+        userlog(ctx.server.id, target.id, ctx.author, note, "notes")
+        await ctx.send("Noted.")
 
 
-async def setup(bot):
-    await bot.add_cog(ModNote(bot))
+def setup(bot):
+    return ModNote(bot)

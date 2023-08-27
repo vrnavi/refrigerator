@@ -286,7 +286,8 @@ async def main():
             "cogs.messagescan",
             "cogs.sv_config",
             "cogs.mod",
-            "cogs.cotd"
+            "cogs.cotd",
+            "cogs.mod_note"
         ]
         for cog in ported_cogs:
             try:
