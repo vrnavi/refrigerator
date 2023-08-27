@@ -1,6 +1,7 @@
 from unidecode import unidecode
 import revolt
 from revolt.ext import commands
+from helpers.sv_config import get_config
 
 from helpers.checks import check_if_staff, check_only_server
 
@@ -12,7 +13,8 @@ class NameCheck(commands.Cog):
 
     def __init__(self, bot: commands.CommandsClient):
         self.bot = bot
-        self.readablereq = 1
+        self.bot.on_member_join_listeners.append(self.on_member_join)
+        self.bot.on_member_update_listeners.append(self.on_member_update)
 
     @commands.check(check_only_server)
     @commands.check(check_if_staff)
@@ -22,7 +24,7 @@ class NameCheck(commands.Cog):
         newname = unidecode(target.name)
         if not newname:
             newname = "Unreadable Name"
-        await self._edit_nickname(ctx.server, target, newname)
+        await self.edit_nickname(ctx.server, target, newname)
         return await ctx.message.reply(
             f"Successfully decancered **{oldname}** to `{newname}`.",
             mention=False,
@@ -33,12 +35,50 @@ class NameCheck(commands.Cog):
     @commands.command()
     async def dehoist(self, ctx: commands.Context, target: commands.MemberConverter):
         oldname = target.name
-        await self._edit_nickname(ctx.server, target, "᲼" + target.name)
+        await self.edit_nickname(ctx.server, target, f"\u1cbc{target.name}")
         return await ctx.message.reply(
             f"Successfully dehoisted **{oldname}**.", mention=False
         )
 
-    async def _edit_nickname(
+    async def on_member_join(self, member: revolt.Member):
+        if not get_config(member.server.id, "misc", "autoreadable_enable"):
+            return
+
+        name = member.name
+
+        # Non-Alphanumeric
+        readable = len([b for b in name if b.isascii()])
+        if readable / len(name) < 2 / 3: # at least 2/3 of the name must be readable
+            name = unidecode(name) if unidecode(name) else "Unreadable Name"
+
+        # Hoist
+        if any(name.startswith(c) for c in ("!", "-", ".", "(", ")", ":")):
+            name = f"\u1cbc{name}"
+
+        # Validate
+        if name != member.name:
+            await self.edit_nickname(member.server, member, name)
+
+    async def on_member_update(self, member_before: revolt.Member, member_after: revolt.Member):
+        if not get_config(member_after.server.id, "misc", "autoreadable_enable"):
+            return
+
+        name = member_after.name
+
+        # Non-Alphanumeric
+        readable = len([b for b in name if b.isascii()])
+        if readable / len(name) < 2 / 3: # at least 2/3 of the name must be readable
+            name = unidecode(name) if unidecode(name) else "Unreadable Name"
+
+        # Hoist
+        if any(name.startswith(c) for c in ("!", "-", ".", "(", ")", ":")):
+            name = f"\u1cbc{name}"
+
+        # Validate
+        if name != member_after.name:
+            await self.edit_nickname(member_after.server, member_after, name)
+
+    async def edit_nickname(
         self, server: revolt.Server, member: revolt.Member, nickname: str = None
     ) -> None:
         """
@@ -57,51 +97,6 @@ class NameCheck(commands.Cog):
                 f"/servers/{server.id}/members/{member.id}",
                 json={"remove": ["Nickname"], "nickname": None},
             )
-
-    # FIXME: revolt.py on_member_join event handling?
-    """
-    @Cog.listener()
-    async def on_member_join(self, member):
-        await self.bot.wait_until_ready()
-        if not get_config(member.guild.id, "misc", "autoreadable_enable"):
-            return
-
-        name = member.display_name
-
-        # Non-Alphanumeric
-        readable = len([b for b in name if b.isascii()])
-        if readable < self.readablereq:
-            name = unidecode(name) if unidecode(name) else "Unreadable Name"
-
-        # Hoist
-        if name[:1] in ("!", "-", ".", "(", ")", ":"):
-            name = "᲼" + name
-
-        # Validate
-        if name != member.display_name:
-            await member.edit(nick=name, reason="Automatic Namecheck")
-
-    @Cog.listener()
-    async def on_member_update(self, member_before, member_after):
-        await self.bot.wait_until_ready()
-        if not get_config(member_after.guild.id, "misc", "autoreadable_enable"):
-            return
-
-        name = member_after.display_name
-
-        # Non-Alphanumeric
-        readable = len([b for b in name if b.isascii()])
-        if readable < self.readablereq:
-            name = unidecode(name) if unidecode(name) else "Unreadable Name"
-
-        # Hoist
-        if name[:1] in ("!", "-", ".", "(", ")", ":"):
-            name = "᲼" + name
-
-        # Validate
-        if name != member_after.display_name:
-            await member_after.edit(nick=name, reason="Automatic Namecheck")
-    """
 
 
 def setup(bot: commands.CommandsClient):
