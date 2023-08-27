@@ -272,7 +272,6 @@ async def main():
     async with revolt.utils.client_session() as session:
         bot = Refrigerator(session, config.token)
 
-        # TODO: Port all discord.py-like cogs into revolt.py-like
         ported_cogs = [
             "cogs.admin",
             "cogs.basic",
@@ -286,7 +285,8 @@ async def main():
             "cogs.explains",
             "cogs.messagescan",
             "cogs.sv_config",
-            "cogs.mod"
+            "cogs.mod",
+            "cogs.cotd"
         ]
         for cog in ported_cogs:
             try:
