@@ -24,7 +24,7 @@ class NameCheck(commands.Cog):
         newname = unidecode(target.name)
         if not newname:
             newname = "Unreadable Name"
-        await self.edit_nickname(ctx.server, target, newname)
+        await target.edit(nickname=newname)
         return await ctx.message.reply(
             f"Successfully decancered **{oldname}** to `{newname}`.",
             mention=False,
@@ -35,7 +35,7 @@ class NameCheck(commands.Cog):
     @commands.command()
     async def dehoist(self, ctx: commands.Context, target: commands.MemberConverter):
         oldname = target.name
-        await self.edit_nickname(ctx.server, target, f"\u1cbc{target.name}")
+        await target.edit(nickname=f"\u1cbc{target.name}")
         return await ctx.message.reply(
             f"Successfully dehoisted **{oldname}**.", mention=False
         )
@@ -57,7 +57,7 @@ class NameCheck(commands.Cog):
 
         # Validate
         if name != member.name:
-            await self.edit_nickname(member.server, member, name)
+            await member.edit(nickname=name)
 
     async def on_member_update(self, member_before: revolt.Member, member_after: revolt.Member):
         if not get_config(member_after.server.id, "misc", "autoreadable_enable"):
@@ -76,27 +76,7 @@ class NameCheck(commands.Cog):
 
         # Validate
         if name != member_after.name:
-            await self.edit_nickname(member_after.server, member_after, name)
-
-    async def edit_nickname(
-        self, server: revolt.Server, member: revolt.Member, nickname: str = None
-    ) -> None:
-        """
-        Monkey-patch of `ctx.author.edit` since it having
-        400 (bad request) HTTP error when tring to edit something.
-        """
-        if nickname:
-            await self.bot.http.request(
-                "PATCH",
-                f"/servers/{server.id}/members/{member.id}",
-                json={"remove": None, "nickname": nickname},
-            )
-        else:
-            await self.bot.http.request(
-                "PATCH",
-                f"/servers/{server.id}/members/{member.id}",
-                json={"remove": ["Nickname"], "nickname": None},
-            )
+            await member_after.edit(nickname=name)
 
 
 def setup(bot: commands.CommandsClient):
