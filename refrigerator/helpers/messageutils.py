@@ -8,7 +8,7 @@ async def get_dm_channel(bot: revolt.Client, user: revolt.User) -> revolt.DMChan
     dm = await bot.http.open_dm(user.id)
     return bot.get_channel(dm["_id"])
 
-def create_embed_with_fields(title = None, description: str = "", color: str = None, fields: list[tuple[str, str]] = []):
+def create_embed_with_fields(title: str = None, description: str = "", color: str = None, fields: list[tuple[str, str]] = []):
     embed = revolt.SendableEmbed(
         title=title,
         description=description,
