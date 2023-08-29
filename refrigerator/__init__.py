@@ -4,6 +4,7 @@ import logging
 import logging.handlers
 import math
 import asyncio
+import random
 import aiohttp
 import time
 import datetime
@@ -194,7 +195,7 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
         )
 
         await self.edit_status(
-            presence=revolt.PresenceType.online, text="Take THAT, Discord."
+            text="Listening to " + random.choice(config.game_names), presence=revolt.PresenceType.online
         )
 
     async def on_server_join(self, server: revolt.Server):
@@ -204,7 +205,7 @@ class Refrigerator(commands.CommandsClient, revolt.Client):
             dm = await self.http.open_dm(manager.id)
             channel: revolt.DMChannel = self.get_channel(dm["_id"])
             msg = await channel.send(
-                f"### {self.user.mention} joined `{server.name}` with `{len(server.members)}` members.\n"
+                f"**{self.user.mention} joined `{server.name}` with `{len(server.members)}` members.**\n"
                 "Check the checkmark within an hour to leave."
             )
             await msg.add_reaction("✅")
