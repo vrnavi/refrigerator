@@ -1,19 +1,20 @@
 import config
 import time
-import discord
 import traceback
 import random
 import shutil
 import os
 from datetime import datetime, timezone
-from discord.ext import commands, tasks
-from discord.ext.commands import Cog
+from discord.ext import tasks
+import revolt
+from revolt.ext import commands
 from helpers.dishtimer import get_crontab, delete_job
-from helpers.checks import check_if_staff
+from helpers.messageutils import create_embed_with_fields, get_dm_channel
+from helpers.checks import check_if_staff, check_only_server
 
 
-class Dishtimer(Cog):
-    def __init__(self, bot):
+class Dishtimer(commands.Cog):
+    def __init__(self, bot: commands.CommandsClient):
         self.bot = bot
         self.minutely.start()
         self.hourly.start()
@@ -25,32 +26,29 @@ class Dishtimer(Cog):
         self.daily.cancel()
 
     async def send_data(self):
-        log_channel = self.bot.get_channel(config.bot_logchannel)
-        data_files = [discord.File(fpath) for fpath in self.bot.wanted_jsons]
+        log_channel: revolt.TextChannel = self.bot.get_channel(config.bot_logchannel)
+        data_files = [revolt.File(fpath) for fpath in self.bot.data["wanted_jsons"]]
         await log_channel.send("Hourly data backups:", files=data_files)
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command()
-    async def listjobs(self, ctx):
+    async def listjobs(self, ctx: commands.Context):
         """[S] Lists timed Dishtimer jobs."""
         ctab = get_crontab()
-        embed = discord.Embed(title=f"Active Dishtimer jobs")
+        fields = []
         for jobtype in ctab:
             for jobtimestamp in ctab[jobtype]:
                 for job_name in ctab[jobtype][jobtimestamp]:
                     job_details = repr(ctab[jobtype][jobtimestamp][job_name])
-                    embed.add_field(
-                        name=f"{jobtype} for {job_name}",
-                        value=f"Executes on <t:{jobtimestamp}:F>.\nJSON data: {job_details}",
-                        inline=False,
-                    )
-        await ctx.send(embed=embed)
+                    fields.append((f"{jobtype} for {job_name}", f"Executes on <t:{jobtimestamp}:F>.\nJSON data: {job_details}"))
+        print(fields)
+        await ctx.send(embed=create_embed_with_fields(title=f"Active Dishtimer jobs", fields=fields))
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command(aliases=["removejob"])
-    async def deletejob(self, ctx, timestamp: str, job_type: str, job_name: str):
+    async def deletejob(self, ctx: commands.Context, timestamp: str, job_type: str, job_name: str):
         """[S] Removes a timed Dishtimer job.
 
         You'll need to supply:
@@ -63,21 +61,19 @@ class Dishtimer(Cog):
         await ctx.send(f"{ctx.author.mention}: Deleted!")
 
     async def do_jobs(self, ctab, jobtype, timestamp):
-        log_channel = self.bot.get_channel(config.bot_logchannel)
+        log_channel: revolt.TextChannel = self.bot.get_channel(config.bot_logchannel)
         for job_name in ctab[jobtype][timestamp]:
             try:
                 job_details = ctab[jobtype][timestamp][job_name]
                 if jobtype == "unban":
-                    target_user = await self.bot.fetch_user(job_name)
-                    target_guild = self.bot.get_guild(job_details["guild"])
+                    target_guild = self.bot.get_server(job_details["guild"])
+                    target_member = await target_guild.fetch_member(job_name)
                     delete_job(timestamp, jobtype, job_name)
-                    await target_guild.unban(
-                        target_user, reason="Dishtimer: Timed ban expired."
-                    )
+                    await target_member.unban()
                 elif jobtype == "remind":
                     text = job_details["text"]
                     added_on = job_details["added"]
-                    target = await self.bot.fetch_user(int(job_name))
+                    target = await self.bot.fetch_user(job_name)
                     original_timestamp = (
                         datetime.strptime(added_on, "%Y-%m-%d %H:%M:%S")
                         .replace(tzinfo=timezone.utc)
@@ -85,20 +81,12 @@ class Dishtimer(Cog):
                         .strftime("%s")
                     )
                     if target:
-                        embed = discord.Embed(
+                        channel = await get_dm_channel(self.bot, target)
+                        await channel.send(embed=create_embed_with_fields(
                             title="⏰ Reminder",
                             description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.",
-                            timestamp=datetime.now(),
-                        )
-                        embed.set_footer(
-                            text=self.bot.user.name, icon_url=self.bot.user.avatar.url
-                        )
-                        embed.add_field(
-                            name="📝 Contents",
-                            value=f"{text}",
-                            inline=False,
-                        )
-                        await target.send(embed=embed)
+                            fields=[("📝 Contents", f"{text}")],
+                        ))
                     delete_job(timestamp, jobtype, job_name)
             except:
                 # Don't kill cronjobs if something goes wrong.
@@ -109,14 +97,15 @@ class Dishtimer(Cog):
                 )
 
     async def clean_channel(self, channel_id):
-        log_channel = self.bot.get_channel(config.bot_logchannel)
-        channel = self.bot.get_channel(channel_id)
+        log_channel: revolt.TextChannel = self.bot.get_channel(config.bot_logchannel)
+        channel: revolt.TextChannel = self.bot.get_channel(channel_id)
         try:
             done_cleaning = False
             count = 0
             while not done_cleaning:
-                purge_res = await channel.purge(limit=100)
-                count += len(purge_res)
+                messages = await channel.history(limit=100)
+                purge_res = await channel.delete_messages(messages)
+                count += len(messages)
                 if len(purge_res) != 100:
                     done_cleaning = True
         except:
@@ -127,8 +116,7 @@ class Dishtimer(Cog):
 
     @tasks.loop(minutes=1)
     async def minutely(self):
-        await self.bot.wait_until_ready()
-        log_channel = self.bot.get_channel(config.bot_logchannel)
+        log_channel: revolt.TextChannel = self.bot.get_channel(config.bot_logchannel)
         try:
             ctab = get_crontab()
             timestamp = time.time()
@@ -148,17 +136,15 @@ class Dishtimer(Cog):
 
     @tasks.loop(hours=1)
     async def hourly(self):
-        await self.bot.wait_until_ready()
-        log_channel = self.bot.get_channel(config.bot_logchannel)
+        log_channel: revolt.TextChannel = self.bot.get_channel(config.bot_logchannel)
         try:
             # Handle clean channels
             for clean_channel in config.hourly_clean_channels:
                 await self.clean_channel(clean_channel)
             # Change playing status.
-            activity = discord.Activity(
-                name=random.choice(config.game_names), type=config.game_type
+            await self.bot.edit_status(
+                text="Listening to " + random.choice(config.game_names), presence=revolt.PresenceType.online
             )
-            await self.bot.change_presence(activity=activity)
         except:
             # Don't kill cronjobs if something goes wrong.
             await log_channel.send(
@@ -167,14 +153,14 @@ class Dishtimer(Cog):
 
     @tasks.loop(hours=24)
     async def daily(self):
-        await self.bot.wait_until_ready()
-        log_channel = self.bot.get_channel(config.bot_logchannel)
+        log_channel: revolt.TextChannel = self.bot.get_channel(config.bot_logchannel)
         try:
-            shutil.make_archive("data_backup", "zip", self.bot.all_data)
+            shutil.make_archive("data_backup", "zip", self.bot.data["all_data"])
             for m in config.bot_managers:
-                await self.bot.get_user(m).send(
+                channel = await get_dm_channel(self.bot, self.bot.get_user(m))
+                await channel.send(
                     content="Daily backups:",
-                    file=discord.File("data_backup.zip"),
+                    attachments=[revolt.File("data_backup.zip")]
                 )
             os.remove("data_backup.zip")
         except:
@@ -184,5 +170,5 @@ class Dishtimer(Cog):
             )
 
 
-async def setup(bot):
-    await bot.add_cog(Dishtimer(bot))
+def setup(bot):
+   return Dishtimer(bot)

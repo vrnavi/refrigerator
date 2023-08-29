@@ -300,7 +300,8 @@ async def main():
             "cogs.cotd",
             "cogs.mod_note",
             "cogs.common",
-            "cogs.meme"
+            "cogs.meme",
+            "cogs.dishtimer"
         ]
         for cog in ported_cogs:
             try:
