@@ -20,4 +20,7 @@ def create_embed_with_fields(title: str = None, description: str = "", color: st
     for field in fields:
         embed.description += f"\n\n**{field[0]}**\n{field[1]}"
 
+    if description == "" and len(fields) > 0:
+        embed.description = embed.description.split("\n", 2)[2]
+
     return embed
