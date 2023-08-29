@@ -7,7 +7,7 @@ from apscheduler.jobstores.memory import MemoryJobStore
 from typing import Dict, Any
 import revolt
 from revolt.ext import commands
-
+from helpers.messageutils import create_embed_with_fields, get_dm_channel
 from helpers.dishtimer import add_job, get_crontab, delete_job
 
 
@@ -66,15 +66,15 @@ class Remind(commands.Cog):
             .replace(tzinfo=timezone.utc)
             .timestamp()
         )
-        embed = revolt.SendableEmbed(
+        embed = create_embed_with_fields(
             title="⏰ Reminder",
-            description=f"#### You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.\n#### 📝 Contents\n{text}",
-            colour="#9cd8df",
-            icon_url=self.bot.user.original_avatar.url,
+            description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.",
+            fields=[("📝 Contents", f"{text}")],
+            color="#9cd8df",
         )
-        dm = await self.bot.http.open_dm(user.id)
-        dmc: revolt.DMChannel = self.bot.get_channel(dm["_id"])
-        await dmc.send(embed=embed)
+
+        channel = await get_dm_channel(self.bot, target)
+        await channel.send(embed=embed)
         delete_job(timestamp, "remind", user_id)
 
     @commands.group()
@@ -85,8 +85,7 @@ class Remind(commands.Cog):
         embed = revolt.SendableEmbed(
             title="Your current reminders...",
             description="",
-            colour="#9cd8df",
-            icon_url=ctx.author.original_avatar.url,
+            colour="#9cd8df"
         )
         idx = 0
         for jobtimestamp in ctab["remind"]:
@@ -173,13 +172,14 @@ class Remind(commands.Cog):
             replace_existing=True,
         )
 
-        embed = revolt.SendableEmbed(
+        embed = create_embed_with_fields(
             title="⏰ Reminder added.",
-            description=f"#### You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.\n#### 📝 Contents\n{text}",
-            colour="#9cd8df",
-            icon_url=ctx.author.original_avatar.url,
+            description=f"You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.",
+            color="#9cd8df",
+            fields=[("📝 Contents", f"{text}")],
         )
-        await ctx.message.reply(embed=embed, mention=False)
+
+        await ctx.message.reply(embed=embed)
 
 
 def setup(bot: commands.CommandsClient):
