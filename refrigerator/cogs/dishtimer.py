@@ -42,7 +42,6 @@ class Dishtimer(commands.Cog):
                 for job_name in ctab[jobtype][jobtimestamp]:
                     job_details = repr(ctab[jobtype][jobtimestamp][job_name])
                     fields.append((f"{jobtype} for {job_name}", f"Executes on <t:{jobtimestamp}:F>.\nJSON data: {job_details}"))
-        print(fields)
         await ctx.send(embed=create_embed_with_fields(title=f"Active Dishtimer jobs", fields=fields))
 
     @commands.check(check_only_server)
