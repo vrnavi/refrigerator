@@ -1,111 +1,96 @@
-from discord.ext import commands
-from discord.ext.commands import Cog
+from revolt.ext import commands
+import revolt
 import config
 import discord
 import datetime
 import asyncio
-from helpers.checks import check_if_staff
+from helpers.checks import check_if_staff, check_only_server
 from helpers.sv_config import get_config
-from helpers.embeds import stock_embed, createdat_embed
+from helpers.embeds import SendableFieldedEmbedBuilder
+from helpers.colors import colors
 
 
-class ModObserve(Cog):
+class ModObserve(commands.Cog):
     """
     A tool to help moderators keep track of potential problem users.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.CommandsClient):
         self.bot = bot
-        self.raidmode = []
+        self.raidmode_list = []
 
-    @commands.guild_only()
+    @commands.check(check_only_server)
     @commands.check(check_if_staff)
     @commands.command()
-    async def raidmode(self, message, args=""):
+    async def raidmode(self, ctx: commands.Context, args: str):
         if not args:
-            if message.guild.id in self.raidmode:
-                await message.reply(
-                    "Raid mode is currently `🟢 ON`.", mention_author=False
-                )
+            if ctx.server.id in self.raidmode_list:
+                await ctx.message.reply("Raid mode is currently `🟢 ON`.")
             else:
-                await message.reply(
-                    "Raid mode is currently `🔴 OFF`.", mention_author=False
-                )
+                await ctx.message.reply("Raid mode is currently `🔴 OFF`.")
             return
         if args == "on":
-            if message.guild.id not in self.raidmode:
-                self.raidmode.append(message.guild.id)
-                await message.reply("Raid mode is now `🟢 ON`.", mention_author=False)
+            if ctx.server.id not in self.raidmode_list:
+                self.raidmode_list.append(ctx.server.id)
+                await ctx.message.reply("Raid mode is now `🟢 ON`.")
             else:
-                await message.reply(
-                    "Raid mode is already `🟢 ON`!", mention_author=False
-                )
+                await ctx.message.reply("Raid mode is already `🟢 ON`!")
             return
         if args == "off":
-            if message.guild.id in self.raidmode:
-                self.raidmode.remove(message.guild.id)
-                await message.reply("Raid mode is now `🔴 OFF`.", mention_author=False)
+            if ctx.server.id in self.raidmode_list:
+                self.raidmode_list.remove(ctx.guild.id)
+                await ctx.message.reply("Raid mode is now `🔴 OFF`.")
             else:
-                await message.reply(
-                    "Raid mode is already  `🔴 OFF`!", mention_author=False
-                )
+                await ctx.message.reply("Raid mode is already  `🔴 OFF`!")
             return
         else:
-            await message.reply(
-                "Incorrect arguments. Use `on` or `off`.", mention_author=False
-            )
+            await ctx.message.reply("Incorrect arguments. Use `on` or `off`.")
             return
 
-    @Cog.listener()
-    async def on_member_join(self, member):
-        await self.bot.wait_until_ready()
-        if not get_config(member.guild.id, "staff", "staff_channel"):
+
+    async def on_member_join(self, member: revolt.Member):
+        if not get_config(member.server.id, "staff", "staff_channel"):
             return
         ts = datetime.datetime.now(datetime.timezone.utc)
         cutoff_ts = ts - datetime.timedelta(hours=24)
-        if member.created_at >= cutoff_ts or member.guild.id in self.raidmode:
-            embed = stock_embed(self.bot)
-            embed.color = discord.Color.lighter_gray()
-            embed.title = "📥 User Joined"
-            embed.description = f"{member.mention} ({member.id})"
-            embed.set_thumbnail(url=member.display_avatar.url)
-            embed.set_author(name=member, icon_url=member.display_avatar.url)
-            createdat_embed(embed, member)
-
-            if member.guild.id in self.raidmode:
+        if member.created_at >= cutoff_ts or member.server.id in self.raidmode_list:
+            if member.server.id in self.raidmode:
                 rmstr = "`🟢 ON`"
             else:
                 rmstr = "`🔴 OFF`"
-            embed.add_field(
-                name="🚨 Raid mode...", value=f"is currently {rmstr}.", inline=True
-            )
-            embed.add_field(
-                name="🔍 First message:", value="Currently watching...", inline=False
-            )
-            callout = await member.guild.get_channel(
-                get_config(member.guild.id, "staff", "staff_channel")
-            ).send(embed=embed)
 
-            def check(m):
-                return m.author.id == member.id and m.guild.id == member.guild
+            embed = SendableFieldedEmbedBuilder(
+                title="📥 User Joined",
+                description=f"{member.mention} ({member.id})",
+                color=colors.lighter_grey,
+                fields=[
+                    ("📅 Account created:", f"<t:{member.created_at.astimezone().strftime('%s')}:f>\n<t:{member.created_at.astimezone().strftime('%s')}:R>"),
+                    ("🚨 Raid mode...", f"is currently {rmstr}."),
+                    ("🔍 First message:", "Currently watching..."),
+                ]
+            )
+
+            staff_channel: revolt.TextChannel = await member.server.get_channel(
+                get_config(member.server.id, "staff", "staff_channel")
+            )
+
+            callout = await staff_channel.send(embed=embed)
 
             try:
-                msg = await self.bot.wait_for("message", timeout=7200, check=check)
+                msg = await self.bot.wait_for("message_create", timeout=7200, check=lambda m: m.author.id == member.id and m.server.id == member.server.id)
                 embed.set_field_at(
                     index=2,
                     name="🔍 First message:",
                     value=f"[Sent]({msg.jump_url}) in {msg.channel.mention} on <t:{msg.created_at.astimezone().strftime('%s')}:f> (<t:{msg.created_at.astimezone().strftime('%s')}:R>):\n```{msg.clean_content}```",
-                    inline=False,
                 )
             except asyncio.TimeoutError:
                 embed.set_field_at(
                     index=2,
                     name="🔍 First message:",
                     value=f"This user did not send a message within `2 hours`.",
-                    inline=False,
                 )
-            await callout.edit(embed=embed)
+            await callout.edit(embed=embed.build())
 
 
-async def setup(bot):
-    await bot.add_cog(ModObserve(bot))
+def setup(bot):
+    return ModObserve(bot)
