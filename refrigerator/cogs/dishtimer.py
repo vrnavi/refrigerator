@@ -9,7 +9,8 @@ from discord.ext import tasks
 import revolt
 from revolt.ext import commands
 from helpers.dishtimer import get_crontab, delete_job
-from helpers.messageutils import create_embed_with_fields, get_dm_channel
+from helpers.messageutils import get_dm_channel
+from helpers.embeds import SendableFieldedEmbedBuilder
 from helpers.checks import check_if_staff, check_only_server
 
 
@@ -42,7 +43,7 @@ class Dishtimer(commands.Cog):
                 for job_name in ctab[jobtype][jobtimestamp]:
                     job_details = repr(ctab[jobtype][jobtimestamp][job_name])
                     fields.append((f"{jobtype} for {job_name}", f"Executes on <t:{jobtimestamp}:F>.\nJSON data: {job_details}"))
-        await ctx.send(embed=create_embed_with_fields(title=f"Active Dishtimer jobs", fields=fields))
+        await ctx.send(embed=SendableFieldedEmbedBuilder(title=f"Active Dishtimer jobs", fields=fields).build())
 
     @commands.check(check_only_server)
     @commands.check(check_if_staff)
@@ -81,11 +82,11 @@ class Dishtimer(commands.Cog):
                     )
                     if target:
                         channel = await get_dm_channel(self.bot, target)
-                        await channel.send(embed=create_embed_with_fields(
+                        await channel.send(embed=SendableFieldedEmbedBuilder(
                             title="⏰ Reminder",
                             description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.",
                             fields=[("📝 Contents", f"{text}")],
-                        ))
+                        ).build())
                     delete_job(timestamp, jobtype, job_name)
             except:
                 # Don't kill cronjobs if something goes wrong.

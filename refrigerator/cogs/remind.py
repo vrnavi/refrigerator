@@ -7,7 +7,8 @@ from apscheduler.jobstores.memory import MemoryJobStore
 from typing import Dict, Any
 import revolt
 from revolt.ext import commands
-from helpers.messageutils import create_embed_with_fields, get_dm_channel
+from helpers.messageutils import get_dm_channel
+from helpers.embeds import SendableFieldedEmbedBuilder
 from helpers.dishtimer import add_job, get_crontab, delete_job
 
 
@@ -66,12 +67,12 @@ class Remind(commands.Cog):
             .replace(tzinfo=timezone.utc)
             .timestamp()
         )
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title="⏰ Reminder",
             description=f"You asked to be reminded <t:{original_timestamp}:R> on <t:{original_timestamp}:f>.",
             fields=[("📝 Contents", f"{text}")],
             color="#9cd8df",
-        )
+        ).build()
 
         channel = await get_dm_channel(self.bot, target)
         await channel.send(embed=embed)
@@ -172,12 +173,12 @@ class Remind(commands.Cog):
             replace_existing=True,
         )
 
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title="⏰ Reminder added.",
             description=f"You will be reminded in DMs <t:{expiry_timestamp}:R> on <t:{expiry_timestamp}:f>.",
             color="#9cd8df",
             fields=[("📝 Contents", f"{text}")],
-        )
+        ).build()
 
         await ctx.message.reply(embed=embed)
 

@@ -8,7 +8,8 @@ from helpers.checks import check_if_staff, check_only_server, check_if_bot_can_b
 from helpers.userlogs import userlog
 from helpers.placeholders import random_self_msg, random_bot_msg
 from helpers.sv_config import get_config
-from helpers.messageutils import message_to_url, get_dm_channel, create_embed_with_fields
+from helpers.messageutils import message_to_url, get_dm_channel
+from helpers.embeds import SendableFieldedEmbedBuilder
 from helpers.colors import colors
 
 
@@ -63,7 +64,7 @@ class Mod(commands.Cog):
             description=f"{target.mention} was kicked by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
         )
 
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title="👢 Kick",
             color="#FFFF00",
             description=f"{target.mention} was kicked by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
@@ -72,7 +73,7 @@ class Mod(commands.Cog):
                 ("🛠️ Staff", f"**{ctx.author.original_name}#{ctx.author.discriminator}**\n{ctx.author.mention} ({ctx.author.id})"),
                 ("📝 Reason", f"{reason}" if reason else f"**No reason provided!**\nPlease use `{config.prefixes[0]}kick <user> [reason]` in the future.\nKick reasons are sent to the user."),
             ]
-        )
+        ).build()
 
         await mlog.send(embed=embed)
 
@@ -121,7 +122,7 @@ class Mod(commands.Cog):
             return
         mlog = await self.bot.fetch_channel(mlog)
 
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title="⛔ Ban",
             color="#FF0000",
             description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
@@ -130,7 +131,7 @@ class Mod(commands.Cog):
                 ("🛠️ Staff", f"**{ctx.author.original_name}#{ctx.author.discriminator}**\n{ctx.author.mention} ({ctx.author.id})"),
                 ("📝 Reason", f"{reason}" if reason else f"**No reason provided!**\nPlease use `{config.prefixes[0]}ban <user> [reason]` in the future.\nBan reasons are sent to the user."),
             ]
-        )
+        ).build()
 
         await mlog.send(embed=embed)
 
@@ -171,7 +172,7 @@ class Mod(commands.Cog):
             if not mlog:
                 continue
 
-            embed = create_embed_with_fields(
+            embed = SendableFieldedEmbedBuilder(
                 title="🚨 Massban",
                 color="#FF0000",
                 description=f"{target_user.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
@@ -179,7 +180,7 @@ class Mod(commands.Cog):
                     ("👤 User", f"**{target_user.name}**\n{target_user.mention} ({target_user.id})"),
                     ("🛠️ Staff", f"**{ctx.author.name}**\n{ctx.author.mention} ({ctx.author.id})")
                 ]
-            )
+            ).build()
 
             await mlog.send(embed=embed)
         await msg.edit(f"All {len(targets_int)} users are now BANNED.")
@@ -201,7 +202,7 @@ class Mod(commands.Cog):
             return
         mlog = await self.bot.fetch_channel(mlog)
 
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title="🎁 Unban",
             color="#00FF00",
             description=f"{member.mention} was unbanned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
@@ -210,7 +211,7 @@ class Mod(commands.Cog):
                 ("🛠️ Staff", f"**{ctx.author.original_name}#{ctx.author.discriminator}**\n{ctx.author.mention} ({ctx.author.id})"),
                 ("📝 Reason", f"{reason}" if reason else f"**No reason provided!**\nPlease use `{config.prefixes[0]}unban <user> [reason]` in the future."),
             ]
-        )
+        ).build()
 
         await mlog.send(embed=embed)
 
@@ -248,7 +249,7 @@ class Mod(commands.Cog):
             return
         mlog = await self.bot.fetch_channel(mlog)
 
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title="⛔ Silent Ban",
             color="#FF0000",
             description=f"{target.mention} was banned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
@@ -257,7 +258,7 @@ class Mod(commands.Cog):
                 ("🛠️ Staff", f"**{ctx.author.original_name}#{ctx.author.discriminator}**\n{ctx.author.mention} ({ctx.author.id})"),
                 ("📝 Reason", f"{reason}" if reason else f"**No reason provided!**\nPlease use `{config.prefixes[0]}sban <user> [reason]` in the future."),
             ]
-        )
+        ).build()
 
         await mlog.send(embed=embed)
 
@@ -631,7 +632,7 @@ class Mod(commands.Cog):
             return
         mlog = await self.bot.fetch_channel(mlog)
 
-        embed = create_embed_with_fields(
+        embed = SendableFieldedEmbedBuilder(
             title=f"Warn #{warn_count}",
             description=f"{target.mention} was warned by {ctx.author.mention} [{ctx.channel.mention}] [[Jump]({message_to_url(ctx.message)})]",
             color="#FFFF00",
@@ -640,7 +641,7 @@ class Mod(commands.Cog):
                 ("🛠️ Staff", f"**{ctx.author.original_name}#{ctx.author.discriminator}**\n{ctx.author.mention} ({ctx.author.id})"),
                 ("📝 Reason", f"{reason}" if reason else f"**No reason provided!**\nPlease use `{config.prefixes[0]}warn <user> [reason]` in the future.\nWarn reasons are sent to the user."),
             ]
-        )
+        ).build()
 
         await mlog.send(embed=embed)
 
