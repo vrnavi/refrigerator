@@ -24,10 +24,8 @@ class SendableFieldedEmbedBuilder:
         embed = revolt.SendableEmbed(
             title=self.title,
             description=self.description,
+            colour=self.color
         )
-
-        if self.color:
-            embed.colour = self.color
 
         for field in self.fields:
             embed.description += f"\n\n**{field[0]}**\n{field[1]}"
